@@ -21,7 +21,7 @@
 #
 #
 #   Author   : $Author: maroy $
-#   Version  : $Revision: 1.10 $
+#   Version  : $Revision: 1.10.2.1 $
 #   Location : $Source: /home/paul/cvs2svn-livesupport/newcvsrepo/livesupport/etc/Makefile.in,v $
 #-------------------------------------------------------------------------------
 
@@ -48,6 +48,11 @@ DOXYGEN_DIR  = ${DOC_DIR}/doxygen
 COVERAGE_DIR = ${DOC_DIR}/coverage
 ETC_DIR      = ${BASE_DIR}/etc
 TMP_DIR      = ${BASE_DIR}/tmp
+
+prefix = @prefix@
+
+export LD_LIBRARY_PATH=${prefix}/lib
+export PKG_CONFIG_PATH=${prefix}/lib/pkgconfig
 
 DOXYGEN_CONFIG = ${ETC_DIR}/doxygen.config
 XMLRPC-DOXYGEN_CONFIG = ${ETC_DIR}/xmlrpc-doxygen.config
@@ -102,7 +107,11 @@ PLAYLIST_EXECUTOR_DIR  = ${MODULES_DIR}/playlistExecutor
 EVENT_SCHEDULER_DIR    = ${MODULES_DIR}/eventScheduler
 SCHEDULER_CLIENT_DIR   = ${MODULES_DIR}/schedulerClient
 WIDGETS_DIR            = ${MODULES_DIR}/widgets
+ALIB_DIR               = ${MODULES_DIR}/alib
 ARCHIVE_SERVER_DIR     = ${MODULES_DIR}/archiveServer
+GETID3_DIR             = ${MODULES_DIR}/getid3
+HTML_UI_DIR            = ${MODULES_DIR}/htmlUI
+STORAGE_ADMIN_DIR      = ${MODULES_DIR}/storageAdmin
 STORAGE_SERVER_DIR     = ${MODULES_DIR}/storageServer
 
 PRODUCTS_DIR  = ${BASE_DIR}/products
@@ -172,20 +181,56 @@ recompile: distclean modules_setup products_setup compile
 
 tools_setup: ${TMP_DIR}/tools_setup.stamp
 ${TMP_DIR}/tools_setup.stamp:
-	${BOOST_DIR}/${BOOST_VERSION}/bin/install.sh
-	${CXXUNIT_DIR}/${CXXUNIT_VERSION}/bin/install.sh
-	${LIBODBCXX_DIR}/${LIBODBCXX_VERSION}/bin/install.sh
-	${XMLRPCXX_DIR}/${XMLRPCXX_VERSION}/bin/install.sh
-	${LCOV_DIR}/${LCOV_VERSION}/bin/install.sh
-	${GTK_DIR}/${GTK_VERSION}/bin/install.sh
-	${GTKMM_DIR}/${GTKMM_VERSION}/bin/install.sh
-	${GSTREAMER_DIR}/${GSTREAMER_VERSION}/bin/install.sh
-	${LIBXMLXX_DIR}/${LIBXMLXX_VERSION}/bin/install.sh
-	${ICU_DIR}/${ICU_VERSION}/bin/install.sh
-	${CURL_DIR}/${CURL_VERSION}/bin/install.sh
-	${TAGLIB_DIR}/${TAGLIB_VERSION}/bin/install.sh
-#	${PEAR_DIR}/bin/install.sh
+	${MAKE} -C ${CXXUNIT_DIR}/${CXXUNIT_VERSION} install
+ifeq ("@BOOST_DATE_TIME_LIB@","")
+	${MAKE} -C ${BOOST_DIR}/${BOOST_VERSION} install
+endif
+	${MAKE} -C ${CXXUNIT_DIR}/${CXXUNIT_VERSION} install
+	${MAKE} -C ${LIBODBCXX_DIR}/${LIBODBCXX_VERSION} install
+	${MAKE} -C ${XMLRPCXX_DIR}/${XMLRPCXX_VERSION} install
+	${MAKE} -C ${LCOV_DIR}/${LCOV_VERSION} install
+ifeq ("@GTK_CFLAGS@","")
+	${MAKE} -C ${GTK_DIR}/${GTK_VERSION} install
+endif
+ifeq ("@GTKMM_CFLAGS@","")
+	${MAKE} -C ${GTKMM_DIR}/${GTKMM_VERSION} install
+endif
+	${MAKE} -C ${GSTREAMER_DIR}/${GSTREAMER_VERSION} install
+ifeq ("@LIBXMLPP_CFLAGS@","")
+	${MAKE} -C ${LIBXMLXX_DIR}/${LIBXMLXX_VERSION} install
+endif
+ifeq ("@ICU_CFLAGS@","")
+	${MAKE} -C ${ICU_DIR}/${ICU_VERSION} install
+endif
+	${MAKE} -C ${CURL_DIR}/${CURL_VERSION} install
+	${MAKE} -C ${TAGLIB_DIR}/${TAGLIB_VERSION} install
 	touch ${TMP_DIR}/tools_setup.stamp
+
+tools_distclean:
+	${MAKE} -C ${CXXUNIT_DIR}/${CXXUNIT_VERSION} distclean
+ifeq ("@BOOST_DATE_TIME_LIB@","")
+	${MAKE} -C ${BOOST_DIR}/${BOOST_VERSION} distclean
+endif
+	${MAKE} -C ${CXXUNIT_DIR}/${CXXUNIT_VERSION} distclean
+	${MAKE} -C ${LIBODBCXX_DIR}/${LIBODBCXX_VERSION} distclean
+	${MAKE} -C ${XMLRPCXX_DIR}/${XMLRPCXX_VERSION} distclean
+	${MAKE} -C ${LCOV_DIR}/${LCOV_VERSION} distclean
+ifeq ("@GTK_CFLAGS@","")
+	${MAKE} -C ${GTK_DIR}/${GTK_VERSION} distclean
+endif
+ifeq ("@GTKMM_CFLAGS@","")
+	${MAKE} -C ${GTKMM_DIR}/${GTKMM_VERSION} distclean
+endif
+	${MAKE} -C ${GSTREAMER_DIR}/${GSTREAMER_VERSION} distclean
+ifeq ("@LIBXMLPP_CFLAGS@","")
+	${MAKE} -C ${LIBXMLXX_DIR}/${LIBXMLXX_VERSION} distclean
+endif
+ifeq ("@ICU_CFLAGS@","")
+	${MAKE} -C ${ICU_DIR}/${ICU_VERSION} distclean
+endif
+	${MAKE} -C ${CURL_DIR}/${CURL_VERSION} distclean
+	${MAKE} -C ${TAGLIB_DIR}/${TAGLIB_VERSION} distclean
+	${RM} ${TMP_DIR}/tools_setup.stamp:
 
 doxytag_setup: ${TMP_DIR}/doxytag_setup.stamp
 ${TMP_DIR}/doxytag_setup.stamp:
@@ -194,26 +239,30 @@ ${TMP_DIR}/doxytag_setup.stamp:
 
 modules_setup: ${TMP_DIR}/modules_setup.stamp
 ${TMP_DIR}/modules_setup.stamp:
-	${CORE_DIR}/bin/autogen.sh
-	${AUTHENTICATION_DIR}/bin/autogen.sh
-	${DB_DIR}/bin/autogen.sh
-	${STORAGE_DIR}/bin/autogen.sh
-	${GSTREAMER_ELEMENTS_DIR}/bin/autogen.sh
-	${PLAYLIST_EXECUTOR_DIR}/bin/autogen.sh
-	${EVENT_SCHEDULER_DIR}/bin/autogen.sh
-	${SCHEDULER_CLIENT_DIR}/bin/autogen.sh
-	${WIDGETS_DIR}/bin/autogen.sh
-#	-${MAKE} -C ${ARCHIVE_SERVER_DIR} all
-#	-${MAKE} -C ${STORAGE_SERVER_DIR} all
+	cd ${ALIB_DIR}/tmp && ./configure --prefix=${prefix}
+	cd ${ARCHIVE_SERVER_DIR}/tmp && ./configure --prefix=${prefix}
+	cd ${GETID3_DIR}/tmp && ./configure --prefix=${prefix}
+	cd ${HTML_UI_DIR}/tmp && ./configure --prefix=${prefix}
+	cd ${STORAGE_ADMIN_DIR}/tmp && ./configure --prefix=${prefix}
+	cd ${STORAGE_SERVER_DIR}/tmp && ./configure --prefix=${prefix}
+	cd ${CORE_DIR}/tmp && ./configure --prefix=${prefix}
+	cd ${AUTHENTICATION_DIR}/tmp && ./configure --prefix=${prefix}
+	cd ${DB_DIR}/tmp && ./configure --prefix=${prefix}
+	cd ${STORAGE_DIR}/tmp && ./configure --prefix=${prefix}
+	cd ${GSTREAMER_ELEMENTS_DIR}/tmp && ./configure --prefix=${prefix}
+	cd ${PLAYLIST_EXECUTOR_DIR}/tmp && ./configure --prefix=${prefix}
+	cd ${EVENT_SCHEDULER_DIR}/tmp && ./configure --prefix=${prefix}
+	cd ${SCHEDULER_CLIENT_DIR}/tmp && ./configure --prefix=${prefix}
+	cd ${WIDGETS_DIR}/tmp && ./configure --prefix=${prefix}
 	touch ${TMP_DIR}/modules_setup.stamp
 
 products_setup: ${TMP_DIR}/products_setup.stamp
 ${TMP_DIR}/products_setup.stamp:
-	${SCHEDULER_DIR}/bin/autogen.sh
-	${GLIVESUPPORT_DIR}/bin/autogen.sh
+	cd ${SCHEDULER_DIR}/tmp && ./configure --prefix=${prefix}
+	cd ${GLIVESUPPORT_DIR}/tmp && ./configure --prefix=${prefix}
 	touch ${TMP_DIR}/products_setup.stamp
 
-distclean:
+distclean: tools_distclean
 	${MAKE} -C ${CORE_DIR} distclean
 	${MAKE} -C ${AUTHENTICATION_DIR} distclean
 	${MAKE} -C ${DB_DIR} distclean
@@ -280,13 +329,23 @@ check:
 #-------------------------------------------------------------------------------
 .PHONY: install
 
-INSTALL_COPY_EXE = ${BIN_DIR}/copyInstall.sh
-ifeq (${prefix},)
-    INSTALL_PREFIX   = @prefix@
-else
-    INSTALL_PREFIX   = ${prefix}
-endif
-
 install: setup compile
-	${INSTALL_COPY_EXE} --directory ${INSTALL_PREFIX}
+	${MAKE} -C ${ALIB_DIR} install
+	${MAKE} -C ${ARCHIVE_SERVER_DIR} install
+	${MAKE} -C ${GETID3_DIR} install
+	${MAKE} -C ${HTML_UI_DIR} install
+	${MAKE} -C ${STORAGE_ADMIN_DIR} install
+	${MAKE} -C ${STORAGE_SERVER_DIR} install
+	${MAKE} -C ${CORE_DIR} install
+	${MAKE} -C ${AUTHENTICATION_DIR} install
+	${MAKE} -C ${DB_DIR} install
+	${MAKE} -C ${STORAGE_DIR} install
+	${MAKE} -C ${GSTREAMER_ELEMENTS_DIR} install
+	${MAKE} -C ${PLAYLIST_EXECUTOR_DIR} install
+	${MAKE} -C ${EVENT_SCHEDULER_DIR} install
+	${MAKE} -C ${SCHEDULER_CLIENT_DIR} install
+	${MAKE} -C ${WIDGETS_DIR} install
+	${MAKE} -C ${SCHEDULER_DIR} install
+	${MAKE} -C ${GLIVESUPPORT_DIR} install
+	
 

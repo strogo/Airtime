@@ -21,7 +21,7 @@ dnl Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 dnl
 dnl
 dnl Author   : $Author: maroy $
-dnl Version  : $Revision: 1.2 $
+dnl Version  : $Revision: 1.2.2.1 $
 dnl Location : $Source: /home/paul/cvs2svn-livesupport/newcvsrepo/livesupport/etc/configure.ac,v $
 dnl-----------------------------------------------------------------------------
 
@@ -35,12 +35,230 @@ dnl-----------------------------------------------------------------------------
 AC_INIT(LiveSupport, 0.9, bugs@campware.org)
 AC_PREREQ(2.59)
 AC_COPYRIGHT([Copyright (c) 2004 Media Development Loan Fund under the GNU GPL])
-AC_REVISION($Revision: 1.2 $)
+AC_REVISION($Revision: 1.2.2.1 $)
 
 AC_CONFIG_SRCDIR(../products/scheduler/src/main.cxx)
 
+AC_PROG_CC()
 AC_PROG_CXX()
+
+
+dnl unfortunately for both AC_CONFIG_COMMANDS and AC_CONFIG_SUBDIRS, the
+dnl directories have to be literally included, so we can't use any
+dnl fancy variables to avoid duplication of hard-coded values :(
+
+
+dnl check for the boost library
+AX_BOOST_DATE_TIME()
+
+if test "$BOOST_DATE_TIME_LIB" = "" ; then
+    AC_MSG_RESULT([not found boost library of sufficient version, will compile from our own])
+    AC_CONFIG_COMMANDS([../tools/boost/boost-1.31/tmp/configure],
+                       [../tools/boost/boost-1.31/bin/autogen.sh])
+    AC_CONFIG_SUBDIRS(../tools/boost/boost-1.31/tmp)
+    COMPILE_BOOST="yes"
+else
+    COMPILE_BOOST="no"
+fi
+
+
+dnl set up cppunit for compilation
+AC_CONFIG_COMMANDS([../tools/cppunit/cppunit-1.10.2/tmp/configure],
+                   [../tools/cppunit/cppunit-1.10.2/bin/autogen.sh])
+AC_CONFIG_SUBDIRS(../tools/cppunit/cppunit-1.10.2/tmp)
+
+
+dnl set up curl for compilation
+dnl TODO: detect if libcurl is already available
+AC_CONFIG_COMMANDS([../tools/curl/curl-7.12.3/tmp/configure],
+                   [../tools/curl/curl-7.12.3/bin/autogen.sh])
+AC_CONFIG_SUBDIRS(../tools/curl/curl-7.12.3/tmp)
+
+
+dnl set up gstreamer for compilation
+AC_CONFIG_COMMANDS([../tools/gstreamer/gstreamer-0.8.10/tmp/configure],
+                   [../tools/gstreamer/gstreamer-0.8.10/bin/autogen.sh])
+AC_CONFIG_SUBDIRS(../tools/gstreamer/gstreamer-0.8.10/tmp)
+
+
+dnl check for gtk+ 2.6.1 or more recent
+PKG_CHECK_MODULES(GTK,[gtk+-2.0 >= 2.6.1],
+[
+    AC_MSG_RESULT([using gtk+ found on the system])
+    COMPILE_GTK="no"
+],
+[
+    AC_MSG_RESULT([not found gtk+ of sufficient version, will compile from our own])
+    AC_CONFIG_COMMANDS([../tools/gtk+/gtk+-2.6.1/tmp/configure],
+                       [../tools/gtk+/gtk+-2.6.1/bin/autogen.sh])
+    AC_CONFIG_SUBDIRS(../tools/gtk+/gtk+-2.6.1/tmp)
+    COMPILE_GTK="yes"
+])
+
+
+dnl check for gtk-- 2.5.5 or more recent
+PKG_CHECK_MODULES(GTKMM,[gtkmm-2.4 >= 2.5.5],
+[
+    AC_MSG_RESULT([using gtk-- found on the system])
+    COMPILE_GTKMM="no"
+],
+[
+    AC_MSG_RESULT([not found gtk-- of sufficient version, will compile from our own])
+    AC_CONFIG_COMMANDS([../tools/gtkmm/gtkmm-2.5.5/tmp/configure],
+                       [../tools/gtkmm/gtkmm-2.5.5/bin/autogen.sh])
+    AC_CONFIG_SUBDIRS(../tools/gtkmm/gtkmm-2.5.5/tmp)
+    COMPILE_GTKMM="yes"
+])
+
+
+dnl check for ICU 3.0 or more recent
+AC_CHECK_ICU(3.0,
+[
+    AC_MSG_RESULT([using ICU found on the system])
+    COMPILE_ICU="no"
+],
+[
+    AC_MSG_RESULT([not found ICU of sufficient version, will compile from our own])
+    AC_CONFIG_COMMANDS([../tools/icu/icu-3.0/tmp/configure],
+                       [../tools/icu/icu-3.0/bin/autogen.sh])
+    AC_CONFIG_SUBDIRS(../tools/icu/icu-3.0/tmp)
+    COMPILE_ICU="yes"
+])
+
+
+dnl set up lcov for compilation
+AC_CONFIG_COMMANDS([../tools/lcov/lcov-1.3/tmp/configure],
+                   [../tools/lcov/lcov-1.3/bin/autogen.sh])
+AC_CONFIG_SUBDIRS(../tools/lcov/lcov-1.3/tmp)
+
+
+dnl set up libodbc++ for compilation
+AC_CONFIG_COMMANDS([../tools/libodbc++/libodbc++-0.2.3-20050404/tmp/configure],
+                   [../tools/libodbc++/libodbc++-0.2.3-20050404/bin/autogen.sh])
+AC_CONFIG_SUBDIRS(../tools/libodbc++/libodbc++-0.2.3-20050404/tmp)
+
+
+dnl check for libxml++ 2.8.1 or more recent
+PKG_CHECK_MODULES(LIBXMLPP,[libxml++-2.6 >= 2.8.1],
+[
+    AC_MSG_RESULT([using libxml++ found on the system])
+    COMPILE_LIBXMLPP="no"
+],
+[
+    AC_MSG_RESULT([not found libxml++ of sufficient version, will compile from our own])
+    AC_CONFIG_COMMANDS([../tools/libxml++/libxml++-2.8.1/tmp/configure],
+                       [../tools/libxml++/libxml++-2.8.1/bin/autogen.sh])
+    AC_CONFIG_SUBDIRS(../tools/libxml++/libxml++-2.8.1/tmp)
+    COMPILE_LIBXMLPP="yes"
+])
+
+
+dnl set up taglib for compilation
+AC_CONFIG_COMMANDS([../tools/taglib/taglib-1.3.1/tmp/configure],
+                   [../tools/taglib/taglib-1.3.1/bin/autogen.sh])
+AC_CONFIG_SUBDIRS(../tools/taglib/taglib-1.3.1/tmp)
+
+
+dnl set up xmlrpc++ for compilation
+AC_CONFIG_COMMANDS([../tools/xmlrpc++/xmlrpc++-20040713/tmp/configure],
+                   [../tools/xmlrpc++/xmlrpc++-20040713/bin/autogen.sh])
+AC_CONFIG_SUBDIRS(../tools/xmlrpc++/xmlrpc++-20040713/tmp)
+
+
+dnl set up the alib module
+AC_CONFIG_COMMANDS([../modules/alib/tmp/configure],
+                   [../modules/alib/bin/autogen.sh])
+
+dnl set up the archive server module
+AC_CONFIG_COMMANDS([../modules/archiveServer/tmp/configure],
+                   [../modules/archiveServer/bin/autogen.sh])
+
+dnl set up the getid3 module
+AC_CONFIG_COMMANDS([../modules/getid3/tmp/configure],
+                   [../modules/getid3/bin/autogen.sh])
+
+dnl set up the htmlUI module
+AC_CONFIG_COMMANDS([../modules/htmlUI/tmp/configure],
+                   [../modules/htmlUI/bin/autogen.sh])
+
+dnl set up the storage admin module
+AC_CONFIG_COMMANDS([../modules/storageAdmin/tmp/configure],
+                   [../modules/storageAdmin/bin/autogen.sh])
+
+dnl set up the storage server module
+AC_CONFIG_COMMANDS([../modules/storageServer/tmp/configure],
+                   [../modules/storageServer/bin/autogen.sh])
+
+dnl set up the core module
+AC_CONFIG_COMMANDS([../modules/core/tmp/configure],
+                   [../modules/core/bin/autogen.sh])
+
+dnl set up the authentication module
+AC_CONFIG_COMMANDS([../modules/authentication/tmp/configure],
+                   [../modules/authentication/bin/autogen.sh])
+
+dnl set up the db module
+AC_CONFIG_COMMANDS([../modules/db/tmp/configure],
+                   [../modules/db/bin/autogen.sh])
+
+dnl set up the storage module
+AC_CONFIG_COMMANDS([../modules/storage/tmp/configure],
+                   [../modules/storage/bin/autogen.sh])
+
+dnl set up the gstreamer elements module
+AC_CONFIG_COMMANDS([../modules/gstreamerElements/tmp/configure],
+                   [../modules/gstreamerElements/bin/autogen.sh])
+
+dnl set up the playlist executor module
+AC_CONFIG_COMMANDS([../modules/playlistExecutor/tmp/configure],
+                   [../modules/playlistExecutor/bin/autogen.sh])
+
+dnl set up the event scheduler module
+AC_CONFIG_COMMANDS([../modules/eventScheduler/tmp/configure],
+                   [../modules/eventScheduler/bin/autogen.sh])
+
+dnl set up the scheduler client module
+AC_CONFIG_COMMANDS([../modules/schedulerClient/tmp/configure],
+                   [../modules/schedulerClient/bin/autogen.sh])
+
+dnl set up the  widgets module
+AC_CONFIG_COMMANDS([../modules/widgets/tmp/configure],
+                   [../modules/widgets/bin/autogen.sh])
+
+dnl set up the scheduler product
+AC_CONFIG_COMMANDS([../products/scheduler/tmp/configure],
+                   [../products/scheduler/bin/autogen.sh])
+
+dnl set up the gLiveSupport product
+AC_CONFIG_COMMANDS([../products/gLiveSupport/tmp/configure],
+                   [../products/gLiveSupport/bin/autogen.sh])
+
+
+
+dnl display status info on what libraries will get compiled
+
+AC_MSG_NOTICE(
+[compiling the following external libraries that are needed
+by LiveSupport:
+
+    boost 1.31                 ${COMPILE_BOOST}
+    cppunit 1.10.2             yes
+    curl 7.12.3                yes
+    gstreamer 0.8.10           yes
+    gtk+ 2.6.1                 ${COMPILE_GTK}
+    gtk-- 2.5.5                ${COMPILE_GTKMM}
+    icu 3.0                    ${COMPILE_ICU}
+    lcov 1.3                   yes
+    libodbc++ 0.2.3            yes
+    libxml++ 2.8.1             ${COMPILE_LIBXMLPP}
+    taglib 1.3.1               yes
+    xmlrpc++ 2004-07-13        yes
+
+])
+
 
 AC_CONFIG_FILES(../Makefile:../etc/Makefile.in)
 
+
 AC_OUTPUT()
+
