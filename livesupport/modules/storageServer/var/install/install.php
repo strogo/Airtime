@@ -23,7 +23,7 @@
  
  
     Author   : $Author: tomas $
-    Version  : $Revision: 1.17 $
+    Version  : $Revision: 1.17.2.1 $
     Location : $Source: /home/paul/cvs2svn-livesupport/newcvsrepo/livesupport/modules/storageServer/var/install/install.php,v $
 
 ------------------------------------------------------------------------------*/
@@ -85,6 +85,7 @@ PEAR::setErrorHandling(PEAR_ERROR_DIE, "%s<hr>\n");
 $r = $gb->install();
 if(PEAR::isError($r)){ echo $r->getUserInfo()."\n"; exit(1); }
 
+/*
 echo "# Testing ...\n";
 $r = $gb->test();
 if(PEAR::isError($r)){ echo $r->getMessage()."\n"; exit(1); }
@@ -102,6 +103,7 @@ if($log) echo "# testlog:\n{$log}";
 
 echo "# Delete test data ...\n";
 $gb->deleteData();
+*/
 
 if(!($fp = @fopen($config['storageDir']."/_writeTest", 'w'))){
     echo "\n<b>make {$config['storageDir']} dir webdaemon-writeable</b>".

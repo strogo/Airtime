@@ -20,8 +20,8 @@
 #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 #
-#   Author   : $Author: maroy $
-#   Version  : $Revision: 1.1.2.1 $
+#   Author   : $Author: tomas $
+#   Version  : $Revision: 1.1.2.2 $
 #   Location : $Source: /home/paul/cvs2svn-livesupport/newcvsrepo/livesupport/modules/getid3/etc/Makefile.in,v $
 #
 #   @configure_input@
@@ -117,8 +117,8 @@ distclean: clean docclean
 check: all
 
 install:
-	${MKDIR} ${USR_VAR_DIR}/LiveSupport/getid3
-	${CP} ${VAR_DIR}/*.php ${USR_VAR_DIR}/LiveSupport/getid3
+	${MKDIR} ${USR_VAR_DIR}/LiveSupport/getid3/var
+	${CP} ${VAR_DIR}/*.{php,txt} ${USR_VAR_DIR}/LiveSupport/getid3/var
 
 
 #-------------------------------------------------------------------------------

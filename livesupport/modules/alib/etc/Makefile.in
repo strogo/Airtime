@@ -19,8 +19,8 @@
 #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 #
-#   Author   : $Author: maroy $
-#   Version  : $Revision: 1.1.2.1 $
+#   Author   : $Author: tomas $
+#   Version  : $Revision: 1.1.2.2 $
 #   Location : $Source: /home/paul/cvs2svn-livesupport/newcvsrepo/livesupport/modules/alib/etc/Makefile.in,v $
 #
 #   @configure_input@
@@ -90,9 +90,8 @@ TEST_RUNNER     = ${PHP_DIR}/tests/index.php
 .PHONY: all dir_setup doc clean docclean depclean distclean dist install
 .PHONY: db_init db_clean
 
-all: dir_setup db_init
+all:
 
-#dir_setup: ${TMP_DIR} ${DOXYGEN_DIR}
 dir_setup: ${DOXYGEN_DIR}
 
 doc:
@@ -117,21 +116,17 @@ distclean: clean docclean
 check: all
 
 install: all
-	${MKDIR} ${USR_VAR_DIR}/LiveSupport/alib
-	${MKDIR} ${USR_VAR_DIR}/LiveSupport/alib/example
-	${MKDIR} ${USR_VAR_DIR}/LiveSupport/alib/install
-	${MKDIR} ${USR_VAR_DIR}/LiveSupport/alib/xmlrpc
-	${CP} ${VAR_DIR}/*.php ${USR_VAR_DIR}/LiveSupport/alib
-	${CP} ${VAR_DIR}/example/*.php ${USR_VAR_DIR}/LiveSupport/alib/example
-	${CP} ${VAR_DIR}/install/*.php ${USR_VAR_DIR}/LiveSupport/alib/install
-	${CP} ${VAR_DIR}/xmlrpc/*.php ${USR_VAR_DIR}/LiveSupport/alib/xmlrpc
+	${MKDIR} ${USR_VAR_DIR}/LiveSupport/alib/var
+#	${MKDIR} ${USR_VAR_DIR}/LiveSupport/alib/var/xmlrpc
+	${CP} ${VAR_DIR}/*.php ${USR_VAR_DIR}/LiveSupport/alib/var
+#	${CP} ${VAR_DIR}/xmlrpc/*.php ${USR_VAR_DIR}/LiveSupport/alib/var/xmlrpc
 
 
 #-------------------------------------------------------------------------------
 #   Specific targets
 #-------------------------------------------------------------------------------
 # IMPORTANT: db_init and db_clean are commented out only for Livesupport,
-# where alib is installed through storage modules
+# where alib is initialized through storageServer module
 
 db_init:
 #	cd var/install; php -q install.php
