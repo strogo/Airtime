@@ -1,6 +1,6 @@
 #-------------------------------------------------------------------------------
-#   getID3 - read and writes tags in media files - see getid3.readme.txt
-#   getID3 by James Heinrich <getid3@users.sourceforge.net>
+#   htmlUI - remote access user interface
+#   Copyright (c) 2004 Media Development Loan Fund
 #
 #   This file is part of the LiveSupport project.
 #   Copyright (c) 2004 Media Development Loan Fund
@@ -20,8 +20,8 @@
 #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 #
-#   Author   : $Author: maroy $
-#   Version  : $Revision: 1.1.2.1 $
+#   Author   : $Author: sebastian $
+#   Version  : $Revision: 1.1.2.2 $
 #   Location : $Source: /home/paul/cvs2svn-livesupport/newcvsrepo/livesupport/modules/htmlUI/etc/Makefile.in,v $
 #
 #   @configure_input@
@@ -118,75 +118,83 @@ check: all
 
 install:
 	${MKDIR} ${USR_VAR_DIR}/LiveSupport/htmlUI
-	${MKDIR} ${USR_VAR_DIR}/LiveSupport/htmlUI/html
-	${MKDIR} ${USR_VAR_DIR}/LiveSupport/htmlUI/html/img
-	${MKDIR} ${USR_VAR_DIR}/LiveSupport/htmlUI/html/css_img
-	${MKDIR} ${USR_VAR_DIR}/LiveSupport/htmlUI/Smarty
-	${MKDIR} ${USR_VAR_DIR}/LiveSupport/htmlUI/Smarty/demo
-	${MKDIR} ${USR_VAR_DIR}/LiveSupport/htmlUI/Smarty/demo/configs
-	${MKDIR} ${USR_VAR_DIR}/LiveSupport/htmlUI/Smarty/demo/templates
-	${MKDIR} ${USR_VAR_DIR}/LiveSupport/htmlUI/Smarty/libs
-	${MKDIR} ${USR_VAR_DIR}/LiveSupport/htmlUI/Smarty/libs/plugins
-	${MKDIR} ${USR_VAR_DIR}/LiveSupport/htmlUI/Smarty/libs/internals
-	${MKDIR} ${USR_VAR_DIR}/LiveSupport/htmlUI/Smarty/misc
-	${MKDIR} ${USR_VAR_DIR}/LiveSupport/htmlUI/Smarty/unit_test
-	${MKDIR} ${USR_VAR_DIR}/LiveSupport/htmlUI/Smarty/unit_test/configs
-	${MKDIR} ${USR_VAR_DIR}/LiveSupport/htmlUI/Smarty/unit_test/templates
-	${MKDIR} ${USR_VAR_DIR}/LiveSupport/htmlUI/formmask
-	${MKDIR} ${USR_VAR_DIR}/LiveSupport/htmlUI/templates_c
-	${MKDIR} ${USR_VAR_DIR}/LiveSupport/htmlUI/localizer
-	${MKDIR} ${USR_VAR_DIR}/LiveSupport/htmlUI/localizer/.icons
-	${MKDIR} ${USR_VAR_DIR}/LiveSupport/htmlUI/templates
-	${MKDIR} ${USR_VAR_DIR}/LiveSupport/htmlUI/templates/sub
-	${MKDIR} ${USR_VAR_DIR}/LiveSupport/htmlUI/templates/file
-	${MKDIR} ${USR_VAR_DIR}/LiveSupport/htmlUI/templates/popup
-	${MKDIR} ${USR_VAR_DIR}/LiveSupport/htmlUI/templates/library
-	${MKDIR} ${USR_VAR_DIR}/LiveSupport/htmlUI/templates/scheduler
-	${MKDIR} ${USR_VAR_DIR}/LiveSupport/htmlUI/templates/scratchpad
-	${MKDIR} ${USR_VAR_DIR}/LiveSupport/htmlUI/templates/loader
-	${MKDIR} ${USR_VAR_DIR}/LiveSupport/htmlUI/templates/script
-	${MKDIR} ${USR_VAR_DIR}/LiveSupport/htmlUI/templates/system
-	${MKDIR} ${USR_VAR_DIR}/LiveSupport/htmlUI/templates/playlist
-	${MKDIR} ${USR_VAR_DIR}/LiveSupport/htmlUI/templates/subjects
-	${CP} ${VAR_DIR}/*.xml ${VAR_DIR}/*.php ${USR_VAR_DIR}/LiveSupport/htmlUI
+	${MKDIR} ${USR_VAR_DIR}/LiveSupport/htmlUI/var
+	${MKDIR} ${USR_VAR_DIR}/LiveSupport/htmlUI/var/html
+	${MKDIR} ${USR_VAR_DIR}/LiveSupport/htmlUI/var/html/img
+	${MKDIR} ${USR_VAR_DIR}/LiveSupport/htmlUI/var/html/css_img
+	${MKDIR} ${USR_VAR_DIR}/LiveSupport/htmlUI/var/Smarty
+	${MKDIR} ${USR_VAR_DIR}/LiveSupport/htmlUI/var/Smarty/libs
+	${MKDIR} ${USR_VAR_DIR}/LiveSupport/htmlUI/var/Smarty/libs/plugins
+	${MKDIR} ${USR_VAR_DIR}/LiveSupport/htmlUI/var/Smarty/libs/internals
+	${MKDIR} ${USR_VAR_DIR}/LiveSupport/htmlUI/var/formmask
+	${MKDIR} ${USR_VAR_DIR}/LiveSupport/htmlUI/var/templates_c
+	${MKDIR} ${USR_VAR_DIR}/LiveSupport/htmlUI/var/localizer
+	${MKDIR} ${USR_VAR_DIR}/LiveSupport/htmlUI/var/localizer/.icons
+	${MKDIR} ${USR_VAR_DIR}/LiveSupport/htmlUI/var/templates
+	${MKDIR} ${USR_VAR_DIR}/LiveSupport/htmlUI/var/templates/sub
+	${MKDIR} ${USR_VAR_DIR}/LiveSupport/htmlUI/var/templates/file
+	${MKDIR} ${USR_VAR_DIR}/LiveSupport/htmlUI/var/templates/popup
+	${MKDIR} ${USR_VAR_DIR}/LiveSupport/htmlUI/var/templates/library
+	${MKDIR} ${USR_VAR_DIR}/LiveSupport/htmlUI/var/templates/scheduler
+	${MKDIR} ${USR_VAR_DIR}/LiveSupport/htmlUI/var/templates/scratchpad
+	${MKDIR} ${USR_VAR_DIR}/LiveSupport/htmlUI/var/templates/loader
+	${MKDIR} ${USR_VAR_DIR}/LiveSupport/htmlUI/var/templates/script
+	${MKDIR} ${USR_VAR_DIR}/LiveSupport/htmlUI/var/templates/system
+	${MKDIR} ${USR_VAR_DIR}/LiveSupport/htmlUI/var/templates/playlist
+	${MKDIR} ${USR_VAR_DIR}/LiveSupport/htmlUI/var/templates/subjects
+
+	${CP} ${VAR_DIR}/*.xml ${VAR_DIR}/*.php ${USR_VAR_DIR}/LiveSupport/htmlUI/var
 	${CP} ${VAR_DIR}/html/*.php ${VAR_DIR}/html/*.css \
-	      ${USR_VAR_DIR}/LiveSupport/htmlUI/html
+	      ${USR_VAR_DIR}/LiveSupport/htmlUI/var/html
 	${CP} ${VAR_DIR}/html/img/*.png ${VAR_DIR}/html/img/*.gif \
 	      ${VAR_DIR}/html/img/*.swf ${VAR_DIR}/html/img/*.image \
-	      ${USR_VAR_DIR}/LiveSupport/htmlUI/html/img
+	      ${USR_VAR_DIR}/LiveSupport/htmlUI/var/html/img
 	${CP} ${VAR_DIR}/html/css_img/*.gif \
-	      ${USR_VAR_DIR}/LiveSupport/htmlUI/html/css_img
+	      ${USR_VAR_DIR}/LiveSupport/htmlUI/var/html/css_img
 	${CP} ${VAR_DIR}/formmask/*.php \
-	      ${USR_VAR_DIR}/LiveSupport/htmlUI/formmask
+	      ${USR_VAR_DIR}/LiveSupport/htmlUI/var/formmask
 	${CP} ${VAR_DIR}/localizer/*.php ${VAR_DIR}/localizer/*.xml\
-	      ${USR_VAR_DIR}/LiveSupport/htmlUI/localizer
+	      ${USR_VAR_DIR}/LiveSupport/htmlUI/var/localizer
 	${CP} ${VAR_DIR}/localizer/.icons/*.jpg ${VAR_DIR}/localizer/.icons/*.gif \
-	      ${USR_VAR_DIR}/LiveSupport/htmlUI/localizer/.icons
+	      ${USR_VAR_DIR}/LiveSupport/htmlUI/var/localizer/.icons
+	${CP} ${VAR_DIR}/Smarty/libs/*.php ${USR_VAR_DIR}/LiveSupport/htmlUI/var/Smarty/libs/
+	${CP} ${VAR_DIR}/Smarty/libs/internals/*.php ${USR_VAR_DIR}/LiveSupport/htmlUI/var/Smarty/libs/internals/
+	${CP} ${VAR_DIR}/Smarty/libs/plugins/*.php ${USR_VAR_DIR}/LiveSupport/htmlUI/var/Smarty/libs/plugins/
 	${CP} ${VAR_DIR}/templates/*.tpl \
-	      ${USR_VAR_DIR}/LiveSupport/htmlUI/templates
+	      ${USR_VAR_DIR}/LiveSupport/htmlUI/var/templates
 	${CP} ${VAR_DIR}/templates/sub/*.tpl \
-	      ${USR_VAR_DIR}/LiveSupport/htmlUI/templates/sub
+	      ${USR_VAR_DIR}/LiveSupport/htmlUI/var/templates/sub
 	${CP} ${VAR_DIR}/templates/file/*.tpl \
-	      ${USR_VAR_DIR}/LiveSupport/htmlUI/templates/file
+	      ${USR_VAR_DIR}/LiveSupport/htmlUI/var/templates/file
 	${CP} ${VAR_DIR}/templates/popup/*.tpl \
-	      ${USR_VAR_DIR}/LiveSupport/htmlUI/templates/popup
+	      ${USR_VAR_DIR}/LiveSupport/htmlUI/var/templates/popup
 	${CP} ${VAR_DIR}/templates/library/*.tpl \
-	      ${USR_VAR_DIR}/LiveSupport/htmlUI/templates/library
+	      ${USR_VAR_DIR}/LiveSupport/htmlUI/var/templates/library
 	${CP} ${VAR_DIR}/templates/scheduler/*.tpl \
-	      ${USR_VAR_DIR}/LiveSupport/htmlUI/templates/scheduler
+	      ${USR_VAR_DIR}/LiveSupport/htmlUI/var/templates/scheduler
 	${CP} ${VAR_DIR}/templates/scratchpad/*.tpl \
-	      ${USR_VAR_DIR}/LiveSupport/htmlUI/templates/scratchpad
+	      ${USR_VAR_DIR}/LiveSupport/htmlUI/var/templates/scratchpad
 	${CP} ${VAR_DIR}/templates/loader/*.tpl \
-	      ${USR_VAR_DIR}/LiveSupport/htmlUI/templates/loader
+	      ${USR_VAR_DIR}/LiveSupport/htmlUI/var/templates/loader
 	${CP} ${VAR_DIR}/templates/script/*.tpl \
-	      ${USR_VAR_DIR}/LiveSupport/htmlUI/templates/script
+	      ${USR_VAR_DIR}/LiveSupport/htmlUI/var/templates/script
 	${CP} ${VAR_DIR}/templates/system/*.tpl \
-	      ${USR_VAR_DIR}/LiveSupport/htmlUI/templates/system
+	      ${USR_VAR_DIR}/LiveSupport/htmlUI/var/templates/system
 	${CP} ${VAR_DIR}/templates/playlist/*.tpl \
-	      ${USR_VAR_DIR}/LiveSupport/htmlUI/templates/playlist
+	      ${USR_VAR_DIR}/LiveSupport/htmlUI/var/templates/playlist
 	${CP} ${VAR_DIR}/templates/subjects/*.tpl \
-	      ${USR_VAR_DIR}/LiveSupport/htmlUI/templates/subjects
+	      ${USR_VAR_DIR}/LiveSupport/htmlUI/var/templates/subjects
 
+	${MKDIR} ${USR_VAR_DIR}/LiveSupport/htmlUI/var/templates_c
+
+	chgrp www-data ${USR_VAR_DIR}/LiveSupport/htmlUI/var/templates_c
+	chgrp www-data ${USR_VAR_DIR}/LiveSupport/htmlUI/var/html/img
+
+	chmod g+sw ${USR_VAR_DIR}/LiveSupport/htmlUI/var/templates_c
+	chmod g+sw ${USR_VAR_DIR}/LiveSupport/htmlUI/var/html/img
+
+	ln -s --target-directory=/var/www ${USR_VAR_DIR}/LiveSupport/htmlUI/var/html/
+	mv /var/www/html /var/www/livesupport
 
 #-------------------------------------------------------------------------------
 #   Specific targets
