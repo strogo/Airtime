@@ -21,10 +21,10 @@
 #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 #
-#   Author   : $Author: fgerlits $
-#   Version  : $Revision: 1.9 $
+#   Author   : $Author: sebastian $
+#   Version  : $Revision: 1.9.2.1 $
 #   Location : $Source: /home/paul/cvs2svn-livesupport/newcvsrepo/livesupport/bin/Attic/postInstallScheduler.sh,v $
-#-------------------------------------------------------------------------------                                                                                
+#-------------------------------------------------------------------------------
 #-------------------------------------------------------------------------------
 #  This script makes post-installation steps for the LiveSupport scheduler.
 #
@@ -73,7 +73,7 @@ printUsage()
     echo "  -w, --dbpassword    The database user password.";
     echo "                      [default: livesupport]";
     echo "  -o, --output-device The audio device of broadcast";
-    echo "                      [default: plughw:0,0]";	
+    echo "                      [default: plughw:0,0]";
     echo "  -h, --help          Print this message and exit.";
     echo "";
 }
@@ -123,7 +123,7 @@ while true; do
             shift; shift;;
         -o|--output-device)
             output_alsa_device=$2;
-            shift; shift;;			
+            shift; shift;;
         --)
             shift;
             break;;
@@ -441,12 +441,6 @@ chmod g+sw $install_var/storageServer/var/stor
 chmod g+sw $install_var/storageServer/var/access
 chmod g+sw $install_var/storageServer/var/trans
 chmod g+sw $install_var/storageServer/var/stor/buffer
-
-chgrp $apache_group $install_var/htmlUI/var/templates_c
-chgrp $apache_group $install_var/htmlUI/var/html/img
-
-chmod g+sw $install_var/htmlUI/var/templates_c
-chmod g+sw $install_var/htmlUI/var/html/img
 
 
 #-------------------------------------------------------------------------------
