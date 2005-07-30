@@ -21,7 +21,7 @@ dnl Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 dnl
 dnl
 dnl Author   : $Author: maroy $
-dnl Version  : $Revision: 1.2.2.1 $
+dnl Version  : $Revision: 1.2.2.2 $
 dnl Location : $Source: /home/paul/cvs2svn-livesupport/newcvsrepo/livesupport/etc/configure.ac,v $
 dnl-----------------------------------------------------------------------------
 
@@ -32,15 +32,187 @@ dnl This is due to the fact that configure spreads a lot of trash around,
 dnl like atom4te cache directories, config.* files, etc. into the directory
 dnl it is being run from. We clearly don't want these in our base directory.
 dnl-----------------------------------------------------------------------------
-AC_INIT(LiveSupport, 0.9, bugs@campware.org)
+AC_INIT(LiveSupport, 1.0, bugs@campware.org)
 AC_PREREQ(2.59)
 AC_COPYRIGHT([Copyright (c) 2004 Media Development Loan Fund under the GNU GPL])
-AC_REVISION($Revision: 1.2.2.1 $)
+AC_REVISION($Revision: 1.2.2.2 $)
 
 AC_CONFIG_SRCDIR(../products/scheduler/src/main.cxx)
 
 AC_PROG_CC()
 AC_PROG_CXX()
+
+
+dnl-----------------------------------------------------------------------------
+dnl  specify the FQDN
+dnl-----------------------------------------------------------------------------
+AC_SUBST(HOSTNAME)
+
+AC_ARG_WITH([hostname],
+            AC_HELP_STRING([--with-hostname],
+                           [use the specified hostname (guess)]),
+            [HOSTNAME=${withval}], [HOSTNAME=`hostname -f`])
+
+AC_MSG_RESULT([using hostname: ${HOSTNAME}])
+
+
+dnl-----------------------------------------------------------------------------
+dnl  specify group in which apache is running
+dnl-----------------------------------------------------------------------------
+AC_SUBST(APACHE_GROUP)
+
+AC_ARG_WITH([apache-group],
+            AC_HELP_STRING([--with-apache-group],
+                          [use apache running in the specified group (apache)]),
+            [APACHE_GROUP=${withval}], [APACHE_GROUP=apache])
+
+AC_MSG_RESULT([using apache group: ${APACHE_GROUP}])
+
+dnl-----------------------------------------------------------------------------
+dnl Check for the apache group to be a real group
+dnl-----------------------------------------------------------------------------
+GROUP_TMP_FILE=/tmp/ls_group_check.$$
+touch $GROUP_TMP_FILE
+test_result=`chgrp $APACHE_GROUP $GROUP_TMP_FILE 2> /dev/null`
+if test $? != 0 ; then
+    rm -f $GROUP_TMP_FILE;
+    AC_MSG_FAILURE([Unable to use apache deamon group $APACHE_GROUP. Please check if $APACHE_GROUP is a correct user group])
+fi
+rm -f $GROUP_TMP_FILE;
+
+
+dnl-----------------------------------------------------------------------------
+dnl  specify web document root
+dnl-----------------------------------------------------------------------------
+AC_SUBST(WWW_DOCROOT)
+
+AC_ARG_WITH([www-docroot],
+            AC_HELP_STRING([--with-www-docroot],
+                   [deploy LiveSupport under the specified docroot (/var/www)]),
+            [WWW_DOCROOT=${withval}], [WWW_DOCROOT=/var/www])
+
+AC_MSG_RESULT([using www document root: ${WWW_DOCROOT}])
+
+
+dnl-----------------------------------------------------------------------------
+dnl  specify the web server port
+dnl-----------------------------------------------------------------------------
+AC_SUBST(WWW_PORT)
+
+AC_ARG_WITH([www-port],
+            AC_HELP_STRING([--with-www-port],
+                           [use the specified www port (80)]),
+            [WWW_PORT=${withval}], [WWW_PORT=80])
+
+AC_MSG_RESULT([using www port: ${WWW_PORT}])
+
+
+dnl-----------------------------------------------------------------------------
+dnl  specify the scheduler server port
+dnl-----------------------------------------------------------------------------
+AC_SUBST(SCHEDULER_PORT)
+
+AC_ARG_WITH([scheduler-port],
+            AC_HELP_STRING([--with-scheduler-port],
+                           [use the specified scheduler port (3344)]),
+            [SCHEDULER_PORT=${withval}], [SCHEDULER_PORT=3344])
+
+AC_MSG_RESULT([using scheduler port: ${SCHEDULER_PORT}])
+
+
+dnl-----------------------------------------------------------------------------
+dnl  specify the database server name
+dnl-----------------------------------------------------------------------------
+AC_SUBST(DB_SERVER)
+
+AC_ARG_WITH([database-server],
+            AC_HELP_STRING([--with-database-server],
+                           [use the specified database server (localhost)]),
+            [DB_SERVER=${withval}], [DB_SERVER=localhost])
+
+AC_MSG_RESULT([using database server: ${DB_SERVER}])
+
+
+dnl-----------------------------------------------------------------------------
+dnl get the name of the LiveSupport database
+dnl-----------------------------------------------------------------------------
+AC_SUBST(DATABASE)
+
+AC_ARG_WITH([database],
+            AC_HELP_STRING([--with-database],
+                    [the name of the postgresql database to use (LiveSupport)]),
+            [DATABASE=${withval}], [DATABASE=LiveSupport])
+
+AC_MSG_RESULT([using database: ${DATABASE}])
+
+
+dnl-----------------------------------------------------------------------------
+dnl  specify the database server user
+dnl-----------------------------------------------------------------------------
+AC_SUBST(DB_USER)
+
+AC_ARG_WITH([database-user],
+            AC_HELP_STRING([--with-database-user],
+                       [use the specified database server user (livesupport)]),
+            [DB_USER=${withval}], [DB_USER=livesupport])
+
+AC_MSG_RESULT([using database server user: ${DB_USER}])
+
+
+dnl-----------------------------------------------------------------------------
+dnl  specify the database server user password
+dnl-----------------------------------------------------------------------------
+AC_SUBST(DB_PASSWORD)
+
+AC_ARG_WITH([database-password],
+            AC_HELP_STRING([--with-database-password],
+               [use the specified database server user password (livesupport)]),
+            [DB_PASSWORD=${withval}], [DB_PASSWORD=livesupport])
+
+AC_MSG_RESULT([using database server user password: ${DB_PASSWORD}])
+
+
+dnl-----------------------------------------------------------------------------
+dnl  specify the audio output device for the scheduler
+dnl-----------------------------------------------------------------------------
+AC_SUBST(STATION_AUDIO_OUT)
+
+AC_ARG_WITH([station-audio-out],
+            AC_HELP_STRING([--with-stationr-audio-out],
+               [use the specified audio output device for the station,
+                either ALSA or OSS (plughw:0)]),
+            [STATION_AUDIO_OUT=${withval}], [STATION_AUDIO_OUT=plughw:0])
+
+AC_MSG_RESULT([using audio output device for the station: ${STAITON_AUDIO_OUT}])
+
+
+dnl-----------------------------------------------------------------------------
+dnl  specify the audio output device for the studio
+dnl-----------------------------------------------------------------------------
+AC_SUBST(STUDIO_AUDIO_OUT)
+
+AC_ARG_WITH([studio-audio-out],
+            AC_HELP_STRING([--with-studio-audio-out],
+               [use the specified audio output device for the studio,
+                either ALSA or OSS (plughw:0)]),
+            [STUDIO_AUDIO_OUT=${withval}], [STUDIO_AUDIO_OUT=plughw:0])
+
+AC_MSG_RESULT([using audio output device for studio: ${STUDIO_AUDIO_OUT}])
+
+
+dnl-----------------------------------------------------------------------------
+dnl  specify the audio output device for the studio for cueing
+dnl-----------------------------------------------------------------------------
+AC_SUBST(STUDIO_AUDIO_CUE)
+
+AC_ARG_WITH([studio-audio-cue],
+            AC_HELP_STRING([--with-studio-audio-cue],
+               [use the specified audio cue device for the studio,
+                either ALSA or OSS (plughw:0)]),
+            [STUDIO_AUDIO_CUE=${withval}], [STUDIO_AUDIO_CUE=plughw:0])
+
+AC_MSG_RESULT([using audio cue device for studio: ${STUDIO_AUDIO_CUE}])
+
 
 
 dnl unfortunately for both AC_CONFIG_COMMANDS and AC_CONFIG_SUBDIRS, the
@@ -253,6 +425,22 @@ by LiveSupport:
     libxml++ 2.8.1             ${COMPILE_LIBXMLPP}
     taglib 1.3.1               yes
     xmlrpc++ 2004-07-13        yes
+
+
+using the following configuration settings:
+
+    hostname:                       ${HOSTNAME}
+    apache group:                   ${APACHE_GROUP}
+    www document root:              ${WWW_DOCROOT}
+    www port:                       ${WWW_PORT}
+    scheduler port:                 ${SCHEDULER_PORT}
+    database server:                ${DB_SERVER}
+    database name:                  ${DATABASE}
+    database user:                  ${DB_USER}
+    database user password:         ${DB_PASSWORD}
+    station audio output device:    ${STATION_AUDIO_OUT}
+    studio audio output device:     ${STUDIO_AUDIO_OUT}
+    studio audio cue device:        ${STUDIO_AUDIO_CUE}
 
 ])
 

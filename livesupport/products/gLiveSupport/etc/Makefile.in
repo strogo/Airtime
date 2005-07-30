@@ -21,7 +21,7 @@
 #
 #
 #   Author   : $Author: maroy $
-#   Version  : $Revision: 1.47.2.1 $
+#   Version  : $Revision: 1.47.2.2 $
 #   Location : $Source: /home/paul/cvs2svn-livesupport/newcvsrepo/livesupport/products/gLiveSupport/etc/Makefile.in,v $
 #
 #   @configure_input@
@@ -35,6 +35,9 @@ RM      = rm -f
 RMDIR   = rm -rf
 DOXYGEN = doxygen
 CP      = cp -f
+SED     = sed
+ECHO    = echo
+CAT     = cat
 
 
 #-------------------------------------------------------------------------------
@@ -62,6 +65,45 @@ USR_INCLUDE_DIR = ${USR_DIR}/include
 USR_LIB_DIR     = ${USR_DIR}/lib
 USR_VAR_DIR     = ${USR_DIR}/var
 BOOST_INCLUDE_DIR    = ${USR_INCLUDE_DIR}/boost-1_31
+
+HOSTNAME       = @HOSTNAME@
+WWW_PORT       = @WWW_PORT@
+SCHEDULER_PORT = @SCHEDULER_PORT@
+DB_SERVER      = @DB_SERVER@
+DATABASE       = @DATABASE@
+DB_USER        = @DB_USER@
+DB_PASSWORD    = @DB_PASSWORD@
+AUDIO_OUT      = "@AUDIO_OUT@"
+AUDIO_CUE      = "@AUDIO_CUE@"
+
+PHP_URL_PREFIX=livesupport
+ALIB_XML_RPC_PREFIX=xmlrpc/xrLocStor.php
+SCHEDULER_XML_RPC_PREFIX=RC2
+
+USR_VAR_DIR_S=$(shell ${ECHO} ${USR_VAR_DIR} | ${SED} -e "s/\//\\\\\\\\\//g")
+USR_TMP_DIR_S=$(shell ${ECHO} ${USR_TMP_DIR} | ${SED} -e "s/\//\\\\\\\\\//g")
+PHP_URL_PREFIX_S=$(shell ${ECHO} ${PHP_URL_PREFIX} | ${SED} -e "s/\//\\\\\\\\\//g")
+ALIB_XML_RPC_PREFIX_S=$(shell ${ECHO} ${ALIB_XML_RPC_PREFIX} | ${SED} -e "s/\//\\\\\\\\\//g")
+AUDIO_OUT_S=$(shell ${ECHO} ${AUDIO_OUT} | ${SED} -e "s/\//\\\\\\\\\//g")
+AUDIO_CUE_S=$(shell ${ECHO} ${AUDIO_CUE} | ${SED} -e "s/\//\\\\\\\\\//g")
+
+
+REPLACE_SED_STRING="s/ls_var_dir/${USR_VAR_DIR_S}/; \
+              s/ls_dbuser/${DB_USER}/; \
+              s/ls_dbpassword/${DB_PASSWORD}/; \
+              s/ls_dbserver/${DB_SERVER}/; \
+              s/ls_database/${DATABASE}/; \
+              s/ls_php_urlPrefix/${PHP_URL_PREFIX_S}/; \
+              s/ls_php_host/${HOSTNAME}/; \
+              s/ls_php_port/${WWW_PORT}/; \
+			  s/ls_alib_xmlRpcPrefix/${ALIB_XML_RPC_PREFIX_S}/; \
+			  s/ls_tmp_dir/${USR_TMP_DIR_S}/; \
+              s/ls_audio_output_device/${AUDIO_OUT_S}/; \
+              s/ls_audio_cue_device/${AUDIO_CUE_S}/; \
+              s/ls_scheduler_host/${HOSTNAME}/; \
+              s/ls_scheduler_port/${SCHEDULER_PORT}/; \
+              s/ls_scheduler_xmlRpcPrefix/${SCHEDULER_XML_RPC_PREFIX}/;"
+
 
 GENRB     = ${USR_BIN_DIR}/genrb
 GENRBOPTS = --destdir ${TMP_DIR} \
@@ -295,6 +337,9 @@ install: all
 	${CP} ${BIN_DIR}/gLiveSupport.sh ${USR_BIN_DIR}
 	${CP} ${G_LIVESUPPORT_EXE} ${USR_BIN_DIR}
 	${CP} ${ETC_DIR}/gLiveSupport.xml.template ${USR_ETC_DIR}
+	${CAT} ${ETC_DIR}/gLiveSupport.xml.template | \
+	       ${SED} -e ${REPLACE_SED_STRING} \
+	       > ${USR_ETC_DIR}/gLiveSupport.xml
 
 run_tests: ${TEST_RUNNER}
 	${TEST_RUNNER} -o ${TEST_RESULTS} -s ${TEST_XSLT}

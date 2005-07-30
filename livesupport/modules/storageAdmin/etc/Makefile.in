@@ -21,7 +21,7 @@
 #
 #
 #   Author   : Author$
-#   Version  : $Revision: 1.1.2.2 $
+#   Version  : $Revision: 1.1.2.3 $
 #   Location : $Source: /home/paul/cvs2svn-livesupport/newcvsrepo/livesupport/modules/storageAdmin/etc/Makefile.in,v $
 #
 #   @configure_input@
@@ -35,6 +35,9 @@ RM      = rm -f
 RMDIR   = rm -rf
 DOXYGEN = doxygen
 CP      = cp -f
+SED     = sed
+ECHO    = echo
+CAT     = cat
 
 
 #-------------------------------------------------------------------------------
@@ -69,6 +72,13 @@ DOXYGEN_CONFIG  = ${ETC_DIR}/doxygen.config
 
 PHP_DIR         = ${VAR_DIR}
 #TEST_RUNNER     = ${PHP_DIR}/tests/index.php
+
+DEST_DIR   = ${USR_VAR_DIR}/LiveSupport/storageAdmin/var
+
+USR_VAR_DIR_S=$(shell ${ECHO} ${USR_VAR_DIR} | ${SED} -e "s/\//\\\\\\\\\//g")
+
+REPLACE_SED_STRING="s/ls_var_dir/${USR_VAR_DIR_S}/;"
+
 
 #-------------------------------------------------------------------------------
 #   Configuration parameters
@@ -120,8 +130,10 @@ check: all
 install:
 	${CP} ${BIN_DIR}/*.sh ${USR_DIR}/bin
 	${RM} ${USR_DIR}/bin/autogen.sh
-	${MKDIR} ${USR_VAR_DIR}
-	${CP} ${VAR_DIR}/*.{php,template} ${USR_VAR_DIR}
+	${MKDIR} ${DEST_DIR}
+	${CP} ${VAR_DIR}/*.php ${DEST_DIR}
+	${CAT} ${VAR_DIR}/conf.php.template | ${SED} -e ${REPLACE_SED_STRING} \
+	       > ${DEST_DIR}/conf.php
 
 
 #-------------------------------------------------------------------------------

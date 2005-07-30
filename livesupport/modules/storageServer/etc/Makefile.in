@@ -19,8 +19,8 @@
 #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 #
-#   Author   : $Author: tomas $
-#   Version  : $Revision: 1.1.2.2 $
+#   Author   : $Author: maroy $
+#   Version  : $Revision: 1.1.2.3 $
 #   Location : $Source: /home/paul/cvs2svn-livesupport/newcvsrepo/livesupport/modules/storageServer/etc/Makefile.in,v $
 #
 #   @configure_input@
@@ -34,6 +34,9 @@ RM      = rm -f
 RMDIR   = rm -rf
 DOXYGEN = doxygen
 CP      = cp -r
+SED     = sed
+ECHO    = echo
+CAT     = cat
 
 
 #-------------------------------------------------------------------------------
@@ -61,6 +64,7 @@ VAR_DIR     = ${BASE_DIR}/var
 
 USR_DIR         = @prefix@
 USR_INCLUDE_DIR = ${USR_DIR}/include
+USR_LIB_DIR     = ${USR_DIR}/lib
 USR_VAR_DIR     = ${USR_DIR}/var
 
 DOXYGEN_CONFIG  = ${ETC_DIR}/doxygen.config
@@ -77,6 +81,36 @@ PEAR_TOOL_DIR  = ${BASE_DIR}/../../tools/pear
 PEAR_INSTALLER = ${PEAR_TOOL_DIR}/bin/install.sh
 
 DEST_DIR   = ${USR_VAR_DIR}/LiveSupport/storageServer/var
+
+HOSTNAME       = @HOSTNAME@
+WWW_PORT       = @WWW_PORT@
+DB_SERVER      = @DB_SERVER@
+DATABASE       = @DATABASE@
+DB_USER        = @DB_USER@
+DB_PASSWORD    = @DB_PASSWORD@
+SCHEDULER_PORT = @SCHEDULER_PORT@
+
+PHP_URL_PREFIX=livesupport
+SCHEDULER_URL_PREFIX = 
+SCHEDULER_XML_RPC_PREFIX = RC2
+
+USR_LIB_DIR_S=$(shell ${ECHO} ${USR_LIB_DIR} | ${SED} -e "s/\//\\\\\\\\\//g")
+PHP_URL_PREFIX_S=$(shell ${ECHO} ${PHP_URL_PREFIX} | ${SED} -e "s/\//\\\\\\\\\//g")
+
+REPLACE_SED_STRING="s/ls_lib_dir/${USR_LIB_DIR_S}/; \
+              s/ls_dbuser/${DB_USER}/; \
+              s/ls_dbpassword/${DB_PASSWORD}/; \
+              s/ls_dbserver/${DB_SERVER}/; \
+              s/ls_database/${DATABASE}/; \
+              s/ls_storageUrlPath/\/${PHP_URL_PREFIX_S}\/storageServer\/var/; \
+              s/ls_php_host/${HOSTNAME}/; \
+              s/ls_php_port/${WWW_PORT}/; \
+              s/ls_archiveUrlPath/\/${PHP_URL_PREFIX_S}\/archiveServer\/var/; \
+    		  s/ls_scheduler_urlPrefix/${SCHEDULER_URL_PREFIX}/; \
+    		  s/ls_scheduler_xmlRpcPrefix/${SCHEDULER_XML_RPC_PREFIX}/; \
+    		  s/ls_scheduler_host/${HOSTNAME}/; \
+     		  s/ls_scheduler_port/${SCHEDULER_PORT}/;"
+
 
 #-------------------------------------------------------------------------------
 #  	Configuration parameters
@@ -136,7 +170,7 @@ install:
 	${MKDIR} ${DEST_DIR}/xmlrpc
 	${MKDIR} ${DEST_DIR}/xmlrpc/XML
 	${MKDIR} ${DEST_DIR}/xmlrpc/XML/RPC
-	${CP} ${VAR_DIR}/*.{php,template,xml} ${DEST_DIR}
+	${CP} ${VAR_DIR}/*.{php,xml} ${DEST_DIR}
 	${CP} ${VAR_DIR}/cron/*.php ${DEST_DIR}/cron
 	${CP} ${VAR_DIR}/install/*.php \
 	      ${DEST_DIR}/install
@@ -146,8 +180,11 @@ install:
 	      ${DEST_DIR}/xmlrpc/XML
 	${CP} ${VAR_DIR}/xmlrpc/XML/RPC/*.php \
 	      ${DEST_DIR}/xmlrpc/XML/RPC
+	${CAT} ${VAR_DIR}/conf.php.template | ${SED} -e ${REPLACE_SED_STRING} \
+	       > ${DEST_DIR}/conf.php
 
 recheck: clean check
+
 
 #-------------------------------------------------------------------------------
 #   Specific targets

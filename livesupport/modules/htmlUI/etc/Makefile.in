@@ -20,8 +20,8 @@
 #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 #
-#   Author   : $Author: sebastian $
-#   Version  : $Revision: 1.1.2.2 $
+#   Author   : $Author: maroy $
+#   Version  : $Revision: 1.1.2.3 $
 #   Location : $Source: /home/paul/cvs2svn-livesupport/newcvsrepo/livesupport/modules/htmlUI/etc/Makefile.in,v $
 #
 #   @configure_input@
@@ -68,6 +68,10 @@ DOXYGEN_CONFIG  = ${ETC_DIR}/doxygen.config
 
 PHP_DIR         = ${VAR_DIR}
 #TEST_RUNNER     = ${PHP_DIR}/tests/index.php
+
+APACHE_GROUP = @APACHE_GROUP@
+WWW_DOCROOT  = @WWW_DOCROOT@
+
 
 #-------------------------------------------------------------------------------
 #   Configuration parameters
@@ -143,7 +147,8 @@ install:
 	${MKDIR} ${USR_VAR_DIR}/LiveSupport/htmlUI/var/templates/playlist
 	${MKDIR} ${USR_VAR_DIR}/LiveSupport/htmlUI/var/templates/subjects
 
-	${CP} ${VAR_DIR}/*.xml ${VAR_DIR}/*.php ${USR_VAR_DIR}/LiveSupport/htmlUI/var
+	${CP} ${VAR_DIR}/*.xml ${VAR_DIR}/*.php \
+	      ${USR_VAR_DIR}/LiveSupport/htmlUI/var
 	${CP} ${VAR_DIR}/html/*.php ${VAR_DIR}/html/*.css \
 	      ${USR_VAR_DIR}/LiveSupport/htmlUI/var/html
 	${CP} ${VAR_DIR}/html/img/*.png ${VAR_DIR}/html/img/*.gif \
@@ -157,9 +162,12 @@ install:
 	      ${USR_VAR_DIR}/LiveSupport/htmlUI/var/localizer
 	${CP} ${VAR_DIR}/localizer/.icons/*.jpg ${VAR_DIR}/localizer/.icons/*.gif \
 	      ${USR_VAR_DIR}/LiveSupport/htmlUI/var/localizer/.icons
-	${CP} ${VAR_DIR}/Smarty/libs/*.php ${USR_VAR_DIR}/LiveSupport/htmlUI/var/Smarty/libs/
-	${CP} ${VAR_DIR}/Smarty/libs/internals/*.php ${USR_VAR_DIR}/LiveSupport/htmlUI/var/Smarty/libs/internals/
-	${CP} ${VAR_DIR}/Smarty/libs/plugins/*.php ${USR_VAR_DIR}/LiveSupport/htmlUI/var/Smarty/libs/plugins/
+	${CP} ${VAR_DIR}/Smarty/libs/*.php \
+	      ${USR_VAR_DIR}/LiveSupport/htmlUI/var/Smarty/libs/
+	${CP} ${VAR_DIR}/Smarty/libs/internals/*.php \
+	      ${USR_VAR_DIR}/LiveSupport/htmlUI/var/Smarty/libs/internals/
+	${CP} ${VAR_DIR}/Smarty/libs/plugins/*.php \
+	      ${USR_VAR_DIR}/LiveSupport/htmlUI/var/Smarty/libs/plugins/
 	${CP} ${VAR_DIR}/templates/*.tpl \
 	      ${USR_VAR_DIR}/LiveSupport/htmlUI/var/templates
 	${CP} ${VAR_DIR}/templates/sub/*.tpl \
@@ -187,14 +195,14 @@ install:
 
 	${MKDIR} ${USR_VAR_DIR}/LiveSupport/htmlUI/var/templates_c
 
-	chgrp www-data ${USR_VAR_DIR}/LiveSupport/htmlUI/var/templates_c
-	chgrp www-data ${USR_VAR_DIR}/LiveSupport/htmlUI/var/html/img
+	chgrp ${APACHE_GROUP} ${USR_VAR_DIR}/LiveSupport/htmlUI/var/templates_c
+	chgrp ${APACHE_GROUP} ${USR_VAR_DIR}/LiveSupport/htmlUI/var/html/img
 
 	chmod g+sw ${USR_VAR_DIR}/LiveSupport/htmlUI/var/templates_c
 	chmod g+sw ${USR_VAR_DIR}/LiveSupport/htmlUI/var/html/img
 
-	ln -s --target-directory=/var/www ${USR_VAR_DIR}/LiveSupport/htmlUI/var/html/
-	mv /var/www/html /var/www/livesupport
+	ln -s ${USR_VAR_DIR}/LiveSupport/htmlUI/var/html ${WWW_DOCROOT}/livesupport
+
 
 #-------------------------------------------------------------------------------
 #   Specific targets
