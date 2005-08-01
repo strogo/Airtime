@@ -21,7 +21,7 @@
 #
 #
 #   Author   : $Author: maroy $
-#   Version  : $Revision: 1.1.2.2 $
+#   Version  : $Revision: 1.1.2.3 $
 #   Location : $Source: /home/paul/cvs2svn-livesupport/newcvsrepo/livesupport/tools/boost/boost-1.31/etc/Makefile.in,v $
 #-------------------------------------------------------------------------------
 
@@ -68,7 +68,7 @@ all:
 	./tools/build/jam_src/bin.linuxx86/bjam "-sTOOLS=gcc" \
                                             --prefix=${INSTALL_DIR}
 
-install:
+install: all
 	cd ${BOOST_DIR} && \
 	./tools/build/jam_src/bin.linuxx86/bjam "-sTOOLS=gcc" \
                                             --prefix=${INSTALL_DIR} install
