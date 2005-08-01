@@ -20,7 +20,7 @@
 #
 #
 #   Author   : $Author: maroy $
-#   Version  : $Revision: 1.1.2.4 $
+#   Version  : $Revision: 1.1.2.5 $
 #   Location : $Source: /home/paul/cvs2svn-livesupport/newcvsrepo/livesupport/modules/storageServer/etc/Makefile.in,v $
 #
 #   @configure_input@
@@ -186,6 +186,8 @@ copy_files:
 	      ${DEST_DIR}/xmlrpc/XML/RPC
 	${CAT} ${VAR_DIR}/conf.php.template | ${SED} -e ${REPLACE_SED_STRING} \
 	       > ${DEST_DIR}/conf.php
+
+	ln -s ${USR_VAR_DIR}/LiveSupport ${WWW_DOCROOT}/livesupport
 
 create_database:
 ifeq (@CREATE_LS_DATABASE@,yes)
