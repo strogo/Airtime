@@ -21,7 +21,7 @@
 #
 #
 #   Author   : $Author: maroy $
-#   Version  : $Revision: 1.1.2.8 $
+#   Version  : $Revision: 1.1.2.9 $
 #   Location : $Source: /home/paul/cvs2svn-livesupport/newcvsrepo/livesupport/modules/htmlUI/etc/Makefile.in,v $
 #
 #   @configure_input@
@@ -155,7 +155,7 @@ install: configure_apache
 	${CP} ${VAR_DIR}/html/img/*.png ${VAR_DIR}/html/img/*.gif \
 	      ${VAR_DIR}/html/img/*.swf ${VAR_DIR}/html/img/*.image \
 	      ${USR_VAR_DIR}/LiveSupport/htmlUI/var/html/img
-	${CP} ${VAR_DIR}/html/css_img/*.gif \
+	${CP} ${VAR_DIR}/html/css_img/*.png \
 	      ${USR_VAR_DIR}/LiveSupport/htmlUI/var/html/css_img
 	${CP} ${VAR_DIR}/formmask/*.php \
 	      ${USR_VAR_DIR}/LiveSupport/htmlUI/var/formmask

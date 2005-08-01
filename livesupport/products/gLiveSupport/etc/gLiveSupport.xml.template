@@ -95,7 +95,7 @@
 ]>
 
 <gLiveSupport>
-    <resourceBundle path   = "ls_var_dir/gLiveSupport"
+    <resourceBundle path   = "ls_var_dir/LiveSupport/gLiveSupport"
                     locale = "en"
     />
 
@@ -108,7 +108,7 @@
         <language locale="sr_CS_CYRILLIC"   name="Српски"/>
     </supportedLanguages>
 
-    <widgetFactory    path = "ls_var_dir/widgets/" />
+    <widgetFactory    path = "ls_var_dir/LiveSupport/Widgets/" />
 
     <authenticationClientFactory>
         <webAuthentication>
@@ -143,7 +143,7 @@
         </audioPlayer>
     </cuePlayer>
 
-    <stationLogo    path="ls_var_dir/stationLogo.png" />
+    <stationLogo    path="ls_var_dir/LiveSupport/stationLogo.png" />
 
     <metadataTypeContainer>
         <metadataType dcName          = "dc:title"

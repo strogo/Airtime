@@ -22,7 +22,7 @@
 #
 #
 #   Author   : $Author: maroy $
-#   Version  : $Revision: 1.1.2.1 $
+#   Version  : $Revision: 1.1.2.2 $
 #   Location : $Source: /home/paul/cvs2svn-livesupport/newcvsrepo/livesupport/bin/autogen.sh,v $
 #-------------------------------------------------------------------------------
 
@@ -75,6 +75,9 @@ echo "Generating configuration files for $package, please wait...."
 configure_ac=${etcdir}/configure.ac
 configure=${tmpdir}/configure
 aclocal_m4=${tmpdir}/aclocal.m4
+
+# copy over install-sh, as it's going to be missed by autoconf
+cp -f ${bindir}/install-sh ${tmpdir}
 
 # copy over configure.ac and acinlclude.m4 from etc to tmp,
 # as aclocal >= 1.8 is sooo unbelivably stupid that it will simply try to

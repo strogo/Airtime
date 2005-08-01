@@ -21,7 +21,7 @@
 #
 #
 #   Author   : $Author: maroy $
-#   Version  : $Revision: 1.47.2.2 $
+#   Version  : $Revision: 1.47.2.3 $
 #   Location : $Source: /home/paul/cvs2svn-livesupport/newcvsrepo/livesupport/products/gLiveSupport/etc/Makefile.in,v $
 #
 #   @configure_input@
@@ -63,6 +63,7 @@ USR_BIN_DIR     = ${USR_DIR}/bin
 USR_ETC_DIR     = ${USR_DIR}/etc
 USR_INCLUDE_DIR = ${USR_DIR}/include
 USR_LIB_DIR     = ${USR_DIR}/lib
+USR_TMP_DIR     = ${USR_DIR}/tmp
 USR_VAR_DIR     = ${USR_DIR}/var
 BOOST_INCLUDE_DIR    = ${USR_INCLUDE_DIR}/boost-1_31
 
