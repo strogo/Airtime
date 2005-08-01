@@ -1,0 +1,7 @@
+rm -rf /tmp/var/LiveSupport/htmlUI
+cd bin
+./autogen.sh
+cd ../tmp
+./configure --prefix=/tmp
+cd ..
+make install
