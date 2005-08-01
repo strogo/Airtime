@@ -21,7 +21,7 @@ dnl Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 dnl
 dnl
 dnl Author   : $Author: maroy $
-dnl Version  : $Revision: 1.2.2.3 $
+dnl Version  : $Revision: 1.2.2.4 $
 dnl Location : $Source: /home/paul/cvs2svn-livesupport/newcvsrepo/livesupport/etc/configure.ac,v $
 dnl-----------------------------------------------------------------------------
 
@@ -35,7 +35,7 @@ dnl-----------------------------------------------------------------------------
 AC_INIT(LiveSupport, 1.0, bugs@campware.org)
 AC_PREREQ(2.59)
 AC_COPYRIGHT([Copyright (c) 2004 Media Development Loan Fund under the GNU GPL])
-AC_REVISION($Revision: 1.2.2.3 $)
+AC_REVISION($Revision: 1.2.2.4 $)
 
 AC_CONFIG_SRCDIR(../products/scheduler/src/main.cxx)
 
@@ -127,18 +127,6 @@ AC_ARG_WITH([apache-group],
             [APACHE_GROUP=${withval}], [APACHE_GROUP=apache])
 
 AC_MSG_RESULT([using apache group: ${APACHE_GROUP}])
-
-dnl-----------------------------------------------------------------------------
-dnl Check for the apache group to be a real group
-dnl-----------------------------------------------------------------------------
-GROUP_TMP_FILE=/tmp/ls_group_check.$$
-touch $GROUP_TMP_FILE
-test_result=`chgrp $APACHE_GROUP $GROUP_TMP_FILE 2> /dev/null`
-if test $? != 0 ; then
-    rm -f $GROUP_TMP_FILE;
-    AC_MSG_FAILURE([Unable to use apache deamon group $APACHE_GROUP. Please check if $APACHE_GROUP is a correct user group])
-fi
-rm -f $GROUP_TMP_FILE;
 
 
 dnl-----------------------------------------------------------------------------
