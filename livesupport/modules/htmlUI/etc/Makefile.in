@@ -20,8 +20,8 @@
 #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 #
-#   Author   : $Author: sebastian $
-#   Version  : $Revision: 1.1.2.7 $
+#   Author   : $Author: maroy $
+#   Version  : $Revision: 1.1.2.8 $
 #   Location : $Source: /home/paul/cvs2svn-livesupport/newcvsrepo/livesupport/modules/htmlUI/etc/Makefile.in,v $
 #
 #   @configure_input@
@@ -51,6 +51,7 @@ DATE        = `date +%y%m%d`
 #-------------------------------------------------------------------------------
 #BASE_DIR    = @builddir@
 BASE_DIR    = .
+BIN_DIR     = ${BASE_DIR}/bin
 DOC_DIR     = ${BASE_DIR}/doc
 DOXYGEN_DIR = ${DOC_DIR}/doxygen
 ETC_DIR     = ${BASE_DIR}/etc
@@ -120,7 +121,7 @@ distclean: clean docclean
 #	${TEST_RUNNER}
 check: all
 
-install:
+install: configure_apache
 	${MKDIR} ${USR_VAR_DIR}/LiveSupport/htmlUI
 	${MKDIR} ${USR_VAR_DIR}/LiveSupport/htmlUI/var
 	${MKDIR} ${USR_VAR_DIR}/LiveSupport/htmlUI/var/html
@@ -201,7 +202,12 @@ install:
 	chmod g+sw ${USR_VAR_DIR}/LiveSupport/htmlUI/var/templates_c
 	chmod g+sw ${USR_VAR_DIR}/LiveSupport/htmlUI/var/html/img
 
-	ln -s ${USR_VAR_DIR}/LiveSupport/htmlUI/var/html ${WWW_DOCROOT}/ls-autoconf
+	ln -s ${USR_VAR_DIR}/LiveSupport/htmlUI/var/html ${WWW_DOCROOT}/livesupport
+
+configure_apache:
+ifeq (@CONFIGURE_APACHE@,yes)
+	${BIN_DIR}/configureApache.sh
+endif
 
 
 #-------------------------------------------------------------------------------

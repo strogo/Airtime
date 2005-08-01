@@ -21,7 +21,7 @@
 #
 #
 #   Author   : $Author: maroy $
-#   Version  : $Revision: 1.63.2.2 $
+#   Version  : $Revision: 1.63.2.3 $
 #   Location : $Source: /home/paul/cvs2svn-livesupport/newcvsrepo/livesupport/products/scheduler/etc/Makefile.in,v $
 #
 #   @configure_input@
@@ -75,6 +75,7 @@ AUDIO_OUT      = "@AUDIO_OUT@"
 
 PHP_URL_PREFIX=livesupport
 ALIB_XML_RPC_PREFIX=xmlrpc/xrLocStor.php
+POSTGRES_USER=postgres
 
 USR_LIB_DIR_S=$(shell ${ECHO} ${USR_LIB_DIR} | ${SED} -e "s/\//\\\\\\\\\//g")
 USR_TMP_DIR_S=$(shell ${ECHO} ${USR_TMP_DIR} | ${SED} -e "s/\//\\\\\\\\\//g")
@@ -318,6 +319,7 @@ TEST_RUNNER_LIBS = ${SCHEDULER_EXE_LIBS} -lcppunit -ldl
 .PHONY: init start status run_tests stop deinit
 .PHONY: init_local start_local status_local run_local stop_local
 .PHONY: deinit_local check check_local
+.PHONY: copy_files create_database create_odbc_datasource init_database
 
 all: dir_setup ${SCHEDULER_EXE}
 
@@ -349,7 +351,9 @@ distclean: clean docclean
 
 check: all ${TEST_RUNNER} storage_server_init start run_tests stop
 
-install: all
+install: all copy_files create_database create_odbc_datasource init_database
+
+copy_files:
 	${MAKE} -C ${CORE_DIR} install
 	${MAKE} -C ${AUTHENTICATION_DIR} install
 	${MAKE} -C ${DB_DIR} install
@@ -362,6 +366,26 @@ install: all
 	${CP} ${SCHEDULER_EXE} ${USR_BIN_DIR}
 	${CAT} ${ETC_DIR}/scheduler.xml.template | ${SED} -e ${REPLACE_SED_STRING} \
 	       > ${USR_ETC_DIR}/scheduler.xml
+
+create_database:
+ifeq (@CREATE_LS_DATABASE@,yes)
+	${BIN_DIR}/createDatabase.sh --database=${DATABASE} \
+	                             --dbserver=${DB_SERVER} \
+								 --dbuser=${DB_USER} \
+								 --dbpassword=${DB_PASSWORD}
+endif
+
+create_odbc_datasource:
+ifeq (@CREATE_ODBC_DATA_SOURCE@,yes)
+	${BIN_DIR}/createOdbcDataSource.sh --database=${DATABASE} \
+	                                   --dbserver=${DB_SERVER}
+endif
+
+init_database:
+ifeq (@INIT_LS_DATABASE@,yes)
+	${USR_BIN_DIR}/scheduler.sh install
+endif
+
 
 check_local: all ${TEST_RUNNER} start_local run_tests stop_local
 

@@ -21,7 +21,7 @@ dnl Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 dnl
 dnl
 dnl Author   : $Author: maroy $
-dnl Version  : $Revision: 1.2.2.2 $
+dnl Version  : $Revision: 1.2.2.3 $
 dnl Location : $Source: /home/paul/cvs2svn-livesupport/newcvsrepo/livesupport/etc/configure.ac,v $
 dnl-----------------------------------------------------------------------------
 
@@ -35,12 +35,72 @@ dnl-----------------------------------------------------------------------------
 AC_INIT(LiveSupport, 1.0, bugs@campware.org)
 AC_PREREQ(2.59)
 AC_COPYRIGHT([Copyright (c) 2004 Media Development Loan Fund under the GNU GPL])
-AC_REVISION($Revision: 1.2.2.2 $)
+AC_REVISION($Revision: 1.2.2.3 $)
 
 AC_CONFIG_SRCDIR(../products/scheduler/src/main.cxx)
 
 AC_PROG_CC()
 AC_PROG_CXX()
+
+
+dnl-----------------------------------------------------------------------------
+dnl  specify wether the LiveSupport database and user should be created
+dnl-----------------------------------------------------------------------------
+AC_SUBST(CREATE_LS_DATABASE)
+
+AC_ARG_WITH([create-database],
+            AC_HELP_STRING([--with-create-database],
+               [specify wether the LiveSupport database and database user
+                should be created (no)]),
+            [CREATE_LS_DATABASE=${withval}],
+            [CREATE_LS_DATABASE=no])
+
+AC_MSG_RESULT([creating LiveSupport database: ${CREATE_LS_DATABASE}])
+
+
+dnl-----------------------------------------------------------------------------
+dnl  specify wether the ODBC data source should be created
+dnl-----------------------------------------------------------------------------
+AC_SUBST(CREATE_ODBC_DATA_SOURCE)
+
+AC_ARG_WITH([create-odbc-data-source],
+            AC_HELP_STRING([--with-create-odbc-data-source],
+               [specify wether the ODBC data source for LiveSupport should be
+                created (no)]),
+            [CREATE_ODBC_DATA_SOURCE=${withval}],
+            [CREATE_ODBC_DATA_SOURCE=no])
+
+AC_MSG_RESULT([creating ODBC data source: ${CREATE_ODBC_DATA_SOURCE}])
+
+
+dnl-----------------------------------------------------------------------------
+dnl  specify wether the LiveSupport database tables should be initialized
+dnl-----------------------------------------------------------------------------
+AC_SUBST(INIT_LS_DATABASE)
+
+AC_ARG_WITH([init-database],
+            AC_HELP_STRING([--with-init-database],
+               [specify wether the LiveSupport database tables should be
+                initialized (no)]),
+            [INIT_LS_DATABASE=${withval}],
+            [INIT_LS_DATABASE=no])
+
+AC_MSG_RESULT([initializing LiveSupport database: ${INIT_LS_DATABASE}])
+
+
+dnl-----------------------------------------------------------------------------
+dnl  specify wether apache should be configured through it's conf.d directory
+dnl-----------------------------------------------------------------------------
+AC_SUBST(CONFIGURE_APACHE)
+
+AC_ARG_WITH([configure-apache],
+            AC_HELP_STRING([--with-configure-apache],
+               [specify wether apache should be configured for LiveSupport
+                through its conf.d directory (no)]),
+            [CONFIGURE_APACHE=${withval}],
+            [CONFIGURE_APACHE=no])
+
+AC_MSG_RESULT([configure apache: ${CONFIGURE_APACHE}])
 
 
 dnl-----------------------------------------------------------------------------
@@ -178,7 +238,7 @@ dnl-----------------------------------------------------------------------------
 AC_SUBST(STATION_AUDIO_OUT)
 
 AC_ARG_WITH([station-audio-out],
-            AC_HELP_STRING([--with-stationr-audio-out],
+            AC_HELP_STRING([--with-station-audio-out],
                [use the specified audio output device for the station,
                 either ALSA or OSS (plughw:0)]),
             [STATION_AUDIO_OUT=${withval}], [STATION_AUDIO_OUT=plughw:0])
@@ -429,18 +489,22 @@ by LiveSupport:
 
 using the following configuration settings:
 
-    hostname:                       ${HOSTNAME}
-    apache group:                   ${APACHE_GROUP}
-    www document root:              ${WWW_DOCROOT}
-    www port:                       ${WWW_PORT}
-    scheduler port:                 ${SCHEDULER_PORT}
-    database server:                ${DB_SERVER}
-    database name:                  ${DATABASE}
-    database user:                  ${DB_USER}
-    database user password:         ${DB_PASSWORD}
-    station audio output device:    ${STATION_AUDIO_OUT}
-    studio audio output device:     ${STUDIO_AUDIO_OUT}
-    studio audio cue device:        ${STUDIO_AUDIO_CUE}
+    hostname:                        ${HOSTNAME}
+    apache group:                    ${APACHE_GROUP}
+    www document root:               ${WWW_DOCROOT}
+    www port:                        ${WWW_PORT}
+    scheduler port:                  ${SCHEDULER_PORT}
+    database server:                 ${DB_SERVER}
+    database name:                   ${DATABASE}
+    database user:                   ${DB_USER}
+    database user password:          ${DB_PASSWORD}
+    station audio output device:     ${STATION_AUDIO_OUT}
+    studio audio output device:      ${STUDIO_AUDIO_OUT}
+    studio audio cue device:         ${STUDIO_AUDIO_CUE}
+    creating LiveSupport database:   ${CREATE_LS_DATABASE}
+    creating ODBC data source:       ${CREATE_ODBC_DATA_SOURCE}
+    initialize LiveSupport database: ${INIT_LS_DATABASE}
+    configuring apache:              ${CONFIGURE_APACHE}
 
 ])
 

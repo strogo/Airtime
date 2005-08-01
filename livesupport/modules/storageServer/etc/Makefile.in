@@ -20,7 +20,7 @@
 #
 #
 #   Author   : $Author: maroy $
-#   Version  : $Revision: 1.1.2.3 $
+#   Version  : $Revision: 1.1.2.4 $
 #   Location : $Source: /home/paul/cvs2svn-livesupport/newcvsrepo/livesupport/modules/storageServer/etc/Makefile.in,v $
 #
 #   @configure_input@
@@ -37,6 +37,7 @@ CP      = cp -r
 SED     = sed
 ECHO    = echo
 CAT     = cat
+PHP     = php
 
 
 #-------------------------------------------------------------------------------
@@ -133,6 +134,7 @@ REPLACE_SED_STRING="s/ls_lib_dir/${USR_LIB_DIR_S}/; \
 #-------------------------------------------------------------------------------
 .PHONY: all dir_setup doc clean docclean depclean distclean dist install
 .PHONY: db_init db_clean testonly transtest storage reset pear_setup_devel
+.PHONY: copy_files create_database init_database
 
 all:
 
@@ -159,7 +161,9 @@ testonly: ${TEST_RUNNER}
 
 check: all testonly
 
-install:
+install: copy_files create_database init_database
+
+copy_files:
 	${MKDIR} ${DEST_DIR}
 	${MKDIR} ${DEST_DIR}/access
 	${MKDIR} ${DEST_DIR}/cron
@@ -182,6 +186,20 @@ install:
 	      ${DEST_DIR}/xmlrpc/XML/RPC
 	${CAT} ${VAR_DIR}/conf.php.template | ${SED} -e ${REPLACE_SED_STRING} \
 	       > ${DEST_DIR}/conf.php
+
+create_database:
+ifeq (@CREATE_LS_DATABASE@,yes)
+	${BIN_DIR}/createDatabase.sh --database=${DATABASE} \
+	                             --dbserver=${DB_SERVER} \
+								 --dbuser=${DB_USER} \
+								 --dbpassword=${DB_PASSWORD}
+endif
+
+init_database:
+ifeq (@INIT_LS_DATABASE@,yes)
+	cd ${DEST_DIR}/install && ${PHP} -q install.php
+endif
+
 
 recheck: clean check
 

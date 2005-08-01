@@ -20,8 +20,8 @@ dnl along with LiveSupport; if not, write to the Free Software
 dnl Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 dnl
 dnl
-dnl Author   : $Author: sebastian $
-dnl Version  : $Revision: 1.1.2.6 $
+dnl Author   : $Author: maroy $
+dnl Version  : $Revision: 1.1.2.7 $
 dnl Location : $Source: /home/paul/cvs2svn-livesupport/newcvsrepo/livesupport/modules/htmlUI/etc/configure.ac,v $
 dnl-----------------------------------------------------------------------------
 
@@ -35,9 +35,24 @@ dnl-----------------------------------------------------------------------------
 AC_INIT(HtmlUI, 1.0, bugs@campware.org)
 AC_PREREQ(2.59)
 AC_COPYRIGHT([Copyright (c) 2004 Media Development Loan Fund under the GNU GPL])
-AC_REVISION($Revision: 1.1.2.6 $)
+AC_REVISION($Revision: 1.1.2.7 $)
 
 AC_CONFIG_SRCDIR(../var/ui_conf.php)
+
+dnl-----------------------------------------------------------------------------
+dnl  specify wether apache should be configured through it's conf.d directory
+dnl-----------------------------------------------------------------------------
+AC_SUBST(CONFIGURE_APACHE)
+
+AC_ARG_WITH([configure-apache],
+            AC_HELP_STRING([--with-configure-apache],
+               [specify wether apache should be configured for LiveSupport
+                through its conf.d directory (no)]),
+            [CONFIGURE_APACHE=${withval}],
+            [CONFIGURE_APACHE=no])
+
+AC_MSG_RESULT([configure apache: ${CONFIGURE_APACHE}])
+
 
 dnl-----------------------------------------------------------------------------
 dnl  specify group in which apache is running
@@ -77,6 +92,16 @@ AC_ARG_WITH([www-docroot],
             [WWW_DOCROOT=${withval}], [WWW_DOCROOT=/var/www])
 
 AC_MSG_RESULT([using www document root: ${WWW_DOCROOT}])
+
+
+AC_MSG_NOTICE(
+[using the following configuration settings:
+
+    apache group:                    ${APACHE_GROUP}
+    www document root:               ${WWW_DOCROOT}
+    configuring apache:              ${CONFIGURE_APACHE}
+
+])
 
 
 AC_CONFIG_FILES(../Makefile:../etc/Makefile.in)

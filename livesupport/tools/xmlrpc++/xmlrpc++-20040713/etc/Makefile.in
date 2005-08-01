@@ -21,7 +21,7 @@
 #
 #
 #   Author   : $Author: maroy $
-#   Version  : $Revision: 1.1.2.1 $
+#   Version  : $Revision: 1.1.2.2 $
 #   Location : $Source: /home/paul/cvs2svn-livesupport/newcvsrepo/livesupport/tools/xmlrpc++/xmlrpc++-20040713/etc/Makefile.in,v $
 #-------------------------------------------------------------------------------
 
@@ -70,7 +70,9 @@ clean:
 	${MAKE} -C ${XMLRPCXX_DIR} clean
 	${RM} ${TMP_DIR}/*.stamp
 
-distclean: clean
+distclean: 
 	${RMDIR} ${XMLRPCXX_DIR}
 	${RMDIR} ${TMP_DIR}/auto* ${TMP_DIR}/config* ${TMP_DIR}/install-sh
 	${RM} ${TMP_DIR}/depcomp ${TMP_DIR}/ltmain.sh ${TMP_DIR}/missing
+	${RM} ${TMP_DIR}/*.stamp
+

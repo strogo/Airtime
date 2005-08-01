@@ -21,7 +21,7 @@ dnl Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 dnl
 dnl
 dnl Author   : $Author: maroy $
-dnl Version  : $Revision: 1.1.2.2 $
+dnl Version  : $Revision: 1.1.2.3 $
 dnl Location : $Source: /home/paul/cvs2svn-livesupport/newcvsrepo/livesupport/modules/storageServer/etc/configure.ac,v $
 dnl-----------------------------------------------------------------------------
 
@@ -35,9 +35,39 @@ dnl-----------------------------------------------------------------------------
 AC_INIT(StorageServer, 1.0, bugs@campware.org)
 AC_PREREQ(2.59)
 AC_COPYRIGHT([Copyright (c) 2004 Media Development Loan Fund under the GNU GPL])
-AC_REVISION($Revision: 1.1.2.2 $)
+AC_REVISION($Revision: 1.1.2.3 $)
 
 AC_CONFIG_SRCDIR(../var/BasicStor.php)
+
+dnl-----------------------------------------------------------------------------
+dnl  specify wether the LiveSupport database and user should be created
+dnl-----------------------------------------------------------------------------
+AC_SUBST(CREATE_LS_DATABASE)
+
+AC_ARG_WITH([create-database],
+            AC_HELP_STRING([--with-create-database],
+               [specify wether the LiveSupport database and database user
+                should be created (no)]),
+            [CREATE_LS_DATABASE=${withval}],
+            [CREATE_LS_DATABASE=no])
+
+AC_MSG_RESULT([creating LiveSupport database: ${CREATE_LS_DATABASE}])
+
+
+dnl-----------------------------------------------------------------------------
+dnl  specify wether the LiveSupport database tables should be initialized
+dnl-----------------------------------------------------------------------------
+AC_SUBST(INIT_LS_DATABASE)
+
+AC_ARG_WITH([init-database],
+            AC_HELP_STRING([--with-init-database],
+               [specify wether the LiveSupport database tables should be
+                initialized (no)]),
+            [INIT_LS_DATABASE=${withval}],
+            [INIT_LS_DATABASE=no])
+
+AC_MSG_RESULT([initializing LiveSupport database: ${INIT_LS_DATABASE}])
+
 
 dnl-----------------------------------------------------------------------------
 dnl  specify the FQDN
@@ -135,13 +165,15 @@ dnl display status info on what libraries will get compiled
 AC_MSG_NOTICE(
 [using the following configuration settings:
 
-    hostname:                  ${HOSTNAME}
-    www port:                  ${WWW_PORT}
-    scheduler port:            ${SCHEDULER_PORT}
-    database server:           ${DB_SERVER}
-    database name:             ${DATABASE}
-    database user:             ${DB_USER}
-    database user password:    ${DB_PASSWORD}
+    hostname:                        ${HOSTNAME}
+    www port:                        ${WWW_PORT}
+    scheduler port:                  ${SCHEDULER_PORT}
+    database server:                 ${DB_SERVER}
+    database name:                   ${DATABASE}
+    database user:                   ${DB_USER}
+    database user password:          ${DB_PASSWORD}
+    creating LiveSupport database:   ${CREATE_LS_DATABASE}
+    initialize LiveSupport database: ${INIT_LS_DATABASE}
 
 ])
 
