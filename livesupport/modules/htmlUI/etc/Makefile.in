@@ -21,7 +21,7 @@
 #
 #
 #   Author   : $Author: maroy $
-#   Version  : $Revision: 1.1.2.11 $
+#   Version  : $Revision: 1.1.2.12 $
 #   Location : $Source: /home/paul/cvs2svn-livesupport/newcvsrepo/livesupport/modules/htmlUI/etc/Makefile.in,v $
 #
 #   @configure_input@
@@ -202,6 +202,7 @@ install: configure_apache
 	chmod g+sw ${USR_VAR_DIR}/LiveSupport/htmlUI/var/templates_c
 	chmod g+sw ${USR_VAR_DIR}/LiveSupport/htmlUI/var/html/img
 
+	${RM} ${WWW_DOCROOT}/livesupport
 	ln -sf ${USR_VAR_DIR}/LiveSupport ${WWW_DOCROOT}/livesupport
 	${CP} ${VAR_DIR}/redirect.php ${USR_VAR_DIR}/LiveSupport/index.php
 
