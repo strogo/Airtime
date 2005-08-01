@@ -21,7 +21,7 @@
 #
 #
 #   Author   : $Author: maroy $
-#   Version  : $Revision: 1.1.2.1 $
+#   Version  : $Revision: 1.1.2.2 $
 #   Location : $Source: /home/paul/cvs2svn-livesupport/newcvsrepo/livesupport/tools/libxml++/libxml++-2.8.1/etc/Makefile.in,v $
 #-------------------------------------------------------------------------------
 
@@ -57,12 +57,24 @@ prefix = @prefix@
 # above
 docdir = @datadir@/doc/${LIBXMLXX_VERSION}
 
+USR_DIR=${prefix}
+USR_BIN_DIR=${USR_DIR}/bin
+USR_LIB_DIR=${USR_DIR}/lib
+
+export PATH:=${USR_BIN_DIR}:${PATH}
+export CPPFLAGS=-I${USR_DIR}/include
+export LDFLAGS=-L${USR_LIB_DIR}
+export LD_LIBRARY_PATH:=${USR_LIB_DIR}:${LD_LIBRARY_PATH}
+export PKG_CONFIG_PATH=${USR_LIB_DIR}/pkgconfig
+
+
 
 #-------------------------------------------------------------------------------
 #   Targets
 #-------------------------------------------------------------------------------
 all: ${TMP_DIR}/all.stamp
 ${TMP_DIR}/all.stamp:
+	cd ${LIBXMLXX_DIR} && ./configure --prefix=${prefix}
 	${MAKE} -C ${LIBXMLXX_DIR}
 	# make the reference documentation and install that as well, as the
 	# autoconf thing doesn't :(

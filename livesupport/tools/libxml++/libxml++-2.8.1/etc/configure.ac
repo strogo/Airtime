@@ -21,7 +21,7 @@ dnl Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 dnl
 dnl
 dnl Author   : $Author: maroy $
-dnl Version  : $Revision: 1.1.2.1 $
+dnl Version  : $Revision: 1.1.2.2 $
 dnl Location : $Source: /home/paul/cvs2svn-livesupport/newcvsrepo/livesupport/tools/libxml++/libxml++-2.8.1/etc/configure.ac,v $
 dnl-----------------------------------------------------------------------------
 
@@ -35,17 +35,13 @@ dnl-----------------------------------------------------------------------------
 AC_INIT(libxml++, 2.8.1, bugs@campware.org)
 AC_PREREQ(2.59)
 AC_COPYRIGHT([Copyright (c) 2004 Media Development Loan Fund under the GNU GPL])
-AC_REVISION($Revision: 1.1.2.1 $)
+AC_REVISION($Revision: 1.1.2.2 $)
 
 AC_CONFIG_SRCDIR(../src/libxml++-2.8.1.tar.bz2)
 
 
 dnl untar the sources before anything happens
 ../bin/prepare.sh
-
-cd ../tmp/libxml++-2.8.1
-./configure --prefix=$prefix
-cd -
 
 
 AC_CONFIG_FILES(../Makefile:../etc/Makefile.in)
