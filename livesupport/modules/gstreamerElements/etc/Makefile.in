@@ -21,7 +21,7 @@
 #
 #
 #   Author   : $Author: maroy $
-#   Version  : $Revision: 1.9.2.1 $
+#   Version  : $Revision: 1.9.2.2 $
 #   Location : $Source: /home/paul/cvs2svn-livesupport/newcvsrepo/livesupport/modules/gstreamerElements/etc/Makefile.in,v $
 #
 #   @configure_input@
@@ -216,7 +216,7 @@ install: all
           ${PARTIAL_PLAY_LIB_FILE} \
           ${SWITCHER_LIB_FILE} \
 		  ${USR_LIB_DIR}
-	GST_PLUGIN_PATH=${USR_LIB_DIR} ${GST_REGISTER}
+	-GST_PLUGIN_PATH=${USR_LIB_DIR} ${GST_REGISTER}
 
 
 #-------------------------------------------------------------------------------
