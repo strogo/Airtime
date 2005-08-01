@@ -23,7 +23,7 @@
 
 
     Author   : $Author: sebastian $
-    Version  : $Revision: 1.1 $
+    Version  : $Revision: 1.1.2.1 $
     Location : $Source: /home/paul/cvs2svn-livesupport/newcvsrepo/livesupport/modules/htmlUI/var/ui_schedulerPhpClient.class.php,v $
 
 ------------------------------------------------------------------------------*/
