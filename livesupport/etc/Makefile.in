@@ -21,7 +21,7 @@
 #
 #
 #   Author   : $Author: maroy $
-#   Version  : $Revision: 1.10.2.4 $
+#   Version  : $Revision: 1.10.2.5 $
 #   Location : $Source: /home/paul/cvs2svn-livesupport/newcvsrepo/livesupport/etc/Makefile.in,v $
 #-------------------------------------------------------------------------------
 
@@ -188,7 +188,7 @@ clean:
 	${RMDIR} ${DOXYGEN_DIR}/html
 	${RMDIR} ${COVERAGE_DIR}/*
 	${RM} ${TMP_DIR}/*.stamp
-	${RM} ${TMP_DIR}/ac* ${TMP_DIR}/config*
+	${RM} ${TMP_DIR}/ac* ${TMP_DIR}/config* ${TMP_DIR}/install-sh
 	${RMDIR} ${TMP_DIR}/auto*
 
 setup: ${TMP_DIR}/setup.stamp
