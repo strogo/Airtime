@@ -21,7 +21,7 @@
 #
 #
 #   Author   : $Author: maroy $
-#   Version  : $Revision: 1.1.2.1 $
+#   Version  : $Revision: 1.1.2.2 $
 #   Location : $Source: /home/paul/cvs2svn-livesupport/newcvsrepo/livesupport/tools/gstreamer/gstreamer-0.8.10/etc/Makefile.in,v $
 #-------------------------------------------------------------------------------
 
@@ -60,6 +60,17 @@ exec_prefix=@exec_prefix@
 # thus we need exec_prefix defined as well above
 libdir=@libdir@
 pkg_config_path=${libdir}/pkgconfig
+
+
+USR_DIR=${prefix}
+USR_BIN_DIR=${USR_DIR}/bin
+USR_LIB_DIR=${libdir}
+
+export PATH:=${USR_BIN_DIR}:${PATH}
+export CPPFLAGS=-I${USR_DIR}/include
+export LDFLAGS=-L${USR_LIB_DIR}
+export LD_LIBRARY_PATH:=${USR_LIB_DIR}:${LD_LIBRARY_PATH}
+export PKG_CONFIG_PATH=${USR_LIB_DIR}/pkgconfig
 
 
 #-------------------------------------------------------------------------------
