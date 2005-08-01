@@ -21,7 +21,7 @@
 #
 #
 #   Author   : $Author: maroy $
-#   Version  : $Revision: 1.1.2.1 $
+#   Version  : $Revision: 1.1.2.2 $
 #   Location : $Source: /home/paul/cvs2svn-livesupport/newcvsrepo/livesupport/tools/boost/boost-1.31/etc/Makefile.in,v $
 #-------------------------------------------------------------------------------
 
@@ -60,21 +60,21 @@ INSTALL_DIR = @prefix@
 #-------------------------------------------------------------------------------
 all:
 	# build BoostJam, their make enviornment
-	cd ${BOOST_DIR}
-	cd tools/build/jam_src/
+	cd ${BOOST_DIR} && \
+	cd tools/build/jam_src/ && \
 	sh build.sh gcc
-	cd ../../..
 	# now build and install the who thing
+	cd ${BOOST_DIR} && \
 	./tools/build/jam_src/bin.linuxx86/bjam "-sTOOLS=gcc" \
                                             --prefix=${INSTALL_DIR}
 
 install:
-	cd ${BOOST_DIR}
+	cd ${BOOST_DIR} && \
 	./tools/build/jam_src/bin.linuxx86/bjam "-sTOOLS=gcc" \
                                             --prefix=${INSTALL_DIR} install
 
 clean:
-	cd ${BOOST_DIR}
+	cd ${BOOST_DIR} && \
 	./tools/build/jam_src/bin.linuxx86/bjam "-sTOOLS=gcc" \
                                             --prefix=${installdir} clean
 
