@@ -1,7 +1,12 @@
 <?php
+if ($_SERVER['SERVER_ADDR'] !== '192.168.0.110') { 
+    error_reporting(E_ERROR);
+}
+ini_set('memory_limit', '64M'); 
+
 define('UI_PL_DRAG_ENABLED',             TRUE);
 define('UI_PL_DRAG_INTRO',              'Here you can simply rearrange whole playlist on just drag items up or down.');
-define('UI_VERSION',                    'LiveSupport 1.0');
+define('UI_VERSION',                    'LiveSupport 1.0.1');
 define('UI_VERSION_FULLNAME',           'LiveSupport 1.0 stable');
 define('UI_TESTSTREAM_MU3_TMP',         'img/test.m3u');
 

@@ -251,6 +251,7 @@ class MetaData{
         $r = $this->validateOneValue($parname, $category, $predxml, $value);
         if(PEAR::isError($r)) return $r;
         if(!is_null($value)){
+            foreach(array('value') as $v) $$v = addslashes($$v);
             $sql = "
                 UPDATE {$this->mdataTable}
                 SET object='$value', objns='_L'
@@ -445,6 +446,7 @@ class MetaData{
             );
         }
         fclose($fh);
+        @chmod($fn, 0664);
         return TRUE;
     }
     
@@ -645,8 +647,9 @@ class MetaData{
      */
     function updateRecord($mdid, $object, $objns='_L')
     {
-        $objns_sql  = (is_null($objns) ? "NULL" : "'$objns'" );
-        $object_sql = (is_null($object)? "NULL" : "'$object'");
+        foreach(array('objns', 'object') as $v){
+            ${$v."_sql"}  = (is_null($$v) ? "NULL" : "'".addslashes($$v)."'" );
+        }
         $res = $this->dbc->query("UPDATE {$this->mdataTable}
             SET objns  = $objns_sql,  object    = $object_sql
             WHERE gunid = x'{$this->gunid}'::bigint AND id='$mdid'
@@ -676,9 +679,11 @@ class MetaData{
         //echo "$subjns, $subject, $predns, $predicate, $predxml, $objns, $object\n";
         //$predns = strtolower($predns);
         //$predicate = strtolower($predicate);
-        $predns_sql = (is_null($predns) ? "NULL" : "'$predns'" );
-        $objns_sql  = (is_null($objns) ? "NULL" : "'$objns'" );
-        $object_sql = (is_null($object)? "NULL" : "'$object'");
+        foreach(array(
+            'subjns', 'subject', 'predns', 'predicate', 'objns', 'object',
+        ) as $v){
+            ${$v."_sql"}  = (is_null($$v) ? "NULL" : "'".addslashes($$v)."'" );
+        }
         $id = $this->dbc->nextId("{$this->mdataTable}_id_seq");
         if(PEAR::isError($id)) return $id;
         $res = $this->dbc->query("
@@ -688,8 +693,8 @@ class MetaData{
                     objns     , object
                 )
             VALUES
-                ($id, x'{$this->gunid}'::bigint, '$subjns', '$subject',
-                    $predns_sql, '$predicate', '$predxml',
+                ($id, x'{$this->gunid}'::bigint, $subjns_sql, $subject_sql,
+                    $predns_sql, $predicate_sql, '$predxml',
                     $objns_sql, $object_sql
                 )
         ");
@@ -804,6 +809,7 @@ class MetaData{
                 'attributes'=> $attrs,
                 'content'   => (is_null($object) ? $children : $object),
             ), FALSE);
+//                'content'   => (is_null($object) ? $children : htmlentities($object, ENT_COMPAT, 'UTF-8')),
         }else{
             $node = array_merge(
                 array(
@@ -851,10 +857,12 @@ class MetaData{
             switch($predxml){
             case"N":
                 $nSpaces["$predicate"] = $object;
+//                $nSpaces["$predicate"] = htmlentities($object, ENT_COMPAT, 'UTF-8');
             case"A":
                 $sep=':';
                 if($predns=='' || $predicate=='') $sep='';
                 $attrs["{$predns}{$sep}{$predicate}"] = $object;
+//                $attrs["{$predns}{$sep}{$predicate}"] = htmlentities($object, ENT_COMPAT, 'UTF-8');
                 break;
             case"T":
                 $children[] = $this->genXMLNode($row, $genXML);

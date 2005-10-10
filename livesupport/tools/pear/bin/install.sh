@@ -39,7 +39,7 @@ basedir=`cd $reldir; pwd;`
 bindir=$basedir/bin
 etcdir=$basedir/etc
 srcdir=$basedir/src
-installdir=$basedir/../../..
+installdir=$basedir/../../usr
 
 package="PEAR packages needed by LiveSupport"
 
@@ -62,15 +62,14 @@ XML_Serializer
 
 VERSION_Archive_Tar=Archive_Tar-1.3.1
 VERSION_Console_Getopt=Console_Getopt-1.2
-#VERSION_XML_RPC=XML_RPC-1.3.0RC1
-VERSION_XML_RPC=XML_RPC-1.4.0
+VERSION_XML_RPC=XML_RPC-1.4.3-ls1
 VERSION_PEAR=PEAR-1.3.5
 VERSION_Calendar=Calendar-0.5.2
 VERSION_DB=DB-1.7.6
 VERSION_File=File-1.2.0
 VERSION_File_Find=File_Find-0.3.1
 VERSION_HTML_Common=HTML_Common-1.2.1
-VERSION_HTML_QuickForm=HTML_QuickForm-3.2.4pl1
+VERSION_HTML_QuickForm=HTML_QuickForm-3.2.5
 VERSION_XML_Util=XML_Util-1.1.1
 VERSION_XML_Parser=XML_Parser-1.2.6
 VERSION_XML_Beautifier=XML_Beautifier-1.1
@@ -170,7 +169,7 @@ do echo -n " "
     echo -n "$pkg: "
     eval "pkgv=\$VERSION_$pkg"
     check_pear_module $pkg && (
-        $pearcmd upgrade $pkgv.tgz >/dev/null && echo -n "upgrading to $pkgv"
+        $pearcmd upgrade -f $pkgv.tgz >/dev/null && echo -n "upgrading to $pkgv"
         #|| echo -n "code: $?"
     ) || (
 #        $pearcmd install $pkgv.tgz >/dev/null && echo -n "installing $pkgv" || exit 1

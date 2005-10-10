@@ -854,11 +854,11 @@ GLiveSupport :: openPlaylistForEditing(Ptr<UniqueId>::Ref  playlistId)
     editedPlaylist = storage->editPlaylist(sessionId, playlistId);
 
     try {
-        Ptr<const Glib::ustring>::Ref   token(new const Glib::ustring(
-                                                *editedPlaylist->getToken() ));
+        Ptr<const Glib::ustring>::Ref   editToken(new const Glib::ustring(
+                                            *editedPlaylist->getEditToken() ));
         authentication->savePreferencesItem(sessionId,
                                             editedPlaylistTokenKey,
-                                            token);
+                                            editToken);
     } catch (XmlRpcException &e) {
         std::cerr << "Problem saving "
                   << editedPlaylistTokenKey
@@ -1018,20 +1018,23 @@ GLiveSupport :: playOutputAudio(Ptr<Playable>::Ref playable)
     } catch (XmlRpcException &e) {
         Ptr<Glib::ustring>::Ref     eMsg 
                                     = getResourceUstring("audioErrorMsg");
+        eMsg->append("\n");
         eMsg->append(e.what());
         displayMessageWindow(eMsg);
     } catch (std::invalid_argument &e) {
         Ptr<Glib::ustring>::Ref     eMsg 
                                     = getResourceUstring("audioErrorMsg");
+        eMsg->append("\n");
         eMsg->append(e.what());
         displayMessageWindow(eMsg);
     } catch (std::runtime_error &e) {
         Ptr<Glib::ustring>::Ref     eMsg 
                                     = getResourceUstring("audioErrorMsg");
+        eMsg->append("\n");
         eMsg->append(e.what());
         displayMessageWindow(eMsg);
     }
-    
+
     outputPlayerIsPaused = false;
 }
     
@@ -1125,16 +1128,19 @@ GLiveSupport :: playCueAudio(Ptr<Playable>::Ref playable)
     } catch (XmlRpcException &e) {
         Ptr<Glib::ustring>::Ref     eMsg 
                                     = getResourceUstring("audioErrorMsg");
+        eMsg->append("\n");
         eMsg->append(e.what());
         displayMessageWindow(eMsg);
     } catch (std::invalid_argument &e) {
         Ptr<Glib::ustring>::Ref     eMsg 
                                     = getResourceUstring("audioErrorMsg");
+        eMsg->append("\n");
         eMsg->append(e.what());
         displayMessageWindow(eMsg);
     } catch (std::runtime_error &e) {
         Ptr<Glib::ustring>::Ref     eMsg 
                                     = getResourceUstring("audioErrorMsg");
+        eMsg->append("\n");
         eMsg->append(e.what());
         displayMessageWindow(eMsg);
     }

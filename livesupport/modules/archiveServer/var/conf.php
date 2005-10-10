@@ -33,7 +33,7 @@
  *  archiveServer configuration file
  */
 
-define('LS_VERSION', '0.9');
+define('LS_VERSION', '1.0');
 
 /**
  *  configuration structure:
@@ -82,7 +82,7 @@ $config = array(
     'bufferDir'     =>  dirname(__FILE__).'/../../archiveServer/var/stor/buffer',
     'transDir'      =>  dirname(__FILE__).'/../../archiveServer/var/trans',
     'accessDir'     =>  dirname(__FILE__).'/../../archiveServer/var/access',
-    'pearPath'      =>  dirname(__FILE__).'/../../../usr/lib/php/php',
+    'pearPath'      =>  dirname(__FILE__).'/../../../usr/lib/pear',
     'isArchive'     =>  TRUE,
     'validate'      =>  TRUE,
     'useTrash'      =>  FALSE,
