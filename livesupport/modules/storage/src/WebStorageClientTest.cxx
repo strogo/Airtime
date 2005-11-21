@@ -766,8 +766,10 @@ WebStorageClientTest :: getAllTest(void)
     }
     CPPUNIT_ASSERT(sessionId);
 
-    Ptr<std::vector<Ptr<Playlist>::Ref> >::Ref 
-                playlists = wsc->getAllPlaylists(sessionId);
+    Ptr<std::vector<Ptr<Playlist>::Ref> >::Ref playlists;
+    CPPUNIT_ASSERT_NO_THROW(
+        playlists = wsc->getAllPlaylists(sessionId)
+    );
     CPPUNIT_ASSERT(playlists);
     CPPUNIT_ASSERT(playlists->size() >= 1);
     
