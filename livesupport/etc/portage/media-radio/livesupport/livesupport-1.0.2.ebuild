@@ -119,5 +119,21 @@ pkg_postinst() {
 
 	cat /usr/var/LiveSupport/storageServer/var/conf.php | sed -e $sedstr > /tmp/conf.php.$$
 	mv -f /tmp/conf.php.$$ /usr/var/LiveSupport/storageServer/var/conf.php
+
+	cat /usr/bin/import.sh | sed -e $sedstr > /tmp/import.sh.$$
+	mv -f /tmp/import.sh.$$ /usr/bin/import.sh
+	chmod +x /usr/bin/import.sh
+
+	cat /usr/bin/dumpDbSchema.sh | sed -e $sedstr > /tmp/dumpDbSchema.sh.$$
+	mv -f /tmp/dumpDbSchema.sh.$$ /usr/bin/dumpDbSchema.sh
+	chmod +x /usr/bin/dumpDbSchema.sh
+
+	cat /usr/bin/backup.sh | sed -e $sedstr > /tmp/backup.sh.$$
+	mv -f /tmp/backup.sh.$$ /usr/bin/backup.sh
+	chmod +x /usr/bin/backup.sh
+
+	cat /usr/bin/restore.sh | sed -e $sedstr > /tmp/restore.sh.$$
+	mv -f /tmp/restore.sh.$$ /usr/bin/restore.sh
+	chmod +x /usr/bin/restore.sh
 }
 
