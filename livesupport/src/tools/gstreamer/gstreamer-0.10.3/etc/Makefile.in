@@ -20,9 +20,9 @@
 #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 #
-#   Author   : $Author$
-#   Version  : $Revision$
-#   Location : $URL$
+#   Author   : $Author: maroy $
+#   Version  : $Revision: 1688 $
+#   Location : $URL: svn+ssh://maroy@code.campware.org/home/svn/repo/livesupport/trunk/livesupport/src/tools/gstreamer/gstreamer-0.8.10/etc/Makefile.in $
 #-------------------------------------------------------------------------------
 
 #-------------------------------------------------------------------------------
@@ -49,10 +49,16 @@ COVERAGE_DIR = ${DOC_DIR}/coverage
 ETC_DIR      = ${BASE_DIR}/etc
 TMP_DIR      = ${BASE_DIR}/tmp
 
-GSTREAMER_VERSION   = gstreamer-0.8.10
+LIBOIL_VERSION      = liboil-0.3.6
+LIBOIL_DIR          = ${TMP_DIR}/${LIBOIL_VERSION}
+GSTREAMER_VERSION   = gstreamer-0.10.3
 GSTREAMER_DIR       = ${TMP_DIR}/${GSTREAMER_VERSION}
-GST_PLUGINS_VERSION = gst-plugins-0.8.10
-GST_PLUGINS_DIR     = ${TMP_DIR}/${GST_PLUGINS_VERSION}
+GST_PLUGINS_BASE_VERSION = gst-plugins-base-0.10.3
+GST_PLUGINS_BASE_DIR     = ${TMP_DIR}/${GST_PLUGINS_BASE_VERSION}
+GST_PLUGINS_GOOD_VERSION = gst-plugins-good-0.10.2
+GST_PLUGINS_GOOD_DIR     = ${TMP_DIR}/${GST_PLUGINS_GOOD_VERSION}
+GST_PLUGINS_UGLY_VERSION = gst-plugins-ugly-0.10.1
+GST_PLUGINS_UGLY_DIR     = ${TMP_DIR}/${GST_PLUGINS_UGLY_VERSION}
 
 prefix=@prefix@
 exec_prefix=@exec_prefix@
@@ -78,29 +84,43 @@ export PKG_CONFIG_PATH=${USR_LIB_DIR}/pkgconfig
 #-------------------------------------------------------------------------------
 all: ${TMP_DIR}/all.stamp
 ${TMP_DIR}/all.stamp:
+	cd ${LIBOIL_DIR} && \
+        ./configure --prefix=${prefix} --with-pkg-config-path=${pkg_config_path}
+	${MAKE} -C ${LIBOIL_DIR}
+	${MAKE} -C ${LIBOIL_DIR} install
 	cd ${GSTREAMER_DIR} && \
         ./configure --prefix=${prefix} --with-pkg-config-path=${pkg_config_path}
 	${MAKE} -C ${GSTREAMER_DIR}
 	${MAKE} -C ${GSTREAMER_DIR} install
-	cd ${GST_PLUGINS_DIR} && \
-		./configure --prefix=${prefix} \
-                    --with-pkg-config-path=${pkg_config_path} \
-					--disable-spc \
-					--disable-gconf --disable-gconftool \
-					--disable-opengl 
-	${MAKE} -C ${GST_PLUGINS_DIR}
-	${MAKE} -C ${GST_PLUGINS_DIR} install
+	cd ${GST_PLUGINS_BASE_DIR} && \
+        ./configure --prefix=${prefix} --with-pkg-config-path=${pkg_config_path}
+	${MAKE} -C ${GST_PLUGINS_BASE_DIR}
+	${MAKE} -C ${GST_PLUGINS_BASE_DIR} install
+	cd ${GST_PLUGINS_GOOD_DIR} && \
+        ./configure --prefix=${prefix} --with-pkg-config-path=${pkg_config_path}
+	${MAKE} -C ${GST_PLUGINS_GOOD_DIR}
+	${MAKE} -C ${GST_PLUGINS_GOOD_DIR} install
+	cd ${GST_PLUGINS_UGLY_DIR} && \
+        ./configure --prefix=${prefix} --with-pkg-config-path=${pkg_config_path}
+	${MAKE} -C ${GST_PLUGINS_UGLY_DIR}
+	${MAKE} -C ${GST_PLUGINS_UGLY_DIR} install
 
 install: all
 
 clean:
+	${MAKE} -C ${LIBOIL_DIR} clean
 	${MAKE} -C ${GSTREAMER_DIR} clean
-	${MAKE} -C ${GST_PLUGINS_DIR} clean
+	${MAKE} -C ${GST_PLUGINS_BASE_DIR} clean
+	${MAKE} -C ${GST_PLUGINS_GOOD_DIR} clean
+	${MAKE} -C ${GST_PLUGINS_UGLY_DIR} clean
 	rm ${TMP_DIR}/all.stamp
 
 distclean:
+	${RMDIR} ${LIBOIL_DIR}
 	${RMDIR} ${GSTREAMER_DIR}
-	${RMDIR} ${GST_PLUGINS_DIR}
+	${RMDIR} ${GST_PLUGINS_BASE_DIR}
+	${RMDIR} ${GST_PLUGINS_GOOD_DIR}
+	${RMDIR} ${GST_PLUGINS_UGLY_DIR}
 	${RMDIR} ${TMP_DIR}/auto* ${TMP_DIR}/config* ${TMP_DIR}/install-sh
 
 

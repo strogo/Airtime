@@ -20,9 +20,9 @@ dnl along with LiveSupport; if not, write to the Free Software
 dnl Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 dnl
 dnl
-dnl Author   : $Author$
-dnl Version  : $Revision$
-dnl Location : $URL$
+dnl Author   : $Author: maroy $
+dnl Version  : $Revision: 1688 $
+dnl Location : $URL: svn+ssh://maroy@code.campware.org/home/svn/repo/livesupport/trunk/livesupport/src/tools/gstreamer/gstreamer-0.8.10/etc/configure.ac $
 dnl-----------------------------------------------------------------------------
 
 dnl-----------------------------------------------------------------------------
@@ -32,12 +32,12 @@ dnl This is due to the fact that configure spreads a lot of trash around,
 dnl like atom4te cache directories, config.* files, etc. into the directory
 dnl it is being run from. We clearly don't want these in our base directory.
 dnl-----------------------------------------------------------------------------
-AC_INIT(gstreamer, 0.8.10, bugs@campware.org)
+AC_INIT(gstreamer, 0.10.3, bugs@campware.org)
 AC_PREREQ(2.59)
 AC_COPYRIGHT([Copyright (c) 2004 Media Development Loan Fund under the GNU GPL])
-AC_REVISION($Revision$)
+AC_REVISION($Revision: 1688 $)
 
-AC_CONFIG_SRCDIR(../src/gstreamer-0.8.10.tar.bz2)
+AC_CONFIG_SRCDIR(../src/gstreamer-0.10.3.tar.bz2)
 
 
 dnl untar the sources before anything happens
