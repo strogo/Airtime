@@ -39,7 +39,6 @@
 #include <gst/gst.h>
 
 #include "LiveSupport/GstreamerElements/autoplug.h"
-#include "seek.h"
 #include "SeekTest.h"
 
 
@@ -106,6 +105,7 @@ SeekTest :: playFile(const char   * audioFile,
     GstElement    * sink;
     GstSeekType     seekType;
     GstCaps       * caps;
+    GstMessage    * message;
     GstFormat       format;
     gint64          timePlayed;
     gint64          timeAfterSeek;
@@ -124,9 +124,7 @@ SeekTest :: playFile(const char   * audioFile,
                                NULL);
 
     /* create elements */
-    seekType = (GstSeekType) (GST_FORMAT_TIME |
-                              GST_SEEK_METHOD_SET |
-                              GST_SEEK_FLAG_FLUSH);
+    seekType = (GstSeekType) GST_SEEK_TYPE_SET;
 
     pipeline = gst_pipeline_new("audio-player");
     source   = gst_element_factory_make("filesrc", "source");
@@ -152,34 +150,24 @@ SeekTest :: playFile(const char   * audioFile,
     gst_element_set_state(sink, GST_STATE_PAUSED);
     gst_element_set_state(pipeline, GST_STATE_PLAYING);
 
-    // iterate on the pipline until the played time becomes more than 0
-    // as the seek even will only be taken into consideration after that
-    // by gstreamer
-    for (timePlayed = 0;
-         timePlayed == 0 && gst_bin_iterate(GST_BIN(pipeline)); ) {
-
-        format = GST_FORMAT_TIME;
-        gst_element_query(sink, GST_QUERY_POSITION, &format, &timePlayed);
-    }
-
     // so, seek now
     timeAfterSeek = -1LL;
-    ret = livesupport_seek(decoder, seekType, seekTo);
+    ret = gst_element_seek(decoder,
+                           1.0,
+                           GST_FORMAT_TIME,
+                           GST_SEEK_FLAG_FLUSH,
+                           seekType,
+                           seekTo,
+                           GST_SEEK_TYPE_SET,
+                           playTo);
     CPPUNIT_ASSERT(ret);
 
-    // iterate until playTo is reached
-    while (gst_bin_iterate(GST_BIN(pipeline))) {
-        format = GST_FORMAT_TIME;
-        gst_element_query(sink, GST_QUERY_POSITION, &format, &timePlayed);
+    message = gst_bus_poll(gst_pipeline_get_bus((GstPipeline*) pipeline),
+                        (GstMessageType) (GST_MESSAGE_ERROR | GST_MESSAGE_EOS),
+                        -1);
 
-        if (timeAfterSeek == -1LL && timePlayed > seekTo) {
-            timeAfterSeek = timePlayed;
-        }
-
-        if (playTo > 0 && timePlayed > playTo) {
-            break;
-        }
-    }
+    format = GST_FORMAT_TIME;
+    gst_element_query_position(sink, &format, &timeAfterSeek);
 
     /* clean up nicely */
     gst_element_set_state(pipeline, GST_STATE_NULL);

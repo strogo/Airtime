@@ -143,5 +143,6 @@ plugin_init(GstPlugin     * plugin);
 
 G_END_DECLS
 
+
 #endif /* LiveSupport_GstreamerElements_Switcher_h */
 

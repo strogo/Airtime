@@ -103,7 +103,7 @@ struct _LivesupportSeekPack {
  */
 LivesupportSeekPack *
 livesupport_seek_pack_new(const gchar    * uniqueName,
-                          const GstCaps          * caps);
+                          const GstCaps  * caps);
 
 /**
  *  Initialize a SeekPack.
@@ -170,7 +170,7 @@ livesupport_seek_pack_remove_from_bin(LivesupportSeekPack     * seekPack,
  */
 void
 livesupport_seek_pack_set_state(LivesupportSeekPack   * seekPack,
-                                GstElementState         state);
+                                GstState                state);
 
 
 

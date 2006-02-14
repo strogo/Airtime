@@ -43,7 +43,6 @@
 #include <gst/gst.h>
 
 #include "LiveSupport/GstreamerElements/autoplug.h"
-#include "util.h"
 #include "seek.h"
 #include "seek-pack.h"
 
@@ -99,7 +98,7 @@ switcher_eos_signal_handler(GstElement     * element,
 
     /* set the container into eos state */
     GST_DEBUG("SeekPack.switcher setting SeekPack.bin to eos");
-    gst_element_set_eos(container);
+    gst_element_send_event(container, gst_event_new_eos());
 }
 
 
@@ -120,7 +119,11 @@ livesupport_seek_pack_new(const gchar    * uniqueName,
     seekPack->caps      = gst_caps_copy(caps);
 
     g_snprintf(str, len, "%s_seekPackSilence", uniqueName);
-    seekPack->silence   = gst_element_factory_make("silence", str);
+    seekPack->silence   = gst_element_factory_make("identity", str);
+    g_value_init(&gvalue, G_TYPE_BOOLEAN);
+    g_value_set_boolean(&gvalue, TRUE);
+    g_object_set(G_OBJECT(seekPack->silence), "silent", &gvalue, NULL);
+    g_value_unset(&gvalue);
 
     seekPack->source    = NULL;
 
@@ -135,7 +138,7 @@ livesupport_seek_pack_new(const gchar    * uniqueName,
 
     g_value_init(&gvalue, G_TYPE_POINTER);
     g_value_set_pointer(&gvalue, seekPack->caps);
-    gst_element_set_property(seekPack->switcher, "caps", &gvalue);
+    g_object_set(G_OBJECT(seekPack->switcher), "caps", &gvalue, NULL);
     g_value_unset(&gvalue);
 
     g_signal_connect(seekPack->switcher,
@@ -152,9 +155,9 @@ livesupport_seek_pack_new(const gchar    * uniqueName,
     
     seekPack->sendingSilence = TRUE;
 
-    gst_element_add_ghost_pad(seekPack->bin,
-                              gst_element_get_pad(seekPack->switcher, "src"),
-                              "src");
+    gst_element_add_pad(seekPack->bin,
+                        gst_ghost_pad_new("src",
+                              gst_element_get_pad(seekPack->switcher, "src")));
 
     return seekPack;
 }
@@ -194,7 +197,7 @@ livesupport_seek_pack_init(LivesupportSeekPack    * seekPack,
                              seekPack->silenceDuration / NSEC_PER_SEC_FLOAT);
     }
     g_value_set_string(&gvalue, str);
-    gst_element_set_property(seekPack->switcher, "source-config", &gvalue);
+    g_object_set(seekPack->switcher, "source-config", &gvalue, NULL);
     g_value_unset(&gvalue);
 
     g_snprintf(name, len, "%s_seekPackDecoder", seekPack->name);
@@ -253,7 +256,7 @@ livesupport_seek_pack_destroy(LivesupportSeekPack     * seekPack)
 {
     gst_element_set_state(seekPack->bin, GST_STATE_NULL);
     g_object_unref(seekPack->bin);
-    gst_caps_free(seekPack->caps);
+    gst_caps_unref(seekPack->caps);
     g_free(seekPack->name);
     g_free(seekPack);
 }
@@ -300,7 +303,7 @@ livesupport_seek_pack_remove_from_bin(LivesupportSeekPack     * seekPack,
  *----------------------------------------------------------------------------*/
 void
 livesupport_seek_pack_set_state(LivesupportSeekPack   * seekPack,
-                                GstElementState         state)
+                                GstState                state)
 {
     /* FIXME: resetting the source from PLAYING state would make it lose
      *        it's seek position */
@@ -328,48 +331,12 @@ livesupport_seek_pack_set_state(LivesupportSeekPack   * seekPack,
 static void
 livesupport_seek_pack_seek(LivesupportSeekPack    * seekPack)
 {
-    GstElement    * pipeline;
-    GstElement    * fakesink;
     gboolean        ret;
-    gint64          value;
     GstSeekType     seekType;
 
-    seekType = (GstSeekType) (GST_FORMAT_TIME |
-                              GST_SEEK_METHOD_SET |
-                              GST_SEEK_FLAG_FLUSH);
-    pipeline = gst_pipeline_new("seek_pipeline");
-    fakesink = gst_element_factory_make("fakesink", "seek_fakesink");
-
-    gst_element_link_filtered(seekPack->decoder, fakesink, seekPack->caps);
-    /* ref the objects we want to keep after pipeline, as it will unref them */
-    g_object_ref(seekPack->source);
-    g_object_ref(seekPack->decoder);
-    gst_bin_add_many(GST_BIN(pipeline),
-                     seekPack->source,
-                     seekPack->decoder,
-                     fakesink,
-                     NULL);
-
-    GST_DEBUG("setting seek pipeline to PLAYING state");
-    gst_element_set_state(seekPack->decoder, GST_STATE_PAUSED);
-    gst_element_set_state(fakesink, GST_STATE_PAUSED);
-    gst_element_set_state(pipeline, GST_STATE_PLAYING);
-
-    GST_DEBUG("starting to iterate...");
-    for (value = 0; value == 0 && gst_bin_iterate(GST_BIN(pipeline)); ) {
-        GstFormat   format = GST_FORMAT_DEFAULT;
-        gst_element_query(fakesink, GST_QUERY_POSITION, &format, &value);
-        GST_DEBUG("position value: %" G_GINT64_FORMAT, value);
-    }
+    seekType = (GstSeekType) GST_SEEK_TYPE_SET;
     GST_DEBUG("seeking on element");
     ret = livesupport_seek(seekPack->decoder, seekType, seekPack->startTime);
     GST_DEBUG("seek result: %d", ret);
-
-    gst_bin_remove_many(GST_BIN(pipeline),
-                        seekPack->source,
-                        seekPack->decoder,
-                        NULL);
-    gst_element_unlink(seekPack->decoder, fakesink);
-    gst_object_unref(GST_OBJECT(pipeline));
 }
 

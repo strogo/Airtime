@@ -71,10 +71,12 @@ class SwitcherTest : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST(oggVorbisOpenEndedTest);
     CPPUNIT_TEST(oggVorbisMultipleTest);
     CPPUNIT_TEST(oggVorbisMultipleOpenEndedTest);
+#if 0
     CPPUNIT_TEST(smilTest);
     CPPUNIT_TEST(smilOpenEndedTest);
     CPPUNIT_TEST(smilMultipleTest);
     CPPUNIT_TEST(smilMultipleOpenEndedTest);
+#endif
     CPPUNIT_TEST_SUITE_END();
 
     private:

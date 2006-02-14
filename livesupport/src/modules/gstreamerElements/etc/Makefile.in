@@ -76,7 +76,6 @@ VPATH    = ${SRC_DIR}
 
 GSTREAMER_CFLAGS=@GSTREAMER_CFLAGS@
 GSTREAMER_LIBS=@GSTREAMER_LIBS@
-GST_REGISTER=@GST_REGISTER@
 
 TEST_RESULTS = ${DOC_DIR}/testResults.xml
 # the text result XSLT has to be relative to the test result file, e.g. TMP_DIR
@@ -132,11 +131,16 @@ LDFLAGS  = @LDFLAGS@ ${GSTREAMER_LIBS} \
 #-------------------------------------------------------------------------------
 #	Dependencies
 #-------------------------------------------------------------------------------
-GSTREAMER_ELEMENTS_LIB_OBJS = ${TMP_DIR}/seek.o \
-                   			  ${TMP_DIR}/util.o \
-                   			  ${TMP_DIR}/seek-pack.o \
+GSTREAMER_ELEMENTS_LIB_OBJS = ${TMP_DIR}/smil-util.o \
 				   			  ${TMP_DIR}/autoplug.o \
-							  ${TMP_DIR}/smil-util.o
+							  ${TMP_DIR}/seek.o \
+							  ${TMP_DIR}/seek-pack.o
+
+#GSTREAMER_ELEMENTS_LIB_OBJS = ${TMP_DIR}/seek.o \
+#                   			  ${TMP_DIR}/util.o \
+#                   			  ${TMP_DIR}/seek-pack.o \
+#				   			  ${TMP_DIR}/autoplug.o \
+#							  ${TMP_DIR}/smil-util.o
 
 ONESHOT_READER_LIB_OBJS = ${TMP_DIR}/oneshot-reader.o
 
@@ -144,10 +148,11 @@ MINIMAL_AUDIO_SMIL_LIB_OBJS = ${TMP_DIR}/minimal-audio-smil.o
 
 PARTIAL_PLAY_LIB_OBJS = ${TMP_DIR}/partial-play.o
 
-SWITCHER_LIB_OBJS = ${TMP_DIR}/switcher.o
+SWITCHER_LIB_OBJS = ${TMP_DIR}/smil-util.o \
+                    ${TMP_DIR}/switcher.o
 
 TEST_RUNNER_OBJS = ${TMP_DIR}/TestRunner.o \
-                   ${TMP_DIR}/AutoplugTest.o 
+                   ${TMP_DIR}/SeekTest.o 
 DONT_TEST=         ${TMP_DIR}/AutoplugTest.o \
                    ${TMP_DIR}/SeekTest.o \
                    ${TMP_DIR}/SwitcherTest.o \
@@ -169,19 +174,16 @@ PLAY_LIBS = -l${GSTREAMER_ELEMENTS_LIB} -l${CORE_LIB}
 #-------------------------------------------------------------------------------
 .PHONY: all dir_setup doc clean docclean depclean distclean check install
 
-all: dir_setup ${GSTREAMER_ELEMENTS_LIB_FILE} \
-               ${ONESHOT_READER_LIB_FILE} \
-               ${MINIMAL_AUDIO_SMIL_LIB_FILE} \
-               ${PARTIAL_PLAY_LIB_FILE} \
-               ${SWITCHER_LIB_FILE} \
-			   ${PLAY} \
-     gst_register
+all: dir_setup ${SWITCHER_LIB_FILE}
+#all: dir_setup ${GSTREAMER_ELEMENTS_LIB_FILE} \
+#               ${ONESHOT_READER_LIB_FILE} \
+#               ${MINIMAL_AUDIO_SMIL_LIB_FILE} \
+#               ${PARTIAL_PLAY_LIB_FILE} \
+#               ${SWITCHER_LIB_FILE} \
+#			   ${PLAY}
 
 dir_setup: ${TMP_DIR} ${DOXYGEN_DIR}
 
-
-gst_register:
-	${GST_REGISTER} > /dev/null 2>&1
 
 doc:
 	${DOXYGEN} ${DOXYGEN_CONFIG}
@@ -240,8 +242,7 @@ ${PARTIAL_PLAY_LIB_FILE}: ${PARTIAL_PLAY_LIB_OBJS} \
 					      ${GSTREAMER_ELEMENTS_LIB_FILE}
 	${CC} -shared -o $@ $^ ${GST_LDFLAGS}
 
-${SWITCHER_LIB_FILE}: ${SWITCHER_LIB_OBJS} \
-					  ${GSTREAMER_ELEMENTS_LIB_FILE}
+${SWITCHER_LIB_FILE}: ${SWITCHER_LIB_OBJS}
 	${CC} -shared -o $@ $^ ${GST_LDFLAGS}
 
 ${TMP_DIR}:

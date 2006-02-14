@@ -69,16 +69,6 @@ static const char *         smilFile = "var/simple.smil";
 
 /* ===============================================  local function prototypes */
 
-/**
- *  Signal handler for the eos event of the switcher element.
- *
- *  @param element the element emitting the eos signal
- *  @param userData pointer to the container bin of the switcher.
- */
-static void
-eos_signal_handler(GstElement     * element,
-                   gpointer         userData);
-
 
 /* =============================================================  module code */
 
@@ -101,6 +91,38 @@ SwitcherTest :: tearDown(void)                      throw ()
 
 
 /*------------------------------------------------------------------------------
+ *  Set all pads of an element flushing
+ *----------------------------------------------------------------------------*/
+static void
+set_flushing(GstElement   * element)
+{
+    GstIterator   * it   = gst_element_iterate_pads(element);
+    gboolean        done = FALSE;
+    gpointer        item;
+
+    while (!done) {
+        switch (gst_iterator_next(it, &item)) {
+            case GST_ITERATOR_OK: {
+                GstPad    * pad = (GstPad*) item;
+                GST_PAD_SET_FLUSHING(pad);
+            } break;
+
+            case GST_ITERATOR_RESYNC:
+                gst_iterator_resync(it);
+                break;
+
+            case GST_ITERATOR_ERROR:
+            case GST_ITERATOR_DONE:
+            default:
+                done = TRUE;
+        }
+    }
+
+    gst_iterator_free(it);
+}
+
+
+/*------------------------------------------------------------------------------
  *  Play an audio file
  *----------------------------------------------------------------------------*/
 gint64
@@ -116,6 +138,7 @@ SwitcherTest :: playFiles(const char     ** audioFiles,
     unsigned int    i;
     GstFormat       format;
     gint64          timePlayed;
+    GstMessage    * message;
 
     /* initialize GStreamer */
     gst_init(0, 0);
@@ -134,6 +157,11 @@ SwitcherTest :: playFiles(const char     ** audioFiles,
     switcher = gst_element_factory_make("switcher", "switcher");
     sink     = gst_element_factory_make("alsasink", "alsa-output");
 
+    gst_bin_add_many(GST_BIN(pipeline), switcher, sink, NULL);
+    gst_element_link(switcher, sink);
+
+    g_object_set(G_OBJECT(switcher), "source-config", sourceConfig, NULL);
+
     for (i = 0; i < noFiles; ++i) {
         GstElement    * source;
         GstElement    * decoder;
@@ -147,11 +175,13 @@ SwitcherTest :: playFiles(const char     ** audioFiles,
 
         g_snprintf(str, 256, "decoder_%d", i);
         decoder = ls_gst_autoplug_plug_source(source, str, caps);
+        //decoder = gst_element_factory_make("mad", str);
         CPPUNIT_ASSERT(decoder);
 
-        ret = gst_element_link(decoder, switcher);
-        CPPUNIT_ASSERT(ret);
         gst_bin_add_many(GST_BIN(pipeline), source, decoder, NULL);
+
+        ret = gst_element_link_many(source, decoder, switcher, NULL);
+        CPPUNIT_ASSERT(ret);
     }
 
     /* link and add the switcher & sink _after_ the decoders above
@@ -160,46 +190,35 @@ SwitcherTest :: playFiles(const char     ** audioFiles,
      * error later on when trying to free up the pipeline
      * see http://bugzilla.gnome.org/show_bug.cgi?id=309122
      */
-    gst_element_link_many(switcher, sink, NULL);
-    gst_bin_add_many(GST_BIN(pipeline), switcher, sink, NULL);
+    //gst_element_link_many(switcher, sink, NULL);
+    //gst_bin_add_many(GST_BIN(pipeline), switcher, sink, NULL);
 
-    g_object_set(G_OBJECT(switcher), "source-config", sourceConfig, NULL);
-    /* listen for the eos event on switcher, so the pipeline can be stopped */
-    g_signal_connect(switcher, "eos", G_CALLBACK(eos_signal_handler), pipeline);
-
+    //g_object_set(G_OBJECT(switcher), "source-config", sourceConfig, NULL);
+ 
     gst_element_set_state(sink, GST_STATE_PAUSED);
     /* set the switcher to PAUSED, as it will give
      * "trying to push on unnegotiaded pad" warnings otherwise */
-    gst_element_set_state(switcher, GST_STATE_PAUSED);
+    //gst_element_set_state(switcher, GST_STATE_PAUSED);
     gst_element_set_state(pipeline, GST_STATE_PLAYING);
 
-    while (gst_bin_iterate(GST_BIN(pipeline)));
+    // this call will block until either an error or eos message comes
+    message = gst_bus_poll(gst_pipeline_get_bus((GstPipeline*) pipeline),
+                        (GstMessageType) (GST_MESSAGE_ERROR | GST_MESSAGE_EOS),
+                        -1);
+
+    g_printerr("got message: %s\n",
+               gst_message_type_get_name(GST_MESSAGE_TYPE(message)));
+
+    //gst_xml_write_file(pipeline, stdout);
 
     format = GST_FORMAT_TIME;
-    gst_element_query(sink, GST_QUERY_POSITION, &format, &timePlayed);
+    gst_element_query_position(pipeline, &format, &timePlayed);
 
     /* clean up nicely */
     gst_element_set_state(pipeline, GST_STATE_NULL);
-    gst_object_unref(GST_OBJECT (pipeline));
+    gst_object_unref(GST_OBJECT(pipeline));
 
     return timePlayed;
-}
-
-
-/*------------------------------------------------------------------------------
- *  eos signal handler for the switcher element
- *----------------------------------------------------------------------------*/
-static void
-eos_signal_handler(GstElement     * element,
-                   gpointer         userData)
-{
-    GstElement    * container = GST_ELEMENT(userData);
-
-    g_return_if_fail(container != NULL);
-    g_return_if_fail(GST_IS_ELEMENT(container));
-
-    // set the container into eos state
-    gst_element_set_eos(container);
 }
 
 

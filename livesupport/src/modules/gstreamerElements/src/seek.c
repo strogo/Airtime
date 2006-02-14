@@ -29,7 +29,6 @@
 
 /* ============================================================ include files */
 
-#include "util.h"
 #include "seek.h"
 
 
@@ -38,24 +37,9 @@
 
 /* ================================================  local constants & macros */
 
-/**
- *  Define PAD_PUSH if seeking on an src pad should be done with
- *  pushin a new seek event down the pad.
- *  Otherwise, the event will be sent normally.
- */
-#undef PAD_PUSH
-
-/**
- *  Define SEEK_ELEMENT if seeking should be done by seeking on an element
- *  itself. Otherwise, the seek will be done on the first src pad of
- *  the element.
- */
-#undef SEEK_ELEMENT
-
 
 /* ===============================================  local function prototypes */
 
-#ifdef SEEK_ELEMENT
 /**
  *  Seek on an element.
  *
@@ -68,27 +52,10 @@ static gboolean
 seek_element(GstElement   * element,
              GstSeekType    seekType,
              gint64         seekTime);
-#endif
-
-#ifndef SEEK_ELEMENT
-/**
- *  Seek on the first src pad of an element.
- *
- *  @param element the element to seek on.
- *  @param seekType the type of seek.
- *  @param seekTime the time of seek, in nanoseconds.
- *  @return TRUE if seeking was successfult, FALSE otherwise.
- */
-static gboolean
-seek_src_pad(GstElement   * element,
-             GstSeekType    seekType,
-             gint64         seekTime);
-#endif
 
 
 /* =============================================================  module code */
 
-#ifdef SEEK_ELEMENT
 /*------------------------------------------------------------------------------
  *  Seek on an element.
  *----------------------------------------------------------------------------*/
@@ -97,39 +64,15 @@ seek_element(GstElement   * element,
              GstSeekType    seekType,
              gint64         seekTime)
 {
-    return gst_element_seek(element, seekType, seekTime);
+    return gst_element_seek(element,
+                            1.0,
+                            GST_FORMAT_TIME,
+                            GST_SEEK_FLAG_FLUSH,
+                            seekType,
+                            seekTime,
+                            GST_SEEK_TYPE_NONE,
+                            GST_CLOCK_TIME_NONE);
 }
-#endif
-
-
-#ifndef SEEK_ELEMENT
-/*------------------------------------------------------------------------------
- *  Seek on the first src pad of an element.
- *----------------------------------------------------------------------------*/
-static gboolean
-seek_src_pad(GstElement   * element,
-             GstSeekType    seekType,
-             gint64         seekTime)
-{
-    GstPad    * pad;
-    GstEvent  * seek;
-
-    if ((pad  = get_src_pad(element))) {
-        seek = gst_event_new_seek(seekType, seekTime);
-#ifdef PAD_PUSH
-        gst_pad_push(pad, GST_DATA(seek));
-        return TRUE;
-#else
-        return gst_pad_send_event(pad, seek);
-#endif
-    }
-
-    GST_WARNING("element doesn't have a src pad");
-    return FALSE;
-}
-#endif
-
-
 /*------------------------------------------------------------------------------
  *  Seek on an element.
  *----------------------------------------------------------------------------*/
@@ -138,11 +81,7 @@ livesupport_seek(GstElement   * element,
                  GstSeekType    seekType,
                  gint64         seekTime)
 {
-#ifdef SEEK_ELEMENT
     return seek_element(element, seekType, seekTime);
-#else
-    return seek_src_pad(element, seekType, seekTime);
-#endif
 }
 
 
@@ -156,9 +95,7 @@ livesupport_seek_seconds(GstElement   * element,
     GstSeekType     seekType;
     gint64          seekTime;
 
-    seekType = (GstSeekType) (GST_FORMAT_TIME |
-                              GST_SEEK_METHOD_SET |
-                              GST_SEEK_FLAG_FLUSH);
+    seekType = (GstSeekType) GST_SEEK_TYPE_SET;
     seekTime = seconds * GST_SECOND;
 
     return livesupport_seek(element, seekType, seekTime);

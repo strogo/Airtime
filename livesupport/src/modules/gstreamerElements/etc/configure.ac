@@ -37,7 +37,7 @@ AC_PREREQ(2.59)
 AC_COPYRIGHT([Copyright (c) 2004 Media Development Loan Fund under the GNU GPL])
 AC_REVISION($Revision$)
 
-AC_CONFIG_SRCDIR(../src/oneshot-reader.c)
+AC_CONFIG_SRCDIR(../src/autoplug.c)
 
 AC_CONFIG_HEADERS(configure.h)
 AC_PROG_CC()
@@ -61,12 +61,12 @@ export PKG_CONFIG_PATH
 export PATH=${prefix}/bin:${PATH}
 
 
-PKG_CHECK_MODULES(GSTREAMER,[gstreamer-0.8 >= 0.8])
+PKG_CHECK_MODULES(GSTREAMER,[gstreamer-0.10 >= 0.10])
 AC_SUBST(GSTREAMER_CFLAGS)
 AC_SUBST(GSTREAMER_LIBS)
 
-AC_PATH_PROG(GST_REGISTER, gst-register-0.8)
-AC_SUBST(GST_REGISTER)
+dnl gstreamer needs the PACKAGE macro to be set as well
+AC_DEFINE(PACKAGE, ["GstreamerElements"], [the package name])
 
 
 dnl-----------------------------------------------------------------------------
