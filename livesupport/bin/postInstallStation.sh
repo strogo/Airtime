@@ -236,24 +236,107 @@ rm -f $group_tmp_file;
 
 
 #-------------------------------------------------------------------------------
-#  Install the new pg_hba.conf file
+#   Detect postgresql config dir
 #-------------------------------------------------------------------------------
-echo "Modifying postgresql access permissions...";
-
 pg_config_dir=$postgresql_dir
-pg_config_file=pg_hba.conf
-pg_config_file_saved=pg_hba.conf.before-livesupport
+pg_hba_file=pg_hba.conf
+pg_hba_file_saved=pg_hba.conf.before-livesupport
+pg_config_file=postgresql.conf
+pg_config_file_saved=postgresql.conf.before-livesupport
 
-if [ -f $pg_config_dir/$pg_config_file ] ; then
-    mv -f $pg_config_dir/$pg_config_file $pg_config_dir/$pg_config_file_saved ;
+echo "Test for Postgresql config dir...";
+
+for PG_CONFIG_DIR in \
+    $pg_config_dir /etc/postgresql/7.4/main 
+do
+    echo -n "$PG_CONFIG_DIR/$pg_hba_file "
+    if [ -f $PG_CONFIG_DIR/$pg_hba_file ]; then
+        echo "Y"
+        PG_CONFIG_DIR_FOUND="$PG_CONFIG_DIR"
+    else
+        echo "N"
+    fi
+done
+
+if [ -f $PG_CONFIG_DIR_FOUND/$pg_hba_file ]; then
+    #-------------------------------------------------------------------------------
+    #  Install the new pg_hba.conf file
+    #-------------------------------------------------------------------------------
+    echo "Modifying postgresql access permissions...";
+
+
+    if [ -f $PG_CONFIG_DIR_FOUND/$pg_hba_file_saved ]; then
+        echo "Backup of $PG_CONFIG_DIR_FOUND/$pg_hba_file already exists, skipped";
+    else
+        echo "Backup $PG_CONFIG_DIR_FOUND/$pg_hba_file to $PG_CONFIG_DIR_FOUND/$pg_hba_file_saved"    
+        mv -f $PG_CONFIG_DIR_FOUND/$pg_hba_file $PG_CONFIG_DIR_FOUND/$pg_hba_file_saved ;    
+    fi
+
+    echo "Installing replacement for $PG_CONFIG_DIR_FOUND/$pg_hba_file"
+    cp $install_etc/$pg_hba_file $PG_CONFIG_DIR_FOUND/$pg_hba_file
+    chown root:$postgres_user $PG_CONFIG_DIR_FOUND/$pg_hba_file
+
+else
+    echo "###############################"
+    echo " Could not configure Postgresql"
+    echo "###############################"
 fi
-cp $install_etc/$pg_config_file $pg_config_dir/$pg_config_file
-chown root:$postgres_user $pg_config_dir/$pg_config_file
 
-# don't use restart for the init script, as it might return prematurely
-# and in the later call to psql we wouldn't be able to connect
-/etc/init.d/postgresql stop
-/etc/init.d/postgresql start
+echo "done"
+
+
+#-------------------------------------------------------------------------------
+#  Install the new postgresql.conf file just on ubuntu
+#-------------------------------------------------------------------------------
+
+
+if [ $PG_CONFIG_DIR_FOUND == "/etc/postgresql/7.4/main" ]; then
+
+    echo "Changing postgresql.conf...";
+    
+    if [ -f $PG_CONFIG_DIR_FOUND/$pg_config_file_saved ]; then
+        echo "Backup of $PG_CONFIG_DIR_FOUND/$pg_config_file already exists, skipped";
+    else
+    	echo "Backup $PG_CONFIG_DIR_FOUND/$pg_config_file to $PG_CONFIG_DIR_FOUND/$pg_config_file_saved"
+        cp -f $PG_CONFIG_DIR_FOUND/$pg_config_file $PG_CONFIG_DIR_FOUND/$pg_config_file_saved ;
+    fi
+    
+    echo "Installing replacement for $PG_CONFIG_DIR_FOUND/$pg_config_file"
+    cp $install_etc/$pg_config_file $PG_CONFIG_DIR_FOUND/$pg_config_file
+    chown root:$postgres_user $PG_CONFIG_DIR_FOUND/$pg_config_file
+
+fi
+
+#-------------------------------------------------------------------------------
+#   Detect Postgresql start-stop script name
+#-------------------------------------------------------------------------------
+
+echo "Test for Postgresql start-stop script...";
+
+PG_INIT_SCRIPT_FOUND=no
+
+for PG_INIT_SCRIPT in \
+    postgresql postgresql-7.4
+do
+    echo -n "/etc/init.d/$PG_INIT_SCRIPT "
+    if [ -f /etc/init.d/$PG_INIT_SCRIPT ]; then
+        echo "Y"
+        PG_INIT_SCRIPT_FOUND="$PG_INIT_SCRIPT"
+    else
+        echo "N"
+    fi
+done
+if [ "x$PG_INIT_SCRIPT_FOUND" == "x" ]; then
+    echo "###############################"
+    echo " Could not restart Postgresql"
+    echo "###############################"
+else
+    # don't use restart for the init script, as it might return prematurely
+    # and in the later call to psql we wouldn't be able to connect
+    /etc/init.d/$PG_INIT_SCRIPT_FOUND stop
+    /etc/init.d/$PG_INIT_SCRIPT_FOUND start
+fi
+echo "done"
 
 
 #-------------------------------------------------------------------------------
@@ -444,4 +527,3 @@ $install_bin/gst-register > /dev/null 2>&1
 #  Say goodbye
 #-------------------------------------------------------------------------------
 echo "Done."
-
