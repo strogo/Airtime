@@ -58,18 +58,20 @@ Description: A radio program automation and support tool.
 
 Package: livesupport-station
 Architecture: any
+Pre-Depends:  php5-cli | php4-cli,
+              postgresql-7.4 | postgresql (>= 7.4),
+              postgresql-client (>=7.4)
 Depends: ${shlibs:Depends},
          livesupport-libs (>= ${dpkg:Version}),
          sed,
          odbc-postgresql,
-         apache | apache2,
-         php4,
-         php4-domxml,
+         apache2 | apache,
+         php5 | php4,
+         php5 | php4-domxml,
+         php5-pgsql | php4-pgsql,
          php4-pear,
-         php4-pgsql,
-         libapache-mod-php4 | libapache2-mod-php4,
-         postgresql (>= 7.4),
-         postgresql-client (>=7.4)
+         libapache-mod-php4, 
+         libapache2-mod-php5 | libapache2-mod-php4          
 Description: A radio program automation and support tool.
  This package contains the server components of LiveSupport.
  This includes a scheluer deamon, and web-based server components.
@@ -81,3 +83,4 @@ Depends: ${shlibs:Depends},
          sed
 Description: A radio program automation and support tool.
  This package contains the GUI client components of LiveSupport.
+

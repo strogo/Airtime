@@ -56,10 +56,31 @@ case "$1" in
             # restore the old pg_hba.conf file
             if [ -f /etc/postgresql/pg_hba.conf ] \
                && [ -f /etc/postgresql/pg_hba.conf.before-livesupport ] ; then
+                echo "Restoring /etc/postgresql/pg_hba.conf";
                 mv -f /etc/postgresql/pg_hba.conf \
                       /etc/postgresql/pg_hba.conf.livesupport ;
                 mv -f /etc/postgresql/pg_hba.conf.before-livesupport \
                       /etc/postgresql/pg_hba.conf ;
+            fi
+            
+            # restore the old pg_hba.conf file for ubuntu
+            if [ -f /etc/postgresql/7.4/main/pg_hba.conf ] \
+               && [ -f /etc/postgresql/7.4/main/pg_hba.conf.before-livesupport ] ; then
+                echo "Restoring /etc/postgresql/7.4/main/pg_hba.conf";
+                mv -f /etc/postgresql/7.4/main/pg_hba.conf \
+                      /etc/postgresql/7.4/main/pg_hba.conf.livesupport ;
+                mv -f /etc/postgresql/7.4/main/pg_hba.conf.before-livesupport \
+                      /etc/postgresql/7.4/main/pg_hba.conf ;
+            fi
+            
+            # restore the old postgresql.conf file for ubuntu
+            if [ -f /etc/postgresql/7.4/main/postgresql.conf ] \
+               && [ -f /etc/postgresql/7.4/main/postgresql.conf.before-livesupport ] ; then
+                echo "Restoring /etc/postgresql/7.4/postgresql.conf";
+                mv -f /etc/postgresql/7.4/main/postgresql.conf \
+                      /etc/postgresql/7.4/main/postgresql.conf.livesupport ;
+                mv -f /etc/postgresql/7.4/main/postgresql.conf.before-livesupport \
+                      /etc/postgresql/7.4/main/postgresql.conf ;
             fi
         ;;
 
