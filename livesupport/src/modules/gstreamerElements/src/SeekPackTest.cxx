@@ -69,16 +69,6 @@ static const char *         smilFile = "var/simple.smil";
 
 /* ===============================================  local function prototypes */
 
-/**
- *  Signal handler for the eos event of the switcher element.
- *
- *  @param element the element emitting the eos signal
- *  @param userData pointer to the container bin of the switcher.
- */
-static void
-eos_signal_handler(GstElement     * element,
-                   gpointer         userData);
-
 
 /* =============================================================  module code */
 
@@ -116,6 +106,7 @@ SeekPackTest :: playFile(const char   * audioFile,
     GstCaps               * caps;
     GstElement            * sink;
     GstFormat               format;
+    GstMessage            * message;
     gint64                  timePlayed;
 
     /* initialize GStreamer */
@@ -139,29 +130,30 @@ SeekPackTest :: playFile(const char   * audioFile,
     /* set filename property on the file source */
     g_object_set(G_OBJECT (source), "location", audioFile, NULL);
 
+    g_printerr("playFile #1\n");
     livesupport_seek_pack_init(seekPack,
                                source,
                                silenceDuration,
                                playFrom,
                                playTo);
-    g_signal_connect(seekPack->bin,
-                     "eos",
-                     G_CALLBACK(eos_signal_handler),
-                     pipeline);
 
-    livesupport_seek_pack_link(seekPack, sink);
-
+    g_printerr("playFile #2\n");
     livesupport_seek_pack_add_to_bin(seekPack, GST_BIN(pipeline));
     gst_bin_add(GST_BIN(pipeline), sink);
 
-    gst_element_set_state(sink, GST_STATE_READY);
-    livesupport_seek_pack_set_state(seekPack, GST_STATE_PLAYING);
+    livesupport_seek_pack_link(seekPack, sink);
+
     gst_element_set_state(pipeline, GST_STATE_PLAYING);
 
-    while (gst_bin_iterate(GST_BIN(pipeline)));
+    g_printerr("playFile #4\n");
+    // wait until EOS or an ERROR is reached
+    message = gst_bus_poll(gst_pipeline_get_bus((GstPipeline*) pipeline),
+                        (GstMessageType) (GST_MESSAGE_ERROR | GST_MESSAGE_EOS),
+                        -1);
 
+    g_printerr("playFile #5\n");
     format = GST_FORMAT_TIME;
-    gst_element_query(sink, GST_QUERY_POSITION, &format, &timePlayed);
+    gst_element_query_position(pipeline, &format, &timePlayed);
 
     /* clean up nicely */
     gst_element_set_state(pipeline, GST_STATE_NULL);
@@ -169,23 +161,6 @@ SeekPackTest :: playFile(const char   * audioFile,
     gst_object_unref(GST_OBJECT(pipeline));
 
     return timePlayed;
-}
-
-
-/*------------------------------------------------------------------------------
- *  eos signal handler for the switcher element
- *----------------------------------------------------------------------------*/
-static void
-eos_signal_handler(GstElement     * element,
-                   gpointer         userData)
-{
-    GstElement    * container = GST_ELEMENT(userData);
-
-    g_return_if_fail(container != NULL);
-    g_return_if_fail(GST_IS_ELEMENT(container));
-
-    // set the container into eos state
-    gst_element_set_eos(container);
 }
 
 

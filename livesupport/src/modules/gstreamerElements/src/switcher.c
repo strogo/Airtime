@@ -42,6 +42,7 @@
 
 #include <gst/gst.h>
 
+#include "LiveSupport/GstreamerElements/autoplug.h"
 #include "smil-util.h"
 #include "switcher.h"
 
@@ -621,8 +622,42 @@ livesupport_switcher_change_state(GstElement      * element,
                          GST_STATE_CHANGE_FAILURE);
 
     switch (transition) {
-        case GST_STATE_CHANGE_NULL_TO_READY: {
+        case GST_STATE_CHANGE_NULL_TO_READY:
+            break;
+
+        case GST_STATE_CHANGE_READY_TO_PAUSED: {
             GList                             * elem;
+            LivesupportSwitcherSourceConfig   * config = NULL;
+
+            /* if there s no current config yet, select the first one */
+            if (switcher->currentConfig == NULL) {
+
+g_printerr("size of config list: %d\n",
+           g_list_length(switcher->sourceConfigList));
+                
+                switcher->currentConfig =
+                                    g_list_first(switcher->sourceConfigList);
+                if (switcher->currentConfig) {
+                    config = (LivesupportSwitcherSourceConfig*)
+                                                switcher->currentConfig->data;
+
+g_printerr("currentConfig: %p, config: %p\n",
+           switcher->currentConfig, config);
+
+                    switcher->switchTime = config->duration;
+                    if (!config->sinkPad) {
+                        if (!(config->sinkPad = g_list_nth_data(
+                                                        switcher->sinkpadList,
+                                                        config->sourceId))) {
+                            GST_ELEMENT_ERROR(GST_ELEMENT(switcher),
+                                         RESOURCE,
+                                         NOT_FOUND,
+                                         ("can't find sinkpad for first sink"),
+                                         (NULL));
+                        }
+                    }
+                }
+            }
 
             /* lock all elements linked to our sinks, so that we
              * control their states directly */
@@ -632,48 +667,26 @@ livesupport_switcher_change_state(GstElement      * element,
 
                 GstPad    * sinkPad = (GstPad*) elem->data;
                 GstPad    * peerPad = gst_pad_get_peer(sinkPad);
+
                 if (GST_IS_GHOST_PAD(peerPad)) {
                     peerPad = gst_ghost_pad_get_target((GstGhostPad*) peerPad);
                 }
 
-                g_printerr("blocking a pad\n");
-                gst_pad_set_blocked_async(peerPad, TRUE, block_callback, 0);
-            }
+g_printerr("config: %p, sinkPad: %p\n",
+config, peerPad);
 
-            if (switcher->currentConfig == NULL) {
-                /* if this is the very first call to the loop function */
-                LivesupportSwitcherSourceConfig * config;
-                GstPad                          * peerPad;
-
-                switcher->currentConfig =
-                                    g_list_first(switcher->sourceConfigList);
-                config = (LivesupportSwitcherSourceConfig*)
-                                                switcher->currentConfig->data;
-                switcher->switchTime = config->duration;
-                if (!config->sinkPad) {
-                    if (!(config->sinkPad = g_list_nth_data(
-                                                        switcher->sinkpadList,
-                                                        config->sourceId))) {
-                        GST_ELEMENT_ERROR(GST_ELEMENT(switcher),
-                                          RESOURCE,
-                                          NOT_FOUND,
-                                          ("can't find sinkpad for first sink"),
-                                          (NULL));
-                    }
+                /* unblock the pad for the current config, block the rest */
+                if (config && config->sinkPad == sinkPad) {
+                    g_printerr("unblocking a pad\n");
+                    gst_pad_set_blocked_async(peerPad, FALSE, block_callback,0);
+                    //gst_pad_set_blocked(peerPad, FALSE);
+                } else {
+                    g_printerr("blocking a pad\n");
+                    gst_pad_set_blocked_async(peerPad, FALSE, block_callback,0);
+                    //gst_pad_set_blocked(peerPad, TRUE);
                 }
-
-                g_printerr("unblocking a pad\n");
-                peerPad = gst_pad_get_peer(config->sinkPad);
-                if (GST_IS_GHOST_PAD(peerPad)) {
-                    peerPad = gst_ghost_pad_get_target((GstGhostPad*) peerPad);
-                }
-                gst_pad_set_blocked_async(peerPad, FALSE,
-                                          block_callback, 0);
             }
         } break;
-
-        case GST_STATE_CHANGE_READY_TO_PAUSED:
-            break;
 
         case GST_STATE_CHANGE_PAUSED_TO_PLAYING: 
             break;
@@ -810,7 +823,7 @@ livesupport_switcher_chain(GstPad     * pad,
                                                 switcher->currentConfig->data;
     }
 
-#if 0
+
 /* report positions for debug purposes */
 {
     GstBin        * parent = (GstBin*) gst_element_get_parent(switcher);
@@ -827,11 +840,17 @@ livesupport_switcher_chain(GstPad     * pad,
                 GstState        state;
                 gboolean        ret;
 
-                ret = gst_element_query_position(el, &format, &position);
-                if (!ret) {
-                    format = GST_FORMAT_BYTES;
+                if (g_strrstr(gst_element_get_name(el), "decoder")) {
+                    position = ls_gst_autoplug_get_position(el);
+                    ret      = 1;
+                } else {
                     ret = gst_element_query_position(el, &format, &position);
+                    if (!ret) {
+                        format = GST_FORMAT_BYTES;
+                        ret = gst_element_query_position(el, &format,&position);
+                    }
                 }
+
                 gst_element_get_state(el, &state, 0, 0);
                 g_printerr("element %s"
                            ", position: %" G_GINT64_FORMAT " (%d)"
@@ -851,7 +870,7 @@ livesupport_switcher_chain(GstPad     * pad,
     }
     gst_iterator_free(it);
 }
-#endif
+
 
     if (pad != config->sinkPad) {
         /* just don't do anything on input from not the active pad */

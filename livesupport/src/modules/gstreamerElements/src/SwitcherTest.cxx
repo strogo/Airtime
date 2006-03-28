@@ -52,6 +52,11 @@ using namespace LiveSupport::GstreamerElements;
 CPPUNIT_TEST_SUITE_REGISTRATION(SwitcherTest);
 
 /**
+ *  Number of nanoseconds per second, in floating point format.
+ */
+#define NSEC_PER_SEC_FLOAT  1000000000.0
+
+/**
  *  An mp3 test file.
  */
 static const char *         mp3File = "var/5seccounter.mp3";
@@ -184,21 +189,6 @@ SwitcherTest :: playFiles(const char     ** audioFiles,
         CPPUNIT_ASSERT(ret);
     }
 
-    /* link and add the switcher & sink _after_ the decoders above
-     * otherwise we'll get a:
-     * "assertion failed: (group->group_links == NULL)"
-     * error later on when trying to free up the pipeline
-     * see http://bugzilla.gnome.org/show_bug.cgi?id=309122
-     */
-    //gst_element_link_many(switcher, sink, NULL);
-    //gst_bin_add_many(GST_BIN(pipeline), switcher, sink, NULL);
-
-    //g_object_set(G_OBJECT(switcher), "source-config", sourceConfig, NULL);
- 
-    gst_element_set_state(sink, GST_STATE_PAUSED);
-    /* set the switcher to PAUSED, as it will give
-     * "trying to push on unnegotiaded pad" warnings otherwise */
-    //gst_element_set_state(switcher, GST_STATE_PAUSED);
     gst_element_set_state(pipeline, GST_STATE_PLAYING);
 
     // this call will block until either an error or eos message comes
@@ -217,6 +207,214 @@ SwitcherTest :: playFiles(const char     ** audioFiles,
     /* clean up nicely */
     gst_element_set_state(pipeline, GST_STATE_NULL);
     gst_object_unref(GST_OBJECT(pipeline));
+
+    return timePlayed;
+}
+
+
+static GMutex     * mutex;
+static GCond      * cond;
+
+
+static void
+block_callback(GstPad     * pad,
+               gboolean     blocked,
+               gpointer     userData)
+{
+    /* don't do anything */
+    g_printerr("switcher test block_callback on %s:%s: %d\n",
+               gst_element_get_name(gst_pad_get_parent_element(pad)),
+               gst_pad_get_name(pad),
+               blocked);
+
+    g_mutex_lock(mutex);
+    if (cond != NULL) {
+        g_cond_signal(cond);
+    }
+    g_mutex_unlock(mutex);
+}
+
+
+
+/*------------------------------------------------------------------------------
+ *  Play some silence, than a part of the specificed file.
+ *
+ *  create the following element structure:
+ *
+ *  audiotestsrc -------------\
+ *                            | -- switcher -- alsasink
+ *  source -- decoder --------/
+ *----------------------------------------------------------------------------*/
+gint64
+SwitcherTest :: playSilenceThenFile(const char    * audioFile,
+                                    gint64          silenceDuration,
+                                    gint64          startTime,
+                                    gint64          endTime)
+                                                throw (CPPUNIT_NS::Exception)
+{
+    GstElement    * pipeline;
+    GstElement    * switcher;
+    GstElement    * silence;
+    GstElement    * source;
+    GstElement    * decoder;
+    GstElement    * sink;
+    GstPad        * pad;
+    GstCaps       * caps;
+    char            str[256];
+    GstFormat       format;
+    gint64          timePlayed;
+    GstMessage    * message;
+    gboolean        ret;
+
+    /* initialize GStreamer */
+    gst_init(0, 0);
+
+    caps = gst_caps_new_simple("audio/x-raw-int",
+                               "width", G_TYPE_INT, 16,
+                               "depth", G_TYPE_INT, 16,
+                               "endianness", G_TYPE_INT, G_BYTE_ORDER,
+                               "signed", G_TYPE_BOOLEAN, TRUE,
+                               "channels", G_TYPE_INT, 2,
+                               "rate", G_TYPE_INT, 44100,
+                               NULL);
+
+    /* create elements */
+    pipeline = gst_pipeline_new("audio-player");
+    switcher = gst_element_factory_make("switcher", "switcher");
+    sink     = gst_element_factory_make("alsasink", "alsa-output");
+
+    gst_bin_add_many(GST_BIN(pipeline), switcher, sink, NULL);
+    gst_element_link(switcher, sink);
+
+    /* set the source config, according to the input */
+    if (endTime >= 0) {
+        g_snprintf(str, 256, "0[%lfs];1[%lfs]",
+                             silenceDuration / NSEC_PER_SEC_FLOAT,
+                             (endTime - startTime) / NSEC_PER_SEC_FLOAT);
+    } else {
+        g_snprintf(str, 256, "0[%lfs];1[]",
+                             silenceDuration / NSEC_PER_SEC_FLOAT);
+    }
+    g_object_set(G_OBJECT(switcher), "source-config", str, NULL);
+
+    /* put a silence there up front, before the audio files */
+    silence = gst_element_factory_make("audiotestsrc", "silence");
+    /* wave 4 is for silence */
+    g_object_set(G_OBJECT(silence), "wave", 4, NULL);
+    gst_bin_add(GST_BIN(pipeline), silence);
+    gst_element_link(silence, switcher);
+
+    /* create the input file */
+    source   = gst_element_factory_make("filesrc", "source");
+    CPPUNIT_ASSERT(source);
+    g_object_set(G_OBJECT(source), "location", audioFile, NULL);
+
+    /* create the decoder */
+    decoder = ls_gst_autoplug_plug_source(source, "decoder", caps);
+    CPPUNIT_ASSERT(decoder);
+    gst_bin_add_many(GST_BIN(pipeline), source, decoder, NULL);
+    ret = gst_element_link_many(source, decoder, switcher, NULL);
+    CPPUNIT_ASSERT(ret);
+
+    mutex = g_mutex_new();
+    cond  = g_cond_new();
+
+    g_mutex_lock(mutex);
+
+    /* block on the switcher's src pad */
+    pad = gst_element_get_pad(switcher, "src");
+    gst_pad_set_blocked_async(pad, TRUE, block_callback, 0);
+
+    gst_element_set_state(pipeline, GST_STATE_PAUSED);
+
+    g_cond_wait(cond, mutex);
+    g_cond_free(cond);
+
+    gst_xml_write_file(decoder, stdout);
+
+    /* do the seek on the decoder */
+#if 0
+    ret = ls_gst_autoplug_seek(decoder,
+                               1.0,
+                               GST_FORMAT_TIME,
+                               GST_SEEK_FLAG_FLUSH,
+                               GST_SEEK_TYPE_SET,
+                               startTime,
+                               GST_SEEK_TYPE_SET,
+                               endTime);
+    CPPUNIT_ASSERT(ret);
+    ret = gst_element_seek(decoder,
+                           1.0,
+                           GST_FORMAT_TIME,
+                           GST_SEEK_FLAG_FLUSH,
+                           GST_SEEK_TYPE_SET,
+                           startTime,
+                           GST_SEEK_TYPE_SET,
+                           endTime);
+    CPPUNIT_ASSERT(ret);
+#endif
+
+#if 0
+    /* send a seek event */
+    ret = gst_element_seek(pipeline,
+                           1.0,
+                           GST_FORMAT_TIME,
+                           GST_SEEK_FLAG_FLUSH,
+                           GST_SEEK_TYPE_SET,
+                           1LL * GST_SECOND,
+                           GST_SEEK_TYPE_SET,
+                           3LL * GST_SECOND);
+    CPPUNIT_ASSERT(ret);
+#endif
+
+    /* now that prerolling is done, unblock the switcher's src pad */
+    cond = g_cond_new();
+    gst_pad_set_blocked_async(pad, FALSE, block_callback, 0);
+    g_cond_wait(cond, mutex);
+    g_cond_free(cond);
+    cond = NULL;
+
+    g_mutex_unlock(mutex);
+
+    g_printerr("after all locking...\n");
+
+    /* sleep a second */
+    struct timespec   ts;
+    ts.tv_sec  = 1;
+    ts.tv_nsec = 0;
+    nanosleep(&ts, NULL);
+
+    ret = ls_gst_autoplug_seek(decoder,
+                               1.0,
+                               GST_FORMAT_TIME,
+                               GST_SEEK_FLAG_FLUSH,
+                               GST_SEEK_TYPE_SET,
+                               startTime,
+                               GST_SEEK_TYPE_SET,
+                               endTime);
+    CPPUNIT_ASSERT(ret);
+
+    //gst_element_set_state(pipeline, GST_STATE_PLAYING);
+
+    // this call will block until either an error or eos message comes
+    message = gst_bus_poll(gst_pipeline_get_bus((GstPipeline*) pipeline),
+                        (GstMessageType) (GST_MESSAGE_ERROR | GST_MESSAGE_EOS),
+                        -1);
+
+    g_printerr("got message: %s\n",
+               gst_message_type_get_name(GST_MESSAGE_TYPE(message)));
+
+    //gst_xml_write_file(pipeline, stdout);
+
+    format = GST_FORMAT_TIME;
+    gst_element_query_position(pipeline, &format, &timePlayed);
+
+    /* clean up nicely */
+    gst_element_set_state(pipeline, GST_STATE_NULL);
+    gst_object_unref(GST_OBJECT(pipeline));
+
+    g_mutex_free(mutex);
+    mutex = NULL;
 
     return timePlayed;
 }
@@ -359,6 +557,26 @@ SwitcherTest :: oggVorbisMultipleOpenEndedTest(void)
     g_snprintf(str, 256, "time played: %" G_GINT64_FORMAT, timePlayed);
     CPPUNIT_ASSERT_MESSAGE(str, timePlayed > 6.9 * GST_SECOND);
     CPPUNIT_ASSERT_MESSAGE(str, timePlayed < 7.1 * GST_SECOND);
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Test to see if seeking works
+ *----------------------------------------------------------------------------*/
+void
+SwitcherTest :: seekTest(void)
+                                                throw (CPPUNIT_NS::Exception)
+{
+    gint64  timePlayed;
+    char    str[256];
+
+    timePlayed = playSilenceThenFile(mp3File,
+                                     5LL * GST_SECOND,
+                                     1LL * GST_SECOND,
+                                     4LL * GST_SECOND);
+    g_snprintf(str, 256, "time played: %" G_GINT64_FORMAT, timePlayed);
+    CPPUNIT_ASSERT_MESSAGE(str, timePlayed > 4.9 * GST_SECOND);
+    CPPUNIT_ASSERT_MESSAGE(str, timePlayed < 5.1 * GST_SECOND);
 }
 
 

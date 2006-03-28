@@ -129,8 +129,8 @@ ls_gst_autoplug_plug_source(GstElement        * source,
     GstPad        * pad;
 
     bin  = gst_bin_new(name);
-    dec  = gst_element_factory_make ("decodebin", "decoder");
-    conv = gst_element_factory_make ("audioconvert", "aconv");
+    dec  = gst_element_factory_make("decodebin", "decoder");
+    conv = gst_element_factory_make("audioconvert", "aconv");
 
     g_signal_connect(dec, "new-decoded-pad", G_CALLBACK(autoplug_newpad), conv);
 
@@ -154,19 +154,126 @@ ls_gst_autoplug_plug_source(GstElement        * source,
 gint64
 ls_gst_autoplug_get_position(GstElement       * element)
 {
+#if 0
+    GstFormat       format;
+    gint64          position;
+    GstElement    * conv;
+
+g_printerr("autoplug #1\n");
+    if (!element || !GST_IS_BIN(element)) {
+        return 0LL;
+    }
+g_printerr("autoplug #2\n");
+
+    if ((conv = gst_bin_get_by_name(GST_BIN(element), "aconv")) == NULL) {
+        return 0LL;
+    }
+
+g_printerr("autoplug #3\n");
+    format = GST_FORMAT_TIME;
+    if (!gst_element_query_position(conv, &format, &position)
+     || format != GST_FORMAT_TIME) {
+g_printerr("autoplug #3.1, format: %d\n", format);
+        return 0LL;
+    }
+
+g_printerr("autoplug #4\n");
+    return position;
+#endif
+
+    GstPad        * srcPad;
     GstFormat       format;
     gint64          position;
 
+g_printerr("autoplug #1\n");
     if (!element || !GST_IS_BIN(element)) {
         return 0LL;
     }
 
-    format = GST_FORMAT_TIME;
-    if (!gst_element_query_position(element, &format, &position)
-     || format != GST_FORMAT_TIME) {
+g_printerr("autoplug #2\n");
+    if ((srcPad = gst_element_get_pad(element, "src")) == NULL) {
         return 0LL;
     }
 
+g_printerr("autoplug #3\n");
+    format = GST_FORMAT_TIME;
+    if (!gst_pad_query_position(srcPad, &format, &position)
+     || format != GST_FORMAT_TIME) {
+g_printerr("autoplug #3.1, format: %d\n", format);
+        return 0LL;
+    }
+
+g_printerr("autoplug #4\n");
     return position;
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Seek on an autoplugged element
+ *----------------------------------------------------------------------------*/
+gboolean
+ls_gst_autoplug_seek(GstElement       * element,
+                     gdouble            rate,
+                     GstFormat          format,
+                     GstSeekFlags       flags,
+                     GstSeekType        curType,
+                     gint64             cur,
+                     GstSeekType        stopType,
+                     gint64             stop)
+{
+    GstElement    * conv;
+
+g_printerr("autoplug seek #1\n");
+    if (!element || !GST_IS_BIN(element)) {
+        return FALSE;
+    }
+
+g_printerr("autoplug seek #2\n");
+    if ((conv = gst_bin_get_by_name(GST_BIN(element), "aconv")) == NULL) {
+        return FALSE;
+    }
+
+g_printerr("autoplug seek #3\n");
+    return gst_element_seek(conv,
+                            rate,
+                            format,
+                            flags,
+                            curType,
+                            cur,
+                            stopType,
+                            stop);
+
+#if 0
+    GstPad        * srcPad;
+    GstElement    * conv;
+
+g_printerr("autoplug seek #1\n");
+    if (!element || !GST_IS_BIN(element)) {
+        return FALSE;
+    }
+
+    if ((conv = gst_bin_get_by_name(GST_BIN(element), "aconv")) == NULL) {
+        return FALSE;
+    }
+
+g_printerr("autoplug seek #2\n");
+    if ((srcPad = gst_element_get_pad(conv, "src")) == NULL) {
+        return FALSE;
+    }
+
+    if (GST_IS_GHOST_PAD(srcPad)) {
+        srcPad = gst_ghost_pad_get_target((GstGhostPad*) srcPad);
+    }
+
+g_printerr("autoplug seek #3\n");
+    gst_pad_send_event(srcPad,
+                       gst_event_new_seek(rate,
+                                          format,
+                                          flags,
+                                          curType,
+                                          cur,
+                                          stopType,
+                                          stop));
+#endif
 }
 

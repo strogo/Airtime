@@ -63,6 +63,7 @@ namespace GstreamerElements {
 class SwitcherTest : public CPPUNIT_NS::TestFixture
 {
     CPPUNIT_TEST_SUITE(SwitcherTest);
+#if 0
     CPPUNIT_TEST(mp3Test);
     CPPUNIT_TEST(mp3OpenEndedTest);
     CPPUNIT_TEST(mp3MultipleTest);
@@ -71,6 +72,8 @@ class SwitcherTest : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST(oggVorbisOpenEndedTest);
     CPPUNIT_TEST(oggVorbisMultipleTest);
     CPPUNIT_TEST(oggVorbisMultipleOpenEndedTest);
+#endif
+    CPPUNIT_TEST(seekTest);
 #if 0
     CPPUNIT_TEST(smilTest);
     CPPUNIT_TEST(smilOpenEndedTest);
@@ -94,6 +97,25 @@ class SwitcherTest : public CPPUNIT_NS::TestFixture
         playFiles(const char     ** audioFiles,
                   unsigned int      noFiles,
                   const char      * sourceConfig)
+                                                throw (CPPUNIT_NS::Exception);
+
+        /**
+         *  Play some silence, then the specified file.
+         *
+         *  @param audioFile the file to play
+         *  @param silenceDuration the number of nanoseconds the SeekPack will
+         *         play only silence in the beginning.
+         *  @param startTime the offset at which source will start to play after
+         *         the silence.
+         *  @param endTime the offset until which source will play.
+         *  @return the number of milliseconds played.
+         *  @exception CPPUNIT_NS::Exception on test failures.
+         */
+        gint64
+        playSilenceThenFile(const char      * audioFile,
+                            gint64            silenceDuration,
+                            gint64            startTime,
+                            gint64            endTime)
                                                 throw (CPPUNIT_NS::Exception);
 
 
@@ -164,6 +186,14 @@ class SwitcherTest : public CPPUNIT_NS::TestFixture
          */
         void
         oggVorbisMultipleOpenEndedTest(void)    throw (CPPUNIT_NS::Exception);
+
+        /**
+         *  Test to see if seeking works on the switcher element.
+         *
+         *  @exception CPPUNIT_NS::Exception on test failures.
+         */
+        void
+        seekTest(void)                          throw (CPPUNIT_NS::Exception);
 
         /**
          *  A simple smoke test with a SMIL file.

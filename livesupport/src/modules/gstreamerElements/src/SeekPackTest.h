@@ -64,6 +64,7 @@ class SeekPackTest : public CPPUNIT_NS::TestFixture
 {
     CPPUNIT_TEST_SUITE(SeekPackTest);
     CPPUNIT_TEST(mp3Test);
+#if 0
     CPPUNIT_TEST(mp3NoSilenceTest);
     CPPUNIT_TEST(mp3OpenEndedTest);
     CPPUNIT_TEST(oggVorbisTest);
@@ -72,6 +73,7 @@ class SeekPackTest : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST(smilTest);
     CPPUNIT_TEST(smilNoSilenceTest);
     CPPUNIT_TEST(smilOpenEndedTest);
+#endif
     CPPUNIT_TEST_SUITE_END();
 
     private:

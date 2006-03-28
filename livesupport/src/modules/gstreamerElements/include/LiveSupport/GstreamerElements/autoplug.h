@@ -90,6 +90,31 @@ gint64
 ls_gst_autoplug_get_position(GstElement       * element);
 
 
+/**
+ *  Seek on an autoplugged element.
+ *  The semantics of this call are the same as gst_element_seek().
+ *
+ *  @param element a GstElement to send the event to.
+ *  @param rate The new playback rate
+ *  @param format The format of the seek values
+ *  @param flags The optional seek flags.
+ *  @param curType The type and flags for the new current position
+ *  @param cur The value of the new current position
+ *  @param stopType The type and flags for the new stop position
+ *  @param stop The value of the new stop position
+ *  @return TRUE if the event was handled. MT safe.
+ */
+gboolean
+ls_gst_autoplug_seek(GstElement       * element,
+                     gdouble            rate,
+                     GstFormat          format,
+                     GstSeekFlags       flags,
+                     GstSeekType        curType,
+                     gint64             cur,
+                     GstSeekType        stopType,
+                     gint64             stop);
+
+
 #ifdef __cplusplus
 } /* extern "C" */
 #endif

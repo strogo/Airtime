@@ -103,12 +103,12 @@ SeekTest :: playFile(const char   * audioFile,
     GstElement    * source;
     GstElement    * decoder;
     GstElement    * sink;
-    GstSeekType     seekType;
     GstCaps       * caps;
     GstMessage    * message;
     GstFormat       format;
-    gint64          timePlayed;
-    gint64          timeAfterSeek;
+    GstState        state;
+    gint64          timeStart;
+    gint64          timeEnd;
     gboolean        ret;
 
     /* initialize GStreamer */
@@ -124,8 +124,6 @@ SeekTest :: playFile(const char   * audioFile,
                                NULL);
 
     /* create elements */
-    seekType = (GstSeekType) GST_SEEK_TYPE_SET;
-
     pipeline = gst_pipeline_new("audio-player");
     source   = gst_element_factory_make("filesrc", "source");
     sink     = gst_element_factory_make("alsasink", "alsa-output");
@@ -142,38 +140,71 @@ SeekTest :: playFile(const char   * audioFile,
         return 0LL;
     }
 
-    gst_element_link(decoder, sink);
     gst_bin_add_many(GST_BIN(pipeline), source, decoder, sink, NULL);
+    gst_element_link_many(source, decoder, sink, NULL);
 
-    gst_element_set_state(source, GST_STATE_PLAYING);
-    gst_element_set_state(decoder, GST_STATE_PAUSED);
-    gst_element_set_state(sink, GST_STATE_PAUSED);
     gst_element_set_state(pipeline, GST_STATE_PLAYING);
 
-    // so, seek now
-    timeAfterSeek = -1LL;
-    ret = gst_element_seek(decoder,
-                           1.0,
-                           GST_FORMAT_TIME,
-                           GST_SEEK_FLAG_FLUSH,
-                           seekType,
-                           seekTo,
-                           GST_SEEK_TYPE_SET,
-                           playTo);
+    // wait until the pipeline has reached the PLAYING state
+    do {
+        GstState    pending;
+        
+        message = gst_bus_poll(gst_pipeline_get_bus((GstPipeline*) pipeline),
+                            (GstMessageType) (GST_MESSAGE_STATE_CHANGED),
+                            -1);
+
+        gst_element_get_state(pipeline,
+                              &state,
+                              &pending,
+                              GST_CLOCK_TIME_NONE);
+    } while (state != GST_STATE_PLAYING);
+
+    // send the seek command
+    if (playTo > 0) {
+        ret = gst_element_seek(pipeline,
+                               1.0,
+                               GST_FORMAT_TIME,
+                               GST_SEEK_FLAG_FLUSH,
+                               GST_SEEK_TYPE_SET,
+                               seekTo,
+                               GST_SEEK_TYPE_SET,
+                               playTo);
+    } else {
+        ret = gst_element_seek(pipeline,
+                               1.0,
+                               GST_FORMAT_TIME,
+                               GST_SEEK_FLAG_FLUSH,
+                               GST_SEEK_TYPE_SET,
+                               seekTo,
+                               GST_SEEK_TYPE_NONE,
+                               GST_CLOCK_TIME_NONE);
+    }
     CPPUNIT_ASSERT(ret);
 
+    // wait until we actually reach the point we wanted to seek to
+    do {
+        message = gst_bus_poll(gst_pipeline_get_bus((GstPipeline*) pipeline),
+                            (GstMessageType) (GST_MESSAGE_ANY),
+                            -1);
+
+        format = GST_FORMAT_TIME;
+        gst_element_query_position(pipeline, &format, &timeStart);
+
+    } while (timeStart < seekTo);
+
+    // wait until EOS or an ERROR is reached
     message = gst_bus_poll(gst_pipeline_get_bus((GstPipeline*) pipeline),
                         (GstMessageType) (GST_MESSAGE_ERROR | GST_MESSAGE_EOS),
                         -1);
 
     format = GST_FORMAT_TIME;
-    gst_element_query_position(sink, &format, &timeAfterSeek);
+    gst_element_query_position(pipeline, &format, &timeEnd);
 
     /* clean up nicely */
     gst_element_set_state(pipeline, GST_STATE_NULL);
     gst_object_unref(GST_OBJECT (pipeline));
 
-    return timePlayed - timeAfterSeek;
+    return timeEnd - timeStart;
 }
 
 
