@@ -192,6 +192,7 @@ root:table
         simpleSearchTab:string      { "Search" }
         advancedSearchTab:string    { "Advanced Search" }
         browseTab:string            { "Browse" }
+        transportsTab:string        { "Transfers" }
         
         searchButtonLabel:string    { "Search" }
         
@@ -205,6 +206,8 @@ root:table
         addToScratchpadMenuItem:string  { "_Add To Scratchpad" }
         addToLiveModeMenuItem:string    { "Add To _Live Mode" }
         exportPlaylistMenuItem:string   { "E_xport Playlist" }
+        uploadToHubMenuItem:string      { "_Upload to the network hub" }
+        downloadFromHubMenuItem:string  { "_Download from the network hub" }
         
         pleaseWaitMsg:string        { "Please wait..." }
         remoteSearchErrorMsg:string { "Search failed: {0}." }
@@ -336,6 +339,17 @@ root:table
         
         createExportErrorMsg:string { "Could not export the playlist:" }
         saveExportErrorMsg:string   { "Could not save the exported playlist." }
+    }
+
+    transportList:table
+    {
+        workingStatus:string        { "in progress" }
+        successStatus:string        { "ready" }
+        faultStatus:string          { "error: {0}" }
+    
+        titleColumnLabel:string     { "Title" }
+        dateColumnLabel:string      { "Date" }
+        statusColumnLabel:string    { "Status" }
     }
 
     metadataTypes:table
