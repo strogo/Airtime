@@ -116,6 +116,33 @@ TransportList :: TransportList (Ptr<GLiveSupport>::Ref    gLiveSupport,
         std::cerr << e.what() << std::endl;
         std::exit(1);
     }
+    
+    // register the signal handler for treeview entries being clicked
+    treeView->signal_button_press_event().connect_notify(sigc::mem_fun(*this,
+                                        &TransportList::onEntryClicked));
+
+    // create the right-click entry context menu
+    uploadMenu      = Gtk::manage(new Gtk::Menu());
+    downloadMenu    = Gtk::manage(new Gtk::Menu());
+    Gtk::Menu::MenuList&    uploadMenuList      = uploadMenu->items();
+    Gtk::Menu::MenuList&    downloadMenuList    = downloadMenu->items();
+    
+    try{
+        uploadMenuList.push_back(Gtk::Menu_Helpers::MenuElem(
+                                *getResourceUstring("cancelUploadMenuItem"),
+                                sigc::mem_fun(*this,
+                                        &TransportList::onCancelTransport)));
+        downloadMenuList.push_back(Gtk::Menu_Helpers::MenuElem(
+                                *getResourceUstring("cancelDownloadMenuItem"),
+                                sigc::mem_fun(*this,
+                                        &TransportList::onCancelTransport)));
+    } catch (std::invalid_argument &e) {
+        std::cerr << e.what() << std::endl;
+        std::exit(1);
+    }
+    
+    uploadMenu->accelerate(*this);
+    downloadMenu->accelerate(*this);
 
     // add the tree view to this widget
     Gtk::VBox::add(*treeView);
@@ -129,7 +156,7 @@ TransportList :: TransportList (Ptr<GLiveSupport>::Ref    gLiveSupport,
  *----------------------------------------------------------------------------*/
 void
 TransportList :: addUpload(Ptr<Playable>::Ref       playable)
-                                                throw (XmlRpcException)
+                                                        throw (XmlRpcException)
 {
     Ptr<StorageClientInterface>::Ref 
                                 storage     = gLiveSupport->getStorageClient();
@@ -154,7 +181,7 @@ TransportList :: addUpload(Ptr<Playable>::Ref       playable)
  *----------------------------------------------------------------------------*/
 void
 TransportList :: addDownload(Ptr<Playable>::Ref     playable)
-                                                throw (XmlRpcException)
+                                                        throw (XmlRpcException)
 {
     Ptr<StorageClientInterface>::Ref 
                                 storage     = gLiveSupport->getStorageClient();
@@ -183,7 +210,7 @@ TransportList :: add(const Glib::ustring &          title,
                      const Glib::ustring &          date,
                      const Glib::ustring &          token,
                      bool                           isUpload)
-                                                throw (XmlRpcException)
+                                                        throw (XmlRpcException)
 {
     Ptr<StorageClientInterface>::Ref 
                                 storage     = gLiveSupport->getStorageClient();
@@ -209,7 +236,7 @@ TransportList :: add(const Glib::ustring &          title,
  *  Remove the currently selected item from the list.
  *----------------------------------------------------------------------------*/
 void
-TransportList :: removeSelected(void)           throw (XmlRpcException)
+TransportList :: removeSelected(void)                   throw (XmlRpcException)
 {
     Glib::RefPtr<Gtk::TreeSelection>    selection = treeView->get_selection();
     Gtk::TreeIter                       iter = selection->get_selected();
@@ -232,7 +259,7 @@ TransportList :: removeSelected(void)           throw (XmlRpcException)
  *  Query the storage server about the status of the pending transport.
  *----------------------------------------------------------------------------*/
 bool
-TransportList :: updateSelected(void)              throw (XmlRpcException)
+TransportList :: updateSelected(void)                   throw (XmlRpcException)
 {
     Glib::RefPtr<Gtk::TreeSelection>    selection = treeView->get_selection();
     Gtk::TreeIter                       iter = selection->get_selected();
@@ -248,7 +275,7 @@ TransportList :: updateSelected(void)              throw (XmlRpcException)
  *  Query the storage server about the status of the pending transport.
  *----------------------------------------------------------------------------*/
 bool
-TransportList :: update(void)                      throw (XmlRpcException)
+TransportList :: update(void)                           throw (XmlRpcException)
 {
     bool    didSomething = false;
     
@@ -285,7 +312,7 @@ TransportList :: updateSilently(void)                               throw ()
  *  Query the storage server about the status of the pending transport.
  *----------------------------------------------------------------------------*/
 bool
-TransportList :: update(Gtk::TreeIter   iter)      throw (XmlRpcException)
+TransportList :: update(Gtk::TreeIter   iter)           throw (XmlRpcException)
 {
     if (iter->get_value(modelColumns.statusColumn) != workingStatusKey) {
         return false;
@@ -310,7 +337,7 @@ bool
 TransportList :: setStatus(Gtk::TreeIter                            iter,
                            StorageClientInterface::TransportState   status,
                            Ptr<const Glib::ustring>::Ref            errorMsg)
-                                                                throw ()
+                                                                    throw ()
 {
     switch (status) {
         case StorageClientInterface::initState:
@@ -350,7 +377,7 @@ TransportList :: setStatus(Gtk::TreeIter                            iter,
  *  Return the contents of the transport list.
  *----------------------------------------------------------------------------*/
 Ptr<Glib::ustring>::Ref
-TransportList :: getContents(void)                                 throw ()
+TransportList :: getContents(void)                                  throw ()
 {
     std::ostringstream              contentsStream;
     Gtk::TreeModel::const_iterator  it;
@@ -383,7 +410,7 @@ TransportList :: getContents(void)                                 throw ()
  *----------------------------------------------------------------------------*/
 void
 TransportList :: setContents(Ptr<const Glib::ustring>::Ref     contents)
-                                                                throw ()
+                                                                    throw ()
 {
     std::istringstream      contentsStream(contents->raw());
     
@@ -417,5 +444,53 @@ TransportList :: setContents(Ptr<const Glib::ustring>::Ref     contents)
         } catch (XmlRpcException &e) {
         }
     }
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Event handler for an entry being clicked in the list.
+ *----------------------------------------------------------------------------*/
+void
+TransportList :: onEntryClicked(GdkEventButton *    event)          throw ()
+{
+    if (event->type == GDK_BUTTON_PRESS && event->button == 3) {
+        Gtk::TreePath           currentPath;
+        Gtk::TreeViewColumn *   column;
+        int     cell_x,
+                cell_y;
+        bool foundValidRow = treeView->get_path_at_pos(
+                                            int(event->x), int(event->y),
+                                            currentPath, column,
+                                            cell_x, cell_y);
+
+        if (foundValidRow) {
+            Gtk::TreeIter   iter = treeModel->get_iter(currentPath);
+            if (iter) {
+                Gtk::TreeRow    row = *iter;
+                if (row[modelColumns.directionColumn] == uploadSymbol) {
+                    uploadMenu->popup(event->button, event->time);
+                } else {
+                    downloadMenu->popup(event->button, event->time);
+                }
+            }
+        }
+    }
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Event handler for "cancel" selected from the pop-up menu.
+ *----------------------------------------------------------------------------*/
+void
+TransportList :: onCancelTransport(void)                            throw ()
+{
+    try {
+        removeSelected();
+
+    } catch (XmlRpcException &e) {
+        gLiveSupport->displayMessageWindow(formatMessage(
+                                                "cannotCancelTransportMsg",
+                                                e.what() ));
+    }    
 }
 

@@ -448,6 +448,16 @@ class SearchWindow : public GuiWindow
          */
         void
         onTimer(void)                                           throw ();
+        
+        /**
+         *  Add the Playable object to the list of pending "upload to hub"
+         *  tasks displayed in the Transports tab.
+         *
+         *  @param  playable    the object to be uploaded to the hub.
+         *  @return true        on success.
+         */
+        bool
+        uploadToHub(Ptr<Playable>::Ref  playable)               throw ();
 };
 
 /* ================================================= external data structures */

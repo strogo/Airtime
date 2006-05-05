@@ -770,10 +770,30 @@ SearchWindow :: onUploadToHub(void)                             throw ()
     if (iter) {
         Ptr<Playable>::Ref      playable = (*iter)[modelColumns.playableColumn];
         if (playable) {
-            transportList->addUpload(playable);
-            searchInput->activatePage(3);
+            uploadToHub(playable);
         }
     }
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Add the Playable object to the list of pending "upload to hub"
+ *  tasks displayed in the Transports tab.
+ *----------------------------------------------------------------------------*/
+bool
+SearchWindow :: uploadToHub(Ptr<Playable>::Ref  playable)       throw ()
+{
+    try {
+        searchInput->activatePage(3);
+        transportList->addUpload(playable);
+        
+    } catch (XmlRpcException &e) {
+        gLiveSupport->displayMessageWindow(formatMessage("uploadToHubErrorMsg",
+                                                         e.what() ));
+        return false;
+    }
+    
+    return true;
 }
 
 
@@ -791,8 +811,15 @@ SearchWindow :: onDownloadFromHub(void)                         throw ()
     if (iter) {
         Ptr<Playable>::Ref      playable = (*iter)[modelColumns.playableColumn];
         if (playable) {
-            transportList->addDownload(playable);
-            searchInput->activatePage(3);
+            try {
+                searchInput->activatePage(3);
+                transportList->addDownload(playable);
+                
+            } catch (XmlRpcException &e) {
+                gLiveSupport->displayMessageWindow(formatMessage(
+                                        "downloadFromHubErrorMsg", e.what() ));
+                return;
+            }
         }
     }
 }

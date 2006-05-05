@@ -223,6 +223,31 @@ class TransportList : public Gtk::VBox,
          *  The tree view.
          */
         ZebraTreeView *                 treeView;
+        
+        /**
+         *  The pop-up menu for uploads.
+         */
+        Gtk::Menu *                     uploadMenu;
+        
+        /**
+         *  The pop-up menu for downloads.
+         */
+        Gtk::Menu *                     downloadMenu;
+
+        /**
+         *  Event handler for an entry being clicked in the list.
+         *  This is used to pop up the right-click context menu.
+         *
+         *  @param event the button event recieved
+         */
+        void
+        onEntryClicked(GdkEventButton *     event)                  throw ();
+        
+        /**
+         *  Event handler for "cancel" selected from the pop-up menu.
+         */
+        void
+        onCancelTransport(void)                                     throw ();
 
 
     public:
@@ -235,14 +260,13 @@ class TransportList : public Gtk::VBox,
          *                          resources for this window.
          */
         TransportList(Ptr<GLiveSupport>::Ref     gLiveSupport,
-                      Ptr<ResourceBundle>::Ref   bundle)
-                                                                    throw ();
+                      Ptr<ResourceBundle>::Ref   bundle)            throw ();
 
         /**
          *  Virtual destructor.
          */
         virtual
-        ~TransportList(void)                                           throw ()
+        ~TransportList(void)                                        throw ()
         {
         }
         
@@ -255,7 +279,7 @@ class TransportList : public Gtk::VBox,
          */
         void
         addUpload(Ptr<Playable>::Ref        playable)
-                                                throw (XmlRpcException);
+                                                        throw (XmlRpcException);
         
         /**
          *  Add a new download task to the list.
@@ -270,7 +294,7 @@ class TransportList : public Gtk::VBox,
          */
         void
         addDownload(Ptr<Playable>::Ref      playable)
-                                                throw (XmlRpcException);
+                                                        throw (XmlRpcException);
         
         /**
          *  Remove the currently selected item from the list.
@@ -282,7 +306,7 @@ class TransportList : public Gtk::VBox,
          *  @exception  XmlRpcException     thrown by the storage client.
          */
         void
-        removeSelected(void)                    throw (XmlRpcException);
+        removeSelected(void)                            throw (XmlRpcException);
 
         /**
          *  Query the storage server about the status of the selected row.
@@ -295,7 +319,7 @@ class TransportList : public Gtk::VBox,
          *  @exception  XmlRpcException     thrown by the storage client.
          */
         bool
-        updateSelected(void)                    throw (XmlRpcException);
+        updateSelected(void)                            throw (XmlRpcException);
 
         /**
          *  Query the storage server about the status of the pending transport.
@@ -308,7 +332,7 @@ class TransportList : public Gtk::VBox,
          *  @exception  XmlRpcException     thrown by the storage client.
          */
         bool
-        update(void)                            throw (XmlRpcException);
+        update(void)                                    throw (XmlRpcException);
 
         /**
          *  Query the storage server about the status of the pending transport.
@@ -323,7 +347,7 @@ class TransportList : public Gtk::VBox,
          *                  at least one 'success'; false in all other cases.
          */
         bool
-        updateSilently(void)                                    throw ();
+        updateSilently(void)                                        throw ();
 
         /**
          *  Return the contents of the transport list.
@@ -335,7 +359,7 @@ class TransportList : public Gtk::VBox,
          *  @return the contents of the transport list as a string.
          */
         Ptr<Glib::ustring>::Ref
-        getContents(void)                                       throw ();
+        getContents(void)                                           throw ();
 
         /**
          *  Restore the contents of the transport list.
@@ -349,7 +373,7 @@ class TransportList : public Gtk::VBox,
          *  @param contents the new contents of the transport list as a string.
          */
         void
-        setContents(Ptr<const Glib::ustring>::Ref   contents)   throw ();
+        setContents(Ptr<const Glib::ustring>::Ref   contents)       throw ();
 
         /**
          *  Return the user preferences key.
@@ -360,7 +384,7 @@ class TransportList : public Gtk::VBox,
          *  @return the user preference key.
          */
         Ptr<const Glib::ustring>::Ref
-        getUserPreferencesKey(void)                              throw ()
+        getUserPreferencesKey(void)                                 throw ()
         {
             return userPreferencesKey;
         }
