@@ -310,7 +310,7 @@ SearchWindow :: constructTransportsView(void)                   throw ()
     scrolledWindow->add(*transportList);
     
     Gtk::VBox *         view = Gtk::manage(new Gtk::VBox);
-    view->pack_start(*scrolledWindow, Gtk::PACK_SHRINK, 5);
+    view->pack_start(*scrolledWindow);
     
     return view;
 }

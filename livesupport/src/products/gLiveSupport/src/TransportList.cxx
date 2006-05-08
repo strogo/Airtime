@@ -145,7 +145,7 @@ TransportList :: TransportList (Ptr<GLiveSupport>::Ref    gLiveSupport,
     downloadMenu->accelerate(*this);
 
     // add the tree view to this widget
-    Gtk::VBox::add(*treeView);
+    Gtk::VBox::pack_start(*treeView);
 
     userPreferencesKey.reset(new const Glib::ustring(userPreferencesKeyName));
 }
