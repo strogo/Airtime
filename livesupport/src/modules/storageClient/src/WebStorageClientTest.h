@@ -70,13 +70,16 @@ using namespace LiveSupport::Authentication;
 class WebStorageClientTest : public BaseTestMethod
 {
     CPPUNIT_TEST_SUITE(WebStorageClientTest);
+/*
     CPPUNIT_TEST(firstTest);
     CPPUNIT_TEST(getVersionTest);
     CPPUNIT_TEST(simplePlaylistTest);
     CPPUNIT_TEST(playlistTest);
     CPPUNIT_TEST(embeddedPlaylistTest);
     CPPUNIT_TEST(audioClipTest);
+*/
     CPPUNIT_TEST(searchTest);
+/*
     CPPUNIT_TEST(getAllTest);
     CPPUNIT_TEST(browseTest);
     CPPUNIT_TEST(createBackupTest);
@@ -84,6 +87,7 @@ class WebStorageClientTest : public BaseTestMethod
     CPPUNIT_TEST(exportPlaylistTest);
     CPPUNIT_TEST(importPlaylistTest);
     CPPUNIT_TEST(remoteSearchTest);
+*/
     CPPUNIT_TEST_SUITE_END();
 
     private:
