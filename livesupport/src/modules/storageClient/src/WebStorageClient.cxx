@@ -2177,7 +2177,8 @@ WebStorageClient :: extractSearchResults(const std::string &    methodName,
         }
     }
     
-    // TODO: REMOVE STARTING HERE
+    // TODO: REMOVE STARTING HERE (see ticket #1701)
+    // <<<
     for (int i=0; i < resultArray.size(); i++) {
         if (resultArray[i].getType() != XmlRpcValue::TypeStruct) {
             std::stringstream eMsg;
@@ -2205,7 +2206,8 @@ WebStorageClient :: extractSearchResults(const std::string &    methodName,
             searchResults->push_back(playable);     // is found
         }
     }
-    // TODO: REMOVE UNTIL HERE
+    // >>>
+    // TODO: REMOVE UNTIL HERE (and fix line x-36)
     
     checkStruct(methodName,
                 xmlRpcStruct,

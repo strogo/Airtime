@@ -224,12 +224,6 @@ WebStorageClientTest :: playlistTest(void)
         CPPUNIT_FAIL(e.what());
     }
     
-    Ptr<std::vector<Ptr<Playable>::Ref> >::Ref  searchResults
-                                                = wsc->getSearchResults();
-    CPPUNIT_ASSERT(searchResults->size() >= 5);
-    Ptr<AudioClip>::Ref     audioClip = searchResults->at(4)->getAudioClip();
-    CPPUNIT_ASSERT(audioClip);
-
     Ptr<SessionId>::Ref sessionId;
     try {
         sessionId = authentication->login("root", "q");
@@ -288,9 +282,10 @@ WebStorageClientTest :: playlistTest(void)
     
     // searchResults was filled by reset() with a list of all items
     // in the storage
-    searchResults = wsc->getSearchResults();
-    CPPUNIT_ASSERT(searchResults->size() >= 5);
-    audioClip = searchResults->at(4)->getAudioClip();
+    Ptr<std::vector<Ptr<Playable>::Ref> >::Ref 
+                            searchResults = wsc->getSearchResults();
+    CPPUNIT_ASSERT(searchResults->size() >= 7);
+    Ptr<AudioClip>::Ref     audioClip = searchResults->at(6)->getAudioClip();
     CPPUNIT_ASSERT(audioClip);
 
     Ptr<time_duration>::Ref relativeOffset(new time_duration(0,0,0,0));    
@@ -305,7 +300,7 @@ WebStorageClientTest :: playlistTest(void)
     try {
         Ptr<Playlist>::Ref  throwAwayPlaylist
                             = wsc->getPlaylist(sessionId, playlistIdxx);
-        // we are editing it, get another working copy
+        // we are editing it, get another pointer to the edited object
         CPPUNIT_ASSERT(throwAwayPlaylist->getPlaylength()
                                         ->total_seconds() == 9);
     } catch (XmlRpcException &e) {
@@ -316,7 +311,7 @@ WebStorageClientTest :: playlistTest(void)
         Ptr<SessionId>::Ref newSessionId = authentication->login("root", "q");
         Ptr<Playlist>::Ref  throwAwayPlaylist
                             = wsc->getPlaylist(newSessionId, playlistIdxx);
-        // somebody else is editing it, get the old copy
+        // somebody else is editing it, get a new object with the old data
         CPPUNIT_ASSERT(throwAwayPlaylist->getPlaylength()
                                         ->total_seconds() == 0);
         authentication->logout(newSessionId);
@@ -383,10 +378,10 @@ WebStorageClientTest :: embeddedPlaylistTest(void)
     }
     Ptr<std::vector<Ptr<Playable>::Ref> >::Ref  searchResults
                                                 = wsc->getSearchResults();
-    CPPUNIT_ASSERT(searchResults->size() >= 9);
-    Ptr<AudioClip>::Ref     audioClip = searchResults->at(4)->getAudioClip();
+    CPPUNIT_ASSERT(searchResults->size() >= 7);
+    Ptr<AudioClip>::Ref     audioClip = searchResults->at(6)->getAudioClip();
     CPPUNIT_ASSERT(audioClip);
-    Ptr<Playlist>::Ref      playlist  = searchResults->at(8)->getPlaylist();
+    Ptr<Playlist>::Ref      playlist  = searchResults->at(2)->getPlaylist();
     CPPUNIT_ASSERT(playlist);
 
     Ptr<SessionId>::Ref sessionId;
@@ -438,8 +433,8 @@ WebStorageClientTest :: audioClipTest(void)
     }
     Ptr<std::vector<Ptr<Playable>::Ref> >::Ref  searchResults
                                                 = wsc->getSearchResults();
-    CPPUNIT_ASSERT(searchResults->size() >= 2);
-    Ptr<AudioClip>::Ref     audioClip = searchResults->at(2)->getAudioClip();
+    CPPUNIT_ASSERT(searchResults->size() >= 7);
+    Ptr<AudioClip>::Ref     audioClip = searchResults->at(6)->getAudioClip();
     CPPUNIT_ASSERT(audioClip);
 
     Ptr<SessionId>::Ref sessionId;
@@ -547,8 +542,8 @@ WebStorageClientTest :: simplePlaylistTest(void)
     }
     Ptr<std::vector<Ptr<Playable>::Ref> >::Ref  searchResults
                                                 = wsc->getSearchResults();
-    CPPUNIT_ASSERT(searchResults->size() >= 2);
-    Ptr<AudioClip>::Ref     audioClip = searchResults->at(1)->getAudioClip();
+    CPPUNIT_ASSERT(searchResults->size() >= 7);
+    Ptr<AudioClip>::Ref     audioClip = searchResults->at(6)->getAudioClip();
     CPPUNIT_ASSERT(audioClip);
 
     Ptr<SessionId>::Ref sessionId;
@@ -630,7 +625,7 @@ WebStorageClientTest :: searchTest(void)
     }
     Ptr<std::vector<Ptr<Playable>::Ref> >::Ref  searchResults
                                                 = wsc->getSearchResults();
-    CPPUNIT_ASSERT(searchResults->size() >= 8);
+    CPPUNIT_ASSERT(searchResults->size() >= 9);
     Ptr<Playlist>::Ref      playlist0  = searchResults->at(0)->getPlaylist();
     Ptr<Playlist>::Ref      playlist1  = searchResults->at(1)->getPlaylist();
     Ptr<Playlist>::Ref      playlist2  = searchResults->at(2)->getPlaylist();
@@ -640,27 +635,7 @@ WebStorageClientTest :: searchTest(void)
     Ptr<AudioClip>::Ref     audioClip3 = searchResults->at(6)->getAudioClip();
     Ptr<AudioClip>::Ref     audioClip4 = searchResults->at(7)->getAudioClip();
     Ptr<AudioClip>::Ref     audioClip5 = searchResults->at(8)->getAudioClip();
-std::cerr << "osszes eleje\n\n";
-std::cerr << std::string(*searchResults->at(0)->getTitle()) << std::endl;
-std::cerr << std::string(*searchResults->at(1)->getTitle()) << std::endl;
-std::cerr << std::string(*searchResults->at(2)->getTitle()) << std::endl;
-std::cerr << std::string(*searchResults->at(3)->getTitle()) << std::endl;
-std::cerr << std::string(*searchResults->at(4)->getTitle()) << std::endl;
-std::cerr << std::string(*searchResults->at(5)->getTitle()) << std::endl;
-std::cerr << std::string(*searchResults->at(6)->getTitle()) << std::endl;
-std::cerr << std::string(*searchResults->at(7)->getTitle()) << std::endl;
-std::cerr << std::string(*searchResults->at(8)->getTitle()) << std::endl;
-std::cerr << "\n---\n\n";
-std::cerr << std::string(*searchResults->at(0)->getId()) << std::endl;
-std::cerr << std::string(*searchResults->at(1)->getId()) << std::endl;
-std::cerr << std::string(*searchResults->at(2)->getId()) << std::endl;
-std::cerr << std::string(*searchResults->at(3)->getId()) << std::endl;
-std::cerr << std::string(*searchResults->at(4)->getId()) << std::endl;
-std::cerr << std::string(*searchResults->at(5)->getId()) << std::endl;
-std::cerr << std::string(*searchResults->at(6)->getId()) << std::endl;
-std::cerr << std::string(*searchResults->at(7)->getId()) << std::endl;
-std::cerr << std::string(*searchResults->at(8)->getId()) << std::endl;
-std::cerr << "osszes vege\n\n";
+    
     CPPUNIT_ASSERT(audioClip0);
     CPPUNIT_ASSERT(audioClip1);
     CPPUNIT_ASSERT(audioClip2);
@@ -735,31 +710,17 @@ std::cerr << "osszes vege\n\n";
         criteria->addCondition("dcterms:extent", ">",  "00:00:15.000000");
         criteria->addCondition("dc:title", "prefix", "My");
         int numberFound = wsc->search(sessionId, criteria);
-        CPPUNIT_ASSERT(numberFound >= 4);
+        CPPUNIT_ASSERT(numberFound >= 5);
         searchResults = wsc->getSearchResults();
-        CPPUNIT_ASSERT(searchResults->size() >= 4);
-std::cerr << "found: " << numberFound << "; size: " << searchResults->size()
-          << std::endl;
-std::cerr << std::string(*searchResults->at(0)->getId()) << std::endl;
-std::cerr << std::string(*searchResults->at(1)->getId()) << std::endl;
-std::cerr << std::string(*searchResults->at(2)->getId()) << std::endl;
-std::cerr << std::string(*searchResults->at(3)->getId()) << std::endl << std::endl;
-
-std::cerr << std::string(*searchResults->at(0)->getTitle()) << std::endl;
-std::cerr << std::string(*searchResults->at(1)->getTitle()) << std::endl;
-std::cerr << std::string(*searchResults->at(2)->getTitle()) << std::endl;
-std::cerr << std::string(*searchResults->at(3)->getTitle()) << std::endl;
+        CPPUNIT_ASSERT(searchResults->size() >= 5);
         CPPUNIT_ASSERT(*searchResults->at(0)->getId() == *playlist0->getId());
-        CPPUNIT_ASSERT(*searchResults->at(1)->getId() == *audioClip4->getId());
-        CPPUNIT_ASSERT(*searchResults->at(2)->getId() == *playlist1->getId());
-        CPPUNIT_ASSERT(*searchResults->at(3)->getId() == *audioClip5->getId());
+        CPPUNIT_ASSERT(*searchResults->at(3)->getId() == *audioClip4->getId());
 
     } catch (std::invalid_argument &e) {
         CPPUNIT_FAIL(e.what());
     } catch (Core::XmlRpcException &e) {
         CPPUNIT_FAIL(e.what());
     }
-std::cerr << "X\n";
 
     try {
         Ptr<SearchCriteria>::Ref    criteria(new SearchCriteria);
@@ -771,7 +732,6 @@ std::cerr << "X\n";
         CPPUNIT_ASSERT(numberFound >= 5);
         searchResults = wsc->getSearchResults();
         CPPUNIT_ASSERT(searchResults->size() == 2);
-std::cerr << "Y\n";
         CPPUNIT_ASSERT(*searchResults->at(0)->getId() == *audioClip3->getId());
         CPPUNIT_ASSERT(*searchResults->at(1)->getId() == *audioClip4->getId());
 
@@ -780,7 +740,6 @@ std::cerr << "Y\n";
     } catch (Core::XmlRpcException &e) {
         CPPUNIT_FAIL(e.what());
     }
-std::cerr << "Z\n";
 
     try{
         authentication->logout(sessionId);
