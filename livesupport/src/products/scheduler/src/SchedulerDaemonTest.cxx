@@ -53,7 +53,7 @@ using namespace LiveSupport::Scheduler;
 
 /* ================================================  local constants & macros */
 
-// CPPUNIT_TEST_SUITE_REGISTRATION(SchedulerDaemonTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(SchedulerDaemonTest);
 
 
 /* ===============================================  local function prototypes */
@@ -68,6 +68,26 @@ void
 SchedulerDaemonTest :: setUp(void)                              throw ()
 {
     Ptr<SchedulerDaemon>::Ref   daemon = SchedulerDaemon::getInstance();
+    try {
+        Ptr<StorageClientInterface>::Ref    storage = daemon->getStorage();
+        storage->reset();
+
+    } catch (std::invalid_argument &e) {
+        CPPUNIT_FAIL("semantic error in configuration file");
+    } catch (xmlpp::exception &e) {
+        CPPUNIT_FAIL("error parsing configuration file");
+    } catch (std::exception &e) {
+        CPPUNIT_FAIL(e.what());
+    }
+
+    authentication = daemon->getAuthentication();
+    try {
+        sessionId = authentication->login("root", "q");
+    } catch (XmlRpcException &e) {
+        std::string eMsg = "could not log in:\n";
+        eMsg += e.what();
+        CPPUNIT_FAIL(eMsg);
+    }
 }
 
 
@@ -77,6 +97,9 @@ SchedulerDaemonTest :: setUp(void)                              throw ()
 void
 SchedulerDaemonTest :: tearDown(void)                           throw ()
 {
+    authentication->logout(sessionId);
+    sessionId.reset();
+    authentication.reset();
 }
 
 
@@ -108,6 +131,51 @@ SchedulerDaemonTest :: testStartStop(void)      throw (CPPUNIT_NS::Exception)
     daemon->stop();
     sleep(3);
     CPPUNIT_ASSERT( !(daemon->isRunning()) );
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Test to see if the backup works as expected
+ *----------------------------------------------------------------------------*/
+void
+SchedulerDaemonTest :: testBackup(void)         throw (CPPUNIT_NS::Exception)
+{
+    Ptr<SchedulerDaemon>::Ref   daemon = SchedulerDaemon::getInstance();
+
+    Ptr<SearchCriteria>::Ref    criteria(new SearchCriteria);
+    criteria->setLimit(10);
+    Ptr<ptime>::Ref from(new ptime(time_from_string("2004-07-23 10:00:00")));
+    Ptr<ptime>::Ref to(new ptime(time_from_string("2004-07-23 11:00:00")));
+
+    Ptr<Glib::ustring>::Ref     token;
+    CPPUNIT_ASSERT_NO_THROW(
+        token = daemon->createBackupOpen(sessionId, criteria, from, to);
+    );
+    CPPUNIT_ASSERT(token);
+
+    Ptr<const Glib::ustring>::Ref   url;
+    Ptr<const Glib::ustring>::Ref   path;
+    Ptr<const Glib::ustring>::Ref   errorMessage;
+    Ptr<Glib::ustring>::Ref         status;
+    int     iterations = 20;
+    do {
+        std::cerr << "-/|\\"[iterations%4] << '\b';
+        sleep(1);
+        CPPUNIT_ASSERT_NO_THROW(
+            status = daemon->createBackupCheck(*token, url, path, errorMessage);
+        );
+        CPPUNIT_ASSERT(status);
+        CPPUNIT_ASSERT(*status == "working"
+                         || *status == "success"
+                         || *status == "fault");
+    } while (--iterations && *status == "working");
+    CPPUNIT_ASSERT_EQUAL(std::string("success"), std::string(*status));
+    // TODO: test accessibility of the URL?
+    
+    CPPUNIT_ASSERT_NO_THROW(
+        daemon->createBackupClose(*token);
+    );
+    // TODO: test existence of schedule backup in tarball
 }
 
 

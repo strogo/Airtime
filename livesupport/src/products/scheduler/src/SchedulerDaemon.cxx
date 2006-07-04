@@ -53,7 +53,13 @@
 
 #include <boost/date_time/posix_time/posix_time.hpp>
 
+#include <odbc++/statement.h>
+#include <odbc++/preparedstatement.h>
+#include <odbc++/resultset.h>
+
+#include "LiveSupport/Core/FileTools.h"
 #include "LiveSupport/Db/ConnectionManagerFactory.h"
+#include "LiveSupport/Db/Conversion.h"
 #include "LiveSupport/Authentication/AuthenticationClientFactory.h"
 #include "LiveSupport/StorageClient/StorageClientFactory.h"
 #include "LiveSupport/PlaylistExecutor/AudioPlayerFactory.h"
@@ -64,8 +70,11 @@
 #include "SchedulerDaemon.h"
 
 using namespace boost::posix_time;
+using namespace odbc;
+using namespace xmlpp;
 
 using namespace LiveSupport;
+using namespace LiveSupport::Core;
 using namespace LiveSupport::Db;
 using namespace LiveSupport::StorageClient;
 using namespace LiveSupport::Scheduler;
@@ -104,6 +113,93 @@ static const std::string    userLoginAttrName = "login";
  *  The name of the config element attribute for the password
  */
 static const std::string    userPasswordAttrName = "password";
+
+/**
+ *  The working backup state
+ */
+static const std::string    workingState = "working";
+
+/**
+ *  The finished / success backup state
+ */
+static const std::string    successState = "success";
+
+/**
+ *  The finished / failure backup state
+ */
+static const std::string    failureState = "fault";
+
+/**
+ *  The name of the schedule export fie in the export tarbal;
+ */
+static const std::string    scheduleExportFileName = "meta-inf/scheduler.xml";
+
+
+/*------------------------------------------------------------------------------
+ *  The SQL create statement, used for installation.
+ *----------------------------------------------------------------------------*/
+const std::string SchedulerDaemon::createStmt =
+    "CREATE TABLE backup\n"
+    "(\n"
+    "   token       VARCHAR(64)     NOT NULL,\n"
+    "   sessionId   VARCHAR(64)     NOT NULL,\n"
+    "   status      VARCHAR(32)     NOT NULL,\n"
+    "   fromTime    TIMESTAMP       NOT NULL,\n"
+    "   toTime      TIMESTAMP       NOT NULL,\n"
+    "\n"
+    "   PRIMARY KEY(token)\n"
+    ");";
+
+/*------------------------------------------------------------------------------
+ *  The SQL create statement, used for installation.
+ *----------------------------------------------------------------------------*/
+const std::string SchedulerDaemon::dropStmt =
+    "DROP TABLE backup;";
+
+/*------------------------------------------------------------------------------
+ *  A statement to check if the database can be accessed.
+ *----------------------------------------------------------------------------*/
+const std::string SchedulerDaemon::check1Stmt = "SELECT 1";
+
+/*------------------------------------------------------------------------------
+ *  A statement to check if the backup table exists.
+ *----------------------------------------------------------------------------*/
+const std::string SchedulerDaemon::backupCountStmt =
+                                        "SELECT COUNT(*) FROM backup";
+
+/*------------------------------------------------------------------------------
+ *  A statement to store a backup entry.
+ *  - token - the token of the backup
+ *  - status - the status of the backup, either 'working', 'success' or 'fault'
+ *  - fromTime - the start time of the schedule backup
+ *  - toTime - the end time of the schedule backup
+ *----------------------------------------------------------------------------*/
+const std::string SchedulerDaemon::storeBackupStmt =
+             "INSERT INTO backup(token, sessionId, status, fromTime, toTime) "
+                     "VALUES(?, ?, ?, ?, ?)";
+
+/*------------------------------------------------------------------------------
+ *  Get a backup from the database.
+ *  - token - the token of an existing backup
+ *----------------------------------------------------------------------------*/
+const std::string SchedulerDaemon::getBackupStmt =
+             "SELECT token, sessionId, status, fromTime, toTime FROM backup "
+                    "WHERE token = ?";
+
+/*------------------------------------------------------------------------------
+ *  A statement to update a backup entry.
+ *  - status - the new status of the backup
+ *  - token - the token of an existing backup
+ *----------------------------------------------------------------------------*/
+const std::string SchedulerDaemon::updateBackupStmt =
+                                "UPDATE backup SET status = ? WHERE token = ?";
+
+/*------------------------------------------------------------------------------
+ *  A statement to delete a backup entry
+ *  - token - the token of an existing backup
+ *----------------------------------------------------------------------------*/
+const std::string SchedulerDaemon::deleteBackupStmt =
+                                        "DELETE FROM backup WHERE token = ?";
 
 
 /* ===============================================  local function prototypes */
@@ -310,11 +406,26 @@ SchedulerDaemon :: registerXmlRpcFunctions(
 void
 SchedulerDaemon :: install(void)                throw (std::exception)
 {
-    // TODO: check if we have already been configured
-    Ptr<ScheduleFactory>::Ref   sf = ScheduleFactory::getInstance();
-    sf->install();
-    Ptr<PlayLogFactory>::Ref    plf = PlayLogFactory::getInstance();
-    plf->install();
+    if (!isInstalled()) {
+        // TODO: check if we have already been configured
+        Ptr<ScheduleFactory>::Ref   sf = ScheduleFactory::getInstance();
+        sf->install();
+        Ptr<PlayLogFactory>::Ref    plf = PlayLogFactory::getInstance();
+        plf->install();
+
+        Ptr<Connection>::Ref    conn;
+        try {
+            conn = connectionManager->getConnection();
+            Ptr<Statement>::Ref     stmt(conn->createStatement());
+            stmt->execute(createStmt);
+            connectionManager->returnConnection(conn);
+        } catch (std::exception &e) {
+            if (conn) {
+                connectionManager->returnConnection(conn);
+            }
+            throw;
+        }
+    }
 }
 
 
@@ -332,7 +443,48 @@ SchedulerDaemon :: isInstalled(void)            throw (std::exception)
         throw std::logic_error("coudln't initialize factories");
     }
     
-    return sf->isInstalled() && plf->isInstalled();
+    if (!(sf->isInstalled() && plf->isInstalled())) {
+        return false;
+    }
+
+    Ptr<Connection>::Ref    conn;
+    try {
+        Ptr<Statement>::Ref     stmt;
+        ResultSet             * res;
+
+        conn = connectionManager->getConnection();
+
+        // see if we can connect at all
+        stmt.reset(conn->createStatement());
+        stmt->execute(check1Stmt);
+        res = stmt->getResultSet();
+        if (!res->next() || (res->getInt(1) != 1)) {
+            throw std::runtime_error("Can't connect to database");
+        }
+
+        // see if the schedule table exists
+        try {
+            stmt.reset(conn->createStatement());
+            stmt->execute(backupCountStmt);
+            res = stmt->getResultSet();
+            if (!res->next() || (res->getInt(1) < 0)) {
+                connectionManager->returnConnection(conn);
+                return false;
+            }
+        } catch (std::exception &e) {
+            connectionManager->returnConnection(conn);
+            return false;
+        }
+
+        connectionManager->returnConnection(conn);
+    } catch (std::exception &e) {
+        if (conn) {
+            connectionManager->returnConnection(conn);
+        }
+        throw;
+    }
+
+    return true;
 }
 
 
@@ -343,6 +495,19 @@ void
 SchedulerDaemon :: uninstall(void)              throw (std::exception)
 {
     // TODO: check if we have already been configured
+    Ptr<Connection>::Ref    conn;
+    try {
+        conn = connectionManager->getConnection();
+        Ptr<Statement>::Ref     stmt(conn->createStatement());
+        stmt->execute(dropStmt);
+        connectionManager->returnConnection(conn);
+    } catch (std::exception &e) {
+        if (conn) {
+            connectionManager->returnConnection(conn);
+        }
+        throw;
+    }
+
     Ptr<PlayLogFactory>::Ref    plf = PlayLogFactory::getInstance();
     try {
         plf->uninstall();
@@ -431,4 +596,205 @@ SchedulerDaemon :: update (void)                throw (std::logic_error)
         eventScheduler->update();
     }
 }
+
+
+/*------------------------------------------------------------------------------
+ *  Start a backup process.
+ *----------------------------------------------------------------------------*/
+Ptr<Glib::ustring>::Ref
+SchedulerDaemon :: createBackupOpen(Ptr<SessionId>::Ref        sessionId,
+                                    Ptr<SearchCriteria>::Ref   criteria,
+                                    Ptr<ptime>::Ref            fromTime,
+                                    Ptr<ptime>::Ref            toTime)
+                                                        throw (XmlRpcException)
+{
+    Ptr<Glib::ustring>::Ref     token;
+    Ptr<Connection>::Ref        conn;
+    bool                        result = false;
+
+    // open up a backup process with the storage server
+    token = storage->createBackupOpen(sessionId, criteria);
+
+    // store the details of the backup, with a pending status
+    try {
+        conn = connectionManager->getConnection();
+        Ptr<Timestamp>::Ref         timestamp;
+        Ptr<PreparedStatement>::Ref pstmt(conn->prepareStatement(
+                                                        storeBackupStmt));
+        pstmt->setString(1, *token);
+        pstmt->setString(2, sessionId->getId());
+        pstmt->setString(3, workingState);
+
+        timestamp = Conversion::ptimeToTimestamp(fromTime);
+        pstmt->setTimestamp(4, *timestamp);
+
+        timestamp = Conversion::ptimeToTimestamp(toTime);
+        pstmt->setTimestamp(5, *timestamp);
+
+        result = pstmt->executeUpdate() == 1;
+
+        connectionManager->returnConnection(conn);
+    } catch (std::exception &e) {
+        if (conn) {
+            connectionManager->returnConnection(conn);
+        }
+        throw std::invalid_argument(e.what());
+    }
+
+    if (!result) {
+        throw std::invalid_argument("couldn't insert into database");
+    }
+
+    return token;
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Check on the status of a backup process.
+ *----------------------------------------------------------------------------*/
+Ptr<Glib::ustring>::Ref
+SchedulerDaemon :: createBackupCheck(
+                            const Glib::ustring &             token,
+                            Ptr<const Glib::ustring>::Ref &   url,
+                            Ptr<const Glib::ustring>::Ref &   path,
+                            Ptr<const Glib::ustring>::Ref &   errorMessage)
+                                                        throw (XmlRpcException)
+{
+    Ptr<Connection>::Ref                conn;
+    StorageClientInterface::AsyncState  status;
+    Ptr<ptime>::Ref                     fromTime;
+    Ptr<ptime>::Ref                     toTime;
+    bool                                result;
+
+    // first, check on the status ourselves
+    try {
+        Ptr<Timestamp>::Ref     timestamp;
+
+        conn = connectionManager->getConnection();
+        Ptr<PreparedStatement>::Ref pstmt(conn->prepareStatement(
+                                                                getBackupStmt));
+
+        pstmt->setString(1, token);
+
+        Ptr<ResultSet>::Ref     rs(pstmt->executeQuery());
+        if (rs->next()) {
+            status.reset(new Glib::ustring(rs->getString(3)));
+            
+            timestamp.reset(new Timestamp(rs->getTimestamp(4)));
+            fromTime = Conversion::timestampToPtime(timestamp);
+
+            timestamp.reset(new Timestamp(rs->getTimestamp(5)));
+            toTime = Conversion::timestampToPtime(timestamp);
+        }
+
+        connectionManager->returnConnection(conn);
+    } catch (std::exception &e) {
+        if (conn) {
+            connectionManager->returnConnection(conn);
+        }
+        // TODO: report error
+        return status;
+    }
+
+    if (*status == workingState) {
+        status = storage->createBackupCheck(token, url, path, errorMessage);
+
+        if (*status == successState) {
+            putScheduleExportIntoTar(path, fromTime, toTime);
+        }
+    }
+
+    // update the status
+    try {
+        conn = connectionManager->getConnection();
+        Ptr<Timestamp>::Ref         timestamp;
+        Ptr<PreparedStatement>::Ref pstmt(conn->prepareStatement(
+                                                        updateBackupStmt));
+        pstmt->setString(1, status->c_str());
+        pstmt->setString(2, token);
+
+        result = pstmt->executeUpdate() == 1;
+
+        connectionManager->returnConnection(conn);
+    } catch (std::exception &e) {
+        if (conn) {
+            connectionManager->returnConnection(conn);
+        }
+        throw std::invalid_argument(e.what());
+    }
+
+    if (!result) {
+        throw std::invalid_argument("couldn't insert into database");
+    }
+
+    return status;
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Close a backup process, and free up all resources.
+ *----------------------------------------------------------------------------*/
+void
+SchedulerDaemon :: putScheduleExportIntoTar(
+                        Ptr<const Glib::ustring>::Ref & path,
+                        Ptr<ptime>::Ref                 fromTime,
+                        Ptr<ptime>::Ref                 toTime)
+                                                    throw (std::runtime_error)
+{
+    Ptr<Document>::Ref      document(new Document());
+    Element               * root = document->create_root_node("scheduler");
+    std::string             tmpFileName = FileTools::tempnam();
+
+    // create the export, and write it to a temporary file
+    schedule->exportScheduleEntries(root, fromTime, toTime);
+    document->write_to_file(tmpFileName);
+
+    try {
+        FileTools::appendFileToTarball(*path,
+                                       tmpFileName,
+                                       scheduleExportFileName);
+    } catch (std::runtime_error &e) {
+        remove(tmpFileName.c_str());
+        throw;
+    }
+
+    remove(tmpFileName.c_str());
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Close a backup process, and free up all resources.
+ *----------------------------------------------------------------------------*/
+void
+SchedulerDaemon :: createBackupClose(const Glib::ustring &     token)
+                                                        throw (XmlRpcException)
+{
+    Ptr<Connection>::Ref        conn;
+    bool                        result;
+
+    storage->createBackupClose(token);
+
+    // delete the backup from our database
+    try {
+        conn = connectionManager->getConnection();
+        Ptr<Timestamp>::Ref         timestamp;
+        Ptr<PreparedStatement>::Ref pstmt(conn->prepareStatement(
+                                                        deleteBackupStmt));
+        pstmt->setString(1, token);
+
+        result = pstmt->executeUpdate() == 1;
+
+        connectionManager->returnConnection(conn);
+    } catch (std::exception &e) {
+        if (conn) {
+            connectionManager->returnConnection(conn);
+        }
+        throw std::invalid_argument(e.what());
+    }
+
+    if (!result) {
+        throw std::invalid_argument("couldn't insert into database");
+    }
+}
+
 
