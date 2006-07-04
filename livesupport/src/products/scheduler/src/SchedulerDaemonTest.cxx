@@ -153,10 +153,10 @@ SchedulerDaemonTest :: testBackup(void)         throw (CPPUNIT_NS::Exception)
     );
     CPPUNIT_ASSERT(token);
 
-    Ptr<const Glib::ustring>::Ref   url;
-    Ptr<const Glib::ustring>::Ref   path;
-    Ptr<const Glib::ustring>::Ref   errorMessage;
-    Ptr<Glib::ustring>::Ref         status;
+    Ptr<const Glib::ustring>::Ref       url;
+    Ptr<const Glib::ustring>::Ref       path;
+    Ptr<const Glib::ustring>::Ref       errorMessage;
+    StorageClientInterface::AsyncState  status;
     int     iterations = 20;
     do {
         std::cerr << "-/|\\"[iterations%4] << '\b';
@@ -165,11 +165,12 @@ SchedulerDaemonTest :: testBackup(void)         throw (CPPUNIT_NS::Exception)
             status = daemon->createBackupCheck(*token, url, path, errorMessage);
         );
         CPPUNIT_ASSERT(status);
-        CPPUNIT_ASSERT(*status == "working"
-                         || *status == "success"
-                         || *status == "fault");
-    } while (--iterations && *status == "working");
-    CPPUNIT_ASSERT_EQUAL(std::string("success"), std::string(*status));
+        CPPUNIT_ASSERT(status == StorageClientInterface::pendingState
+                         || status == StorageClientInterface::finishedState
+                         || status == StorageClientInterface::failedState);
+    } while (--iterations && status == StorageClientInterface::pendingState);
+    
+    CPPUNIT_ASSERT_EQUAL(StorageClientInterface::finishedState, status);
     // TODO: test accessibility of the URL?
     
     CPPUNIT_ASSERT_NO_THROW(

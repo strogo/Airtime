@@ -623,7 +623,8 @@ SchedulerDaemon :: createBackupOpen(Ptr<SessionId>::Ref        sessionId,
                                                         storeBackupStmt));
         pstmt->setString(1, *token);
         pstmt->setString(2, sessionId->getId());
-        pstmt->setString(3, workingState);
+        pstmt->setString(3, asyncStateToString(
+                                    StorageClientInterface::pendingState));
 
         timestamp = Conversion::ptimeToTimestamp(fromTime);
         pstmt->setTimestamp(4, *timestamp);
@@ -652,7 +653,7 @@ SchedulerDaemon :: createBackupOpen(Ptr<SessionId>::Ref        sessionId,
 /*------------------------------------------------------------------------------
  *  Check on the status of a backup process.
  *----------------------------------------------------------------------------*/
-Ptr<Glib::ustring>::Ref
+StorageClientInterface::AsyncState
 SchedulerDaemon :: createBackupCheck(
                             const Glib::ustring &             token,
                             Ptr<const Glib::ustring>::Ref &   url,
@@ -678,7 +679,7 @@ SchedulerDaemon :: createBackupCheck(
 
         Ptr<ResultSet>::Ref     rs(pstmt->executeQuery());
         if (rs->next()) {
-            status.reset(new Glib::ustring(rs->getString(3)));
+            status = stringToAsyncState(rs->getString(3));
             
             timestamp.reset(new Timestamp(rs->getTimestamp(4)));
             fromTime = Conversion::timestampToPtime(timestamp);
@@ -696,10 +697,10 @@ SchedulerDaemon :: createBackupCheck(
         return status;
     }
 
-    if (*status == workingState) {
+    if (status == StorageClientInterface::pendingState) {
         status = storage->createBackupCheck(token, url, path, errorMessage);
 
-        if (*status == successState) {
+        if (status == StorageClientInterface::finishedState) {
             putScheduleExportIntoTar(path, fromTime, toTime);
         }
     }
@@ -710,7 +711,7 @@ SchedulerDaemon :: createBackupCheck(
         Ptr<Timestamp>::Ref         timestamp;
         Ptr<PreparedStatement>::Ref pstmt(conn->prepareStatement(
                                                         updateBackupStmt));
-        pstmt->setString(1, status->c_str());
+        pstmt->setString(1, asyncStateToString(status));
         pstmt->setString(2, token);
 
         result = pstmt->executeUpdate() == 1;
@@ -797,4 +798,54 @@ SchedulerDaemon :: createBackupClose(const Glib::ustring &     token)
     }
 }
 
+
+/*------------------------------------------------------------------------------
+ *  Convert a string status to a StorageClientInterface::AsyncState.
+ *----------------------------------------------------------------------------*/
+StorageClientInterface::AsyncState
+SchedulerDaemon :: stringToAsyncState(const std::string &      statusString)
+                                                                    throw ()
+{
+    if (statusString == "working") {
+        return StorageClientInterface::pendingState;
+        
+    } else if (statusString == "success") {
+        return StorageClientInterface::finishedState;
+    
+    } else if (statusString == "fault") {
+        return StorageClientInterface::failedState;
+        
+    } else {
+        return StorageClientInterface::invalidState;
+    }
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Convert a StorageClientInterface::AsyncState to a string.
+ *----------------------------------------------------------------------------*/
+std::string
+SchedulerDaemon :: asyncStateToString(
+                            StorageClientInterface::AsyncState   status)
+                                                                    throw ()
+{
+    std::string     statusString;
+
+    switch (status) {
+        case StorageClientInterface::initState:
+        case StorageClientInterface::pendingState:  statusString = "working";
+                                                    break;
+        
+        case StorageClientInterface::finishedState: statusString = "success";
+                                                    break;
+        
+        case StorageClientInterface::failedState:   statusString = "fault";
+                                                    break;
+        
+        default:                                    statusString = "invalid";
+                                                    break;
+    }
+    
+    return statusString;
+}
 
