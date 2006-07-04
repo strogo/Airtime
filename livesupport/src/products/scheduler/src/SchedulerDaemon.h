@@ -66,30 +66,17 @@
 #include "LiveSupport/Authentication/AuthenticationClientInterface.h"
 #include "LiveSupport/PlaylistExecutor/AudioPlayerInterface.h"
 #include "LiveSupport/EventScheduler/EventScheduler.h"
-#include "AddAudioClipToPlaylistMethod.h"
-#include "CreatePlaylistMethod.h"
-#include "DisplayAudioClipMethod.h"
-#include "DisplayAudioClipsMethod.h"
-#include "DisplayPlaylistMethod.h"
-#include "DisplayPlaylistsMethod.h"
 #include "DisplayScheduleMethod.h"
 #include "GeneratePlayReportMethod.h"
 #include "GetSchedulerTimeMethod.h"
 #include "GetVersionMethod.h"
-#include "OpenPlaylistForEditingMethod.h"
-#include "RemoveAudioClipFromPlaylistMethod.h"
 #include "RemoveFromScheduleMethod.h"
 #include "RescheduleMethod.h"
-#include "RevertEditedPlaylistMethod.h"
 #include "ScheduleInterface.h"
-#include "SavePlaylistMethod.h"
-#include "UpdateFadeInFadeOutMethod.h"
 #include "UploadPlaylistMethod.h"
-#include "ValidatePlaylistMethod.h"
 #include "XmlRpcDaemon.h"
 #include "LoginMethod.h"
 #include "LogoutMethod.h"
-#include "ResetStorageMethod.h"
 #include "PlayLogInterface.h"
 
 
@@ -272,36 +259,6 @@ class SchedulerDaemon : public Installable,
         Ptr<PlayLogInterface>::Ref                  playLog;
 
         /**
-         *  The addAudioClipToPlaylistMethod the daemon is providing.
-         */
-        Ptr<AddAudioClipToPlaylistMethod>::Ref  addAudioClipToPlaylistMethod;
-
-        /**
-         *  The createPlaylistMethod the daemon is providing.
-         */
-        Ptr<CreatePlaylistMethod>::Ref          createPlaylistMethod;
-
-        /**
-         *  The displayAudioClipMethod the daemon is providing.
-         */
-        Ptr<DisplayAudioClipMethod>::Ref        displayAudioClipMethod;
-
-        /**
-         *  The displayAudioClipsMethod the daemon is providing.
-         */
-        Ptr<DisplayAudioClipsMethod>::Ref       displayAudioClipsMethod;
-
-        /**
-         *  The displayPlaylistMethod the daemon is providing.
-         */
-        Ptr<DisplayPlaylistMethod>::Ref         displayPlaylistMethod;
-
-        /**
-         *  The displayPlaylistsMethod the daemon is providing.
-         */
-        Ptr<DisplayPlaylistsMethod>::Ref        displayPlaylistsMethod;
-
-        /**
          *  The displayScheduleMethod the daemon is providing.
          */
         Ptr<DisplayScheduleMethod>::Ref         displayScheduleMethod;
@@ -322,17 +279,6 @@ class SchedulerDaemon : public Installable,
         Ptr<GetVersionMethod>::Ref              getVersionMethod;
 
         /**
-         *  The openPlaylistForEditingMethod the daemon is providing.
-         */
-        Ptr<OpenPlaylistForEditingMethod>::Ref  openPlaylistForEditingMethod;
-
-        /**
-         *  The removeAudioClipFromPlaylistMethod the daemon is providing.
-         */
-        Ptr<RemoveAudioClipFromPlaylistMethod>::Ref 
-                                        removeAudioClipFromPlaylistMethod;
-
-        /**
          *  The removeFromScheduleMethod the daemon is providing.
          */
         Ptr<RemoveFromScheduleMethod>::Ref      removeFromScheduleMethod;
@@ -343,29 +289,9 @@ class SchedulerDaemon : public Installable,
         Ptr<RescheduleMethod>::Ref              rescheduleMethod;
 
         /**
-         *  The revertEditedPlaylistMethod the daemon is providing.
-         */
-        Ptr<RevertEditedPlaylistMethod>::Ref    revertEditedPlaylistMethod;
-
-        /**
-         *  The savePlaylistMethod the daemon is providing.
-         */
-        Ptr<SavePlaylistMethod>::Ref            savePlaylistMethod;
-
-        /**
-         *  The updateFadeInFadeOutMethod the daemon is providing.
-         */
-        Ptr<UpdateFadeInFadeOutMethod>::Ref     updateFadeInFadeOutMethod;
-
-        /**
          *  The uploadPlaylistMethod the daemon is providing.
          */
         Ptr<UploadPlaylistMethod>::Ref          uploadPlaylistMethod;
-
-        /**
-         *  The validatePlaylistMethod the daemon is providing.
-         */
-        Ptr<ValidatePlaylistMethod>::Ref        validatePlaylistMethod;
 
         /**
          *  The loginMethod the daemon is providing.
@@ -376,11 +302,6 @@ class SchedulerDaemon : public Installable,
          *  The logoutMethod the daemon is providing.
          */
         Ptr<LogoutMethod>::Ref                  logoutMethod;
-
-        /**
-         *  The resetStorageMethod the daemon is providing.
-         */
-        Ptr<ResetStorageMethod>::Ref            resetStorageMethod;
 
         /**
          *  The login to the authentication system.

@@ -68,7 +68,7 @@ class SchedulerDaemonTest : public CPPUNIT_NS::TestFixture
 {
     CPPUNIT_TEST_SUITE(SchedulerDaemonTest);
     CPPUNIT_TEST(getSingleton);
-    //CPPUNIT_TEST(testStartStop);
+    CPPUNIT_TEST(testStartStop);
     CPPUNIT_TEST(testBackup);
     CPPUNIT_TEST_SUITE_END();
 

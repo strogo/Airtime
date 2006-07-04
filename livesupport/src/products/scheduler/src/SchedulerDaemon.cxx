@@ -213,29 +213,15 @@ const std::string SchedulerDaemon::deleteBackupStmt =
 SchedulerDaemon :: SchedulerDaemon (void)                   throw ()
                         : XmlRpcDaemon()
 {
-    addAudioClipToPlaylistMethod.reset(new AddAudioClipToPlaylistMethod());
-    createPlaylistMethod.reset(new CreatePlaylistMethod());
-    displayAudioClipMethod.reset(new DisplayAudioClipMethod());
-    displayAudioClipsMethod.reset(new DisplayAudioClipsMethod());
-    displayPlaylistMethod.reset(new DisplayPlaylistMethod());
-    displayPlaylistsMethod.reset(new DisplayPlaylistsMethod());
     displayScheduleMethod.reset(new DisplayScheduleMethod());
     generatePlayReportMethod.reset(new GeneratePlayReportMethod());
     getSchedulerTimeMethod.reset(new GetSchedulerTimeMethod());
     getVersionMethod.reset(new GetVersionMethod());
-    openPlaylistForEditingMethod.reset(new OpenPlaylistForEditingMethod());
-    removeAudioClipFromPlaylistMethod.reset(new 
-                                        RemoveAudioClipFromPlaylistMethod());
     removeFromScheduleMethod.reset(new RemoveFromScheduleMethod());
     rescheduleMethod.reset(new RescheduleMethod());
-    revertEditedPlaylistMethod.reset(new RevertEditedPlaylistMethod());
-    savePlaylistMethod.reset(new SavePlaylistMethod());
-    updateFadeInFadeOutMethod.reset(new UpdateFadeInFadeOutMethod());
     uploadPlaylistMethod.reset(new UploadPlaylistMethod());
-    validatePlaylistMethod.reset(new ValidatePlaylistMethod());
     loginMethod.reset(new LoginMethod());
     logoutMethod.reset(new LogoutMethod());
-    resetStorageMethod.reset(new ResetStorageMethod());
 }
 
 
@@ -375,28 +361,15 @@ SchedulerDaemon :: registerXmlRpcFunctions(
                             Ptr<XmlRpc::XmlRpcServer>::Ref  xmlRpcServer)
                                                     throw (std::logic_error)
 {
-    xmlRpcServer->addMethod(addAudioClipToPlaylistMethod.get());
-    xmlRpcServer->addMethod(createPlaylistMethod.get());
-    xmlRpcServer->addMethod(displayAudioClipMethod.get());
-    xmlRpcServer->addMethod(displayAudioClipsMethod.get());
-    xmlRpcServer->addMethod(displayPlaylistMethod.get());
-    xmlRpcServer->addMethod(displayPlaylistsMethod.get());
     xmlRpcServer->addMethod(displayScheduleMethod.get());
     xmlRpcServer->addMethod(generatePlayReportMethod.get());
     xmlRpcServer->addMethod(getSchedulerTimeMethod.get());
     xmlRpcServer->addMethod(getVersionMethod.get());
-    xmlRpcServer->addMethod(openPlaylistForEditingMethod.get());
-    xmlRpcServer->addMethod(removeAudioClipFromPlaylistMethod.get());
     xmlRpcServer->addMethod(removeFromScheduleMethod.get());
     xmlRpcServer->addMethod(rescheduleMethod.get());
-    xmlRpcServer->addMethod(revertEditedPlaylistMethod.get());
-    xmlRpcServer->addMethod(savePlaylistMethod.get());
-    xmlRpcServer->addMethod(updateFadeInFadeOutMethod.get());
     xmlRpcServer->addMethod(uploadPlaylistMethod.get());
-    xmlRpcServer->addMethod(validatePlaylistMethod.get());
     xmlRpcServer->addMethod(loginMethod.get());
     xmlRpcServer->addMethod(logoutMethod.get());
-    xmlRpcServer->addMethod(resetStorageMethod.get());
 }
 
 
