@@ -72,7 +72,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(PostgresqlScheduleTest);
  *  Set up the test environment
  *----------------------------------------------------------------------------*/
 void
-PostgresqlScheduleTest :: setUp(void)                         throw ()
+PostgresqlScheduleTest :: setUp(void)           throw (CPPUNIT_NS::Exception)
 {
     Ptr<SchedulerDaemon>::Ref   scheduler = SchedulerDaemon::getInstance();
     try {
@@ -93,7 +93,7 @@ PostgresqlScheduleTest :: setUp(void)                         throw ()
  *  Clean up the test environment
  *----------------------------------------------------------------------------*/
 void
-PostgresqlScheduleTest :: tearDown(void)                      throw ()
+PostgresqlScheduleTest :: tearDown(void)        throw (CPPUNIT_NS::Exception)
 {
     schedule->uninstall();
     schedule.reset();

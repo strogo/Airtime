@@ -29,16 +29,12 @@
 
 /* ============================================================ include files */
 
-#include <string>
 #include <XmlRpcClient.h>
 #include <XmlRpcValue.h>
 
-#include "SchedulerDaemon.h"
-
-#include "RpcGetVersionTest.h"
+#include "ResetStorageMethodTest.h"
 
 
-using namespace LiveSupport::Core;
 using namespace LiveSupport::Scheduler;
 
 /* ===================================================  local data structures */
@@ -46,27 +42,20 @@ using namespace LiveSupport::Scheduler;
 
 /* ================================================  local constants & macros */
 
-CPPUNIT_TEST_SUITE_REGISTRATION(RpcGetVersionTest);
-
-/**
- *  The prefix of the persumed version string.
- */
-static const std::string versionPrefix = "LiveSupport Scheduler Daemon";
+CPPUNIT_TEST_SUITE_REGISTRATION(ResetStorageMethodTest);
 
 
 /* ===============================================  local function prototypes */
 
 
 /* =============================================================  module code */
-
+                                                       
 /*------------------------------------------------------------------------------
  *  Set up the test environment
  *----------------------------------------------------------------------------*/
 void
-RpcGetVersionTest :: setUp(void)                throw (CPPUNIT_NS::Exception)
+ResetStorageMethodTest :: setUp(void)           throw (CPPUNIT_NS::Exception)
 {
-    Ptr<SchedulerDaemon>::Ref   daemon = SchedulerDaemon::getInstance();
-    daemon->install();
 }
 
 
@@ -74,36 +63,28 @@ RpcGetVersionTest :: setUp(void)                throw (CPPUNIT_NS::Exception)
  *  Clean up the test environment
  *----------------------------------------------------------------------------*/
 void
-RpcGetVersionTest :: tearDown(void)             throw (CPPUNIT_NS::Exception)
+ResetStorageMethodTest :: tearDown(void)        throw (CPPUNIT_NS::Exception)
 {
-    Ptr<SchedulerDaemon>::Ref   daemon = SchedulerDaemon::getInstance();
-    daemon->uninstall();
 }
 
-
 /*------------------------------------------------------------------------------
- *  Test a simple upload.
+ *  Just a very simple smoke test
  *----------------------------------------------------------------------------*/
 void
-RpcGetVersionTest :: simpleTest(void)
+ResetStorageMethodTest :: firstTest(void)
                                                 throw (CPPUNIT_NS::Exception)
 {
-    XmlRpcValue                 parameters;
-    XmlRpcValue                 result;
+    XmlRpc::XmlRpcValue     parameters;
+    XmlRpc::XmlRpcValue     result;
 
-    XmlRpc::XmlRpcClient    xmlRpcClient(getXmlRpcHost().c_str(),
-                                         getXmlRpcPort(),
-                                         "/RPC2",
-                                         false);
+    XmlRpc::XmlRpcClient xmlRpcClient(getXmlRpcHost().c_str(),
+                                      getXmlRpcPort(),
+                                      "/RPC2",
+                                      false);
 
-    result.clear();
-    xmlRpcClient.execute("getVersion", parameters, result);
+    CPPUNIT_ASSERT(xmlRpcClient.execute("resetStorage", parameters, result));
     CPPUNIT_ASSERT(!xmlRpcClient.isFault());
-
-    CPPUNIT_ASSERT(result.hasMember("version"));
-    std::string versionStr = result["version"];
-    CPPUNIT_ASSERT(versionStr.find(versionPrefix) == 0);
-
+    
     xmlRpcClient.close();
 }
 

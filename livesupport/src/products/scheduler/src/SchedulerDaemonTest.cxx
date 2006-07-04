@@ -65,7 +65,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(SchedulerDaemonTest);
  *  Set up the test environment
  *----------------------------------------------------------------------------*/
 void
-SchedulerDaemonTest :: setUp(void)                              throw ()
+SchedulerDaemonTest :: setUp(void)              throw (CPPUNIT_NS::Exception)
 {
     Ptr<SchedulerDaemon>::Ref   daemon = SchedulerDaemon::getInstance();
     try {
@@ -95,7 +95,7 @@ SchedulerDaemonTest :: setUp(void)                              throw ()
  *  Clean up the test environment
  *----------------------------------------------------------------------------*/
 void
-SchedulerDaemonTest :: tearDown(void)                           throw ()
+SchedulerDaemonTest :: tearDown(void)           throw (CPPUNIT_NS::Exception)
 {
     authentication->logout(sessionId);
     sessionId.reset();

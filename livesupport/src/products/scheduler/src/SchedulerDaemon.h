@@ -77,6 +77,7 @@
 #include "XmlRpcDaemon.h"
 #include "LoginMethod.h"
 #include "LogoutMethod.h"
+#include "ResetStorageMethod.h"
 #include "PlayLogInterface.h"
 
 
@@ -302,6 +303,11 @@ class SchedulerDaemon : public Installable,
          *  The logoutMethod the daemon is providing.
          */
         Ptr<LogoutMethod>::Ref                  logoutMethod;
+
+        /**
+         *  The resetStorageMethod the daemon is providing.
+         */
+        Ptr<ResetStorageMethod>::Ref            resetStorageMethod;
 
         /**
          *  The login to the authentication system.

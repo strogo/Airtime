@@ -29,16 +29,18 @@
 
 /* ============================================================ include files */
 
-#include <string>
-#include <XmlRpcClient.h>
-#include <XmlRpcValue.h>
+#ifdef HAVE_CONFIG_H
+#include "configure.h"
+#endif
 
-#include "SchedulerDaemon.h"
+#include "LiveSupport/StorageClient/StorageClientInterface.h"
+#include "LiveSupport/StorageClient/StorageClientFactory.h"
+#include "LiveSupport/Core/XmlRpcTools.h"
 
-#include "RpcGetVersionTest.h"
+#include "ResetStorageMethod.h"
 
 
-using namespace LiveSupport::Core;
+using namespace LiveSupport::StorageClient;
 using namespace LiveSupport::Scheduler;
 
 /* ===================================================  local data structures */
@@ -46,12 +48,15 @@ using namespace LiveSupport::Scheduler;
 
 /* ================================================  local constants & macros */
 
-CPPUNIT_TEST_SUITE_REGISTRATION(RpcGetVersionTest);
+/*------------------------------------------------------------------------------
+ *  The name of this XML-RPC method.
+ *----------------------------------------------------------------------------*/
+const std::string ResetStorageMethod::methodName = "resetStorage";
 
-/**
- *  The prefix of the persumed version string.
- */
-static const std::string versionPrefix = "LiveSupport Scheduler Daemon";
+/*------------------------------------------------------------------------------
+ *  The ID of this method for error reporting purposes.
+ *----------------------------------------------------------------------------*/
+const int ResetStorageMethod::errorId = 3000;
 
 
 /* ===============================================  local function prototypes */
@@ -60,50 +65,36 @@ static const std::string versionPrefix = "LiveSupport Scheduler Daemon";
 /* =============================================================  module code */
 
 /*------------------------------------------------------------------------------
- *  Set up the test environment
+ *  Construct the method and register it right away.
  *----------------------------------------------------------------------------*/
-void
-RpcGetVersionTest :: setUp(void)                throw (CPPUNIT_NS::Exception)
+ResetStorageMethod :: ResetStorageMethod (
+                        Ptr<XmlRpc::XmlRpcServer>::Ref xmlRpcServer)   throw()
+    : XmlRpc::XmlRpcServerMethod(methodName, xmlRpcServer.get())
 {
-    Ptr<SchedulerDaemon>::Ref   daemon = SchedulerDaemon::getInstance();
-    daemon->install();
 }
 
 
 /*------------------------------------------------------------------------------
- *  Clean up the test environment
+ *  Execute the XML-RPC function call.
+ *  (Overrides 'execute' in XmlRpcServerMethod.)
  *----------------------------------------------------------------------------*/
 void
-RpcGetVersionTest :: tearDown(void)             throw (CPPUNIT_NS::Exception)
+ResetStorageMethod :: execute(XmlRpc::XmlRpcValue  & rootParameter,
+                              XmlRpc::XmlRpcValue  & returnValue)
+                                                throw (XmlRpc::XmlRpcException)
 {
-    Ptr<SchedulerDaemon>::Ref   daemon = SchedulerDaemon::getInstance();
-    daemon->uninstall();
-}
+    Ptr<StorageClientFactory>::Ref     scf
+                                       = StorageClientFactory::getInstance();
+    Ptr<StorageClientInterface>::Ref   storage
+                                       = scf->getStorageClient(); 
 
-
-/*------------------------------------------------------------------------------
- *  Test a simple upload.
- *----------------------------------------------------------------------------*/
-void
-RpcGetVersionTest :: simpleTest(void)
-                                                throw (CPPUNIT_NS::Exception)
-{
-    XmlRpcValue                 parameters;
-    XmlRpcValue                 result;
-
-    XmlRpc::XmlRpcClient    xmlRpcClient(getXmlRpcHost().c_str(),
-                                         getXmlRpcPort(),
-                                         "/RPC2",
-                                         false);
-
-    result.clear();
-    xmlRpcClient.execute("getVersion", parameters, result);
-    CPPUNIT_ASSERT(!xmlRpcClient.isFault());
-
-    CPPUNIT_ASSERT(result.hasMember("version"));
-    std::string versionStr = result["version"];
-    CPPUNIT_ASSERT(versionStr.find(versionPrefix) == 0);
-
-    xmlRpcClient.close();
+    try {
+        storage->reset();
+    } catch (Core::XmlRpcException &e) {
+        std::string eMsg = "storage reset() returned error:\n";
+        eMsg += e.what();
+        XmlRpcTools::markError(errorId+1, eMsg, returnValue);
+        return;
+    }
 }
 

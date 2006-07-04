@@ -26,8 +26,8 @@
     Location : $URL$
 
 ------------------------------------------------------------------------------*/
-#ifndef RemoveFromScheduleMethodTest_h
-#define RemoveFromScheduleMethodTest_h
+#ifndef ResetStorageMethodTest_h
+#define ResetStorageMethodTest_h
 
 #ifndef __cplusplus
 #error This is a C++ include file
@@ -42,16 +42,11 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-#include "LiveSupport/Authentication/AuthenticationClientInterface.h"
-#include "LiveSupport/Core/SessionId.h"
 #include "BaseTestMethod.h"
+
 
 namespace LiveSupport {
 namespace Scheduler {
-
-using namespace LiveSupport;
-using namespace LiveSupport::Core;
-using namespace LiveSupport::Authentication;
 
 /* ================================================================ constants */
 
@@ -62,36 +57,17 @@ using namespace LiveSupport::Authentication;
 /* =============================================================== data types */
 
 /**
- *  Unit test for the RemoveFromScheduleMethod class.
+ *  Unit test for the ResetStorageMethod class.
  *
  *  @author  $Author$
  *  @version $Revision$
- *  @see RemoveFromScheduleMethod
+ *  @see ResetStorageMethod
  */
-class RemoveFromScheduleMethodTest : public CPPUNIT_NS::TestFixture
+class ResetStorageMethodTest : public BaseTestMethod
 {
-    CPPUNIT_TEST_SUITE(RemoveFromScheduleMethodTest);
+    CPPUNIT_TEST_SUITE(ResetStorageMethodTest);
     CPPUNIT_TEST(firstTest);
-    CPPUNIT_TEST(negativeTest);
-    CPPUNIT_TEST(currentlyPlayingTest);
     CPPUNIT_TEST_SUITE_END();
-
-    private:
-
-        /**
-         *  The schedule used during the test.
-         */
-        Ptr<ScheduleInterface>::Ref     schedule;
-
-        /**
-         *  The authentication client produced by the factory.
-         */
-        Ptr<AuthenticationClientInterface>::Ref authentication;
-
-        /**
-         *  A session ID from the authentication client login() method.
-         */
-        Ptr<SessionId>::Ref                     sessionId;
 
 
     protected:
@@ -104,21 +80,6 @@ class RemoveFromScheduleMethodTest : public CPPUNIT_NS::TestFixture
         void
         firstTest(void)                         throw (CPPUNIT_NS::Exception);
 
-        /**
-         *  A simple test for trying to remove a non-existent entry.
-         *
-         *  @exception CPPUNIT_NS::Exception on test failures.
-         */
-        void
-        negativeTest(void)                      throw (CPPUNIT_NS::Exception);
-
-        /**
-         *  A test to try to remove an entry that's currently playing.
-         *
-         *  @exception CPPUNIT_NS::Exception on test failures.
-         */
-        void
-        currentlyPlayingTest(void)              throw (CPPUNIT_NS::Exception);
 
     public:
         
@@ -145,5 +106,5 @@ class RemoveFromScheduleMethodTest : public CPPUNIT_NS::TestFixture
 } // namespace Scheduler
 } // namespace LiveSupport
 
-#endif // RemoveFromScheduleMethodTest_h
+#endif // ResetStorageMethodTest_h
 

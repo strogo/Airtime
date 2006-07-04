@@ -222,6 +222,7 @@ SchedulerDaemon :: SchedulerDaemon (void)                   throw ()
     uploadPlaylistMethod.reset(new UploadPlaylistMethod());
     loginMethod.reset(new LoginMethod());
     logoutMethod.reset(new LogoutMethod());
+    resetStorageMethod.reset(new ResetStorageMethod());
 }
 
 
@@ -370,6 +371,7 @@ SchedulerDaemon :: registerXmlRpcFunctions(
     xmlRpcServer->addMethod(uploadPlaylistMethod.get());
     xmlRpcServer->addMethod(loginMethod.get());
     xmlRpcServer->addMethod(logoutMethod.get());
+    xmlRpcServer->addMethod(resetStorageMethod.get());
 }
 
 
