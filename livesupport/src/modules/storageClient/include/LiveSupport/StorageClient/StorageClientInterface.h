@@ -83,13 +83,15 @@ class StorageClientInterface
          *  The possible states of an asynchronous process.
          *  This is used by the asynchronous (groups of) methods:
          *  remoteSearch, createBackup, restoreBackup,
-         *  uploadToHub, downloadFromHub.
+         *  uploadToHub, downloadFromHub,
+         *  and also the scheduler server's backup methods.
          */
         typedef enum {  initState,
                         pendingState,
                         finishedState,
                         closedState,
-                        failedState }       AsyncState;
+                        failedState,
+                        invalidState }      AsyncState;
 
         /**
          *  Return the version string from the storage.
