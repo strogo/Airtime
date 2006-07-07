@@ -54,86 +54,99 @@ using namespace LiveSupport::Core;
 
 /* ===================================================  local data structures */
 
+namespace {
+
 /*------------------------------------------------------------------------------
  *  The name of the generic ID member in the XML-RPC parameter structure
  *----------------------------------------------------------------------------*/
-static const std::string idName = "id";
+const std::string idName = "id";
 
 /*------------------------------------------------------------------------------
  *  The name of the playlist ID member in the XML-RPC parameter structure
  *----------------------------------------------------------------------------*/
-static const std::string playlistIdName = "playlistId";
+const std::string playlistIdName = "playlistId";
 
 /*------------------------------------------------------------------------------
  *  The name of the audio clip ID member in the XML-RPC parameter structure
  *----------------------------------------------------------------------------*/
-static const std::string audioClipIdName = "audioClipId";
+const std::string audioClipIdName = "audioClipId";
 
 /*------------------------------------------------------------------------------
  *  The name of the playlist element ID member in the XML-RPC param structure
  *----------------------------------------------------------------------------*/
-static const std::string playlistElementIdName = "playlistElementId";
+const std::string playlistElementIdName = "playlistElementId";
 
 /*------------------------------------------------------------------------------
  *  The name of the relative offset member in the XML-RPC parameter structure
  *----------------------------------------------------------------------------*/
-static const std::string relativeOffsetName = "relativeOffset";
+const std::string relativeOffsetName = "relativeOffset";
 
 /*------------------------------------------------------------------------------
  *  The name of the from member in the XML-RPC parameter structure.
  *----------------------------------------------------------------------------*/
-static const std::string fromTimeName = "from";
+const std::string fromTimeName = "from";
 
 /*------------------------------------------------------------------------------
  *  The name of the to member in the XML-RPC parameter structure.
  *----------------------------------------------------------------------------*/
-static const std::string toTimeName = "to";
+const std::string toTimeName = "to";
 
 /*------------------------------------------------------------------------------
  *  The name of the start member in the XML-RPC parameter structure.
  *----------------------------------------------------------------------------*/
-static const std::string startTimeName = "start";
+const std::string startTimeName = "start";
 
 /*------------------------------------------------------------------------------
  *  The name of the end member in the XML-RPC parameter structure.
  *----------------------------------------------------------------------------*/
-static const std::string endTimeName = "end";
+const std::string endTimeName = "end";
 
 /*------------------------------------------------------------------------------
  *  The name of the schedule entry id member in the XML-RPC parameter structure.
  *----------------------------------------------------------------------------*/
-static const std::string scheduleEntryIdName = "scheduleEntryId";
+const std::string scheduleEntryIdName = "scheduleEntryId";
 
 /*------------------------------------------------------------------------------
  *  The name of the playtime member in the XML-RPC parameter structure.
  *----------------------------------------------------------------------------*/
-static const std::string playtimeName = "playtime";
+const std::string playtimeName = "playtime";
 
 /*------------------------------------------------------------------------------
  *  The name of the fade in member in the XML-RPC parameter structure.
  *----------------------------------------------------------------------------*/
-static const std::string fadeInName = "fadeIn";
+const std::string fadeInName = "fadeIn";
 
 /*------------------------------------------------------------------------------
  *  The name of the fade out member in the XML-RPC parameter structure.
  *----------------------------------------------------------------------------*/
-static const std::string fadeOutName = "fadeOut";
+const std::string fadeOutName = "fadeOut";
 
 /*------------------------------------------------------------------------------
  *  The name of the session ID member in the XML-RPC parameter structure
  *----------------------------------------------------------------------------*/
-static const std::string sessionIdName = "sessionId";
+const std::string sessionIdName = "sessionId";
 
 /*------------------------------------------------------------------------------
  *  The name of the login name member in the XML-RPC parameter structure
  *----------------------------------------------------------------------------*/
-static const std::string loginName = "login";
+const std::string loginName = "login";
 
 /*------------------------------------------------------------------------------
  *  The name of the password member in the XML-RPC parameter structure
  *----------------------------------------------------------------------------*/
-static const std::string passwordName = "password";
+const std::string passwordName = "password";
 
+/*------------------------------------------------------------------------------
+ *  The name of the search criteria member in the XML-RPC parameter structure
+ *----------------------------------------------------------------------------*/
+const std::string searchCriteriaName = "criteria";
+
+/*------------------------------------------------------------------------------
+ *  The name of the token member in the XML-RPC parameter structure
+ *----------------------------------------------------------------------------*/
+const std::string tokenName = "token";
+
+}
 
 /* ================================================  local constants & macros */
 
@@ -868,5 +881,70 @@ XmlRpcTools :: extractPassword(
     Ptr<std::string>::Ref password(new std::string(
                                         xmlRpcValue[passwordName] ));
     return password;
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Extract the search criteria from the XML-RPC parameters.
+ *----------------------------------------------------------------------------*/
+Ptr<SearchCriteria>::Ref
+XmlRpcTools :: extractSearchCriteria(XmlRpc::XmlRpcValue &  xmlRpcValue)
+                                                throw (std::invalid_argument)
+{
+    if (!xmlRpcValue.hasMember(searchCriteriaName)
+        || xmlRpcValue[searchCriteriaName].getType() 
+                                        != XmlRpc::XmlRpcValue::TypeStruct) {
+        throw std::invalid_argument("missing or bad criteria argument");
+    }
+    XmlRpc::XmlRpcValue         xmlCriteria = xmlRpcValue[searchCriteriaName];
+
+    Ptr<SearchCriteria>::Ref    criteria(new SearchCriteria(xmlCriteria));
+   
+    return criteria;
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Convert a SearchCriteria to an XmlRpcValue
+ *----------------------------------------------------------------------------*/
+void
+XmlRpcTools :: searchCriteriaToXmlRpcValue(
+                                Ptr<const SearchCriteria>::Ref  criteria,
+                                XmlRpc::XmlRpcValue &           returnValue)
+                                                                    throw ()
+{
+    returnValue[searchCriteriaName] = *criteria;
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Extract a token from the XML-RPC parameters.
+ *----------------------------------------------------------------------------*/
+Ptr<Glib::ustring>::Ref
+XmlRpcTools :: extractToken(XmlRpc::XmlRpcValue &   xmlRpcValue)
+                                                throw (std::invalid_argument)
+{
+    if (!xmlRpcValue.hasMember(tokenName)
+        || xmlRpcValue[tokenName].getType() 
+                                        != XmlRpc::XmlRpcValue::TypeString) {
+        throw std::invalid_argument("missing or bad token argument");
+    }
+    
+    Ptr<Glib::ustring>::Ref     token(new Glib::ustring(
+                                                xmlRpcValue[tokenName] ));
+    return token;
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Convert a string token to an XmlRpcValue.
+ *----------------------------------------------------------------------------*/
+void
+XmlRpcTools :: tokenToXmlRpcValue(
+                            Ptr<const Glib::ustring>::Ref    token,
+                            XmlRpc::XmlRpcValue &            returnValue)
+                                                                    throw ()
+{
+    returnValue[tokenName] = std::string(*token);
 }
 
