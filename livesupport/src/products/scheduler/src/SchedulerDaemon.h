@@ -66,6 +66,8 @@
 #include "LiveSupport/Authentication/AuthenticationClientInterface.h"
 #include "LiveSupport/PlaylistExecutor/AudioPlayerInterface.h"
 #include "LiveSupport/EventScheduler/EventScheduler.h"
+#include "PlayLogInterface.h"
+
 #include "DisplayScheduleMethod.h"
 #include "GeneratePlayReportMethod.h"
 #include "GetSchedulerTimeMethod.h"
@@ -78,7 +80,7 @@
 #include "LoginMethod.h"
 #include "LogoutMethod.h"
 #include "ResetStorageMethod.h"
-#include "PlayLogInterface.h"
+#include "CreateBackupOpenMethod.h"
 
 
 namespace LiveSupport {
@@ -308,6 +310,11 @@ class SchedulerDaemon : public Installable,
          *  The resetStorageMethod the daemon is providing.
          */
         Ptr<ResetStorageMethod>::Ref            resetStorageMethod;
+
+        /**
+         *  The createBackupOpenMethod the daemon is providing.
+         */
+        Ptr<CreateBackupOpenMethod>::Ref        createBackupOpenMethod;
 
         /**
          *  The login to the authentication system.

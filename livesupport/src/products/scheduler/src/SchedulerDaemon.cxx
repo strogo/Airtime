@@ -89,51 +89,54 @@ using namespace LiveSupport::Scheduler;
  */
 Ptr<SchedulerDaemon>::Ref   SchedulerDaemon::schedulerDaemon;
 
+namespace {
+
 /**
  *  The name of the XML configuration element for the Scheduler daemon.
  */
-static const std::string confElement = "scheduler";
+const std::string confElement = "scheduler";
 
 /**
  *  The name of the XML configuration element for the XmlRpcDaemon inside.
  */
-static const std::string xmlRpcDaemonConfElement = "xmlRpcDaemon";
+const std::string xmlRpcDaemonConfElement = "xmlRpcDaemon";
 
 /**
  *  The name of the config child element for the login and password
  */
-static const std::string    userConfigElementName = "user";
+const std::string    userConfigElementName = "user";
 
 /**
  *  The name of the config element attribute for the login
  */
-static const std::string    userLoginAttrName = "login";
+const std::string    userLoginAttrName = "login";
 
 /**
  *  The name of the config element attribute for the password
  */
-static const std::string    userPasswordAttrName = "password";
+const std::string    userPasswordAttrName = "password";
 
 /**
  *  The working backup state
  */
-static const std::string    workingState = "working";
+const std::string    workingState = "working";
 
 /**
  *  The finished / success backup state
  */
-static const std::string    successState = "success";
+const std::string    successState = "success";
 
 /**
  *  The finished / failure backup state
  */
-static const std::string    failureState = "fault";
+const std::string    failureState = "fault";
 
 /**
  *  The name of the schedule export fie in the export tarbal;
  */
-static const std::string    scheduleExportFileName = "meta-inf/scheduler.xml";
+const std::string    scheduleExportFileName = "meta-inf/scheduler.xml";
 
+}
 
 /*------------------------------------------------------------------------------
  *  The SQL create statement, used for installation.
@@ -223,6 +226,7 @@ SchedulerDaemon :: SchedulerDaemon (void)                   throw ()
     loginMethod.reset(new LoginMethod());
     logoutMethod.reset(new LogoutMethod());
     resetStorageMethod.reset(new ResetStorageMethod());
+    createBackupOpenMethod.reset(new CreateBackupOpenMethod());
 }
 
 
@@ -372,6 +376,7 @@ SchedulerDaemon :: registerXmlRpcFunctions(
     xmlRpcServer->addMethod(loginMethod.get());
     xmlRpcServer->addMethod(logoutMethod.get());
     xmlRpcServer->addMethod(resetStorageMethod.get());
+    xmlRpcServer->addMethod(createBackupOpenMethod.get());
 }
 
 

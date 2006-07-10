@@ -248,7 +248,8 @@ SCHEDULER_OBJS = ${TMP_DIR}/SignalDispatcher.o \
                  ${TMP_DIR}/PlaylistEvent.o \
                  ${TMP_DIR}/ResetStorageMethod.o \
                  ${TMP_DIR}/LoginMethod.o \
-                 ${TMP_DIR}/LogoutMethod.o
+                 ${TMP_DIR}/LogoutMethod.o \
+                 ${TMP_DIR}/CreateBackupOpenMethod.o
 
 
 SCHEDULER_EXE_OBJS = ${SCHEDULER_OBJS} \
