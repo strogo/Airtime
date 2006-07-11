@@ -249,6 +249,8 @@ SCHEDULER_OBJS = ${TMP_DIR}/SignalDispatcher.o \
                  ${TMP_DIR}/ResetStorageMethod.o \
                  ${TMP_DIR}/LoginMethod.o \
                  ${TMP_DIR}/LogoutMethod.o \
+                 ${TMP_DIR}/BackupFactory.o \
+                 ${TMP_DIR}/PostgresqlBackup.o \
                  ${TMP_DIR}/CreateBackupOpenMethod.o
 
 

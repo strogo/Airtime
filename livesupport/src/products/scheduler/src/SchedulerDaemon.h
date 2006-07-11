@@ -332,49 +332,6 @@ class SchedulerDaemon : public Installable,
         SchedulerDaemon (void)                                      throw ();
 
 
-        /**
-         *  Insert a schedule export XML file into an existing tarball.
-         *
-         *  @param path the file path to the existing tarball.
-         *  @param fromTime the time to generate the XML export from
-         *  @param toTime the time to generate the XML export to
-         *  @throws std::runtime_error on file / tarball handling issues.
-         */
-        void
-        putScheduleExportIntoTar(
-                            Ptr<const Glib::ustring>::Ref & path,
-                            Ptr<ptime>::Ref                 fromTime,
-                            Ptr<ptime>::Ref                 toTime)
-                                                    throw (std::runtime_error);
-        
-        /**
-         *  Convert a string status to a StorageClientInterface::AsyncState.
-         *  It converts
-         *  <ul>
-         *      <li> "working"      -> pendingState </li>
-         *      <li> "success"      -> finishedState </li>
-         *      <li> "fault"        -> failedState </li>
-         *      <li> anything else  -> invalidState <li>
-         *  </ul>
-         */
-        StorageClientInterface::AsyncState
-        stringToAsyncState(const std::string &      statusString)   throw ();
-        
-        /**
-         *  Convert a StorageClientInterface::AsyncState to a string.
-         *  It converts
-         *  <ul>
-         *      <li> initState or pendingState    -> "working" </li>
-         *      <li> finishedState                -> "success" </li>
-         *      <li> failedState                  -> "fault"   </li>
-         *      <li> anything else                -> "invalid" </li>
-         *  </ul>
-         */
-        std::string
-        asyncStateToString(StorageClientInterface::AsyncState   status)
-                                                                    throw ();
-
-
     protected:
 
         /**
@@ -545,73 +502,6 @@ class SchedulerDaemon : public Installable,
          */
         virtual void
         update(void)                                throw (std::logic_error);
-
-        /**
-         *  Start to create a backup by calling the storage, and also
-         *  adding a backup of the schedule.
-         *  To check if the backup procedure is still pending, call
-         *  createBackupCheck() regularly.
-         *  Make sure to close the backup by calling createBackupClose().
-         *
-         *  @param sessionId a valid session ID to use for accessing the
-         *         storage
-         *  @param criteria the criteria to use for backing up the storage
-         *  @param fromTime entries are included in the schedule export starting
-         *         from this time.
-         *  @param toTime entries as included in the schedule export 
-         *         up to but not including this time.
-         *  @return a token, which can be used to query the backup process.
-         *  @exception XmlRpcException on XML-RPC issues.
-         *  @see #createBackupCheck
-         *  @see #createBackupClose
-         */
-        virtual Ptr<Glib::ustring>::Ref
-        createBackupOpen(Ptr<SessionId>::Ref        sessionId,
-                         Ptr<SearchCriteria>::Ref   criteria,
-                         Ptr<ptime>::Ref            fromTime,
-                         Ptr<ptime>::Ref            toTime)
-                                                throw (XmlRpcException);
-
-        /**
-         *  Check the status of a storage backup.
-         *
-         *  @param  token   the identifier of this backup task.
-         *  @param  url     return parameter;
-         *                      if the status is "success", it contains the 
-         *                      URL of the created backup file.
-         *  @param  path    return parameter;
-         *                      if the status is "success", it contains the
-         *                      local access path of the created backup file.
-         *  @param  errorMessage    return parameter;
-         *                      if the status is "fault", it contains the
-         *                      fault string.
-         *  @return the state of the backup process: one of pendingState,
-         *                      finishedState, or failedState.
-         *  @exception XmlRpcException if there is a problem with the XML-RPC
-         *                             call.
-         *  @see #createBackupOpen
-         *  @see #createBackupClose
-         */
-        virtual StorageClientInterface::AsyncState
-        createBackupCheck(const Glib::ustring &             token,
-                          Ptr<const Glib::ustring>::Ref &   url,
-                          Ptr<const Glib::ustring>::Ref &   path,
-                          Ptr<const Glib::ustring>::Ref &   errorMessage)
-                                                throw (XmlRpcException);
-
-        /**
-         *  Close the storage backup process.
-         *  Frees up all resources allocated to the backup.
-         *
-         *  @param  token           the identifier of this backup task.
-         *  @exception XmlRpcException if there is a problem with the XML-RPC
-         *                             call.
-         *  @see #createBackupOpen
-         *  @see #createBackupCheck
-         */
-        virtual void
-        createBackupClose(const Glib::ustring &     token)
-                                                throw (XmlRpcException);
 
 };
 

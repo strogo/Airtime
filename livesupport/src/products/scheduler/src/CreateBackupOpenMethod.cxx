@@ -42,9 +42,8 @@
 
 #include <string>
 
-#include "ScheduleInterface.h"
-#include "ScheduleFactory.h"
 #include "LiveSupport/Core/XmlRpcTools.h"
+#include "BackupFactory.h"
 
 #include "CreateBackupOpenMethod.h"
 
@@ -139,14 +138,15 @@ CreateBackupOpenMethod :: execute(XmlRpc::XmlRpcValue &     rootParameter,
         return;
     }
 
-    Ptr<SchedulerDaemon>::Ref   scheduler = SchedulerDaemon::getInstance();
+    Ptr<BackupFactory>::Ref     bf      = BackupFactory::getInstance();
+    Ptr<BackupInterface>::Ref   backup  = bf->getBackup();
     
     Ptr<Glib::ustring>::Ref     token;
     try {
-        token = scheduler->createBackupOpen(sessionId,
-                                            criteria,
-                                            fromTime,
-                                            toTime);
+        token = backup->createBackupOpen(sessionId,
+                                         criteria,
+                                         fromTime,
+                                         toTime);
     } catch (std::invalid_argument &e) {
         XmlRpcTools::markError(errorId+5, e.what(), returnValue);
         return;
