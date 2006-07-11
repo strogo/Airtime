@@ -26,8 +26,8 @@
     Location : $URL$
 
 ------------------------------------------------------------------------------*/
-#ifndef PostresqlSchedule_h
-#define PostresqlSchedule_h
+#ifndef PostgresqlSchedule_h
+#define PostgresqlSchedule_h
 
 #ifndef __cplusplus
 #error This is a C++ include file
@@ -429,5 +429,5 @@ class PostgresqlSchedule : public Configurable,
 } // namespace Scheduler
 } // namespace LiveSupport
 
-#endif // PostresqlSchedule_h
+#endif // PostgresqlSchedule_h
 
