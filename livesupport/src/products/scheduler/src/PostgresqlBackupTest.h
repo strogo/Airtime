@@ -26,8 +26,8 @@
     Location : $URL$
 
 ------------------------------------------------------------------------------*/
-#ifndef SchedulerDaemonTest_h
-#define SchedulerDaemonTest_h
+#ifndef PostgresqlBackupTest_h
+#define PostgresqlBackupTest_h
 
 #ifndef __cplusplus
 #error This is a C++ include file
@@ -42,6 +42,8 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
+#include "LiveSupport/Authentication/AuthenticationClientInterface.h"
+#include "PostgresqlBackup.h"
 #include "BaseTestMethod.h"
 
 namespace LiveSupport {
@@ -58,23 +60,27 @@ using namespace LiveSupport;
 /* =============================================================== data types */
 
 /**
- *  Unit test for the SchedulerDaemon class.
+ *  Unit test for the PostgresqlBackup class.
  *
  *  @author  $Author$
  *  @version $Revision$
- *  @see SchedulerDaemon
+ *  @see PostgresqlBackup
  */
-class SchedulerDaemonTest : public CPPUNIT_NS::TestFixture
+class PostgresqlBackupTest : public CPPUNIT_NS::TestFixture
 {
-    CPPUNIT_TEST_SUITE(SchedulerDaemonTest);
-    CPPUNIT_TEST(getSingleton);
-    //CPPUNIT_TEST(testStartStop);
+    CPPUNIT_TEST_SUITE(PostgresqlBackupTest);
+    CPPUNIT_TEST(createBackupTest);
     CPPUNIT_TEST_SUITE_END();
 
     private:
 
         /**
-         *  The authentication client produced by the factory.
+         *  The PostgresqlBackup object which does the backup operations.
+         */
+        Ptr<PostgresqlBackup>::Ref              backup;
+
+        /**
+         *  The authentication client used to log in.
          */
         Ptr<AuthenticationClientInterface>::Ref authentication;
 
@@ -87,20 +93,12 @@ class SchedulerDaemonTest : public CPPUNIT_NS::TestFixture
     protected:
 
         /**
-         *  A simple test to see if the singleton Hello object is accessible.
+         *  Test to see if the backup works as expected
          *
          *  @exception CPPUNIT_NS::Exception on test failures.
          */
         void
-        getSingleton(void)                      throw (CPPUNIT_NS::Exception);
-
-        /**
-         *  Test to see if the daemon starts an stops OK.
-         *
-         *  @exception CPPUNIT_NS::Exception on test failures.
-         */
-        void
-        testStartStop(void)                     throw (CPPUNIT_NS::Exception);
+        createBackupTest(void)                  throw (CPPUNIT_NS::Exception);
 
     public:
         
@@ -127,5 +125,5 @@ class SchedulerDaemonTest : public CPPUNIT_NS::TestFixture
 } // namespace Scheduler
 } // namespace LiveSupport
 
-#endif // SchedulerDaemonTest_h
+#endif // PostgresqlBackupTest_h
 

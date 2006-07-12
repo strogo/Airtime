@@ -146,6 +146,21 @@ const std::string searchCriteriaName = "criteria";
  *----------------------------------------------------------------------------*/
 const std::string tokenName = "token";
 
+/*------------------------------------------------------------------------------
+ *  The name of the backup status member in the XML-RPC parameter structure
+ *----------------------------------------------------------------------------*/
+const std::string backupStatusName = "status";
+
+/*------------------------------------------------------------------------------
+ *  The name of the URL member in the XML-RPC parameter structure
+ *----------------------------------------------------------------------------*/
+const std::string urlName = "url";
+
+/*------------------------------------------------------------------------------
+ *  The name of the path member in the XML-RPC parameter structure
+ *----------------------------------------------------------------------------*/
+const std::string pathName = "path";
+
 }
 
 /* ================================================  local constants & macros */
@@ -946,5 +961,57 @@ XmlRpcTools :: tokenToXmlRpcValue(
                                                                     throw ()
 {
     returnValue[tokenName] = std::string(*token);
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Convert a StorageClientInterface::AsyncState returned by one
+ *  of the backup methods to an XmlRpcValue.
+ *----------------------------------------------------------------------------*/
+void
+XmlRpcTools :: backupStatusToXmlRpcValue(
+                            StorageClientInterface::AsyncState  status,
+                            XmlRpc::XmlRpcValue &               returnValue)
+                                                                    throw ()
+{
+    std::string     stringValue;
+    
+    switch (status) {
+        case StorageClientInterface::pendingState:  stringValue = "working";
+                                                    break;
+        case StorageClientInterface::finishedState: stringValue = "success";
+                                                    break;
+        case StorageClientInterface::failedState:   stringValue = "fault";
+                                                    break;
+        default:    // TODO: signal error somehow
+    }
+    
+    returnValue[backupStatusName] = stringValue;
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Convert a string token to an XmlRpcValue.
+ *----------------------------------------------------------------------------*/
+void
+XmlRpcTools :: urlToXmlRpcValue(
+                            Ptr<const Glib::ustring>::Ref    url,
+                            XmlRpc::XmlRpcValue &            returnValue)
+                                                                    throw ()
+{
+    returnValue[urlName] = std::string(*url);
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Convert a string token to an XmlRpcValue.
+ *----------------------------------------------------------------------------*/
+void
+XmlRpcTools :: pathToXmlRpcValue(
+                            Ptr<const Glib::ustring>::Ref    path,
+                            XmlRpc::XmlRpcValue &            returnValue)
+                                                                    throw ()
+{
+    returnValue[pathName] = std::string(*path);
 }
 

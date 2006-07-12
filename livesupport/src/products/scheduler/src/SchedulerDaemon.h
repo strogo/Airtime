@@ -130,6 +130,9 @@ using namespace LiveSupport::PlaylistExecutor;
  *      &lt;playLogFactory&gt;
  *          ...
  *      &lt;/playLogFactory&gt;
+ *      &lt;backupFactory&gt;
+ *          ...
+ *      &lt;/backupFactory&gt;
  *      &lt;xmlRpcDaemon&gt;
  *          ...
  *      &lt;/xmlRpcDaemon&gt;
@@ -152,6 +155,7 @@ using namespace LiveSupport::PlaylistExecutor;
  *                       storageClientFactory,
  *                       scheduleFactory,
  *                       playLogFactory,
+ *                       backupFactory,
  *                       audioPlayer,
  *                       xmlRpcDaemon) &gt;
  *  </code></pre>

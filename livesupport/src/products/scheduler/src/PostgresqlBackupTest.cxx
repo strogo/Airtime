@@ -43,7 +43,8 @@
 #include <string>
 
 #include "SchedulerDaemon.h"
-#include "SchedulerDaemonTest.h"
+#include "PostgresqlBackup.h"
+#include "PostgresqlBackupTest.h"
 
 
 using namespace LiveSupport::Scheduler;
@@ -53,7 +54,7 @@ using namespace LiveSupport::Scheduler;
 
 /* ================================================  local constants & macros */
 
-CPPUNIT_TEST_SUITE_REGISTRATION(SchedulerDaemonTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(PostgresqlBackupTest);
 
 
 /* ===============================================  local function prototypes */
@@ -65,22 +66,29 @@ CPPUNIT_TEST_SUITE_REGISTRATION(SchedulerDaemonTest);
  *  Set up the test environment
  *----------------------------------------------------------------------------*/
 void
-SchedulerDaemonTest :: setUp(void)              throw (CPPUNIT_NS::Exception)
+PostgresqlBackupTest :: setUp(void)              throw (CPPUNIT_NS::Exception)
 {
     Ptr<SchedulerDaemon>::Ref   daemon = SchedulerDaemon::getInstance();
     try {
-        Ptr<StorageClientInterface>::Ref    storage = daemon->getStorage();
-        storage->reset();
-
+        Ptr<ConnectionManagerInterface>::Ref    connectionManager;
+        Ptr<StorageClientInterface>::Ref        storage;
+        Ptr<ScheduleInterface>::Ref             schedule;
+        
+        connectionManager = daemon->getConnectionManager();
+        storage           = daemon->getStorage();
+        schedule          = daemon->getSchedule();
+        
+        backup.reset(new PostgresqlBackup(connectionManager,
+                                          storage,
+                                          schedule));
+        backup->install();
     } catch (std::invalid_argument &e) {
         CPPUNIT_FAIL("semantic error in configuration file");
     } catch (xmlpp::exception &e) {
         CPPUNIT_FAIL("error parsing configuration file");
-    } catch (std::exception &e) {
-        CPPUNIT_FAIL(e.what());
     }
-
-    authentication = daemon->getAuthentication();
+    
+    authentication          = daemon->getAuthentication();
     try {
         sessionId = authentication->login("root", "q");
     } catch (XmlRpcException &e) {
@@ -95,41 +103,59 @@ SchedulerDaemonTest :: setUp(void)              throw (CPPUNIT_NS::Exception)
  *  Clean up the test environment
  *----------------------------------------------------------------------------*/
 void
-SchedulerDaemonTest :: tearDown(void)           throw (CPPUNIT_NS::Exception)
+PostgresqlBackupTest :: tearDown(void)           throw (CPPUNIT_NS::Exception)
 {
-    authentication->logout(sessionId);
-    sessionId.reset();
-    authentication.reset();
+    CPPUNIT_ASSERT_NO_THROW(
+        authentication->logout(sessionId);
+    );
+    CPPUNIT_ASSERT_NO_THROW(
+        backup->uninstall();
+    );
 }
 
 
 /*------------------------------------------------------------------------------
- *  Test to see if the singleton Hello object is accessible
+ *  Test to see if we can create backups
  *----------------------------------------------------------------------------*/
 void
-SchedulerDaemonTest :: getSingleton(void)       throw (CPPUNIT_NS::Exception)
+PostgresqlBackupTest :: createBackupTest(void)
+                                                throw (CPPUNIT_NS::Exception)
 {
-    Ptr<SchedulerDaemon>::Ref   daemon = SchedulerDaemon::getInstance();
+    Ptr<SearchCriteria>::Ref    criteria(new SearchCriteria);
+    criteria->setLimit(10);
+    Ptr<ptime>::Ref from(new ptime(time_from_string("2004-07-23 10:00:00")));
+    Ptr<ptime>::Ref to(new ptime(time_from_string("2004-07-23 11:00:00")));
 
-    CPPUNIT_ASSERT( daemon.get() );
+    Ptr<Glib::ustring>::Ref     token;
+    CPPUNIT_ASSERT_NO_THROW(
+        token = backup->createBackupOpen(sessionId, criteria, from, to);
+    );
+    CPPUNIT_ASSERT(token);
+
+    Ptr<const Glib::ustring>::Ref       url;
+    Ptr<const Glib::ustring>::Ref       path;
+    Ptr<const Glib::ustring>::Ref       errorMessage;
+    StorageClientInterface::AsyncState  status;
+    int     iterations = 20;
+    do {
+        std::cerr << "-/|\\"[iterations%4] << '\b';
+        sleep(1);
+        CPPUNIT_ASSERT_NO_THROW(
+            status = backup->createBackupCheck(*token, url, path, errorMessage);
+        );
+        CPPUNIT_ASSERT(status);
+        CPPUNIT_ASSERT(status == StorageClientInterface::pendingState
+                         || status == StorageClientInterface::finishedState
+                         || status == StorageClientInterface::failedState);
+    } while (--iterations && status == StorageClientInterface::pendingState);
+    
+    CPPUNIT_ASSERT_EQUAL(StorageClientInterface::finishedState, status);
+    // TODO: test accessibility of the URL?
+    
+    CPPUNIT_ASSERT_NO_THROW(
+        backup->createBackupClose(*token);
+    );
+    // TODO: test existence of schedule backup in tarball
 }
 
-
-/*------------------------------------------------------------------------------
- *  Test to see if the scheduler starts and stops OK
- *----------------------------------------------------------------------------*/
-void
-SchedulerDaemonTest :: testStartStop(void)      throw (CPPUNIT_NS::Exception)
-{
-    Ptr<SchedulerDaemon>::Ref   daemon = SchedulerDaemon::getInstance();
-
-    CPPUNIT_ASSERT( daemon.get() );
-    CPPUNIT_ASSERT( !(daemon->isRunning()) );
-    daemon->start();
-    sleep(3);
-    CPPUNIT_ASSERT( daemon->isRunning() );
-    daemon->stop();
-    sleep(3);
-    CPPUNIT_ASSERT( !(daemon->isRunning()) );
-}
 

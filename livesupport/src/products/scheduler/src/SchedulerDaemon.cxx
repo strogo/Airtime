@@ -59,6 +59,7 @@
 #include "LiveSupport/PlaylistExecutor/AudioPlayerFactory.h"
 #include "ScheduleFactory.h"
 #include "PlayLogFactory.h"
+#include "BackupFactory.h"
 #include "PlaylistEventContainer.h"
 
 #include "SchedulerDaemon.h"
@@ -235,6 +236,14 @@ SchedulerDaemon :: configure(const xmlpp::Element    & element)
     Ptr<PlayLogFactory>::Ref   plf = PlayLogFactory::getInstance();
     plf->configure( *((const xmlpp::Element*) *(nodes.begin())) );
 
+    // configure the BackupFactory
+    nodes = element.get_children(BackupFactory::getConfigElementName());
+    if (nodes.size() < 1) {
+        throw std::invalid_argument("no backupFactory element");
+    }
+    Ptr<BackupFactory>::Ref     bf = BackupFactory::getInstance();
+    bf->configure( *((const xmlpp::Element*) *(nodes.begin())) );
+
     // configure the XmlRpcDaemon
     nodes = element.get_children(XmlRpcDaemon::getConfigElementName());
     if (nodes.size() < 1) {
@@ -247,8 +256,8 @@ SchedulerDaemon :: configure(const xmlpp::Element    & element)
     connectionManager = cmf->getConnectionManager();
     storage           = scf->getStorageClient();
     audioPlayer       = apf->getAudioPlayer();
-    playLog           = plf->getPlayLog();
     schedule          = sf->getSchedule();
+    playLog           = plf->getPlayLog();
 }
 
 
@@ -293,10 +302,12 @@ SchedulerDaemon :: install(void)                throw (std::exception)
 {
     if (!isInstalled()) {
         // TODO: check if we have already been configured
-        Ptr<ScheduleFactory>::Ref   sf = ScheduleFactory::getInstance();
+        Ptr<ScheduleFactory>::Ref   sf  = ScheduleFactory::getInstance();
         sf->install();
         Ptr<PlayLogFactory>::Ref    plf = PlayLogFactory::getInstance();
         plf->install();
+        Ptr<BackupFactory>::Ref     bf  = BackupFactory::getInstance();
+        bf->install();
     }
 }
 
@@ -308,14 +319,15 @@ bool
 SchedulerDaemon :: isInstalled(void)            throw (std::exception)
 {
     // TODO: check if we have already been configured
-    Ptr<ScheduleFactory>::Ref   sf = ScheduleFactory::getInstance();
+    Ptr<ScheduleFactory>::Ref   sf  = ScheduleFactory::getInstance();
     Ptr<PlayLogFactory>::Ref    plf = PlayLogFactory::getInstance();
+    Ptr<BackupFactory>::Ref     bf  = BackupFactory::getInstance();
 
-    if (!sf.get() || !plf.get()) {
+    if (!sf || !plf || !bf) {
         throw std::logic_error("couldn't initialize factories");
     }
     
-    return sf->isInstalled() && plf->isInstalled();
+    return sf->isInstalled() && plf->isInstalled() && bf->isInstalled();
 }
 
 
@@ -326,16 +338,41 @@ void
 SchedulerDaemon :: uninstall(void)              throw (std::exception)
 {
     // TODO: check if we have already been configured
+    Ptr<BackupFactory>::Ref     bf  = BackupFactory::getInstance();
     Ptr<PlayLogFactory>::Ref    plf = PlayLogFactory::getInstance();
+    Ptr<ScheduleFactory>::Ref   sf  = ScheduleFactory::getInstance();
+
+    if (!bf || !plf || !sf) {
+        throw std::logic_error("couldn't initialize factories");
+    }
+
+    bool                isOK = true;
+    std::stringstream   errorMessage("error uninstalling factories:\n");
+    
+    try {
+        bf->uninstall();
+    } catch (std::exception &e) {
+        isOK = false;
+        errorMessage << e.what() << std::endl;
+    }
+    
     try {
         plf->uninstall();
     } catch (std::exception &e) {
-        // TODO: don't print but throw it instead
-        std::cerr << e.what() << std::endl;
+        isOK = false;
+        errorMessage << e.what() << std::endl;
     }
     
-    Ptr<ScheduleFactory>::Ref   sf = ScheduleFactory::getInstance();
-    sf->uninstall();
+    try {
+        sf->uninstall();
+    } catch (std::exception &e) {
+        isOK = false;
+        errorMessage << e.what() << std::endl;
+    }
+    
+    if (!isOK) {
+        throw std::logic_error(errorMessage.str());
+    }
 }
 
 

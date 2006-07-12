@@ -53,6 +53,7 @@
 #include "LiveSupport/Core/ScheduleEntry.h"
 #include "LiveSupport/Core/PlayLogEntry.h"
 #include "LiveSupport/Core/SearchCriteria.h"
+#include "LiveSupport/StorageClient/StorageClientInterface.h"
 
 
 namespace LiveSupport {
@@ -60,6 +61,7 @@ namespace Core {
 
 using namespace LiveSupport;
 using namespace LiveSupport::Core;
+using namespace LiveSupport::StorageClient;
 
 /* ================================================================ constants */
 
@@ -604,6 +606,44 @@ class XmlRpcTools
         static void
         tokenToXmlRpcValue(Ptr<const Glib::ustring>::Ref    token,
                            XmlRpc::XmlRpcValue &            returnValue)
+                                                                    throw ();
+
+        /**
+         *  Convert a StorageClientInterface::AsyncState returned by one
+         *  of the backup methods to an XmlRpcValue.
+         *
+         *  @param  status       the AsyncState to convert.
+         *  @param  xmlRpcValue the output parameter holding the result of
+         *                      the conversion.
+         */
+        static void
+        backupStatusToXmlRpcValue(
+                            StorageClientInterface::AsyncState  status,
+                            XmlRpc::XmlRpcValue &               returnValue)
+                                                                    throw ();
+
+        /**
+         *  Convert a string URL to an XmlRpcValue.
+         *
+         *  @param  url         the string URL to convert.
+         *  @param  xmlRpcValue the output parameter holding the result of
+         *                      the conversion.
+         */
+        static void
+        urlToXmlRpcValue(Ptr<const Glib::ustring>::Ref      url,
+                         XmlRpc::XmlRpcValue &              returnValue)
+                                                                    throw ();
+
+        /**
+         *  Convert a string path to an XmlRpcValue.
+         *
+         *  @param  path        the string path to convert.
+         *  @param  xmlRpcValue the output parameter holding the result of
+         *                      the conversion.
+         */
+        static void
+        pathToXmlRpcValue(Ptr<const Glib::ustring>::Ref     path,
+                          XmlRpc::XmlRpcValue &             returnValue)
                                                                     throw ();
 };
 

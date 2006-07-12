@@ -26,8 +26,8 @@
     Location : $URL$
 
 ------------------------------------------------------------------------------*/
-#ifndef SchedulerDaemonTest_h
-#define SchedulerDaemonTest_h
+#ifndef RpcBackupTest_h
+#define RpcBackupTest_h
 
 #ifndef __cplusplus
 #error This is a C++ include file
@@ -42,12 +42,15 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
+#include "LiveSupport/Core/Ptr.h"
+#include "LiveSupport/Core/SessionId.h"
+
 #include "BaseTestMethod.h"
 
 namespace LiveSupport {
 namespace Scheduler {
 
-using namespace LiveSupport;
+using namespace LiveSupport::Core;
 
 /* ================================================================ constants */
 
@@ -58,49 +61,34 @@ using namespace LiveSupport;
 /* =============================================================== data types */
 
 /**
- *  Unit test for the SchedulerDaemon class.
+ *  Unit test for the BackupMethod class.
  *
  *  @author  $Author$
  *  @version $Revision$
- *  @see SchedulerDaemon
+ *  @see BackupMethod
  */
-class SchedulerDaemonTest : public CPPUNIT_NS::TestFixture
+class RpcBackupTest : public BaseTestMethod
 {
-    CPPUNIT_TEST_SUITE(SchedulerDaemonTest);
-    CPPUNIT_TEST(getSingleton);
-    //CPPUNIT_TEST(testStartStop);
+    CPPUNIT_TEST_SUITE(RpcBackupTest);
+    CPPUNIT_TEST(createBackupTest);
     CPPUNIT_TEST_SUITE_END();
 
     private:
-
-        /**
-         *  The authentication client produced by the factory.
-         */
-        Ptr<AuthenticationClientInterface>::Ref authentication;
 
         /**
          *  A session ID from the authentication client login() method.
          */
         Ptr<SessionId>::Ref                     sessionId;
 
-
     protected:
 
         /**
-         *  A simple test to see if the singleton Hello object is accessible.
+         *  Test the createBackupXxxx methods.
          *
          *  @exception CPPUNIT_NS::Exception on test failures.
          */
         void
-        getSingleton(void)                      throw (CPPUNIT_NS::Exception);
-
-        /**
-         *  Test to see if the daemon starts an stops OK.
-         *
-         *  @exception CPPUNIT_NS::Exception on test failures.
-         */
-        void
-        testStartStop(void)                     throw (CPPUNIT_NS::Exception);
+        createBackupTest(void)                  throw (CPPUNIT_NS::Exception);
 
     public:
         
@@ -127,5 +115,5 @@ class SchedulerDaemonTest : public CPPUNIT_NS::TestFixture
 } // namespace Scheduler
 } // namespace LiveSupport
 
-#endif // SchedulerDaemonTest_h
+#endif // RpcBackupTest_h
 

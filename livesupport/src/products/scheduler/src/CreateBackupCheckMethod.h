@@ -26,8 +26,8 @@
     Location : $URL$
 
 ------------------------------------------------------------------------------*/
-#ifndef CreateBackupOpenMethod_h
-#define CreateBackupOpenMethod_h
+#ifndef CreateBackupCheckMethod_h
+#define CreateBackupCheckMethod_h
 
 #ifndef __cplusplus
 #error This is a C++ include file
@@ -66,48 +66,42 @@ using namespace LiveSupport::Core;
 /* =============================================================== data types */
 
 /**
- *  An XML-RPC method object to start a backup creation process.
+ *  An XML-RPC method object to check the progress of a backup creation process.
  *
- *  The name of the method when called through XML-RPC is "createBackupOpen".
+ *  The name of the method when called through XML-RPC is "createBackupCheck".
  *
- *  The expected parameter is an XML-RPC structure, with the following
- *  members:
+ *  The expected parameter is an XML-RPC structure with a single member:
  *  <ul>
- *      <li>sessionId  - string - the session ID obtained via the login()
- *                                method of the authentication client </li>
- *      <li>criteria   - struct - the criteria to use for backing up the
- *                                storage </li>
- *      <li>fromTime   - datetime - entries are included in the schedule export
- *                                  starting from this time </li>
- *      <li>toTime     - datetime - entries are included in the schedule export
- *                                  up to but not including this time </li>
+ *      <li>token   - string -  the token obtained from createBackupOpen </li>
  *  </ul>
  *
- *  For the format of the <code>criteria</code> parameter, see the
- *  documentation of <code>XR_LocStor::xr_searchMetadata()</code>.
- *
- *  On success, returns an XML-RPC struct with a single field:
+ *  On success, returns an XML-RPC struct, with the following members:
  *  <ul>
- *      <li>token   - string -  a token, which can be used to query the 
- *                              backup process </li>
+ *      <li>status  - string -  on of "success", "working" or "fault" </li>
+ *      <li>url     - string -  if the status is "success", this contains
+ *                              a readable URL of the new backup archive </li>
+ *      <li>path    - string -  if the status is "success", this contains
+ *                              the local access path of the new backup
+ *                              archive </li>
+ *      <li>faultString - string -  if the status is "fault", this contains
+ *                                  the error message. </li>
  *  </ul>
  *
  *  In case of an error, a standard XML-RPC fault response is generated, 
  *  and a {&nbsp;faultCode, faultString&nbsp;} structure is returned.  The
  *  possible errors are:
  *  <ul>
- *     <li>4001 - invalid argument format </li>
- *     <li>4002 - missing criteria argument </li>
- *     <li>4003 - missing fromTime argument </li>
- *     <li>4004 - missing toTime argument </li>
+ *     <li>4101 - invalid argument format </li>
+ *     <li>4102 - missing token argument </li>
  *     <li>4010 - error reported by the scheduler daemon </li>
- *     <li>4020 - missing session ID argument </li>
+ *     <li>4011 - syntax error in the values returned by 
+ *                the scheduler daemon </li>
  *  </ul>
  *
  *  @author  $Author$
  *  @version $Revision$
  */
-class CreateBackupOpenMethod : public XmlRpc::XmlRpcServerMethod
+class CreateBackupCheckMethod : public XmlRpc::XmlRpcServerMethod
 {
     private:
         /**
@@ -126,7 +120,7 @@ class CreateBackupOpenMethod : public XmlRpc::XmlRpcServerMethod
         /**
          *  A default constructor, for testing purposes.
          */
-        CreateBackupOpenMethod(void)                                throw ()
+        CreateBackupCheckMethod(void)                                throw ()
                             : XmlRpc::XmlRpcServerMethod(methodName)
         {
         }
@@ -136,7 +130,7 @@ class CreateBackupOpenMethod : public XmlRpc::XmlRpcServerMethod
          *
          *  @param xmlRpcServer the XML-RPC server to register with.
          */
-        CreateBackupOpenMethod(
+        CreateBackupCheckMethod(
                     Ptr<XmlRpc::XmlRpcServer>::Ref xmlRpcServer)
                                                                     throw ();
 
@@ -162,5 +156,5 @@ class CreateBackupOpenMethod : public XmlRpc::XmlRpcServerMethod
 } // namespace Scheduler
 } // namespace LiveSupport
 
-#endif // CreateBackupOpenMethod_h
+#endif // CreateBackupCheckMethod_h
 
