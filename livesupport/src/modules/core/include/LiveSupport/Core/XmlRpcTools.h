@@ -53,7 +53,7 @@
 #include "LiveSupport/Core/ScheduleEntry.h"
 #include "LiveSupport/Core/PlayLogEntry.h"
 #include "LiveSupport/Core/SearchCriteria.h"
-#include "LiveSupport/StorageClient/StorageClientInterface.h"
+#include "LiveSupport/Core/AsyncState.h"
 
 
 namespace LiveSupport {
@@ -612,14 +612,13 @@ class XmlRpcTools
          *  Convert a StorageClientInterface::AsyncState returned by one
          *  of the backup methods to an XmlRpcValue.
          *
-         *  @param  status       the AsyncState to convert.
+         *  @param  status      the AsyncState to convert.
          *  @param  xmlRpcValue the output parameter holding the result of
          *                      the conversion.
          */
         static void
-        backupStatusToXmlRpcValue(
-                            StorageClientInterface::AsyncState  status,
-                            XmlRpc::XmlRpcValue &               returnValue)
+        backupStatusToXmlRpcValue(AsyncState                status,
+                                  XmlRpc::XmlRpcValue &     returnValue)
                                                                     throw ();
 
         /**

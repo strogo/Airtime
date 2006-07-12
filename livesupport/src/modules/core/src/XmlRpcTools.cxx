@@ -969,24 +969,12 @@ XmlRpcTools :: tokenToXmlRpcValue(
  *  of the backup methods to an XmlRpcValue.
  *----------------------------------------------------------------------------*/
 void
-XmlRpcTools :: backupStatusToXmlRpcValue(
-                            StorageClientInterface::AsyncState  status,
-                            XmlRpc::XmlRpcValue &               returnValue)
+XmlRpcTools :: backupStatusToXmlRpcValue(AsyncState             status,
+                                         XmlRpc::XmlRpcValue &  returnValue)
                                                                     throw ()
 {
-    std::string     stringValue;
-    
-    switch (status) {
-        case StorageClientInterface::pendingState:  stringValue = "working";
-                                                    break;
-        case StorageClientInterface::finishedState: stringValue = "success";
-                                                    break;
-        case StorageClientInterface::failedState:   stringValue = "fault";
-                                                    break;
-        default:    // TODO: signal error somehow
-    }
-    
-    returnValue[backupStatusName] = stringValue;
+    Ptr<const std::string>::Ref     stringValue = status.toBackupString();
+    returnValue[backupStatusName] = *stringValue;
 }
 
 
