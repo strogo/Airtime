@@ -161,6 +161,11 @@ const std::string urlName = "url";
  *----------------------------------------------------------------------------*/
 const std::string pathName = "path";
 
+/*------------------------------------------------------------------------------
+ *  The name of the fault string member in the XML-RPC parameter structure
+ *----------------------------------------------------------------------------*/
+const std::string faultStringName = "faultString";
+
 }
 
 /* ================================================  local constants & macros */
@@ -965,6 +970,25 @@ XmlRpcTools :: tokenToXmlRpcValue(
 
 
 /*------------------------------------------------------------------------------
+ *  Extract the backup status from the XML-RPC parameters.
+ *----------------------------------------------------------------------------*/
+AsyncState
+XmlRpcTools :: extractBackupStatus(XmlRpc::XmlRpcValue &    xmlRpcValue)
+                                                throw (std::invalid_argument)
+{
+    if (!xmlRpcValue.hasMember(backupStatusName)
+        || xmlRpcValue[backupStatusName].getType() 
+                                        != XmlRpc::XmlRpcValue::TypeString) {
+        throw std::invalid_argument("missing or bad status argument");
+    }
+    
+    AsyncState      status = AsyncState::fromBackupString(
+                                                xmlRpcValue[backupStatusName]);
+    return status;
+}
+
+
+/*------------------------------------------------------------------------------
  *  Convert a StorageClientInterface::AsyncState returned by one
  *  of the backup methods to an XmlRpcValue.
  *----------------------------------------------------------------------------*/
@@ -975,6 +999,25 @@ XmlRpcTools :: backupStatusToXmlRpcValue(AsyncState             status,
 {
     Ptr<const std::string>::Ref     stringValue = status.toBackupString();
     returnValue[backupStatusName] = *stringValue;
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Extract a URL string from the XML-RPC parameters.
+ *----------------------------------------------------------------------------*/
+Ptr<Glib::ustring>::Ref
+XmlRpcTools :: extractUrl(XmlRpc::XmlRpcValue &     xmlRpcValue)
+                                                throw (std::invalid_argument)
+{
+    if (!xmlRpcValue.hasMember(urlName)
+        || xmlRpcValue[urlName].getType() 
+                                        != XmlRpc::XmlRpcValue::TypeString) {
+        throw std::invalid_argument("missing or bad url argument");
+    }
+    
+    Ptr<Glib::ustring>::Ref     url(new Glib::ustring(
+                                                xmlRpcValue[urlName] ));
+    return url;
 }
 
 
@@ -992,6 +1035,25 @@ XmlRpcTools :: urlToXmlRpcValue(
 
 
 /*------------------------------------------------------------------------------
+ *  Extract a path string from the XML-RPC parameters.
+ *----------------------------------------------------------------------------*/
+Ptr<Glib::ustring>::Ref
+XmlRpcTools :: extractPath(XmlRpc::XmlRpcValue &    xmlRpcValue)
+                                                throw (std::invalid_argument)
+{
+    if (!xmlRpcValue.hasMember(pathName)
+        || xmlRpcValue[pathName].getType() 
+                                        != XmlRpc::XmlRpcValue::TypeString) {
+        throw std::invalid_argument("missing or bad path argument");
+    }
+    
+    Ptr<Glib::ustring>::Ref     path(new Glib::ustring(
+                                                xmlRpcValue[pathName] ));
+    return path;
+}
+
+
+/*------------------------------------------------------------------------------
  *  Convert a string token to an XmlRpcValue.
  *----------------------------------------------------------------------------*/
 void
@@ -1001,5 +1063,18 @@ XmlRpcTools :: pathToXmlRpcValue(
                                                                     throw ()
 {
     returnValue[pathName] = std::string(*path);
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Convert a fault string to an XmlRpcValue.
+ *----------------------------------------------------------------------------*/
+void
+XmlRpcTools :: faultStringToXmlRpcValue(
+                            Ptr<const Glib::ustring>::Ref    faultString,
+                            XmlRpc::XmlRpcValue &            returnValue)
+                                                                    throw ()
+{
+    returnValue[faultStringName] = std::string(*faultString);
 }
 

@@ -289,7 +289,8 @@ TEST_RUNNER_OBJS = ${SCHEDULER_OBJS} \
                    ${TMP_DIR}/RpcGeneratePlayReportTest.o \
                    ${TMP_DIR}/PlaylistEventContainerTest.o \
                    ${TMP_DIR}/PlaylistEventTest.o \
-                   ${TMP_DIR}/PostgresqlBackupTest.o
+                   ${TMP_DIR}/PostgresqlBackupTest.o \
+                   ${TMP_DIR}/RpcBackupTest.o
 TEST_RUNNER_LIBS = ${SCHEDULER_EXE_LIBS} -lcppunit -ldl
 
 

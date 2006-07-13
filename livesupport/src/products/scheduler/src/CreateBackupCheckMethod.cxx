@@ -107,9 +107,9 @@ CreateBackupCheckMethod :: execute(XmlRpc::XmlRpcValue &     rootParameter,
     Ptr<const Glib::ustring>::Ref       url;
     Ptr<const Glib::ustring>::Ref       path;
     Ptr<const Glib::ustring>::Ref       errorMessage;
-    StorageClientInterface::AsyncState  state;
+    AsyncState                          state;
     try {
-        state = backup->createBackupOpen(*token, url, path, errorMessage);
+        state = backup->createBackupCheck(*token, url, path, errorMessage);
         
     } catch (std::invalid_argument &e) {
         XmlRpcTools::markError(errorId+10, e.what(), returnValue);
@@ -118,7 +118,7 @@ CreateBackupCheckMethod :: execute(XmlRpc::XmlRpcValue &     rootParameter,
     
     XmlRpcTools::backupStatusToXmlRpcValue(state, returnValue);
     
-    if (state == StorageClientInterface::finishedState) {
+    if (state == AsyncState::finishedState) {
         if (url && path) {
             XmlRpcTools::urlToXmlRpcValue(url, returnValue);
             XmlRpcTools::pathToXmlRpcValue(url, returnValue);
@@ -129,7 +129,7 @@ CreateBackupCheckMethod :: execute(XmlRpc::XmlRpcValue &     rootParameter,
             return;
         }
         
-    } else if (state == StorageClientInterface::failedState) {
+    } else if (state == AsyncState::failedState) {
         if (errorMessage) {
             XmlRpcTools::faultStringToXmlRpcValue(errorMessage, returnValue);
         } else {

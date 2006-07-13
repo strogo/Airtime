@@ -133,6 +133,8 @@ SchedulerDaemon :: SchedulerDaemon (void)                   throw ()
     logoutMethod.reset(new LogoutMethod());
     resetStorageMethod.reset(new ResetStorageMethod());
     createBackupOpenMethod.reset(new CreateBackupOpenMethod());
+    createBackupCheckMethod.reset(new CreateBackupCheckMethod());
+    createBackupCloseMethod.reset(new CreateBackupCloseMethod());
 }
 
 
@@ -291,6 +293,8 @@ SchedulerDaemon :: registerXmlRpcFunctions(
     xmlRpcServer->addMethod(logoutMethod.get());
     xmlRpcServer->addMethod(resetStorageMethod.get());
     xmlRpcServer->addMethod(createBackupOpenMethod.get());
+    xmlRpcServer->addMethod(createBackupCheckMethod.get());
+    xmlRpcServer->addMethod(createBackupCloseMethod.get());
 }
 
 

@@ -61,17 +61,26 @@ class AsyncStateTest : public CPPUNIT_NS::TestFixture
 {
     CPPUNIT_TEST_SUITE(AsyncStateTest);
     CPPUNIT_TEST(firstTest);
+    CPPUNIT_TEST(ostreamTest);
     CPPUNIT_TEST_SUITE_END();
 
     protected:
 
         /**
-         *  A simple test.
+         *  Test the basic conversions.
          *
          *  @exception CPPUNIT_NS::Exception on test failures.
          */
         void
         firstTest(void)                         throw (CPPUNIT_NS::Exception);
+
+        /**
+         *  Test the printing to an ostream.
+         *
+         *  @exception CPPUNIT_NS::Exception on test failures.
+         */
+        void
+        ostreamTest(void)                       throw (CPPUNIT_NS::Exception);
 
 
     public:

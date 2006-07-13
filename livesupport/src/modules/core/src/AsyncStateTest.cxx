@@ -70,7 +70,7 @@ AsyncStateTest :: tearDown(void)                      throw ()
 
 
 /*------------------------------------------------------------------------------
- *  Test to see if the singleton Hello object is accessible
+ *  Test the basic conversions.
  *----------------------------------------------------------------------------*/
 void
 AsyncStateTest :: firstTest(void)
@@ -114,5 +114,20 @@ AsyncStateTest :: firstTest(void)
     CPPUNIT_ASSERT_EQUAL(AsyncState::fromBackupString(*backupString),
                          state);
 
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Test the printing to an ostream.
+ *----------------------------------------------------------------------------*/
+void
+AsyncStateTest :: ostreamTest(void)
+                                                throw (CPPUNIT_NS::Exception)
+{
+    std::ostringstream      stream;
+    AsyncState              state = AsyncState::finishedState;
+    
+    stream << state;
+    CPPUNIT_ASSERT(stream.str() == "finished");
 }
 

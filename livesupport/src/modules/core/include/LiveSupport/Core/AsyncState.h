@@ -93,6 +93,14 @@ class AsyncState
     public:
     
         /**
+         *  Default constructor; sets the state to "invalid".
+         */
+        AsyncState(void)                                            throw ()
+              : value(innerInvalidState)
+        {
+        }
+        
+        /**
          *  Constant instance: init.
          */
         static const AsyncState     initState;
@@ -172,6 +180,18 @@ class AsyncState
         operator==(const AsyncState &   other) const                throw ()
         {
             return (value == other.value);
+        }
+        
+        /**
+         *  Check for inequality.
+         *
+         *  @param  other   the other AsyncState to compare with.
+         *  @return true    if the two states are not equal.
+         */
+        bool
+        operator!=(const AsyncState &   other) const                throw ()
+        {
+            return (value != other.value);
         }
 };
 

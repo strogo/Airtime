@@ -34,6 +34,7 @@
 #include <XmlRpcValue.h>
 
 #include "LiveSupport/Core/UniqueId.h"
+#include "LiveSupport/Core/XmlRpcTools.h"
 #include "SchedulerDaemon.h"
 #include "PlayLogFactory.h"
 
@@ -65,7 +66,7 @@ static const std::string configFileName = "etc/scheduler.xml";
  *  Set up the test environment
  *----------------------------------------------------------------------------*/
 void
-RpcBackupTest :: setUp(void)        throw (CPPUNIT_NS::Exception)
+RpcBackupTest :: setUp(void)                    throw (CPPUNIT_NS::Exception)
 {
     Ptr<SchedulerDaemon>::Ref   daemon = SchedulerDaemon::getInstance();
 
@@ -86,7 +87,6 @@ RpcBackupTest :: setUp(void)        throw (CPPUNIT_NS::Exception)
     }
 
     daemon->install();
-    insertEntries();
 
     XmlRpc::XmlRpcValue     parameters;
     XmlRpc::XmlRpcValue     result;
@@ -115,7 +115,7 @@ RpcBackupTest :: setUp(void)        throw (CPPUNIT_NS::Exception)
  *  Clean up the test environment
  *----------------------------------------------------------------------------*/
 void
-RpcBackupTest :: tearDown(void)     throw (CPPUNIT_NS::Exception)
+RpcBackupTest :: tearDown(void)                 throw (CPPUNIT_NS::Exception)
 {
     Ptr<SchedulerDaemon>::Ref   daemon = SchedulerDaemon::getInstance();
     daemon->uninstall();
@@ -142,51 +142,7 @@ RpcBackupTest :: tearDown(void)     throw (CPPUNIT_NS::Exception)
  *  Test the createBackupXxxx methods.
  *----------------------------------------------------------------------------*/
 void
-RpcBackupTest :: firstTest(void)
-                                                throw (CPPUNIT_NS::Exception)
-{
-    CPPUNIT_ASSERT(sessionId);
-    
-    XmlRpc::XmlRpcValue             parameters;
-    XmlRpc::XmlRpcValue             result;
-    struct tm                       time;
-
-    XmlRpc::XmlRpcClient    xmlRpcClient(getXmlRpcHost().c_str(),
-                                         getXmlRpcPort(),
-                                         "/RPC2",
-                                         false);
-
-    // set up a structure for the parameters
-    parameters["sessionId"]  = sessionId->getId();
-    time.tm_year = 101;     // 2001
-    time.tm_mon  = 10;      // November
-    time.tm_mday = 12;
-    time.tm_hour = 18;
-    time.tm_min  = 31;
-    time.tm_sec  =  1;
-    parameters["from"] = &time;
-    time.tm_year = 101;     // 2001
-    time.tm_mon  = 10;      // November
-    time.tm_mday = 12;
-    time.tm_hour = 19;
-    time.tm_min  = 31;
-    time.tm_sec  =  1;
-    parameters["to"] = &time;
-
-    CPPUNIT_ASSERT(xmlRpcClient.execute("generatePlayReport", 
-                                        parameters, result));
-    CPPUNIT_ASSERT(!xmlRpcClient.isFault());
-    CPPUNIT_ASSERT(result.size() == 0);
-
-    xmlRpcClient.close();
-}
-
-
-/*------------------------------------------------------------------------------
- *  Look at some intervals and check against test data
- *----------------------------------------------------------------------------*/
-void
-RpcBackupTest :: intervalTest(void)
+RpcBackupTest :: createBackupTest(void)
                                                 throw (CPPUNIT_NS::Exception)
 {
     CPPUNIT_ASSERT(sessionId);
@@ -205,7 +161,7 @@ RpcBackupTest :: intervalTest(void)
     Ptr<ptime>::Ref to(new ptime(time_from_string("2004-07-23 11:00:00")));
     
     XmlRpcTools::sessionIdToXmlRpcValue(sessionId, parameters);
-    XmlRpcTools::criteriaToXmlRpcValue(criteria, parameters);
+    XmlRpcTools::searchCriteriaToXmlRpcValue(criteria, parameters);
     XmlRpcTools::fromTimeToXmlRpcValue(from, parameters);
     XmlRpcTools::toTimeToXmlRpcValue(to, parameters);
     
@@ -219,7 +175,7 @@ RpcBackupTest :: intervalTest(void)
         token = XmlRpcTools::extractToken(result);
     );
 
-    StorageClientInterface::AsyncState  status;
+    AsyncState                  status;
     parameters.clear();
     XmlRpcTools::tokenToXmlRpcValue(token, parameters);
     int     iterations = 20;
@@ -233,14 +189,14 @@ RpcBackupTest :: intervalTest(void)
         CPPUNIT_ASSERT(!xmlRpcClient.isFault());
         
         CPPUNIT_ASSERT_NO_THROW(
-            status = XmlRpcTools::extractStatus(result);
+            status = XmlRpcTools::extractBackupStatus(result);
         );
-        CPPUNIT_ASSERT(status == StorageClientInterface::pendingState
-                         || status == StorageClientInterface::finishedState
-                         || status == StorageClientInterface::failedState);
-    } while (--iterations && status == StorageClientInterface::pendingState);
+        CPPUNIT_ASSERT(status == AsyncState::pendingState
+                         || status == AsyncState::finishedState
+                         || status == AsyncState::failedState);
+    } while (--iterations && status == AsyncState::pendingState);
     
-    CPPUNIT_ASSERT_EQUAL(StorageClientInterface::finishedState, status);
+    CPPUNIT_ASSERT_EQUAL(AsyncState::finishedState, status);
     // TODO: test accessibility of the URL?
     
     Ptr<const Glib::ustring>::Ref       url;

@@ -120,7 +120,7 @@ class BackupInterface : virtual public Installable
          *  @see #createBackupOpen
          *  @see #createBackupClose
          */
-        virtual StorageClientInterface::AsyncState
+        virtual AsyncState
         createBackupCheck(const Glib::ustring &             token,
                           Ptr<const Glib::ustring>::Ref &   url,
                           Ptr<const Glib::ustring>::Ref &   path,

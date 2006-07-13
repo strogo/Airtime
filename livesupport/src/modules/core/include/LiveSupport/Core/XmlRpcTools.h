@@ -609,7 +609,19 @@ class XmlRpcTools
                                                                     throw ();
 
         /**
-         *  Convert a StorageClientInterface::AsyncState returned by one
+         *  Extract the backup status from the XML-RPC parameters.
+         *
+         *  @param  xmlRpcValue the XML-RPC parameter to extract from.
+         *  @return an AsyncState that was found in the XML-RPC parameter.
+         *  @exception  std::invalid_argument   if there was no "status"
+         *                                      member in xmlRpcValue.
+         */
+        static AsyncState
+        extractBackupStatus(XmlRpc::XmlRpcValue &   xmlRpcValue)
+                                                throw (std::invalid_argument);
+
+        /**
+         *  Convert an AsyncState returned by one
          *  of the backup methods to an XmlRpcValue.
          *
          *  @param  status      the AsyncState to convert.
@@ -622,9 +634,21 @@ class XmlRpcTools
                                                                     throw ();
 
         /**
-         *  Convert a string URL to an XmlRpcValue.
+         *  Extract a URL string from the XML-RPC parameters.
          *
-         *  @param  url         the string URL to convert.
+         *  @param  xmlRpcValue the XML-RPC parameter to extract from.
+         *  @return a URL string that was found in the XML-RPC parameter.
+         *  @exception  std::invalid_argument   if there was no "url"
+         *                                      member in xmlRpcValue.
+         */
+        static Ptr<Glib::ustring>::Ref
+        extractUrl(XmlRpc::XmlRpcValue &    xmlRpcValue)
+                                                throw (std::invalid_argument);
+
+        /**
+         *  Convert a URL string to an XmlRpcValue.
+         *
+         *  @param  url         the URL string to convert.
          *  @param  xmlRpcValue the output parameter holding the result of
          *                      the conversion.
          */
@@ -634,15 +658,39 @@ class XmlRpcTools
                                                                     throw ();
 
         /**
-         *  Convert a string path to an XmlRpcValue.
+         *  Extract a path string from the XML-RPC parameters.
          *
-         *  @param  path        the string path to convert.
+         *  @param  xmlRpcValue the XML-RPC parameter to extract from.
+         *  @return a path string that was found in the XML-RPC parameter.
+         *  @exception  std::invalid_argument   if there was no "path"
+         *                                      member in xmlRpcValue.
+         */
+        static Ptr<Glib::ustring>::Ref
+        extractPath(XmlRpc::XmlRpcValue &   xmlRpcValue)
+                                                throw (std::invalid_argument);
+
+        /**
+         *  Convert a path string to an XmlRpcValue.
+         *
+         *  @param  path        the path string to convert.
          *  @param  xmlRpcValue the output parameter holding the result of
          *                      the conversion.
          */
         static void
         pathToXmlRpcValue(Ptr<const Glib::ustring>::Ref     path,
                           XmlRpc::XmlRpcValue &             returnValue)
+                                                                    throw ();
+
+        /**
+         *  Convert a fault string to an XmlRpcValue.
+         *
+         *  @param  path        the fault string to convert.
+         *  @param  xmlRpcValue the output parameter holding the result of
+         *                      the conversion.
+         */
+        static void
+        faultStringToXmlRpcValue(Ptr<const Glib::ustring>::Ref  faultString,
+                                 XmlRpc::XmlRpcValue &          returnValue)
                                                                     throw ();
 };
 

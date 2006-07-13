@@ -135,7 +135,7 @@ PostgresqlBackupTest :: createBackupTest(void)
     Ptr<const Glib::ustring>::Ref       url;
     Ptr<const Glib::ustring>::Ref       path;
     Ptr<const Glib::ustring>::Ref       errorMessage;
-    StorageClientInterface::AsyncState  status;
+    AsyncState                          status;
     int     iterations = 20;
     do {
         std::cerr << "-/|\\"[iterations%4] << '\b';
@@ -143,13 +143,12 @@ PostgresqlBackupTest :: createBackupTest(void)
         CPPUNIT_ASSERT_NO_THROW(
             status = backup->createBackupCheck(*token, url, path, errorMessage);
         );
-        CPPUNIT_ASSERT(status);
-        CPPUNIT_ASSERT(status == StorageClientInterface::pendingState
-                         || status == StorageClientInterface::finishedState
-                         || status == StorageClientInterface::failedState);
-    } while (--iterations && status == StorageClientInterface::pendingState);
+        CPPUNIT_ASSERT(status == AsyncState::pendingState
+                         || status == AsyncState::finishedState
+                         || status == AsyncState::failedState);
+    } while (--iterations && status == AsyncState::pendingState);
     
-    CPPUNIT_ASSERT_EQUAL(StorageClientInterface::finishedState, status);
+    CPPUNIT_ASSERT_EQUAL(AsyncState::finishedState, status);
     // TODO: test accessibility of the URL?
     
     CPPUNIT_ASSERT_NO_THROW(

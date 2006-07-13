@@ -131,7 +131,7 @@ class PostgresqlBackup : public Configurable,
                                                 throw (std::runtime_error);
         
         /**
-         *  Convert a string status to a StorageClientInterface::AsyncState.
+         *  Convert a string status to an AsyncState.
          *  It converts
          *  <ul>
          *      <li> "working"      -> pendingState </li>
@@ -140,11 +140,11 @@ class PostgresqlBackup : public Configurable,
          *      <li> anything else  -> invalidState <li>
          *  </ul>
          */
-        StorageClientInterface::AsyncState
+        AsyncState
         stringToAsyncState(const std::string &      statusString)   throw ();
         
         /**
-         *  Convert a StorageClientInterface::AsyncState to a string.
+         *  Convert an AsyncState to a string.
          *  It converts
          *  <ul>
          *      <li> initState or pendingState    -> "working" </li>
@@ -154,7 +154,7 @@ class PostgresqlBackup : public Configurable,
          *  </ul>
          */
         std::string
-        asyncStateToString(StorageClientInterface::AsyncState   status)
+        asyncStateToString(AsyncState   status)
                                                                     throw ();
 
 
@@ -288,7 +288,7 @@ class PostgresqlBackup : public Configurable,
          *  @see #createBackupOpen
          *  @see #createBackupClose
          */
-        virtual StorageClientInterface::AsyncState
+        virtual AsyncState
         createBackupCheck(const Glib::ustring &             token,
                           Ptr<const Glib::ustring>::Ref &   url,
                           Ptr<const Glib::ustring>::Ref &   path,

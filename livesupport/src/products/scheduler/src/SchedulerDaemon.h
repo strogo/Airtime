@@ -81,6 +81,8 @@
 #include "LogoutMethod.h"
 #include "ResetStorageMethod.h"
 #include "CreateBackupOpenMethod.h"
+#include "CreateBackupCheckMethod.h"
+#include "CreateBackupCloseMethod.h"
 
 
 namespace LiveSupport {
@@ -190,36 +192,6 @@ class SchedulerDaemon : public Installable,
         static const std::string    check1Stmt;
 
         /**
-         *  A SQL statement to count the number of backups
-         */
-        static const std::string    backupCountStmt;
-
-        /**
-         *  A SQL statement to create a backup entry.
-         */
-        static const std::string    createBackupStmt;
-
-        /**
-         *  A SQL statement to store a backup entry.
-         */
-        static const std::string    storeBackupStmt;
-
-        /**
-         *  A SQL statement to retrieve a backup entry.
-         */
-        static const std::string    getBackupStmt;
-
-        /**
-         *  A SQL statement to update a backup entry.
-         */
-        static const std::string    updateBackupStmt;
-
-        /**
-         *  A SQL statement to delete a backup entry.
-         */
-        static const std::string    deleteBackupStmt;
-
-        /**
          *  The singleton instance of the scheduler daemon.
          */
         static Ptr<SchedulerDaemon>::Ref            schedulerDaemon;
@@ -319,6 +291,16 @@ class SchedulerDaemon : public Installable,
          *  The createBackupOpenMethod the daemon is providing.
          */
         Ptr<CreateBackupOpenMethod>::Ref        createBackupOpenMethod;
+
+        /**
+         *  The createBackupCheckMethod the daemon is providing.
+         */
+        Ptr<CreateBackupCheckMethod>::Ref       createBackupCheckMethod;
+
+        /**
+         *  The createBackupCloseMethod the daemon is providing.
+         */
+        Ptr<CreateBackupCloseMethod>::Ref       createBackupCloseMethod;
 
         /**
          *  The login to the authentication system.

@@ -116,7 +116,7 @@ CreateBackupCloseMethod :: execute(XmlRpc::XmlRpcValue &     rootParameter,
     Ptr<BackupInterface>::Ref   backup  = bf->getBackup();
     
     try {
-        backup->createBackupClose(token);
+        backup->createBackupClose(*token);
         
     } catch (std::invalid_argument &e) {
         XmlRpcTools::markError(errorId+10, e.what(), returnValue);

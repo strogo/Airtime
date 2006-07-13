@@ -305,8 +305,7 @@ PostgresqlBackup ::createBackupOpen(Ptr<SessionId>::Ref        sessionId,
                                                         storeBackupStmt));
         pstmt->setString(1, *token);
         pstmt->setString(2, sessionId->getId());
-        pstmt->setString(3, asyncStateToString(
-                                    StorageClientInterface::pendingState));
+        pstmt->setString(3, asyncStateToString(AsyncState::pendingState));
 
         timestamp = Conversion::ptimeToTimestamp(fromTime);
         pstmt->setTimestamp(4, *timestamp);
@@ -335,7 +334,7 @@ PostgresqlBackup ::createBackupOpen(Ptr<SessionId>::Ref        sessionId,
 /*------------------------------------------------------------------------------
  *  Check on the status of a backup process.
  *----------------------------------------------------------------------------*/
-StorageClientInterface::AsyncState
+AsyncState
 PostgresqlBackup ::createBackupCheck(
                             const Glib::ustring &             token,
                             Ptr<const Glib::ustring>::Ref &   url,
@@ -344,7 +343,7 @@ PostgresqlBackup ::createBackupCheck(
                                                         throw (XmlRpcException)
 {
     Ptr<Connection>::Ref                conn;
-    StorageClientInterface::AsyncState  status;
+    AsyncState                          status;
     Ptr<ptime>::Ref                     fromTime;
     Ptr<ptime>::Ref                     toTime;
     bool                                result;
@@ -379,10 +378,10 @@ PostgresqlBackup ::createBackupCheck(
         return status;
     }
 
-    if (status == StorageClientInterface::pendingState) {
+    if (status == AsyncState::pendingState) {
         status = storage->createBackupCheck(token, url, path, errorMessage);
 
-        if (status == StorageClientInterface::finishedState) {
+        if (status == AsyncState::finishedState) {
             putScheduleExportIntoTar(path, fromTime, toTime);
         }
     }
@@ -482,51 +481,23 @@ PostgresqlBackup ::createBackupClose(const Glib::ustring &    token)
 
 
 /*------------------------------------------------------------------------------
- *  Convert a string status to a StorageClientInterface::AsyncState.
+ *  Convert a string status to an AsyncState.
  *----------------------------------------------------------------------------*/
-StorageClientInterface::AsyncState
+AsyncState
 PostgresqlBackup ::stringToAsyncState(const std::string &     statusString)
                                                                     throw ()
 {
-    if (statusString == "working") {
-        return StorageClientInterface::pendingState;
-        
-    } else if (statusString == "success") {
-        return StorageClientInterface::finishedState;
-    
-    } else if (statusString == "fault") {
-        return StorageClientInterface::failedState;
-        
-    } else {
-        return StorageClientInterface::invalidState;
-    }
+    return AsyncState::fromBackupString(statusString);
 }
 
 
 /*------------------------------------------------------------------------------
- *  Convert a StorageClientInterface::AsyncState to a string.
+ *  Convert an AsyncState to a string.
  *----------------------------------------------------------------------------*/
 std::string
-PostgresqlBackup ::asyncStateToString(
-                            StorageClientInterface::AsyncState   status)
+PostgresqlBackup ::asyncStateToString(AsyncState    status)
                                                                     throw ()
 {
-    std::string     statusString;
-
-    switch (status) {
-        case StorageClientInterface::initState:
-        case StorageClientInterface::pendingState:  statusString = "working";
-                                                    break;
-        
-        case StorageClientInterface::finishedState: statusString = "success";
-                                                    break;
-        
-        case StorageClientInterface::failedState:   statusString = "fault";
-                                                    break;
-        
-        default:                                    statusString = "invalid";
-                                                    break;
-    }
-    
-    return statusString;
+    return *status.toBackupString();
 }
+
