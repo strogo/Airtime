@@ -275,3 +275,18 @@ FileTools :: existsInTarball(const std::string & tarFileName,
     return result;
 }
 
+
+/*------------------------------------------------------------------------------
+ *  Extract a file from a tarball.
+ *----------------------------------------------------------------------------*/
+void
+FileTools :: extractFileFromTarball(const std::string &     tarFileName,
+                                    const std::string &     newFileRealName,
+                                    const std::string &     newFileInTarball)
+                                                    throw (std::runtime_error)
+{
+    //TODO: implement this
+std::cerr << "FileTools :: extractFileFromTarball() not implemented yet."
+          << std::endl;
+}
+
