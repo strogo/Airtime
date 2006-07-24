@@ -132,15 +132,15 @@ class FileTools
          *  Extract a file from a tarball.
          *
          *  @param  tarFileName     the name of the existing tar file.
-         *  @param  newFileRealName the name of the new file to create.
-         *  @param  newFileInTarball    the name of the file to be extracted
+         *  @param  fileInTarball   the name of the file to be extracted
          *                              in the tarball.
+         *  @param  fileExtracted   the name of the new file to create.
          *  @exception std::runtime_error on file / tarball handling issues.
          */
         static void
         extractFileFromTarball(const std::string &      tarFileName,
-                               const std::string &      newFileRealName,
-                               const std::string &      newFileInTarball)
+                               const std::string &      fileInTarball,
+                               const std::string &      fileExtracted)
                                                     throw (std::runtime_error);
 };
 

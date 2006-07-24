@@ -518,8 +518,8 @@ PostgresqlBackup :: restoreBackup(Ptr<SessionId>::Ref               sessionId,
     std::string             tmpFileName = FileTools::tempnam();
     try {
         FileTools::extractFileFromTarball(*path,
-                                          tmpFileName,
-                                          scheduleExportFileName);
+                                          scheduleExportFileName,
+                                          tmpFileName);
     } catch (std::runtime_error &e) {
         remove(tmpFileName.c_str());
         std::string     errorMsg = "error opening the schedule backup file:\n";

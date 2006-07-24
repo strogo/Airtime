@@ -66,6 +66,7 @@ class FileToolsTest : public CPPUNIT_NS::TestFixture
 {
     CPPUNIT_TEST_SUITE(FileToolsTest);
     CPPUNIT_TEST(existsInTarTest);
+    CPPUNIT_TEST(extractFileFromTarballTest);
     CPPUNIT_TEST_SUITE_END();
 
     private:
@@ -73,12 +74,20 @@ class FileToolsTest : public CPPUNIT_NS::TestFixture
     protected:
 
         /**
-         *  A simple test.
+         *  Test the existsInTarball() function.
          *
          *  @exception CPPUNIT_NS::Exception on test failures.
          */
         void
         existsInTarTest(void)                   throw (CPPUNIT_NS::Exception);
+
+        /**
+         *  Test the extractFileFromTarball() function.
+         *
+         *  @exception CPPUNIT_NS::Exception on test failures.
+         */
+        void
+        extractFileFromTarballTest(void)        throw (CPPUNIT_NS::Exception);
 
 
     public:
