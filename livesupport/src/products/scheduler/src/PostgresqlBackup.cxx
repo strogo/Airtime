@@ -529,10 +529,14 @@ PostgresqlBackup :: restoreBackup(Ptr<SessionId>::Ref               sessionId,
     
     Ptr<DomParser>::Ref parser(new DomParser(tmpFileName,
                                              false /* do not expect a DTD */));
-    const Document *        document = parser->get_document();
+    const Document *        document    = parser->get_document();
     const Element *         xmlSchedule = document->get_root_node();
+    const Node::NodeList    children    = xmlSchedule->get_children(
+                                                            "scheduleExport");
+    const Element *         xmlScheduleExport
+                                        = (const Element *) children.front();
     try {
-        schedule->importScheduleEntries(xmlSchedule);
+        schedule->importScheduleEntries(xmlScheduleExport);
     } catch (std::invalid_argument &e) {
         std::string     errorMsg = "error restoring the schedule backup:\n";
         errorMsg += e.what();

@@ -30,6 +30,8 @@
 /* ============================================================ include files */
 
 #include <string>
+#include <fstream>
+
 #include <XmlRpcClient.h>
 #include <XmlRpcValue.h>
 
@@ -52,11 +54,19 @@ using namespace LiveSupport::Scheduler;
 
 CPPUNIT_TEST_SUITE_REGISTRATION(RpcBackupTest);
 
+namespace {
+
 /**
  *  The name of the configuration file for the scheduler daemon
  */
-static const std::string configFileName = "etc/scheduler.xml";
+const std::string   configFileName = "etc/scheduler.xml";
 
+/**
+ *  The location of the temporary backup file
+ */
+const std::string   tempBackupTarFileName = "tmp/scheduleBackup.tar";
+
+}
 
 /* ===============================================  local function prototypes */
 
@@ -136,14 +146,16 @@ RpcBackupTest :: tearDown(void)                 throw (CPPUNIT_NS::Exception)
     CPPUNIT_ASSERT(!xmlRpcClient.isFault());
 
     xmlRpcClient.close();
+    
+    remove(tempBackupTarFileName.c_str());
 }
 
 
 /*------------------------------------------------------------------------------
- *  Test the createBackupXxxx methods.
+ *  Create the backup.
  *----------------------------------------------------------------------------*/
 void
-RpcBackupTest :: createBackupTest(void)
+RpcBackupTest :: createBackup(void)
                                                 throw (CPPUNIT_NS::Exception)
 {
     CPPUNIT_ASSERT(sessionId);
@@ -156,7 +168,6 @@ RpcBackupTest :: createBackupTest(void)
                                              "/RPC2",
                                              false);
 
-    // Create the backup.
     Ptr<SearchCriteria>::Ref    criteria(new SearchCriteria);
     criteria->setLimit(10);
     Ptr<ptime>::Ref from(new ptime(time_from_string("2004-07-23 10:00:00")));
@@ -212,11 +223,42 @@ RpcBackupTest :: createBackupTest(void)
         path = XmlRpcTools::extractPath(result);
     );
     
+    // copy the backup file
+    CPPUNIT_ASSERT_NO_THROW(
+        remove(tempBackupTarFileName.c_str());
+        std::ifstream   ifs(path->c_str(),                  std::ios::binary);
+        std::ofstream   ofs(tempBackupTarFileName.c_str(),  std::ios::binary);
+        ofs << ifs.rdbuf();
+    );
+    
+    parameters.clear();
+    XmlRpcTools::tokenToXmlRpcValue(token, parameters);
+    result.clear();    
+    CPPUNIT_ASSERT(xmlRpcClient.execute("createBackupClose", 
+                                        parameters,
+                                        result));
+    CPPUNIT_ASSERT(!xmlRpcClient.isFault());
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Test the createBackupXxxx methods.
+ *----------------------------------------------------------------------------*/
+void
+RpcBackupTest :: createBackupTest(void)
+                                                throw (CPPUNIT_NS::Exception)
+{
+    // Create the backup.
+    CPPUNIT_ASSERT_NO_THROW(
+        createBackup()
+    );
+    
     // Check the backup file.
     bool    exists;
     std::string     schedulerBackupInTarball = "meta-inf/scheduler.xml";
     CPPUNIT_ASSERT_NO_THROW(
-        exists = FileTools::existsInTarball(*path, schedulerBackupInTarball)
+        exists = FileTools::existsInTarball(tempBackupTarFileName,
+                                            schedulerBackupInTarball)
     );
     CPPUNIT_ASSERT(exists);
     
@@ -228,7 +270,7 @@ RpcBackupTest :: createBackupTest(void)
     CPPUNIT_ASSERT(file == 0);
     
     CPPUNIT_ASSERT_NO_THROW(
-        FileTools::extractFileFromTarball(*path,
+        FileTools::extractFileFromTarball(tempBackupTarFileName,
                                           schedulerBackupInTarball,
                                           extractedTempFileName)
     );
@@ -240,14 +282,16 @@ RpcBackupTest :: createBackupTest(void)
     CPPUNIT_ASSERT(remove(extractedTempFileName.c_str()) == 0);
     file = fopen(extractedTempFileName.c_str(), "r");
     CPPUNIT_ASSERT(file == 0);
-    
-    // Close the backup process (invalidate the token).
-    parameters.clear();
-    XmlRpcTools::tokenToXmlRpcValue(token, parameters);
-    result.clear();    
-    CPPUNIT_ASSERT(xmlRpcClient.execute("createBackupClose", 
-                                        parameters,
-                                        result));
-    CPPUNIT_ASSERT(!xmlRpcClient.isFault());
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Test the restoreBackup method.
+ *----------------------------------------------------------------------------*/
+void
+RpcBackupTest :: restoreBackupTest(void)
+                                                throw (CPPUNIT_NS::Exception)
+{
+// TODO: write this test
 }
 
