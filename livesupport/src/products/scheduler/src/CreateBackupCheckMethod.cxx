@@ -121,7 +121,7 @@ CreateBackupCheckMethod :: execute(XmlRpc::XmlRpcValue &     rootParameter,
     if (state == AsyncState::finishedState) {
         if (url && path) {
             XmlRpcTools::urlToXmlRpcValue(url, returnValue);
-            XmlRpcTools::pathToXmlRpcValue(url, returnValue);
+            XmlRpcTools::pathToXmlRpcValue(path, returnValue);
         } else {
             XmlRpcTools::markError(errorId+11, 
                                    "missing url or path return value",

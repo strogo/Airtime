@@ -42,6 +42,7 @@
 
 #include <string>
 
+#include "LiveSupport/Core/FileTools.h"
 #include "SchedulerDaemon.h"
 #include "PostgresqlBackup.h"
 #include "PostgresqlBackupTest.h"
@@ -151,10 +152,37 @@ PostgresqlBackupTest :: createBackupTest(void)
     CPPUNIT_ASSERT_EQUAL(AsyncState::finishedState, status);
     // TODO: test accessibility of the URL?
     
+    bool    exists;
+    std::string     schedulerBackupInTarball = "meta-inf/scheduler.xml";
+    CPPUNIT_ASSERT_NO_THROW(
+        exists = FileTools::existsInTarball(*path, schedulerBackupInTarball)
+    );
+    CPPUNIT_ASSERT(exists);
+    
+    std::string     extractedTempFileName = "tmp/scheduler.tmp.xml";
+    FILE *          file;
+    
+    remove(extractedTempFileName.c_str());
+    file = fopen(extractedTempFileName.c_str(), "r");
+    CPPUNIT_ASSERT(file == 0);
+    
+    CPPUNIT_ASSERT_NO_THROW(
+        FileTools::extractFileFromTarball(*path,
+                                          schedulerBackupInTarball,
+                                          extractedTempFileName)
+    );
+    
+    file = fopen(extractedTempFileName.c_str(), "r");
+    CPPUNIT_ASSERT(file != 0);
+    CPPUNIT_ASSERT(fclose(file) == 0);
+    
+    CPPUNIT_ASSERT(remove(extractedTempFileName.c_str()) == 0);
+    file = fopen(extractedTempFileName.c_str(), "r");
+    CPPUNIT_ASSERT(file == 0);
+    
     CPPUNIT_ASSERT_NO_THROW(
         backup->createBackupClose(*token);
     );
-    // TODO: test existence of schedule backup in tarball
 }
 
 

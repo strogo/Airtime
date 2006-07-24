@@ -35,6 +35,7 @@
 
 #include "LiveSupport/Core/UniqueId.h"
 #include "LiveSupport/Core/XmlRpcTools.h"
+#include "LiveSupport/Core/FileTools.h"
 #include "SchedulerDaemon.h"
 #include "PlayLogFactory.h"
 
@@ -155,6 +156,7 @@ RpcBackupTest :: createBackupTest(void)
                                              "/RPC2",
                                              false);
 
+    // Create the backup.
     Ptr<SearchCriteria>::Ref    criteria(new SearchCriteria);
     criteria->setLimit(10);
     Ptr<ptime>::Ref from(new ptime(time_from_string("2004-07-23 10:00:00")));
@@ -210,6 +212,36 @@ RpcBackupTest :: createBackupTest(void)
         path = XmlRpcTools::extractPath(result);
     );
     
+    // Check the backup file.
+    bool    exists;
+    std::string     schedulerBackupInTarball = "meta-inf/scheduler.xml";
+    CPPUNIT_ASSERT_NO_THROW(
+        exists = FileTools::existsInTarball(*path, schedulerBackupInTarball)
+    );
+    CPPUNIT_ASSERT(exists);
+    
+    std::string     extractedTempFileName = "tmp/scheduler.tmp.xml";
+    FILE *          file;
+    
+    remove(extractedTempFileName.c_str());
+    file = fopen(extractedTempFileName.c_str(), "r");
+    CPPUNIT_ASSERT(file == 0);
+    
+    CPPUNIT_ASSERT_NO_THROW(
+        FileTools::extractFileFromTarball(*path,
+                                          schedulerBackupInTarball,
+                                          extractedTempFileName)
+    );
+    
+    file = fopen(extractedTempFileName.c_str(), "r");
+    CPPUNIT_ASSERT(file != 0);
+    CPPUNIT_ASSERT(fclose(file) == 0);
+    
+    CPPUNIT_ASSERT(remove(extractedTempFileName.c_str()) == 0);
+    file = fopen(extractedTempFileName.c_str(), "r");
+    CPPUNIT_ASSERT(file == 0);
+    
+    // Close the backup process (invalidate the token).
     parameters.clear();
     XmlRpcTools::tokenToXmlRpcValue(token, parameters);
     result.clear();    
@@ -217,6 +249,5 @@ RpcBackupTest :: createBackupTest(void)
                                         parameters,
                                         result));
     CPPUNIT_ASSERT(!xmlRpcClient.isFault());
-    // TODO: test existence of schedule backup in tarball
 }
 
