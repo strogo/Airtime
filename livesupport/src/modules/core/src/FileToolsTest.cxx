@@ -138,5 +138,12 @@ FileToolsTest :: extractFileFromTarballTest(void)
     CPPUNIT_ASSERT(remove(fileExtracted.c_str()) == 0);
     file = fopen(fileExtracted.c_str(), "r");
     CPPUNIT_ASSERT(file == 0);
+    
+    CPPUNIT_ASSERT_THROW(
+        FileTools::extractFileFromTarball(tarFileName,
+                                          "foobar",
+                                          fileExtracted),
+        std::runtime_error
+    );
 }
 
