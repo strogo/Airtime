@@ -238,6 +238,8 @@ RpcBackupTest :: createBackup(void)
                                         parameters,
                                         result));
     CPPUNIT_ASSERT(!xmlRpcClient.isFault());
+    
+    xmlRpcClient.close();
 }
 
 
@@ -292,6 +294,32 @@ void
 RpcBackupTest :: restoreBackupTest(void)
                                                 throw (CPPUNIT_NS::Exception)
 {
-// TODO: write this test
+    // Create the backup.
+    CPPUNIT_ASSERT_NO_THROW(
+        createBackup()
+    );
+    
+    XmlRpc::XmlRpcValue         parameters;
+    XmlRpc::XmlRpcValue         result;
+
+    XmlRpc::XmlRpcClient        xmlRpcClient(getXmlRpcHost().c_str(),
+                                             getXmlRpcPort(),
+                                             "/RPC2",
+                                             false);
+    
+    CPPUNIT_ASSERT(sessionId);
+    Ptr<const Glib::ustring>::Ref   path(new const Glib::ustring(
+                                                tempBackupTarFileName));
+    
+    XmlRpcTools::sessionIdToXmlRpcValue(sessionId, parameters);
+    XmlRpcTools::pathToXmlRpcValue(path, parameters);
+    
+    CPPUNIT_ASSERT(xmlRpcClient.execute("restoreBackup", 
+                                        parameters,
+                                        result));
+    CPPUNIT_ASSERT(!xmlRpcClient.isFault());
+    
+    xmlRpcClient.close();
+    // TODO: try this with a non-empty backup file, too
 }
 

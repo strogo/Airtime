@@ -32,6 +32,7 @@
 #include <string>
 
 #include "LiveSupport/Core/XmlRpcTools.h"
+#include "LiveSupport/Core/XmlRpcException.h"
 #include "BackupFactory.h"
 
 #include "CreateBackupCheckMethod.h"
@@ -111,7 +112,7 @@ CreateBackupCheckMethod :: execute(XmlRpc::XmlRpcValue &     rootParameter,
     try {
         state = backup->createBackupCheck(*token, url, path, errorMessage);
         
-    } catch (std::invalid_argument &e) {
+    } catch (Core::XmlRpcException &e) {
         XmlRpcTools::markError(errorId+10, e.what(), returnValue);
         return;
     }

@@ -83,6 +83,7 @@
 #include "CreateBackupOpenMethod.h"
 #include "CreateBackupCheckMethod.h"
 #include "CreateBackupCloseMethod.h"
+#include "RestoreBackupMethod.h"
 
 
 namespace LiveSupport {
@@ -301,6 +302,11 @@ class SchedulerDaemon : public Installable,
          *  The createBackupCloseMethod the daemon is providing.
          */
         Ptr<CreateBackupCloseMethod>::Ref       createBackupCloseMethod;
+
+        /**
+         *  The restoreBackupMethod the daemon is providing.
+         */
+        Ptr<RestoreBackupMethod>::Ref           restoreBackupMethod;
 
         /**
          *  The login to the authentication system.
