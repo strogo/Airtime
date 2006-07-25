@@ -252,6 +252,90 @@ class SchedulerDaemonXmlRpcClient :
         removeFromSchedule(Ptr<SessionId>::Ref  sessionId,
                            Ptr<UniqueId>::Ref   scheduleEntryId)
                                                     throw (XmlRpcException);
+
+        /**
+         *  Start to create a backup by calling the storage, and also
+         *  adding a backup of the schedule.
+         *  To check if the backup procedure is still pending, call
+         *  createBackupCheck() regularly.
+         *  Make sure to close the backup by calling createBackupClose().
+         *
+         *  @param sessionId a valid session ID to use for accessing the
+         *         storage
+         *  @param criteria the criteria to use for backing up the storage
+         *  @param fromTime entries are included in the schedule export starting
+         *         from this time.
+         *  @param toTime entries as included in the schedule export 
+         *         up to but not including this time.
+         *  @return a token, which can be used to query the backup process.
+         *  @exception XmlRpcException on XML-RPC issues.
+         *  @see #createBackupCheck
+         *  @see #createBackupClose
+         */
+        virtual Ptr<Glib::ustring>::Ref
+        createBackupOpen(Ptr<SessionId>::Ref        sessionId,
+                         Ptr<SearchCriteria>::Ref   criteria,
+                         Ptr<ptime>::Ref            fromTime,
+                         Ptr<ptime>::Ref            toTime)
+                                                throw (XmlRpcException);
+        
+        /**
+         *  Check the status of a schedule backup.
+         *
+         *  @param  token   the identifier of this backup task.
+         *  @param  url     return parameter;
+         *                      if the status is "success", it contains the 
+         *                      URL of the created backup file.
+         *  @param  path    return parameter;
+         *                      if the status is "success", it contains the
+         *                      local access path of the created backup file.
+         *  @param  errorMessage    return parameter;
+         *                      if the status is "fault", it contains the
+         *                      fault string.
+         *  @return the state of the backup process: one of pendingState,
+         *                      finishedState, or failedState.
+         *  @exception XmlRpcException if there is a problem with the XML-RPC
+         *                             call.
+         *  @see #createBackupOpen
+         *  @see #createBackupClose
+         */
+        virtual AsyncState
+        createBackupCheck(const Glib::ustring &             token,
+                          Ptr<const Glib::ustring>::Ref &   url,
+                          Ptr<const Glib::ustring>::Ref &   path,
+                          Ptr<const Glib::ustring>::Ref &   errorMessage)
+                                                throw (XmlRpcException);
+
+        /**
+         *  Close the schedule backup process.
+         *  Frees up all resources allocated to the backup.
+         *
+         *  @param  token           the identifier of this backup task.
+         *  @exception XmlRpcException if there is a problem with the XML-RPC
+         *                             call.
+         *  @see #createBackupOpen
+         *  @see #createBackupCheck
+         */
+        virtual void
+        createBackupClose(const Glib::ustring &     token)
+                                                throw (XmlRpcException);
+
+        /**
+         *  Restore a schedule backup.
+         *
+         *  All playlist IDs contained in the backup should already be in the
+         *  storage.  If this is a combined backup, with both storage and 
+         *  schedule components, then restore this backup to the storage
+         *  first, and then call this function.
+         *  
+         *  @param  sessionId   a valid session ID to identify the user.
+         *  @param  path        the location of the archive to upload.
+         *  @exception  XmlRpcException     if there is an error.
+         */
+        virtual void
+        restoreBackup(Ptr<SessionId>::Ref               sessionId,
+                      Ptr<const Glib::ustring>::Ref     path)
+                                                throw (XmlRpcException);
 };
 
 
