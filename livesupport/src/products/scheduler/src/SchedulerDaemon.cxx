@@ -136,6 +136,7 @@ SchedulerDaemon :: SchedulerDaemon (void)                   throw ()
     createBackupCheckMethod.reset(new CreateBackupCheckMethod());
     createBackupCloseMethod.reset(new CreateBackupCloseMethod());
     restoreBackupMethod.reset(new RestoreBackupMethod());
+    stopCurrentlyPlayingMethod.reset(new StopCurrentlyPlayingMethod());
 }
 
 
@@ -297,6 +298,7 @@ SchedulerDaemon :: registerXmlRpcFunctions(
     xmlRpcServer->addMethod(createBackupCheckMethod.get());
     xmlRpcServer->addMethod(createBackupCloseMethod.get());
     xmlRpcServer->addMethod(restoreBackupMethod.get());
+    xmlRpcServer->addMethod(stopCurrentlyPlayingMethod.get());
 }
 
 

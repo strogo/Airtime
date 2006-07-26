@@ -84,7 +84,7 @@
 #include "CreateBackupCheckMethod.h"
 #include "CreateBackupCloseMethod.h"
 #include "RestoreBackupMethod.h"
-
+#include "StopCurrentlyPlayingMethod.h"
 
 namespace LiveSupport {
 namespace Scheduler {
@@ -309,6 +309,11 @@ class SchedulerDaemon : public Installable,
         Ptr<RestoreBackupMethod>::Ref           restoreBackupMethod;
 
         /**
+         *  The stopCurrentlyPlayingMethod the daemon is providing.
+         */
+        Ptr<StopCurrentlyPlayingMethod>::Ref    stopCurrentlyPlayingMethod;
+
+        /**
          *  The login to the authentication system.
          */
         std::string                             login;
@@ -494,7 +499,6 @@ class SchedulerDaemon : public Installable,
          */
         virtual void
         update(void)                                throw (std::logic_error);
-
 };
 
 
