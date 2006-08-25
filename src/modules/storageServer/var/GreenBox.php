@@ -77,9 +77,10 @@ class GreenBox extends BasicStor{
     {
         if(($res = $this->_authorize('write', $parid, $sessid)) !== TRUE)
             return $res;
-        return $this->bsPutFile(
+        $id = $this->bsPutFile(
             $parid, $fileName, $mediaFileLP, $mdataFileLP, $gunid, $ftype
         );
+        return $id;
     }
 
     /**
@@ -353,6 +354,21 @@ class GreenBox extends BasicStor{
     {
         if(($res = $this->_authorize('write', $id, $sessid)) !== TRUE)
             return $res;
+        require_once 'AnonymAccess.php';
+        if ($category == NICE_NAME_CATEGORY) {
+            $aa = new AnonymAccess($this,$sessid);
+            $aa->changeIt($id, $value, $lang);
+            $aa->debug(
+                array(
+                    'id'=>$id,
+                    'category'=>$category,
+                    'sessid'=>$sessid,
+                    'value'=>$value,
+                    'lang'=>$lang,
+                    'mid'=>$mid
+                ),'new'
+            );
+        }
         return $this->bsSetMetadataValue($id, $category, $value, $lang, $mid);
     }
 
