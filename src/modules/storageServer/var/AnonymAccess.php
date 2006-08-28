@@ -3,6 +3,7 @@
 require_once 'StoredFile.php';
 
 define('NICE_NAME_CATEGORY','dc:title');
+define('CREATE_M3U',true);
 
 /**
  * Anonym Access Class
@@ -20,7 +21,7 @@ class AnonymAccess {
     var $sessid;
 
 
-    var $validcharacters_regexp = '/[^a-zA-Z0-1_]/';
+    var $validcharacters_regexp = '/[^a-zA-Z0-9_]/';
     var $replace_to = '_';
     
     
@@ -30,6 +31,8 @@ class AnonymAccess {
     var $new_linkname;
     var $old_link;
     var $new_link;
+    var $old_m3u;
+    var $new_m3u;
     var $id;
     var $extension;
     var $mediafile;
@@ -42,7 +45,6 @@ class AnonymAccess {
     }
     
     function changeIt($id, $value, $lang) {
-    	global $config;
         $this->value = $value;
         $this->id = $id;
     	$old = $this->gb->getMdataValue($id, NICE_NAME_CATEGORY, $this->sessid, $lang);
@@ -59,13 +61,15 @@ class AnonymAccess {
             $this->value
         ); 
         $ac=$this->getFileInfo();
-        $this->debug($ac,'ac');    
+        //$this->debug($ac,'ac');    
         $this->extension = substr($ac->name,strrpos($ac->name,'.'));
         $this->mediafile = $ac->md->resDir.'/'.$ac->md->gunid;
         $this->debug($this->mediafile,'mediafile');
         
-        $this->old_link = $config['AnonymAccessDir'].'/'.$this->old_linkname.$this->extension;
-        $this->new_link = $config['AnonymAccessDir'].'/'.$this->new_linkname.$this->extension;
+        $this->old_link = $this->gb->config['anonymAccessDir'].'/'.$this->old_linkname.$this->extension;
+        $this->new_link = $this->gb->config['anonymAccessDir'].'/'.$this->new_linkname.$this->extension;
+        $this->old_m3u  = $this->gb->config['anonymAccessDir'].'/'.$this->old_linkname.'.m3u';
+        $this->new_m3u  = $this->gb->config['anonymAccessDir'].'/'.$this->new_linkname.'.m3u';
         
         $this->debug();
         
@@ -76,7 +80,7 @@ class AnonymAccess {
                 return $this->createNiceURL();
             }
         } else {
-            if (!$this->old_link) {
+            if (!is_link($this->old_link)) {
                 return $this->createNiceURL();
             } 
         }
@@ -84,36 +88,53 @@ class AnonymAccess {
     }
     
     function createNiceURL() {
-        return symlink($this->mediafile,$this->new_link);
+        $this->debug($this->mediafile.' -> '.$this->new_link,'createNiceURL');
+        if (CREATE_M3U) {
+            $this->createM3U();
+        }
+        if (is_file($this->mediafile) && !is_file($this->new_link)) {
+            return symlink($this->mediafile,$this->new_link);            
+        } else {
+            return false;   
+        }
+        
     }
     
     function renameNiceURL() {
+        $this->debug($this->old_link.' -> '.$this->new_link,'renameNiceURL');
+        if (CREATE_M3U) {
+            $this->renameM3U();
+        }
         return rename($this->old_link,$this->new_link);
     }
     
     function deleteNiceURL() {
+        if (CREATE_M3U) {
+            $this->deleteM3U();
+        }
     	return unlink($this->old_link);
     }
     
     function createM3U() {
-        global $config;
+        $this->debug($this->new_m3u.' -> '.$this->new_link,'createM3U');
         return file_put_contents(
-            $config['AnonymAccessDir'].'/'.$this->new_linkname.'.m3u',
+            $this->new_m3u,
             $this->new_link
         )==strlen($this->new_link);
     }
 
     function renameM3U() {
-        global $config;
-        return rename(
-            $config['AnonymAccessDir'].'/'.$this->old_linkname.'.m3u',
-            $config['AnonymAccessDir'].'/'.$this->new_linkname.'.m3u'
-        );
+        $this->debug($this->old_m3u.' -> '.$this->new_m3u,'renameM3U');
+        if (is_file($this->old_m3u)) {
+            return rename($this->old_m3u,$this->new_m3u);
+        } else {
+            return $this->createM3U();
+        }
+        
     }
 
     function deleteM3U() {
-        global $config;
-        return unlink($config['AnonymAccessDir'].'/'.$this->old_linkname.'.m3u');
+        return unlink($this->old_m3u);
     }
     
     function &getFileInfo() {
@@ -122,10 +143,10 @@ class AnonymAccess {
     
     function debug($arr=null,$title='title') {
         if (is_null($arr)) {
-            $tmpgb = $this->gb;
-            $this->gb = null;
+            //$tmpgb = $this->gb;
+            //$this->gb = null;
             file_put_contents('/tmp/aa.log','anonym:'.print_r($this,true),FILE_APPEND);
-            $this->gb = $tmpgb;
+            //$this->gb = $tmpgb;
         } else {
             file_put_contents('/tmp/aa.log',$title.':'.print_r($arr,true),FILE_APPEND);
         }
