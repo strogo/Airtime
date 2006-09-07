@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 #-------------------------------------------------------------------------------
 #   Copyright (c) 2004 Media Development Loan Fund
@@ -30,9 +30,11 @@
 #DEBUG=yes
 #DEBUG_I=yes
 
-COMM=$1
-shift
-GUNID=$1
+if [ "x$1" != "x" ]; then
+    COMM=$1
+    shift
+    GUNID=$1
+fi
 
 METADATA="<?xml version=\"1.0\"?>
 <audioClip>
@@ -89,11 +91,12 @@ existsAudioClip() {
 }
 
 storeAudioClip() {
-    MEDIA=../tests/ex1.mp3
+    if [ "x$1" = "x" ]; then MEDIA=../tests/ex1.mp3; else MEDIA=$1; fi
+    if [ "x$2" = "x" ]; then GUNID=""; else GUNID=$2; fi
     MD5=`md5sum $MEDIA`; for i in $MD5; do MD5=$i; break; done
     if [ $DEBUG_I ]; then echo "md5=$MD5"; fi
     echo -n "# storeAudioClipOpen: "
-    RES=`$XR_CLI storeAudioClipOpen "$SESSID" '' "$METADATA" "stored file.mp3" "$MD5"` || \
+    RES=`$XR_CLI storeAudioClipOpen "$SESSID" "$GUNID" "$METADATA" "stored file.mp3" "$MD5"` || \
     	{ ERN=$?; echo $RES; exit $ERN; }
     unset URL
     for i in $RES; do if [ -z $URL ] ;  then URL=$i; else TOKEN=$i; fi; done
@@ -290,6 +293,8 @@ deletePlaylist() {
 }
 
 exportPlaylist() {
+    storeAudioClip ../tests/0000000000010001 0000000000010001
+    storeAudioClip ../tests/0000000000010002 0000000000010002
     echo -n "# exportPlaylistOpen (${PLID}): "
 #    RES=`$XR_CLI exportPlaylistOpen $SESSID $PLID smil` || \
     RES=`$XR_CLI exportPlaylistOpen $SESSID $PLID lspl` || \
@@ -480,50 +485,50 @@ usage(){
     echo -e " preferences\n playlists\n storage\n"
 }
 
-if [ "$COMM" == "test" ]; then
+if [ "$COMM" = "test" ]; then
     login
     test
     logout
-elif [ "$COMM" == "existsAudioClip" ]; then
+elif [ "$COMM" = "existsAudioClip" ]; then
     login
     existsAudioClip
     logout
-elif [ "$COMM" == "accessRawAudioData" ]; then
+elif [ "$COMM" = "accessRawAudioData" ]; then
     login
     accessRawAudioData
     logout
-elif [ "$COMM" == "storeAudioClip" ]; then
+elif [ "$COMM" = "storeAudioClip" ]; then
     login
     storeAudioClip
     logout
-elif [ "$COMM" == "deleteAudioClip" ]; then
+elif [ "$COMM" = "deleteAudioClip" ]; then
     login
     deleteAudioClip
     logout
-elif [ "$COMM" == "updateAudioClipMetadata" ]; then
+elif [ "$COMM" = "updateAudioClipMetadata" ]; then
     login
     updateAudioClipMetadata
     logout
-elif [ "$COMM" == "getAudioClip" ]; then
+elif [ "$COMM" = "getAudioClip" ]; then
     login
     getAudioClip
     logout
-elif [ "$COMM" == "searchMetadata" ]; then
+elif [ "$COMM" = "searchMetadata" ]; then
     searchTest
-elif [ "$COMM" == "preferences" ]; then
+elif [ "$COMM" = "preferences" ]; then
     preferenceTest
-elif [ "$COMM" == "playlists" ]; then
+elif [ "$COMM" = "playlists" ]; then
     playlistTest
-elif [ "$COMM" == "webstream" ]; then
+elif [ "$COMM" = "webstream" ]; then
     webstreamTest
-elif [ "$COMM" == "storage" ]; then
+elif [ "$COMM" = "storage" ]; then
     storageTest
-elif [ "x$COMM" == "x" ]; then
+elif [ "x$COMM" = "x" ]; then
     storageTest
     playlistTest
     preferenceTest
     searchTest
-elif [ "$COMM" == "help" ]; then
+elif [ "$COMM" = "help" ]; then
     usage
 else
     echo "Unknown command"
