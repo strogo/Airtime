@@ -49,7 +49,11 @@ class AnonymAccess {
         $this->id = $id;
     	$old = $this->gb->getMdataValue($id, NICE_NAME_CATEGORY, $this->sessid, $lang);
         //$this->debug($old,'old');
-        $this->oldvalue=$old[0]['value'];
+    	if (is_array($old)) {
+        	$this->oldvalue=$old[0]['value'];
+    	} else {
+    		$this->oldvalue='';
+    	} 
         $this->old_linkname = preg_replace(
             $this->validcharacters_regexp,
             $this->replace_to,
@@ -64,14 +68,15 @@ class AnonymAccess {
         //$this->debug($ac,'ac');    
         $this->extension = substr($ac->name,strrpos($ac->name,'.'));
         $this->mediafile = $ac->md->resDir.'/'.$ac->md->gunid;
-        $this->debug($this->mediafile,'mediafile');
+        //$this->debug($this->mediafile,'mediafile');
         
         $this->old_link = $this->gb->config['anonymAccessDir'].'/'.$this->old_linkname.$this->extension;
         $this->new_link = $this->gb->config['anonymAccessDir'].'/'.$this->new_linkname.$this->extension;
         $this->old_m3u  = $this->gb->config['anonymAccessDir'].'/'.$this->old_linkname.'.m3u';
         $this->new_m3u  = $this->gb->config['anonymAccessDir'].'/'.$this->new_linkname.'.m3u';
+        $this->new_url  = $this->gb->config['anonymAccessURL'].'/'.$this->new_linkname.'.mp3';
         
-        $this->debug();
+        //$this->debug();
         
         if ($this->oldvalue!=$value) {
             if (is_link($this->old_link)) {
@@ -103,38 +108,40 @@ class AnonymAccess {
     function renameNiceURL() {
         $this->debug($this->old_link.' -> '.$this->new_link,'renameNiceURL');
         if (CREATE_M3U) {
-            $this->renameM3U();
+            $this->createM3U();
         }
         return rename($this->old_link,$this->new_link);
     }
     
     function deleteNiceURL() {
-        if (CREATE_M3U) {
+        $this->debug($this->old_link,'deleteNiceURL');
+    	if (CREATE_M3U) {
             $this->deleteM3U();
         }
     	return unlink($this->old_link);
     }
     
     function createM3U() {
-        $this->debug($this->new_m3u.' -> '.$this->new_link,'createM3U');
+        $this->debug($this->new_m3u.' -> '.$this->new_url,'createM3U');
         return file_put_contents(
             $this->new_m3u,
-            $this->new_link
-        )==strlen($this->new_link);
-    }
-
-    function renameM3U() {
-        $this->debug($this->old_m3u.' -> '.$this->new_m3u,'renameM3U');
-        if (is_file($this->old_m3u)) {
-            return rename($this->old_m3u,$this->new_m3u);
-        } else {
-            return $this->createM3U();
-        }
-        
+            $this->new_url
+        )==strlen($this->new_url);
     }
 
     function deleteM3U() {
         return unlink($this->old_m3u);
+    }
+    
+    
+    function getM3UByGunid($gunid='',$lang) {
+    	$id = $this->gb->_idFromGunid($gunid);
+    	$name = $this->gb->getMdataValue($id, NICE_NAME_CATEGORY, $this->sessid, $lang);
+    	return preg_replace(
+            $this->validcharacters_regexp,
+            $this->replace_to,
+            $name[0]['value']
+        ).'.m3u';
     }
     
     function &getFileInfo() {
@@ -143,13 +150,11 @@ class AnonymAccess {
     
     function debug($arr=null,$title='title') {
         if (is_null($arr)) {
-            //$tmpgb = $this->gb;
-            //$this->gb = null;
             file_put_contents('/tmp/aa.log','anonym:'.print_r($this,true),FILE_APPEND);
-            //$this->gb = $tmpgb;
         } else {
             file_put_contents('/tmp/aa.log',$title.':'.print_r($arr,true),FILE_APPEND);
         }
     }
+    
 }
 ?>

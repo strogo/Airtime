@@ -1,8 +1,8 @@
-{include file="statusbar.tpl"}
+{* include file="statusbar.tpl" *}
 {include file="menu.tpl"}
 {if $USER.userid}    {* somebody logged in? *}
    
-    {if $showScheduler}
+    {* if $showScheduler}
         <table  style="margin:0px;padding:0px;" border="0">
          <tr>
              <td valign="top" style="margin:0px;padding:0px;border:0">
@@ -20,7 +20,7 @@
 
          </tr>
         </table>
-    {else}
+    {else *}
         {if $fileList}
             {include file="file/list.tpl"}
         {/if}
@@ -73,7 +73,7 @@
             {include file="scheduler/import.tpl"}
         {/if}
         
-        <div class="content">
+        {* <div class="content">
             {if $simpleSearchForm}
                 {include file="library/simpleSearchForm.tpl"}
             {/if}
@@ -81,7 +81,7 @@
             {if $SCRATCHPAD}
                 {include file="scratchpad/main.tpl"}
             {/if}
-        </div>
-    {/if}
+        </div> *}
+    {* /if *}
 
 {/if}

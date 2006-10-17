@@ -80,6 +80,7 @@ class Validator{
             'audioclip' => "audioClipFormat",
             'playlist'  => "playlistFormat",
             'webstream' => "webstreamFormat",
+            'tracklist' => "tracklistFormat",
         );
         if(!isset($formats[$format])) return $this->_err(VAL_FORMAT);
         $formatName = $formats[$format];
@@ -130,7 +131,7 @@ class Validator{
         }
         if(isset($formTree[$category]['regexp'])){
             // echo "XXX {$formTree[$fname]['regexp']} / ".$node->content."\n";
-            if(!preg_match("|{$formTree[$category]['regexp']}|", $value))
+            if(!preg_match('|'.$formTree[$category]['regexp'].'|', $value))
                 return $this->_err(VAL_CONTENT, "$category/$value");
         }
         

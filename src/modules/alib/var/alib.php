@@ -83,7 +83,11 @@ class Alib extends Subjects{
         }
         $sessid = $this->_createSessid();
         if(PEAR::isError($sessid)) return $sessid;
-        $userid = $this->getSubjId($login);
+        if ($this->config['anonymAccessEnabled']) {
+	        $userid = 1;
+        } else {
+	        $userid = $this->getSubjId($login);
+        }
         $r = $this->dbc->query("INSERT INTO {$this->sessTable}
                 (sessid, userid, login, ts)
             VALUES

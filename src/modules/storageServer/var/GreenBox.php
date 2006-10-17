@@ -354,22 +354,36 @@ class GreenBox extends BasicStor{
     {
         if(($res = $this->_authorize('write', $id, $sessid)) !== TRUE)
             return $res;
-        require_once 'AnonymAccess.php';
-        if ($category == NICE_NAME_CATEGORY) {
-            $aa = new AnonymAccess($this,$sessid);
-            $aa->changeIt($id, $value, $lang);
-            $aa->debug(
-                array(
-                    'id'=>$id,
-                    'category'=>$category,
-                    'sessid'=>$sessid,
-                    'value'=>$value,
-                    'lang'=>$lang,
-                    'mid'=>$mid
-                ),'new'
-            );
+        if ($this->getFileType($id) == 'audioclip') {
+	        require_once 'AnonymAccess.php';
+	        if ($category == NICE_NAME_CATEGORY) {
+	            $aa = new AnonymAccess($this,$sessid);
+	            $aa->changeIt($id, $value, $lang);
+	            /* $aa->debug(
+	                array(
+	                    'id'=>$id,
+	                    'category'=>$category,
+	                    'sessid'=>$sessid,
+	                    'value'=>$value,
+	                    'lang'=>$lang,
+	                    'mid'=>$mid
+	                ),'new'
+	            ); */
+	        }
         }
         return $this->bsSetMetadataValue($id, $category, $value, $lang, $mid);
+    }
+    
+    function getAnonymFileName($gunid,$sessid,$lang=NULL) {
+        require_once 'AnonymAccess.php';
+        $aa = new AnonymAccess($this,$sessid);
+        return $aa->getM3UByGunid($gunid,$lang);
+    }
+
+    function getAnonymURL($gunid,$sessid,$lang=NULL) {
+        require_once 'AnonymAccess.php';
+        $aa = new AnonymAccess($this,$sessid);
+        return $this->config['anonymAccessURL'].'/'.$aa->getM3UByGunid($gunid,$lang);
     }
 
     /**
@@ -444,6 +458,73 @@ class GreenBox extends BasicStor{
         $offset = intval(isset($criteria['offset']) ? $criteria['offset'] : 0);
         $res = $this->bsBrowseCategory($category, $limit, $offset, $criteria);
         return $res;
+    }
+    
+    /*===================================================== tracklist methods */
+    /**
+     *  Create a new empty tracklist.
+     *
+     *  @param parid int, parent id
+     *  @param fname string, human readable menmonic file name
+     *  @param sessid string, session ID
+     *  @return int, local id of created tracklist
+     */
+    function createTracklist($parid, $fname, $sessid='')
+    {
+        $gunid  = StoredFile::_createGunid();
+        require_once"LocStor.php";
+        $lc =& new LocStor($this->dbc, $this->config);
+        echo '<XMP STYLE="background:yellow;">before</XMP>';
+        $gunid2 = $lc->createTracklist($sessid, $gunid, $fname);
+        echo '<XMP STYLE="background:yellow;">after</XMP>';
+        if(PEAR::isError($gunid2)) return $gunid2;
+        // get local id:
+        $id = $this->_idFromGunid($gunid2);
+        if(PEAR::isError($id)) return $id;
+        // get home dir id:
+        $hdid = $this->_getHomeDirIdFromSess($sessid);
+        if(PEAR::isError($hdid)) return $hdid;
+        // optionally move it to the destination folder:
+        if($parid != $hdid && !is_null($parid)){
+            $r = $this->bsMoveFile($id, $parid);
+            if(PEAR::isError($r)){ return $r; }
+        }
+        return $id;
+    }
+        
+    /**
+     *  Check whether a Tracklist metafile with the given tracklist ID
+     *  is available for editing, i.e., exists and is not marked as
+     *  beeing edited.
+     *
+     *  @param id int, local id
+     *  @param sessid string, session ID
+     *  @return TRUE | int - id of user editing it
+     */
+    function tracklistIsAvailable($id, $sessid)
+    {
+        $gunid = $this->_gunidFromId($id);
+        require_once"LocStor.php";
+        $lc =& new LocStor($this->dbc, $this->config);
+        return $lc->tracklistIsAvailable($sessid, $gunid, TRUE);
+    }
+    
+
+    /**
+     *  Mark tracklist as edited and return edit token
+     *
+     *  @param id int, local object id
+     *  @param sessid string, session ID
+     *  @return string, tracklist access token
+     */
+    function lockTracklistForEdit($id, $sessid)
+    {
+        $gunid = $this->_gunidFromId($id);
+        require_once"LocStor.php";
+        $lc =& new LocStor($this->dbc, $this->config);
+        $res = $lc->editTracklist($sessid, $gunid);
+        if(PEAR::isError($res)) return $res;
+        return $res['token'];
     }
 
     /*====================================================== playlist methods */

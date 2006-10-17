@@ -11,7 +11,7 @@ function errCallBack($err)
 {
     echo "<pre>gm:\n".$err->getMessage()."\ndi:\n".$err->getDebugInfo()."\nui:\n".$err->getUserInfo()."\n";
     echo "<hr>BackTrace:\n";
-    print_r($err->backtrace);
+//    print_r($err->backtrace);
     echo "</pre>\n";
     exit;
 }

@@ -452,6 +452,126 @@ class LocStor extends BasicStor{
         return $ac->replaceMetaData($metadata, 'string');
     }
 
+    /*===================================================== tracklist methods */
+    /**
+     *  Create a new empty tracklist.
+     *
+     *  @param sessid string, session ID
+     *  @param tracklistId string, tracklist global unique ID
+     *  @param fname string, human readable mnemonic file name
+     *  @return string, playlist global unique ID
+     */
+    function createTracklist($sessid, $tracklistId, $fname)
+    {
+        echo '<XMP STYLE="background:yellow;">1st row</XMP>';
+        $ex = $this->existsTracklist($sessid, $tracklistId);
+        echo '<XMP STYLE="background:yellow;">'.print_r($ex,true).'</XMP>';
+        if(PEAR::isError($ex)){ return $ex; }
+        if($ex){
+            return PEAR::raiseError(
+                'LocStor::createTracklist: already exists'
+            );
+        }
+        $tmpFname = uniqid('');
+        $parid = $this->_getHomeDirIdFromSess($sessid);
+        if(PEAR::isError($parid)) return $parid;
+        if(($res = $this->_authorize('write', $parid, $sessid)) !== TRUE)
+            return $res;
+        $oid = $this->addObj($tmpFname , 'tracklist', $parid);
+        if(PEAR::isError($oid)) return $oid;
+        $ac =&  StoredFile::insert($this, $oid, '', '',
+            dirname(__FILE__).'/emptyTracklist.xml',
+            'file', $tracklistId, 'tracklist'
+        );
+        if(PEAR::isError($ac)){
+            $res = $this->removeObj($oid);
+            return $ac;
+        }
+        if($fname == ''){
+            $fname = "newFile.xml";
+        }
+        $res = $this->bsRenameFile($oid, $fname);
+        if(PEAR::isError($res)) return $res;
+        $res = $ac->setState('ready');
+        if(PEAR::isError($res)) return $res;
+        $res = $ac->setMime('application/x-tracklist');
+        if(PEAR::isError($res)) return $res;
+        return $ac->gunid;
+    }
+
+    /**
+     *  Check whether a Tracklist metafile with the given tracklist ID exists.
+     *
+     *  @param sessid string, session ID
+     *  @param tracklistId string, tracklist global unique ID
+     *  @return boolean
+     */
+    function existsTracklist($sessid, $tracklistId)
+    {
+        return $this->existsFile($sessid, $tracklistId, 'tracklist');
+    }
+
+    /**
+     *  Check whether a Tracklist metafile with the given tracklist ID
+     *  is available for editing, i.e., exists and is not marked as
+     *  beeing edited.
+     *
+     *  @param sessid string, session ID
+     *  @param tracklistId string, tracklist global unique ID
+     *  @param getUid boolean, optional flag for returning editedby uid
+     *  @return boolean
+     */
+    function tracklistIsAvailable($sessid, $tracklistId, $getUid=FALSE)
+    {
+        $ex = $this->existsTracklist($sessid, $tracklistId);
+        if(PEAR::isError($ex)){ return $ex; }
+        if(!$ex){
+            return PEAR::raiseError(
+                'LocStor::tracklistIsAvailable: tracklist not exists'
+            );
+        }
+        $ie = $this->_isEdited($tracklistId);
+        if($ie === FALSE) return TRUE;
+        if($getUid) return $ie;
+        return FALSE;
+    }
+    
+    /**
+     *  Open a Tracklist metafile for editing.
+     *  Open readable URL and mark file as beeing edited.
+     *
+     *  @param sessid string, session ID
+     *  @param tracklistId string, tracklist global unique ID
+     *  @return struct
+     *      {url:readable URL for HTTP GET, token:access token, chsum:checksum}
+     */
+    function editTracklist($sessid, $tracklistId)
+    {
+        $ex = $this->existsTracklist($sessid, $tracklistId);
+        if(PEAR::isError($ex)){ return $ex; }
+        if(!$ex){
+            return PEAR::raiseError(
+                'LocStor::editTracklist: tracklist not exists'
+            );
+        }
+        if($this->_isEdited($tracklistId) !== FALSE){
+            return PEAR::raiseError(
+                'LocStor::editTracklist: tracklist already edited'
+            );
+        }
+        $ac =& StoredFile::recallByGunid($this, $tracklistId);
+        if(PEAR::isError($ac)){ return $ac; }
+        $id = $ac->getId();
+        if(($res = $this->_authorize('write', $id, $sessid)) !== TRUE)
+            return $res;
+        $res = $this->bsOpenDownload($id, 'metadata');
+        if(PEAR::isError($res)){ return $res; }
+        $r = $this->_setEditFlag($tracklistId, TRUE, $sessid);
+        if(PEAR::isError($r)){ return $r; }
+        unset($res['filename']);
+        return $res;
+    }
+
     /*====================================================== playlist methods */
     /**
      *  Create a new empty playlist.

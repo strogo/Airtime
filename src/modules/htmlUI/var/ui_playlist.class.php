@@ -70,7 +70,8 @@ class uiPlaylist
         }
         $token = $this->Base->gb->lockPlaylistForEdit($plid, $this->Base->sessid); 
         if (PEAR::isError($token)) {
-            if (UI_VERBOSE === TRUE) print_r($token);
+            //if (UI_VERBOSE === TRUE) 
+            	print_r($token);
             $this->Base->_retMsg('Unable to open playlist "$1".', $this->Base->_getMDataValue($plid, UI_MDATA_KEY_TITLE));
             return FALSE;
         }

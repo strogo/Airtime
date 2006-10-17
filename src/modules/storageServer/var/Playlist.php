@@ -589,8 +589,8 @@ class Playlist extends StoredFile{
                         break;
                     default:
                         return PEAR::raiseError(
-                            "Playlist::moveAudioClip: unknown element type".
-                            " in playlistElement ({$af['elementname']})"
+                            'Playlist::moveAudioClip: unknown element type'.
+                            ' in playlistElement ('.$af['elementname'].')'
                         );
                 }
             }

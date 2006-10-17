@@ -118,6 +118,9 @@ class Subjects extends ObjClasses{
      */
     function authenticate($login, $pass='')
     {
+        if ($this->config['anonymAccessEnabled']) {
+            return 1;
+        }
         $cpass = md5($pass);
         $id = $this->dbc->getOne("
             SELECT id FROM {$this->subjTable}

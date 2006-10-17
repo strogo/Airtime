@@ -65,7 +65,10 @@ class uiBrowse
     {   
         include dirname(__FILE__).'/formmask/metadata.inc.php';
         #$mask2['browse_columns']['category']['options'][0] = tra('Select a Value');
-        foreach ($mask['pages'] as $key=>$val) {
+//    	echo '<XMP STYLE="background:yellow;">'.print_r($id,true).'</XMP>';
+//    	echo '<XMP STYLE="background:yellow;">'.print_r($mask,true).'</XMP>';
+//    	echo '<XMP STYLE="background:yellow;">'.print_r($mask2,true).'</XMP>';
+    	foreach ($mask['pages'] as $key=>$val) {
             foreach ($mask['pages'][$key] as $v){
                 if ($v['type']) $mask2['browse_columns']['category']['options'][$this->Base->_formElementEncode($v['element'])] = tra($v['label']);
             }
