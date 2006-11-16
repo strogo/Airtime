@@ -47,8 +47,8 @@ check_exe() {
 case "$1" in
         remove|upgrade|failed-upgrade|abort-install|abort-upgrade)
             # remove the init script
-            rm -f /etc/init.d/campcaster-station
-            update-rc.d campcaster-station remove
+            rm -f /etc/init.d/campcaster-scheduler
+            update-rc.d campcaster-scheduler remove
             
             # remove the symlink to the campcaster web pages
             rm -f $apache_docroot/campcaster
@@ -94,7 +94,7 @@ case "$1" in
             odbcinst -u -s -l -n $ls_database || exit 1;
 
             echo "De-registering ODBC PostgreSQL driver...";
-            odbcinst -u -d -v -n PostgreSQL || exit 1;
+            odbcinst -u -d -n PostgreSQL_Campcaster || exit 1;
 
 
             echo "Removing database and database user...";

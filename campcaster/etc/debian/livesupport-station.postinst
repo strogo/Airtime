@@ -17,7 +17,7 @@ set -e
 # the debian-policy package
 #
 
-installdir=/opt/livesupport
+installdir=/opt/campcaster
 
 case "$1" in
     configure)
@@ -26,8 +26,8 @@ case "$1" in
 
         # register and start the livesupport scheduler daemon
         cp -f $installdir/bin/livesupport-station /etc/init.d
-        update-rc.d livesupport-station defaults 92 || true
-        /etc/init.d/livesupport-station start || true
+        update-rc.d campcaster-scheduler defaults 92 || true
+        /etc/init.d/campcaster-scheduler start || true
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)
