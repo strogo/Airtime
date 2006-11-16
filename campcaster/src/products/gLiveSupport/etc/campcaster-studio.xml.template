@@ -133,7 +133,7 @@
         <language locale="sr_CS_CYRILLIC"   name="Српски"/>
     </supportedLanguages>
 
-    <widgetFactory    path = "ls_var_dir/Campcaster/Widgets/" />
+    <widgetFactory    path = "ls_var_dir/LiveSupport/Widgets/" />
 
     <authenticationClientFactory>
         <webAuthentication>
