@@ -22,10 +22,12 @@ installdir=/opt/campcaster
 case "$1" in
     configure)
         # do post-installation configuration
-        $installdir/bin/postInstallStation.sh --directory $installdir
+        $installdir/bin/postInstallStation.sh --directory=$installdir \
+                        --postgresql_dir=/etc/postgresql/8.1/main \
+                        --postgresql_init_script=/etc/init.d/postgresql-8.1
 
         # register and start the livesupport scheduler daemon
-        cp -f $installdir/bin/livesupport-station /etc/init.d
+        cp -f $installdir/bin/campcaster-scheduler /etc/init.d
         update-rc.d campcaster-scheduler defaults 92 || true
         /etc/init.d/campcaster-scheduler start || true
     ;;
