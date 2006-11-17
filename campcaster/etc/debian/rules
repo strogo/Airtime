@@ -34,9 +34,9 @@ config.status: configure
                                        --prefix=/opt/campcaster \
                                        --with-www-docroot=/var/www \
                                        --with-apache-group=www-data \
-                                       --with-station-audio-out=/dev/dsp \
-                                       --with-studio-audio-out=/dev/dsp1 \
-                                       --with-studio-audio-cue=/dev/dsp2 \
+                                       --with-station-audio-out=hw:0,0 \
+                                       --with-studio-audio-out=hw:1,0 \
+                                       --with-studio-audio-cue=hw:2,0 \
                                        --with-hostname=localhost
 
 build: build-arch
