@@ -130,13 +130,13 @@ install-arch:
 	mkdir -p $(CURDIR)/debian/campcaster-studio/opt/campcaster/etc
 	mkdir -p $(CURDIR)/debian/campcaster-studio/opt/campcaster/tmp
 	mkdir -p $(CURDIR)/debian/campcaster-studio/opt/campcaster/var/LiveSupport
-	mv -f $(CURDIR)/debian/campcaster/opt/campcaster/bin/gLiveSupport \
-	      $(CURDIR)/debian/campcaster/opt/campcaster/bin/gLiveSupport.sh \
+	mv -f $(CURDIR)/debian/campcaster/opt/campcaster/bin/campcaster-studio \
+	      $(CURDIR)/debian/campcaster/opt/campcaster/bin/campcaster-studio.sh \
 		      $(CURDIR)/debian/campcaster-studio/opt/campcaster/bin
-	mv -f $(CURDIR)/debian/campcaster/opt/campcaster/etc/gLiveSupport.xml* \
+	mv -f $(CURDIR)/debian/campcaster/opt/campcaster/etc/campcaster-studio.xml* \
               $(CURDIR)/debian/campcaster-studio/opt/campcaster/etc
 	mv -f $(CURDIR)/debian/campcaster/opt/campcaster/var/LiveSupport/Widgets \
-	      $(CURDIR)/debian/campcaster/opt/campcaster/var/LiveSupport/gLiveSupport*.res \
+	      $(CURDIR)/debian/campcaster/opt/campcaster/var/LiveSupport/campcaster-studio_*.res \
 		  $(CURDIR)/debian/campcaster/opt/campcaster/var/LiveSupport/campcaster.png \
 		  $(CURDIR)/debian/campcaster/opt/campcaster/var/LiveSupport/icon*.png \
 		  $(CURDIR)/debian/campcaster/opt/campcaster/var/LiveSupport/stationLogo.png \

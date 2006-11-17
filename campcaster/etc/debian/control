@@ -75,12 +75,12 @@ Depends: ${shlibs:Depends},
          libvorbis0a (>= 1.1.2),
          libiodbc2 (>= 3.52.3)
 Description: A radio program automation and support tool.
- This package contains the libraries used by LiveSupport.
+ This package contains the libraries used by Campcaster.
 
 Package: campcaster-station
 Architecture: any
 Depends: ${shlibs:Depends},
-         livesupport-libs (>= ${dpkg:Version}),
+         campcaster-libs (>= ${dpkg:Version}),
          sed,
          unixodbc (>= 2.2),
          odbc-postgresql,
@@ -111,13 +111,13 @@ Depends: ${shlibs:Depends},
          postgresql-8.1,
          postgresql-client-8.1
 Description: A radio program automation and support tool.
- This package contains the server components of LiveSupport.
- This includes a scheluer deamon, and web-based server components.
+ This package contains the server components of Campcaster.
+ This includes a storage server, a scheduler daemon, and a web interface.
 
 Package: campcaster-studio
 Architecture: any
 Depends: ${shlibs:Depends},
-         livesupport-libs (>= ${dpkg:Version}),
+         campaster-libs (>= ${dpkg:Version}),
          sed,
          unixodbc (>= 2.2),
          odbc-postgresql,
@@ -141,4 +141,4 @@ Depends: ${shlibs:Depends},
          libgtk2.0-0 (>= 2.6.10),
          libgtkmm-2.4-1c2a (>= 2.6.5)
 Description: A radio program automation and support tool.
- This package contains the GUI client components of LiveSupport.
+ This package contains the GUI client component of Campcaster.
