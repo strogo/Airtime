@@ -55,7 +55,7 @@ printUsage()
     echo "  -D, --database      The name of the Campcaster database.";
     echo "                      [default: Campcaster]";
     echo "  -g, --apache-group  The group the apache daemon runs as.";
-    echo "                      [default: www-data]";
+    echo "                      [default: apache]";
     echo "  -r, --www-root      The root directory for web documents served";
     echo "                      by apache [default: /var/www]";
     echo "  -s, --dbserver      The name of the database server host.";
@@ -145,7 +145,7 @@ if [ "x$dbpassword" == "x" ]; then
 fi
 
 if [ "x$apache_group" == "x" ]; then
-    apache_group=www-data;
+    apache_group=apache;
 fi
 
 if [ "x$postgresql_dir" == "x" ]; then

@@ -36,7 +36,12 @@ Those who think they know everything, the quick steps to install
 Campcaster are the following.  (To run <code>make</code>, you need write
 permissions in the <code>prefix</code> directory; to run
 <code>make install</code> and <code>postInstallStation.sh</code>,
-you need to be root.)
+you need to be root.)<br><br>
+
+Here we assume that you are installing in /usr/local 
+on an Ubuntu Dapper distribution; change the directory name and the 
+configuration parameters according to your system.  Use --help to get 
+a list of possible options, and their default values.
 
 <pre><code>
 wget http://switch.dl.sourceforge.net/sourceforge/campcaster/campcaster-&lt;version&gt;.tar.bz2
@@ -44,17 +49,23 @@ wget http://switch.dl.sourceforge.net/sourceforge/campcaster/campcaster-librarie
 tar xfj campcaster-&lt;version&gt;.tar.bz2
 tar xfj campcaster-libraries-&lt;version&gt;.tar.bz2
 cd campcaster-&lt;version&gt;
-./configure --prefix=/usr/local/campcaster --with-apache-group=apache --with-www-docroot=/var/www
-make
+./configure --prefix=/usr/local --with-apache-group=www-data
 make install
-./bin/postInstallStation.sh -d /usr/local/campcaster -g apache -r /var/www
-/usr/local/campcaster/bin/scheduler.sh start
-<br></code></pre>
+./bin/postInstallStation.sh --directory=/usr/local \
+                            --apache-group=www-data \
+                            --postgresql-dir=/etc/postgresql/8.1/main \
+                            --postgresql-init-script=/etc/init.s/postgresql-8.1
+/usr/local/bin/scheduler.sh start
+</code></pre>
 
 Then try the URL <code>http://localhost/campcaster/</code>
-and log in using username: <code>root</code>, password: <code>q</code>.<br>
-<br>
+and log in using username: <code>root</code>, password: <code>q</code>.
+
+The Studio GUI can be started with 
+<code>/usr/local/bin/campcaster-studio.sh</code><br><br>
+
 Everyone else, please read the lines below carefully.<br>
+
 <h1>Installing required compilation tools</h1>
 Make sure that all the <a href="developmentTools.html">required compilation
 tools and libraries</a> are installed.  You can either install pre-packaged
