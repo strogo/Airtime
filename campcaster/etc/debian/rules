@@ -75,7 +75,6 @@ install-arch:
 	mkdir -p $(CURDIR)/debian/campcaster-libs
 	mkdir -p $(CURDIR)/debian/campcaster-libs/opt/campcaster
 	mkdir -p $(CURDIR)/debian/campcaster-libs/opt/campcaster/bin
-	mkdir -p $(CURDIR)/debian/campcaster-libs/opt/campcaster/etc/pango
 	mkdir -p $(CURDIR)/debian/campcaster-libs/opt/campcaster/tmp
 	mkdir -p $(CURDIR)/debian/campcaster-libs/opt/campcaster/usr/lib
 	mv -f $(CURDIR)/debian/campcaster/opt/campcaster/lib \
@@ -84,8 +83,6 @@ install-arch:
 		      $(CURDIR)/debian/campcaster-libs/opt/campcaster/bin
 	mv -f $(CURDIR)/debian/campcaster/opt/campcaster/usr/lib/pear \
 		      $(CURDIR)/debian/campcaster-libs/opt/campcaster/usr/lib
-	mv -f $(CURDIR)/debian/campcaster/opt/campcaster/etc/pango/* \
-		      $(CURDIR)/debian/campcaster-libs/opt/campcaster/etc/pango
 
 	# now separate the station (server) files into debian/campcaster-station
 	mkdir -p $(CURDIR)/debian/campcaster-station
