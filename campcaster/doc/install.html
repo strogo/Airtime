@@ -21,18 +21,11 @@ Development Loan Fund</a>, under the GNU <a
 This document describes how to compile and install Campcaster on your
 system.
 
-<h1>Introduction</h1>
-Follow these steps to install Campcaster on your system:
-<ol>
-  <li>install the required compilation tools, libraries and services</li>
-  <li>obtain the Campcaster sources</li>
-  <li>compile and install Campcaster</li>
-  <li>configure the required external services</li>
-  <li>start Campcaster</li>
-</ol>
+
+<h1>Installation instructions</h1>
 
 
-<h1>1. Install the tools, libraries and services</h1>
+<h2>1. Install the tools, libraries and services</h2>
 First, you need to install the <a href="developmentTools.html">tools, 
 libraries and services</a> needed to compile and run Campcaster.
 You can either install pre-packaged
@@ -46,7 +39,7 @@ is to run the
 <code>apt-get install</code> command</a> given on our wiki page.
 
 
-<h1>2. Obtain the Campcaster sources</h1>
+<h2>2. Obtain the Campcaster sources</h2>
 If you are reading this, you probably already have the sources, so you can
 skip to the next step.
 
@@ -58,31 +51,28 @@ Both can be downloaded from
 <code>http://sourceforge.net/projects/campcaster/</code></a>.
 
 
-<h1>3. Compile and install Campcaster</h1>
-To install Campcaster in /usr/local, do the following:
-<pre><code>
-tar xfj campcaster-&lt;version&gt;.tar.bz2
+<h2>3. Compile and install Campcaster</h2>
+To install Campcaster in /opt/campcaster, do the following:
+<pre>tar xfj campcaster-&lt;version&gt;.tar.bz2
 tar xfj campcaster-libraries-&lt;version&gt;.tar.bz2
 cd campcaster-&lt;version&gt;
-./configure --prefix=/usr/local
+./configure --prefix=/opt/campcaster
 make install
-</code></pre>
+</pre>
 To run <code>make install</code>, you need to be able to write the
 installation directory.  Run it as root (change to the root user, or
 write <code>sudo</code> before it).
 
 <p>The <code>configure</code> command takes several arguments, 
 the most important are the following:
-<pre><code>
-  --prefix=PREFIX           install the files of the application in PREFIX
+<pre>  --prefix=PREFIX           install the files of the application in PREFIX
                             [default: /usr/local]
-</code></pre>
+</pre>
 The installation directory.  This is where Campcaster will be installed.
 <br>
-<pre><code><br>
-  --with-apache-group       specify the group of the apache web server daemon
+<pre>  --with-apache-group       specify the group of the apache web server daemon
                             [default: apache]
-</code></pre>
+</pre>
 The group of the apache web server daemon.  On Debian-based systems, including
 Ubuntu, this is <code>www-data</code>.
 
@@ -90,61 +80,56 @@ Ubuntu, this is <code>www-data</code>.
 a list of them, together with their default values.
 
 
-<h1>4. Configure the external services</h1>
+<h2>4. Configure the external services</h2>
 Before you can use Campcaster, you need to set up and configure the web server 
 and the database that Campcaster uses to store its data. 
 The simplest way is to use the script included with Campcaster:
-<pre><code>
-./bin/postInstallStation.sh --directory=/usr/local
-</code></pre>
+<pre>./bin/postInstallStation.sh --directory=/opt/campcaster</pre>
 You need to run this script as root, too.
 
 <p>You can also set up everything manually; see the 
 <a href="gettingStarted.html">gettingStarted.html</a> 
 document about how to do that.
 
-<code>postInstallStation.sh</code> takes several arguments, the most important
-are the following:
-<pre><code>
-  --directory=PREFIX        look for Campcaster files in PREFIX
-</code></pre>
+<p><code>postInstallStation.sh</code> takes several arguments;
+the most important are the following:
+<pre>  --directory=PREFIX        look for Campcaster files in PREFIX
+</pre>
 The installation directory, where Campcaster was installed.  This argument
 is obligatory.
-<br>
-<pre><code>
-  --apache-group            specify the group of the apache web server
+
+<p><pre>  --apache-group            specify the group of the apache web server
                             [default: apache]
-</code></pre>
+</pre>
 The group of the apache web server daemon.  On Debian-based systems, including
 Ubuntu, this is <code>www-data</code>.
-<br>
-<pre><code>
-  --postgresql-dir          the PostgreSQL configuration directory
+
+<p><pre>  --postgresql-dir          the PostgreSQL configuration directory
                             [default: /etc/postgresql]
-</code></pre>
+</pre>
 The directory containing the PostgreSQL configuration file
 <code>pg_hba.conf</code>.  On Ubuntu Dapper and Edgy, this is 
 <code>/etc/postgresql/8.1/main</code>.  On some distributions, it may be
 <code>/var/lib/postgres/data/</code>.
-<br>
-<pre><code>
+
+<p><pre>
   --postgresql-init-script  the start/stop command for the PostgreSQL daemon
                             [default: /etc/init.d/postgresql]
-</code></pre>
+</pre>
 The init script used to start and stop the PostgreSQL daemon.  On Ubuntu Dapper
 and Edgy, this is <code>/etc/init.d/postgresql-8.1</code>.
 
 <p>There are several more options; type
-<code>./postInstallStation.sh --help</code>
+<code>./bin/postInstallStation.sh --help</code>
 to get a list of them, together with their default values.
 
 
-<h1>5. Start Campcaster</h1>
+<h2>5. Start Campcaster</h2>
 After a successful installation, the Campcaster scheduler has to be
 started. The scheduler has a System V runlevel-style startup script,
-under <code>PREFIX/bin/scheduler.sh<code>. To start the scheduler,
-simply type:
-<pre><code>PREFIX/bin/scheduler.sh start</code></pre>
+under <code>&lt;installation directory&gt;/bin/scheduler.sh<code>. 
+To start the scheduler, simply type:
+<pre><code>&lt;installation directory&gt;/bin/scheduler.sh start</code></pre>
 
 <p>To use the the web interface, point your browser to
 <code>http://localhost/campcaster</code>.  You can also use the web interface
@@ -152,14 +137,25 @@ from other computers; simply put the name or IP number of the computer where
 Campcaster was installed in place of <code>localhost</code>.
 
 <p>To start Campcaster Studio, type the following:
-<pre><code>PREFIX/bin/campcaster-studio.sh</code></pre>
+<pre><code>&lt;installation directory&gt;/bin/campcaster-studio.sh</code></pre>
 
-<p>For your first login, use the following values:<br>
+<p>For your first login, use the following values:
 <ul>
   <li>username: root</li>
   <li>password: q</li>
 </ul>
 Later you can change the password, and add more users, from the web interface.
+
+<p>You can make the scheduler start automatically when the system boots up, 
+by installing the &lt;installation directory&gt;/bin/campcaster-scheduler 
+init script.  In Debian-based systems, this is done by 
+typing 
+<pre>cp &lt;installation directory&gt;/bin/campcaster-scheduler /etc/init.d/
+update-rc.d campcaster-scheduler defaults 92
+</pre>
+as root.  Note: in the init script, the variable <code>CAMPCASTER_DIR</code> 
+is hard-coded to <code>/opt/campcaster</code>.  You will need to edit it and 
+change it to your installation directory if it is different.
 
 <p>Have fun!
 </body>
