@@ -196,10 +196,11 @@ run: all ${TEST_EXE} ${TEST_RUNNER_RES}
 check: all
 
 install: all
-	${MKDIR} ${USR_INCLUDE_DIR}/Campcaster/Widgets
+	${MKDIR} ${USR_INCLUDE_DIR}/LiveSupport/Widgets
 	${CP} ${INCLUDE_DIR}/LiveSupport/Widgets/*.h \
           ${USR_INCLUDE_DIR}/LiveSupport/Widgets
 	${CP} ${WIDGETS_LIB_FILE} ${USR_LIB_DIR}
+	${MKDIR} ${USR_VAR_DIR}/Campcaster/Widgets
 	${MKDIR} ${USR_VAR_DIR}/Campcaster/Widgets/blueBin \
              ${USR_VAR_DIR}/Campcaster/Widgets/button \
              ${USR_VAR_DIR}/Campcaster/Widgets/combo \

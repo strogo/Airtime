@@ -132,8 +132,11 @@ in an empty directory as follows:<br>
 <pre><code>rm -rf /opt/campcaster<br>rm -rf debian_build<br>mkdir debian_build<br>cd debian_build<br></code>dpkg-source -x ../campcaster_&lt;ls_version&gt;-1.dsc<br>cd campcaster-&lt;ls-version&gt;<br>dpkg-buildpackage -rfakeroot<br>cd ../..<br><br></pre>
 The above commands will result in the following debian packages:<br>
 <br>
-<pre><code>campcaster-libs_&lt;ls-version&gt;-1_&lt;arch&gt;.deb<br></code><code>campcaster-station_&lt;ls-version&gt;-1_&lt;arch&gt;.deb<br></code><code>campcaster-studio_&lt;ls-version&gt;-1_&lt;arch&gt;.deb</code><br></pre>
-<pre><code></code><code></code></pre>
+<pre><code>campcaster-libs_&lt;ls-version&gt;-1_&lt;arch&gt;.deb
+campcaster-station_&lt;ls-version&gt;-1_&lt;arch&gt;.deb
+campcaster-studio_&lt;ls-version&gt;-1_&lt;arch&gt;.deb
+</code></pre>
+
 
 <h1>Tagging the sources</h1>
 After the tarballs have been tested, the release can be finalized. As a
@@ -142,8 +145,9 @@ repository has to be tagged, so that the the very versions in the
 release can be retrieved at any later date. To tag the repository,
 issue the following command:<br>
 <br>
-<pre><code>svn copy svn+ssh://&lt;username&gt;@code.campware.org/home/svn/repo/campcaster/trunk/ \
-         svn+ssh://&lt;username&gt;@code.campware.org/home/svn/repo/campcaster/tags/campcaster-&lt;ls-version&gt;<br></code></pre>
+<pre><code>svn copy svn://code.campware.org/campcaster/trunk \
+         svn://code.campware.org/campcaster/tags/campcaster-&lt;ls-version&gt;
+</code></pre>
 <br>
 This will tag the current state of the repository with the tag <code>campcaster-&lt;ls-version&gt;</code>,
 enabling later retrieval of this specific state.<br>
