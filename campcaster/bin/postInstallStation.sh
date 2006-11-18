@@ -42,6 +42,10 @@ reldir=`dirname $0`/..
 basedir=`cd $reldir; pwd;`
 bindir=$basedir/bin
 
+srcdir=$basedir/src
+products_dir=$srcdir/products
+scheduler_dir=${products_dir}/scheduler
+scheduler_bindir=${scheduler_dir}/bin
 
 #-------------------------------------------------------------------------------
 #  Print the usage information for this script.
@@ -269,70 +273,17 @@ ${postgresql_init_script} start
 #-------------------------------------------------------------------------------
 #  Create the necessary database user and database itself
 #-------------------------------------------------------------------------------
-echo "Creating database and database user...";
-
-# FIXME: the below might not work for remote databases
-
-if [ "x$ls_dbserver" == "xlocalhost" ]; then
-    su - $postgres_user -c "echo \"CREATE USER $ls_dbuser \
-                                   ENCRYPTED PASSWORD '$ls_dbpassword' \
-                                   CREATEDB NOCREATEUSER;\" \
-                            | psql template1" \
-        || echo "Couldn't create database user $ls_dbuser.";
-
-    su - $postgres_user -c "echo \"CREATE DATABASE \\\"$ls_database\\\" \
-                                    OWNER $ls_dbuser ENCODING 'utf-8';\" \
-                            | psql template1" \
-        || echo "Couldn't create database $ls_database.";
-else
-    echo "Unable to automatically create database user and table for";
-    echo "remote database $ls_dbserver.";
-    echo "Make sure to create database user $ls_dbuser with password";
-    echo "$ls_dbpassword on database server at $ls_dbserver.";
-    echo "Also create a database called $ls_database, owned by this user.";
-    echo "";
-    echo "The easiest way to achieve this is by issuing the following SQL";
-    echo "commands to PostgreSQL:";
-    echo "CREATE USER $ls_dbuser";
-    echo "    ENCRYPTED PASSWORD '$ls_dbpassword'";
-    echo "    CREATEDB NOCREATEUSER;";
-    echo "CREATE DATABASE \"$ls_database\"";
-    echo "    OWNER $ls_dbuser ENCODING 'utf-8';";
-fi
-
-
-# TODO: check for the success of these operations somehow
+${scheduler_bindir}/createDatabase.sh --database=${ls_database} \
+                                      --dbuser=${ls_dbuser} \
+                                      --dbpassword=${ls_dbpassword} \
+                                      --dbserver=${ls_dbserver}
 
 
 #-------------------------------------------------------------------------------
 #  Create the ODBC data source and driver
 #-------------------------------------------------------------------------------
-echo "Creating ODBC data source and driver...";
-
-if [ -f /usr/lib/libodbcpsql.so ]; then
-    odbcinst_template=$install_etc/odbcinst_template
-elif [ -f /usr/lib/odbc/psqlodbc.so ]; then
-    odbcinst_template=$install_etc/odbcinst_old_debian_template
-elif [ -f /usr/lib/odbc/psqlodbcw.so ]; then
-    odbcinst_template=$install_etc/odbcinst_new_debian_template
-else
-    echo "###############################"
-    echo "Postgresql driver for unixODBC not found;"
-    echo "please register the PostgreSQL ODBC driver manually."
-    echo "###############################"
-fi
-odbc_template=$install_etc/odbc_template
-odbc_template_tmp=/tmp/odbc_template.$$
-
-# check for an existing PostgreSQL ODBC driver, and only install if necessary
-odbcinst_res=`odbcinst -q -d | grep "\[PostgreSQL\]"`
-if [ "x$odbcinst_template" != "x" ] && [ "x$odbcinst_res" == "x" ]; then
-    echo "Registering ODBC PostgreSQL driver...";
-    odbcinst -i -d -v -f $odbcinst_template || exit 1;
-fi
-
-echo "Registering Campcaster ODBC data source...";
-odbcinst -i -s -l -f $odbc_template || exit 1;
+${scheduler_bindir}/createOdbcDataSource.sh --database=${ls_database} \
+                                            --dbserver=${ls_dbserver}
 
 
 #-------------------------------------------------------------------------------

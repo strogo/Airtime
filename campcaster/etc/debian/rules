@@ -129,20 +129,20 @@ install-arch:
 	mkdir -p $(CURDIR)/debian/campcaster-studio/opt/campcaster/bin
 	mkdir -p $(CURDIR)/debian/campcaster-studio/opt/campcaster/etc
 	mkdir -p $(CURDIR)/debian/campcaster-studio/opt/campcaster/tmp
-	mkdir -p $(CURDIR)/debian/campcaster-studio/opt/campcaster/var/LiveSupport
+	mkdir -p $(CURDIR)/debian/campcaster-studio/opt/campcaster/var/Campcaster
 	mv -f $(CURDIR)/debian/campcaster/opt/campcaster/bin/campcaster-studio \
 	      $(CURDIR)/debian/campcaster/opt/campcaster/bin/campcaster-studio.sh \
 		      $(CURDIR)/debian/campcaster-studio/opt/campcaster/bin
 	mv -f $(CURDIR)/debian/campcaster/opt/campcaster/etc/campcaster-studio.xml* \
               $(CURDIR)/debian/campcaster-studio/opt/campcaster/etc
-	mv -f $(CURDIR)/debian/campcaster/opt/campcaster/var/LiveSupport/Widgets \
-	      $(CURDIR)/debian/campcaster/opt/campcaster/var/LiveSupport/campcaster-studio_*.res \
-		  $(CURDIR)/debian/campcaster/opt/campcaster/var/LiveSupport/campcaster.png \
-		  $(CURDIR)/debian/campcaster/opt/campcaster/var/LiveSupport/icon*.png \
-		  $(CURDIR)/debian/campcaster/opt/campcaster/var/LiveSupport/stationLogo.png \
-		  $(CURDIR)/debian/campcaster/opt/campcaster/var/LiveSupport/testAudio.ogg \
-		  $(CURDIR)/debian/campcaster/opt/campcaster/var/LiveSupport/testAudio.ogg.license \
-		      $(CURDIR)/debian/campcaster-studio/opt/campcaster/var/LiveSupport
+	mv -f $(CURDIR)/debian/campcaster/opt/campcaster/var/Campcaster/Widgets \
+	      $(CURDIR)/debian/campcaster/opt/campcaster/var/Campcaster/campcaster-studio_*.res \
+		  $(CURDIR)/debian/campcaster/opt/campcaster/var/Campcaster/campcaster.png \
+		  $(CURDIR)/debian/campcaster/opt/campcaster/var/Campcaster/icon*.png \
+		  $(CURDIR)/debian/campcaster/opt/campcaster/var/Campcaster/stationLogo.png \
+		  $(CURDIR)/debian/campcaster/opt/campcaster/var/Campcaster/testAudio.ogg \
+		  $(CURDIR)/debian/campcaster/opt/campcaster/var/Campcaster/testAudio.ogg.license \
+		      $(CURDIR)/debian/campcaster-studio/opt/campcaster/var/Campcaster
 	mkdir -p $(CURDIR)/debian/campcaster-studio/usr/share/applications
 	cp -a $(CURDIR)/debian/campcaster-studio.desktop \
 		      $(CURDIR)/debian/campcaster-studio/usr/share/applications/
