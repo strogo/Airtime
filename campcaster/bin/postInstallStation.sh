@@ -42,10 +42,6 @@ reldir=`dirname $0`/..
 basedir=`cd $reldir; pwd;`
 bindir=$basedir/bin
 
-srcdir=$basedir/src
-products_dir=$srcdir/products
-scheduler_dir=${products_dir}/scheduler
-scheduler_bindir=${scheduler_dir}/bin
 
 #-------------------------------------------------------------------------------
 #  Print the usage information for this script.
@@ -273,17 +269,17 @@ ${postgresql_init_script} start
 #-------------------------------------------------------------------------------
 #  Create the necessary database user and database itself
 #-------------------------------------------------------------------------------
-${scheduler_bindir}/createDatabase.sh --database=${ls_database} \
-                                      --dbuser=${ls_dbuser} \
-                                      --dbpassword=${ls_dbpassword} \
-                                      --dbserver=${ls_dbserver}
+${install_bin}/createDatabase.sh --database=${ls_database} \
+                                 --dbuser=${ls_dbuser} \
+                                 --dbpassword=${ls_dbpassword} \
+                                 --dbserver=${ls_dbserver}
 
 
 #-------------------------------------------------------------------------------
 #  Create the ODBC data source and driver
 #-------------------------------------------------------------------------------
-${scheduler_bindir}/createOdbcDataSource.sh --database=${ls_database} \
-                                            --dbserver=${ls_dbserver}
+${install_bin}/createOdbcDataSource.sh --database=${ls_database} \
+                                       --dbserver=${ls_dbserver}
 
 
 #-------------------------------------------------------------------------------
