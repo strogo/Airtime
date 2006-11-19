@@ -360,6 +360,8 @@ copy_files:
 	${CP} ${ETC_DIR}/odbcinst_old_debian_template \
 	      ${ETC_DIR}/odbcinst_new_debian_template \
 	      ${ETC_DIR}/odbcinst_template ${USR_ETC_DIR}
+	${CP} ${BIN_DIR}/createDatabase.sh \
+	      ${BIN_DIR}/createOdbcDataSource.sh ${USR_BIN_DIR}
 	${CAT} ${ETC_DIR}/odbc_template | ${SED} -e ${REPLACE_SED_STRING} \
 	       > ${USR_ETC_DIR}/odbc_template
 	${CAT} ${ETC_DIR}/scheduler.xml.template | ${SED} -e ${REPLACE_SED_STRING} \
