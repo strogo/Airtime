@@ -113,7 +113,7 @@ Description: A radio program automation and support tool.
 Package: campcaster-studio
 Architecture: any
 Depends: ${shlibs:Depends},
-         campaster-libs (>= ${dpkg:Version}),
+         campcaster-libs (>= ${dpkg:Version}),
          sed,
          unixodbc (>= 2.2),
          odbc-postgresql,
