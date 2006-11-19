@@ -99,7 +99,6 @@ install-arch:
 		      $(CURDIR)/debian/campcaster-station/opt/campcaster/bin
 	mv -f $(CURDIR)/debian/campcaster/opt/campcaster/etc/scheduler.xml* \
 	      $(CURDIR)/debian/campcaster/opt/campcaster/etc/odbc* \
-	      $(CURDIR)/debian/campcaster/opt/campcaster/etc/gtk* \
 		      $(CURDIR)/debian/campcaster-station/opt/campcaster/etc
 	mv -f $(CURDIR)/debian/campcaster/opt/campcaster/var/Campcaster/alib \
           $(CURDIR)/debian/campcaster/opt/campcaster/var/Campcaster/archiveServer \
