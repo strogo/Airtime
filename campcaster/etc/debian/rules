@@ -96,6 +96,8 @@ install-arch:
 	      $(CURDIR)/debian/campcaster/opt/campcaster/bin/scheduler.sh \
 	      $(CURDIR)/debian/campcaster/opt/campcaster/bin/postInstallStation.sh \
 	      $(CURDIR)/debian/campcaster/opt/campcaster/bin/campcaster-scheduler \
+	      $(CURDIR)/debian/campcaster/opt/campcaster/bin/createDatabase.sh \
+	      $(CURDIR)/debian/campcaster/opt/campcaster/bin/createOdbcDataSource.sh \
 		      $(CURDIR)/debian/campcaster-station/opt/campcaster/bin
 	mv -f $(CURDIR)/debian/campcaster/opt/campcaster/etc/scheduler.xml* \
 	      $(CURDIR)/debian/campcaster/opt/campcaster/etc/odbc* \
