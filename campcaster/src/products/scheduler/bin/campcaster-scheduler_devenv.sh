@@ -49,18 +49,18 @@ usrdir=`cd $basedir/../../../usr; pwd;`
 #-------------------------------------------------------------------------------
 export LD_LIBRARY_PATH=$usrdir/lib:$LD_LIBRARY_PATH
 
-if [ -x $bindir/scheduler ]; then
-    scheduler_exe=$bindir/scheduler
-elif [ -x $tmpdir/scheduler ]; then
-    scheduler_exe=$tmpdir/scheduler
+if [ -x $bindir/campcaster-scheduler ]; then
+    scheduler_exe=$bindir/campcaster-scheduler
+elif [ -x $tmpdir/campcaster-scheduler ]; then
+    scheduler_exe=$tmpdir/campcaster-scheduler
 else
     echo "Can't find scheduler executable.";
 fi
 
-if [ -f ~/.campcaster/scheduler.xml ]; then
-    config_file=~/.campcaster/scheduler.xml
-elif [ -f $etcdir/scheduler.xml ]; then
-    config_file=$etcdir/scheduler.xml
+if [ -f ~/.campcaster/campcaster-scheduler.xml ]; then
+    config_file=~/.campcaster/campcaster-scheduler.xml
+elif [ -f $etcdir/campcaster-scheduler.xml ]; then
+    config_file=$etcdir/campcaster-scheduler.xml
 else
     echo "Can't find configuration file.";
 fi
@@ -119,9 +119,9 @@ case "$mode" in
 
     'kill')
         echo "Killing all Campcaster scheduler processes..."
-        killall scheduler
+        killall campcaster-scheduler
         sleep 2
-        killall -9 scheduler
+        killall -9 campcaster-scheduler
         ;;
 
     *)

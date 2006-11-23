@@ -46,8 +46,8 @@ libdir=$basedir/lib
 gstreamer_dir=`find $libdir -type d -name "gstreamer-*"`
 
 export LD_LIBRARY_PATH=$libdir:$LD_LIBRARY_PATH
-scheduler_exe=$bindir/scheduler
-config_file=$etcdir/scheduler.xml
+scheduler_exe=$bindir/campcaster-scheduler
+config_file=$etcdir/campcaster-scheduler.xml
 
 mode=$1
 
@@ -94,9 +94,9 @@ case "$mode" in
 
     'kill')
         echo "Killing all Campcaster scheduler processes..."
-        killall scheduler
+        killall campcaster-scheduler
         sleep 2
-        killall -9 scheduler
+        killall -9 campcaster-scheduler
         ;;
 
     *)

@@ -147,10 +147,10 @@ Campcaster was installed in place of <code>localhost</code>.
 Later you can change the password, and add more users, from the web interface.
 
 <p>You can make the scheduler start automatically when the system boots up, 
-by installing the &lt;installation directory&gt;/bin/campcaster-scheduler 
+by installing the &lt;installation directory&gt;/etc/campcaster-scheduler 
 init script.  In Debian-based systems, this is done by 
 typing 
-<pre>cp &lt;installation directory&gt;/bin/campcaster-scheduler /etc/init.d/
+<pre>cp &lt;installation directory&gt;/etc/campcaster-scheduler /etc/init.d/
 update-rc.d campcaster-scheduler defaults 92
 </pre>
 as root.  Note: in the init script, the variable <code>CAMPCASTER_DIR</code> 
