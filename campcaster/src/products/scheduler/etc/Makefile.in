@@ -365,7 +365,7 @@ copy_files:
 	${CAT} ${ETC_DIR}/odbc_template | ${SED} -e ${REPLACE_SED_STRING} \
 	       > ${USR_ETC_DIR}/odbc_template
 	${CAT} ${ETC_DIR}/campcaster-scheduler.xml.template \
-	       | ${SED} -e ${REPLACE_SED_STRING} 
+	       | ${SED} -e ${REPLACE_SED_STRING} \
 	       > ${USR_ETC_DIR}/campcaster-scheduler.xml
 
 create_database:
