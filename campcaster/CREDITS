@@ -1,0 +1,23 @@
+Version 1.1.X
+-------------
+Ferenc Gerlits (fgerlits@campware.org)
+    - Studio GUI, scheduler, packaging
+Mark Kretschmann (markey@web.de)
+    - Audio player
+Paul Baranowski (paul@paulbaranowski.org)
+    - Project manager, HTML UI, storage server, scheduler
+Douglas Arellanes (Douglas.Arellanes@mdlf.org)
+    - Tester and user feedback
+Tomáš Hlava (th@red2head.com) 
+    - Storage server, network hub
+János Csikós (retired)
+    - HTML UI
+Ákos Maróy (retired)
+    - Architecture design, scheduler, audio player
+
+Version 1.0
+-----------
+Ákos Maróy
+Ferenc Gerlits
+Sebastian Göbel
+Tomáš Hlava
