@@ -29,7 +29,7 @@
 # Run this script to prepare gstreamer to be configured and compiled.
 # To read more about gstreamer, see http://gstreamer.freedesktop.org/
 #-------------------------------------------------------------------------------
-liboil=liboil-0.3.6
+liboil=liboil-0.3.10
 gstreamer=gstreamer-0.10.11
 plugins_base=gst-plugins-base-0.10.11
 plugins_good=gst-plugins-good-0.10.4
@@ -52,12 +52,12 @@ mkdir -p ${tmpdir}
 # copy over install-sh, as AC_CONFIG_SUBDIRS will be looking for it
 cp -r $bindir/install-sh $tmpdir
 
-#cd ${tmpdir}
-#if [ ! -d $liboil ]; then
-#    tar xfz ${liboil_tar}
-#    cd ${liboil}
-#    # patch here
-#fi
+cd ${tmpdir}
+if [ ! -d $liboil ]; then
+    tar xfz ${liboil_tar}
+    cd ${liboil}
+    # patch here
+fi
 
 cd ${tmpdir}
 if [ ! -d $gstreamer ]; then
