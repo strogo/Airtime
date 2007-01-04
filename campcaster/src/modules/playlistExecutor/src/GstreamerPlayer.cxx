@@ -102,7 +102,7 @@ GstreamerPlayer :: initialize(void)                 throw (std::exception)
     }
 
     // initialize the gstreamer library
-    if (!gst_init_check(0, 0)) {
+    if (!gst_init_check(0, 0, 0)) {
         throw std::runtime_error("couldn't initialize the gstreamer library");
     }
 
