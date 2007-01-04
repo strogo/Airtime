@@ -346,7 +346,7 @@ GstreamerPlayer :: open(const std::string   fileUrl)
         m_filesrc = m_preloadFilesrc;
     else {
         m_filesrc    = gst_element_factory_make("filesrc", "file-source");
-        gst_element_set(m_filesrc, "location", filePath.c_str(), NULL);
+        g_object_set(G_OBJECT(m_filesrc), "location", filePath.c_str(), NULL);
     }
 
     // converts between different audio formats (e.g. bitrate) 
@@ -367,7 +367,7 @@ GstreamerPlayer :: open(const std::string   fileUrl)
             debug() << "SMIL file detected." << endl;
             m_stopPreloader = false;
             m_decoder = gst_element_factory_make("minimalaudiosmil", NULL);
-            gst_element_set(m_decoder, "abort", &m_stopPreloader, NULL);
+            g_object_set(G_OBJECT(m_decoder), "abort", &m_stopPreloader, NULL);
             gst_element_link_many(m_filesrc, m_decoder, m_audioconvert, NULL);
         }
         if (gst_element_get_parent(m_audiosink) == NULL)
@@ -625,7 +625,7 @@ GstreamerPlayer :: setAudioDevice(const std::string &deviceName)
     }
 
     // it's the same property, "device" for both alsasink and osssink
-    gst_element_set(m_audiosink, "device", deviceName.c_str(), NULL);
+    g_object_set(G_OBJECT(m_audiosink), "device", deviceName.c_str(), NULL);
 
     if (m_audioscale) {
         gst_element_link_filtered(m_audioscale, m_audiosink, m_sinkCaps);
@@ -689,10 +689,10 @@ void Preloader::run() throw()
     }
 
     p->m_preloadFilesrc = gst_element_factory_make("filesrc", NULL);
-    gst_element_set(p->m_preloadFilesrc, "location", filePath.c_str(), NULL);
+    g_object_set(G_OBJECT(p->m_preloadFilesrc), "location", filePath.c_str(), NULL);
 
     p->m_preloadDecoder = gst_element_factory_make("minimalaudiosmil", NULL);
-    gst_element_set(p->m_preloadDecoder, "abort", &p->m_stopPreloader, NULL);
+    g_object_set(G_OBJECT(p->m_preloadDecoder), "abort", &p->m_stopPreloader, NULL);
 
     GstElement* pipe     = gst_pipeline_new("pipe");
     GstElement* fakesink = gst_element_factory_make("fakesink", "fakesink");
