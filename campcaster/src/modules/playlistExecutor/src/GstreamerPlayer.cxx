@@ -393,7 +393,7 @@ GstreamerPlayer :: open(const std::string   fileUrl)
 
     m_preloadUrl.clear();
     
-    if (gst_element_set_state(m_pipeline,GST_STATE_PAUSED) == GST_STATE_FAILURE) {
+    if (gst_element_set_state(m_pipeline,GST_STATE_PAUSED) == GST_STATE_CHANGE_FAILURE) {
         close();
         // the error is most probably caused by not being able to open
         // the audio device (as it might be blocked by an other process
