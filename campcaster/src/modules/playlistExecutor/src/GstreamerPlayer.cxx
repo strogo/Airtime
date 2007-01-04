@@ -245,7 +245,7 @@ GstreamerPlayer :: eosEventHandler(GstElement    * element,
 
     GstreamerPlayer* const player = (GstreamerPlayer*) self;
 
-    gst_element_set_eos(player->m_pipeline);
+//    gst_element_set_eos(player->m_pipeline);
     
     // Important: We *must* use an idle function call here, so that the signal handler returns 
     // before fireOnStopEvent() is executed.
