@@ -451,7 +451,7 @@ GstreamerPlayer :: getPosition(void)                throw (std::logic_error)
     }
     
     GstFormat fmt = GST_FORMAT_TIME;
-    gst_element_query(m_audiosink, GST_QUERY_POSITION, &fmt, &ns);
+    gst_element_query_position(m_audiosink, &fmt, &ns);
     
     length.reset(new time_duration(microseconds(ns / 1000LL)));
 
