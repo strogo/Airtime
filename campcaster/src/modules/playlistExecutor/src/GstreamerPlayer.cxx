@@ -169,7 +169,7 @@ GstreamerPlayer :: deInitialize(void)                       throw ()
             gst_object_unref(GST_OBJECT(m_audiosink));
         }
         gst_object_unref(GST_OBJECT(m_pipeline));
-        gst_caps_free(m_sinkCaps);
+        gst_caps_unref(m_sinkCaps);
 
         m_audiosink   = 0;
         m_initialized = false;
