@@ -342,6 +342,11 @@ GstreamerPlayer :: open(const std::string   fileUrl)
     const bool isSmil = fileUrl.substr(fileUrl.size()-5, fileUrl.size()) == ".smil" ? true : false;
     const bool isPreloaded = (m_preloadUrl == fileUrl);
 
+    if (isSmil) {
+        throw std::runtime_error("SMIL is not yet supported.");
+        return;
+    }
+
     if (isPreloaded)
         m_filesrc = m_preloadFilesrc;
     else {
@@ -495,7 +500,12 @@ GstreamerPlayer :: pause(void)                      throw (std::logic_error)
 bool
 GstreamerPlayer :: isPlaying(void)                  throw ()
 {
-    return gst_element_get_state(m_pipeline) == GST_STATE_PLAYING;
+    GstState state;
+    GstState pending;
+
+    gst_element_get_state(m_pipeline, &state, &pending, GST_CLOCK_TIME_NONE);
+
+    return state == GST_STATE_PLAYING;
 }
 
 
@@ -656,6 +666,7 @@ Preloader::~Preloader() throw()
 
 void Preloader::run() throw()
 {
+#if 0
     DEBUG_BLOCK
 
     GstreamerPlayer* const p = m_player;
@@ -722,6 +733,7 @@ void Preloader::run() throw()
     p->m_preloadUrl = fileUrl;
 
     p->m_preloadThread.reset();
+#endif
 }
 
 
