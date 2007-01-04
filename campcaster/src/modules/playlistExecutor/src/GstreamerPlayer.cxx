@@ -107,7 +107,7 @@ GstreamerPlayer :: initialize(void)                 throw (std::exception)
     }
 
     // create the pipeline container (threaded)
-    m_pipeline   = gst_thread_new("audio-player");
+    m_pipeline   = gst_pipeline_new("audio-player");
 
     m_filesrc         = 0;
     m_decoder         = 0;
