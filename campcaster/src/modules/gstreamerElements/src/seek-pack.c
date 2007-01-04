@@ -43,7 +43,6 @@
 #include <gst/gst.h>
 
 #include "LiveSupport/GstreamerElements/autoplug.h"
-#include "util.h"
 #include "seek.h"
 #include "seek-pack.h"
 
@@ -64,16 +63,6 @@
 /* ===============================================  local function prototypes */
 
 /**
- *  Signal handler for the eos event of the switcher element.
- *
- *  @param element the element emitting the eos signal
- *  @param userData pointer to the container bin of the switcher.
- */
-static void
-switcher_eos_signal_handler(GstElement     * element,
-                            gpointer         userData);
-
-/**
  *  Perform the seeks on the SeekPack, set by the initialization function.
  *
  *  @param seekPack the SeekPack to perform the seek on.
@@ -86,24 +75,6 @@ livesupport_seek_pack_seek(LivesupportSeekPack    * seekPack);
 /* =============================================================  module code */
 
 /*------------------------------------------------------------------------------
- *  eos signal handler for the switcher element
- *----------------------------------------------------------------------------*/
-static void
-switcher_eos_signal_handler(GstElement     * element,
-                            gpointer         userData)
-{
-    GstElement    * container = GST_ELEMENT(userData);
-
-    g_return_if_fail(container != NULL);
-    g_return_if_fail(GST_IS_ELEMENT(container));
-
-    /* set the container into eos state */
-    GST_DEBUG("SeekPack.switcher setting SeekPack.bin to eos");
-    gst_element_set_eos(container);
-}
-
-
-/*------------------------------------------------------------------------------
  *  Create a new SeekPack.
  *----------------------------------------------------------------------------*/
 LivesupportSeekPack *
@@ -113,14 +84,15 @@ livesupport_seek_pack_new(const gchar    * uniqueName,
     unsigned int            len      = strlen(uniqueName) + 64;
     gchar                 * str      = g_malloc(len);
     LivesupportSeekPack   * seekPack = g_malloc(sizeof(LivesupportSeekPack));
-    GValue                  gvalue   = { 0 };
 
     seekPack->name      = g_strdup(uniqueName);
 
     seekPack->caps      = gst_caps_copy(caps);
 
     g_snprintf(str, len, "%s_seekPackSilence", uniqueName);
-    seekPack->silence   = gst_element_factory_make("silence", str);
+    seekPack->silence = gst_element_factory_make("audiotestsrc", str);
+    /* wave 4 is for silence */
+    g_object_set(G_OBJECT(seekPack->silence), "wave", 4, NULL);
 
     seekPack->source    = NULL;
 
@@ -133,15 +105,7 @@ livesupport_seek_pack_new(const gchar    * uniqueName,
     seekPack->bin       = gst_bin_new(str);
     g_free(str);
 
-    g_value_init(&gvalue, G_TYPE_POINTER);
-    g_value_set_pointer(&gvalue, seekPack->caps);
-    gst_element_set_property(seekPack->switcher, "caps", &gvalue);
-    g_value_unset(&gvalue);
-
-    g_signal_connect(seekPack->switcher,
-                     "eos",
-                     G_CALLBACK(switcher_eos_signal_handler),
-                     seekPack->bin);
+    g_object_set(G_OBJECT(seekPack->switcher), "caps", seekPack->caps, NULL);
 
     seekPack->silenceDuration   = 0LL;
     seekPack->startTime         = 0LL;
@@ -152,9 +116,9 @@ livesupport_seek_pack_new(const gchar    * uniqueName,
     
     seekPack->sendingSilence = TRUE;
 
-    gst_element_add_ghost_pad(seekPack->bin,
-                              gst_element_get_pad(seekPack->switcher, "src"),
-                              "src");
+    gst_element_add_pad(seekPack->bin,
+                        gst_ghost_pad_new("src",
+                              gst_element_get_pad(seekPack->switcher, "src")));
 
     return seekPack;
 }
@@ -170,7 +134,6 @@ livesupport_seek_pack_init(LivesupportSeekPack    * seekPack,
                            gint64                   startTime,
                            gint64                   endTime)
 {
-    GValue          gvalue = { 0 };
     gchar           str[256];
     unsigned int    len      = strlen(seekPack->name) + 64;
     gchar         * name     = g_malloc(len);
@@ -184,7 +147,6 @@ livesupport_seek_pack_init(LivesupportSeekPack    * seekPack,
     seekPack->positionAfterSeek = 0LL;
     seekPack->realEndTime       = 0LL;
 
-    g_value_init(&gvalue, G_TYPE_STRING);
     if (seekPack->endTime >= 0) {
         g_snprintf(str, 256, "0[%lfs];1[%lfs]",
                              seekPack->silenceDuration / NSEC_PER_SEC_FLOAT,
@@ -193,9 +155,7 @@ livesupport_seek_pack_init(LivesupportSeekPack    * seekPack,
         g_snprintf(str, 256, "0[%lfs];1[]",
                              seekPack->silenceDuration / NSEC_PER_SEC_FLOAT);
     }
-    g_value_set_string(&gvalue, str);
-    gst_element_set_property(seekPack->switcher, "source-config", &gvalue);
-    g_value_unset(&gvalue);
+    g_object_set(seekPack->switcher, "source-config", str, NULL);
 
     g_snprintf(name, len, "%s_seekPackDecoder", seekPack->name);
     seekPack->decoder = ls_gst_autoplug_plug_source(seekPack->source,
@@ -203,13 +163,8 @@ livesupport_seek_pack_init(LivesupportSeekPack    * seekPack,
                                                     seekPack->caps);
     /* TODO: only add scale element if needed */
     g_snprintf(name, len, "%s_seekPackDecoderScale", seekPack->name);
-    seekPack->decoderScale = gst_element_factory_make("audioscale", name);
+    seekPack->decoderScale = gst_element_factory_make("audioresample", name);
     g_free(name);
-
-    /* link up the silence element with the switcher first */
-    gst_element_link_filtered(seekPack->silence,
-                              seekPack->switcher,
-                              seekPack->caps);
 
     if (seekPack->decoder) {
         /* seek on the decoder, and link it up with the switcher */
@@ -218,14 +173,10 @@ livesupport_seek_pack_init(LivesupportSeekPack    * seekPack,
     } else {
         /* just fake the content with silence,
          * if it could not be auto-plugged */
-        seekPack->decoder = gst_element_factory_make("silence", "decoder");
+        seekPack->decoder = gst_element_factory_make("audiotestsrc", "decoder");
+        /* wave 4 is for silence */
+        g_object_set(G_OBJECT(seekPack->decoder), "wave", 4, NULL);
     }
-    gst_element_link_many(seekPack->decoder,
-                          seekPack->decoderScale,
-                          NULL);
-    gst_element_link_filtered(seekPack->decoderScale,
-                              seekPack->switcher,
-                              seekPack->caps);
 
     /* put all inside the bin, and link up a ghost pad to switch's src pad */
     gst_bin_add_many(GST_BIN(seekPack->bin),
@@ -233,15 +184,16 @@ livesupport_seek_pack_init(LivesupportSeekPack    * seekPack,
                      seekPack->source,
                      seekPack->decoder,
                      seekPack->decoderScale,
+                     seekPack->switcher,
                      NULL);
 
-    /* put the switcher last into the bin, and also link it as last
-     * otherwise we'll get a:
-     * "assertion failed: (group->group_links == NULL)"
-     * error later on when trying to free up the pipeline
-     * see http://bugzilla.gnome.org/show_bug.cgi?id=309122
-     */
-    gst_bin_add(GST_BIN(seekPack->bin), seekPack->switcher);
+    /* link up the elements */
+    gst_element_link(seekPack->silence, seekPack->switcher);
+    gst_element_link_many(seekPack->source,
+                          seekPack->decoder,
+                          seekPack->decoderScale,
+                          NULL);
+    gst_element_link(seekPack->decoderScale, seekPack->switcher);
 }
 
 
@@ -253,7 +205,7 @@ livesupport_seek_pack_destroy(LivesupportSeekPack     * seekPack)
 {
     gst_element_set_state(seekPack->bin, GST_STATE_NULL);
     g_object_unref(seekPack->bin);
-    gst_caps_free(seekPack->caps);
+    gst_caps_unref(seekPack->caps);
     g_free(seekPack->name);
     g_free(seekPack);
 }
@@ -300,7 +252,7 @@ livesupport_seek_pack_remove_from_bin(LivesupportSeekPack     * seekPack,
  *----------------------------------------------------------------------------*/
 void
 livesupport_seek_pack_set_state(LivesupportSeekPack   * seekPack,
-                                GstElementState         state)
+                                GstState                state)
 {
     /* FIXME: resetting the source from PLAYING state would make it lose
      *        it's seek position */
@@ -328,48 +280,12 @@ livesupport_seek_pack_set_state(LivesupportSeekPack   * seekPack,
 static void
 livesupport_seek_pack_seek(LivesupportSeekPack    * seekPack)
 {
-    GstElement    * pipeline;
-    GstElement    * fakesink;
     gboolean        ret;
-    gint64          value;
     GstSeekType     seekType;
 
-    seekType = (GstSeekType) (GST_FORMAT_TIME |
-                              GST_SEEK_METHOD_SET |
-                              GST_SEEK_FLAG_FLUSH);
-    pipeline = gst_pipeline_new("seek_pipeline");
-    fakesink = gst_element_factory_make("fakesink", "seek_fakesink");
-
-    gst_element_link_filtered(seekPack->decoder, fakesink, seekPack->caps);
-    /* ref the objects we want to keep after pipeline, as it will unref them */
-    g_object_ref(seekPack->source);
-    g_object_ref(seekPack->decoder);
-    gst_bin_add_many(GST_BIN(pipeline),
-                     seekPack->source,
-                     seekPack->decoder,
-                     fakesink,
-                     NULL);
-
-    GST_DEBUG("setting seek pipeline to PLAYING state");
-    gst_element_set_state(seekPack->decoder, GST_STATE_PAUSED);
-    gst_element_set_state(fakesink, GST_STATE_PAUSED);
-    gst_element_set_state(pipeline, GST_STATE_PLAYING);
-
-    GST_DEBUG("starting to iterate...");
-    for (value = 0; value == 0 && gst_bin_iterate(GST_BIN(pipeline)); ) {
-        GstFormat   format = GST_FORMAT_DEFAULT;
-        gst_element_query(fakesink, GST_QUERY_POSITION, &format, &value);
-        GST_DEBUG("position value: %" G_GINT64_FORMAT, value);
-    }
+    seekType = (GstSeekType) GST_SEEK_TYPE_SET;
     GST_DEBUG("seeking on element");
     ret = livesupport_seek(seekPack->decoder, seekType, seekPack->startTime);
     GST_DEBUG("seek result: %d", ret);
-
-    gst_bin_remove_many(GST_BIN(pipeline),
-                        seekPack->source,
-                        seekPack->decoder,
-                        NULL);
-    gst_element_unlink(seekPack->decoder, fakesink);
-    gst_object_unref(GST_OBJECT(pipeline));
 }
 

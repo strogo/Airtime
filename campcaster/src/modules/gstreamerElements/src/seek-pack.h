@@ -34,6 +34,22 @@
  *  A SeekPack - a structure that plays a gstreamer source by playing
  *  some silence and then some specified part of the source.
  *
+ *  A SeekPack will build the following element structure.
+ *  <pre><code>
+ *  audiotestsrc -------------\
+ *                            | -- switcher -- (seekpack.src) -->
+ *  source -- audioresample --/
+ *  </code></pre>
+ *
+ *  where audiotestsrc provides the silence.
+ *
+ *  the switcher element switches between silence and the original source.
+ *
+ *  the src pad of switcher acts as the ghost pad for the seekback bin.
+ *
+ *  the seekpack will also seek on the source as needed.
+ *
+ *
  *  @author $Author$
  *  @version $Revision$
  */
@@ -103,10 +119,11 @@ struct _LivesupportSeekPack {
  */
 LivesupportSeekPack *
 livesupport_seek_pack_new(const gchar    * uniqueName,
-                          const GstCaps          * caps);
+                          const GstCaps  * caps);
 
 /**
  *  Initialize a SeekPack.
+ *  The seekback will be linked to the source at return.
  *
  *  @param seekPack the SeekPack to initialize.
  *  @param source the source the SeekPack will play.
@@ -170,7 +187,7 @@ livesupport_seek_pack_remove_from_bin(LivesupportSeekPack     * seekPack,
  */
 void
 livesupport_seek_pack_set_state(LivesupportSeekPack   * seekPack,
-                                GstElementState         state);
+                                GstState                state);
 
 
 
