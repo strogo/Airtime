@@ -426,10 +426,7 @@ GstreamerPlayer :: getPlaylength(void)              throw (std::logic_error)
         throw std::logic_error("player not open");
     }
 
-    if (m_decoder
-     && gst_element_query(m_decoder, GST_QUERY_TOTAL, &format, &ns)
-     && format == GST_FORMAT_TIME) {
-
+    if (m_decoder && gst_element_query_duration(m_decoder, &format, &ns) && format == GST_FORMAT_TIME) {
         // use microsec, as nanosec() is not found by the compiler (?)
         length.reset(new time_duration(microsec(ns / 1000LL)));
     } else {
