@@ -114,8 +114,6 @@ GstreamerPlayer :: initialize(void)                 throw (std::exception)
     m_audioconvert    = 0;
     m_audioscale      = 0;
 
-    g_signal_connect(m_pipeline, "error", G_CALLBACK(errorHandler), this);
-
     // TODO: read the caps from the config file
     m_sinkCaps = gst_caps_new_simple("audio/x-raw-int",
                                    "width", G_TYPE_INT, 16,
