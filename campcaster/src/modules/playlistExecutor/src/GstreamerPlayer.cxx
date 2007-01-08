@@ -112,7 +112,7 @@ GstreamerPlayer :: initialize(void)                 throw (std::exception)
     m_filesrc         = 0;
     m_decoder         = 0;
     m_audioconvert    = 0;
-    m_audioscale      = 0;
+    m_audioresample   = 0;
 
     // TODO: read the caps from the config file
     m_sinkCaps = gst_caps_new_simple("audio/x-raw-int",
@@ -309,7 +309,7 @@ GstreamerPlayer :: open(const std::string   fileUrl)
                                                        std::runtime_error)
 {
     // GStreamer pipeline overview:
-    // filesrc -> decoder -> audioconvert -> audioscale -> audiosink
+    // filesrc -> decoder -> audioconvert -> audioresample -> audiosink
 
     DEBUG_BLOCK
 
@@ -356,7 +356,7 @@ GstreamerPlayer :: open(const std::string   fileUrl)
     m_audioconvert    = gst_element_factory_make("audioconvert", NULL);
 
     // scale the sampling rate, if necessary
-    m_audioscale      = gst_element_factory_make("audioscale", NULL);
+    m_audioresample   = gst_element_factory_make("audioresample", NULL);
 
     // Due to bugs in the minimalaudiosmil element, it does not currently work with decodebin.
     // Therefore we instantiate it manually if the file has the .smil extension. 
@@ -387,9 +387,9 @@ GstreamerPlayer :: open(const std::string   fileUrl)
         throw std::invalid_argument(std::string("can't open URL ") + fileUrl);
     }
 
-    gst_bin_add_many(GST_BIN(m_pipeline), m_filesrc, m_decoder, m_audioconvert, m_audioscale, NULL);
+    gst_bin_add_many(GST_BIN(m_pipeline), m_filesrc, m_decoder, m_audioconvert, m_audioresample, NULL);
 
-    gst_element_link_many(m_audioconvert, m_audioscale, m_audiosink, NULL);
+    gst_element_link_many(m_audioconvert, m_audioresample, m_audiosink, NULL);
 
     // connect the eos signal handler
     g_signal_connect(m_decoder, "eos", G_CALLBACK(eosEventHandler), this);
@@ -544,16 +544,16 @@ GstreamerPlayer :: close(void)                       throw (std::logic_error)
     if (m_decoder && m_audioconvert) {
         gst_element_unlink(m_decoder, m_audioconvert);
     }
-    if (m_audioconvert && m_audioscale ) {
-        gst_element_unlink(m_audioconvert, m_audioscale);
+    if (m_audioconvert && m_audioresample ) {
+        gst_element_unlink(m_audioconvert, m_audioresample);
     }
-    if (m_audioscale && m_audiosink) {
-        gst_element_unlink(m_audioscale, m_audiosink);
+    if (m_audioresample && m_audiosink) {
+        gst_element_unlink(m_audioresample, m_audiosink);
     }
 
     // Remove elements from pipeline:
-    if (m_audioscale) {
-        gst_bin_remove(GST_BIN(m_pipeline), m_audioscale);
+    if (m_audioresample) {
+        gst_bin_remove(GST_BIN(m_pipeline), m_audioresample);
     }
     if (m_audioconvert) {
         gst_bin_remove(GST_BIN(m_pipeline), m_audioconvert);
@@ -572,7 +572,7 @@ GstreamerPlayer :: close(void)                       throw (std::logic_error)
     m_filesrc         = 0;
     m_decoder         = 0;
     m_audioconvert    = 0;
-    m_audioscale      = 0;
+    m_audioresample   = 0;
 }
 
 
@@ -611,8 +611,8 @@ GstreamerPlayer :: setAudioDevice(const std::string &deviceName)
 
     if (m_audiosink) {
         debug() << "Destroying old sink." << endl;
-        if (m_audioscale) {
-            gst_element_unlink(m_audioscale, m_audiosink);
+        if (m_audioresample) {
+            gst_element_unlink(m_audioresample, m_audiosink);
         }
         if (gst_element_get_parent(m_audiosink) == NULL)
             gst_object_unref(GST_OBJECT(m_audiosink));
@@ -632,8 +632,8 @@ GstreamerPlayer :: setAudioDevice(const std::string &deviceName)
     // it's the same property, "device" for both alsasink and osssink
     g_object_set(G_OBJECT(m_audiosink), "device", deviceName.c_str(), NULL);
 
-    if (m_audioscale) {
-        gst_element_link_filtered(m_audioscale, m_audiosink, m_sinkCaps);
+    if (m_audioresample) {
+        gst_element_link_filtered(m_audioresample, m_audiosink, m_sinkCaps);
     }
 
     return true;

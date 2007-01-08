@@ -121,9 +121,9 @@ class GstreamerPlayer : virtual public Configurable,
         GstElement            * m_audioconvert;
 
         /**
-         *  The audioscale element.
+         *  The audioresample element.
          */
-        GstElement            * m_audioscale;
+        GstElement            * m_audioresample;
 
         /**
          *  The desired capabilities of the audio sink.
