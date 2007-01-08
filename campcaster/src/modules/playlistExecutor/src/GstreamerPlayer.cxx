@@ -611,6 +611,8 @@ GstreamerPlayer :: setAudioDevice(const std::string &deviceName)
 {
     DEBUG_BLOCK
 
+    debug() << "Using device: " << deviceName << endl;
+
     if (deviceName.size() == 0) {
         return false;
     }
