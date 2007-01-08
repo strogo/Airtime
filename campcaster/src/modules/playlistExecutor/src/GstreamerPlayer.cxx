@@ -509,7 +509,7 @@ GstreamerPlayer :: isPlaying(void)                  throw ()
     GstState state;
     GstState pending;
 
-    gst_element_get_state(m_pipeline, &state, &pending, GST_CLOCK_TIME_NONE);
+    gst_element_get_state(m_pipeline, &state, &pending, 10000000);
 
     return state == GST_STATE_PLAYING;
 }
