@@ -190,33 +190,17 @@ class GstreamerPlayer : virtual public Configurable,
          */
         ListenerVector          m_listeners;
 
-        /**
-         *  Handler to recieve errors from gstreamer.
-         *
-         *  @param pipeline the pipeline generating the error
-         *  @param source the source of the error
-         *  @param error the error itself
-         *  @param debug debug info
-         *  @param self pointer to the associated GsreamerPlayer object.
-         */
-        static void
-        errorHandler(GstElement   * pipeline,
-                     GstElement   * source,
-                     GError       * error,
-                     gchar        * debug,
-                     gpointer       self)                           throw ();
 
         /**
-         *  An end-of-stream event handler, that will notify our pipeline,
-         *  that it's all over.
+         *  Bus event handler, processes messages from the pipeline bus, 
+         *  such as errors and EOS.
          *
-         *  @param element the element emitting the eos signal
-         *  @param self a pointer to the associated GstreamerPlayer object.
          */
-        static void
-        eosEventHandler(GstElement    * element,
-                        gpointer        self)
-                                                                    throw ();
+        static gboolean
+        busEventHandler(GstBus     * bus,
+                        GstMessage * msg,
+                        gpointer     self)              throw();
+
         /**
          *  A newpad event handler, that will link the decoder after 
          *  decodebin's autoplugging.
@@ -231,8 +215,8 @@ class GstreamerPlayer : virtual public Configurable,
         /**
          *  Send the onStop event to all attached listeners.
          */
-        static gboolean
-        fireOnStopEvent(gpointer self)                           throw ();
+        gboolean
+        fireOnStopEvent()                               throw ();
 
 
     public:

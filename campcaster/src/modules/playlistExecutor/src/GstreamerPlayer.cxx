@@ -109,6 +109,9 @@ GstreamerPlayer :: initialize(void)                 throw (std::exception)
     // create the pipeline container (threaded)
     m_pipeline   = gst_pipeline_new("audio-player");
 
+    // Set bus event handler
+    gst_bus_add_watch(gst_pipeline_get_bus(GST_PIPELINE(m_pipeline)), busEventHandler, this);
+
     m_filesrc         = 0;
     m_decoder         = 0;
     m_audioconvert    = 0;
@@ -127,25 +130,6 @@ GstreamerPlayer :: initialize(void)                 throw (std::exception)
 
     // set up other variables
     m_initialized = true;
-}
-
-
-/*------------------------------------------------------------------------------
- *  Handler for gstreamer errors.
- *----------------------------------------------------------------------------*/
-void
-GstreamerPlayer :: errorHandler(GstElement   * pipeline,
-                                GstElement   * source,
-                                GError       * error,
-                                gchar        * debug,
-                                gpointer       self)
-                                                                throw ()
-{
-    std::cerr << "gstreamer error: " << error->message << std::endl;
-
-    // Important: We *must* use an idle function call here, so that the signal handler returns 
-    // before fireOnStopEvent() is executed.
-    g_idle_add(fireOnStopEvent, self);
 }
 
 
@@ -211,14 +195,12 @@ GstreamerPlayer :: detachListener(AudioPlayerEventListener*     eventListener)
  *  Send the onStop event to all attached listeners.
  *----------------------------------------------------------------------------*/
 gboolean
-GstreamerPlayer :: fireOnStopEvent(gpointer self)                        throw ()
+GstreamerPlayer :: fireOnStopEvent()                               throw ()
 {
     DEBUG_BLOCK
 
-    GstreamerPlayer* const player = (GstreamerPlayer*) self;
-
-    ListenerVector::iterator    it  = player->m_listeners.begin();
-    ListenerVector::iterator    end = player->m_listeners.end();
+    ListenerVector::iterator    it  = m_listeners.begin();
+    ListenerVector::iterator    end = m_listeners.end();
 
     while (it != end) {
         (*it)->onStop();
@@ -231,22 +213,36 @@ GstreamerPlayer :: fireOnStopEvent(gpointer self)                        throw (
 
 
 /*------------------------------------------------------------------------------
- *  An EOS event handler, that will put the pipeline to EOS as well.
+ * Bus event handler. Processes messages from the pipeline bus. 
  *----------------------------------------------------------------------------*/
-void
-GstreamerPlayer :: eosEventHandler(GstElement    * element,
-                                   gpointer        self)
-                                                                throw ()
+gboolean
+GstreamerPlayer::busEventHandler(GstBus*, GstMessage* msg, gpointer self) throw()
 {
-    DEBUG_BLOCK
+    DEBUG_FUNC_INFO
 
     GstreamerPlayer* const player = (GstreamerPlayer*) self;
 
-//    gst_element_set_eos(player->m_pipeline);
-    
-    // Important: We *must* use an idle function call here, so that the signal handler returns 
-    // before fireOnStopEvent() is executed.
-    g_idle_add(fireOnStopEvent, player);
+    switch (GST_MESSAGE_TYPE(msg))
+    {
+    case GST_MESSAGE_ERROR:
+        GError* error;
+        gchar* debugs;
+
+        gst_message_parse_error(msg,&error,&debugs);
+        debug() << "ERROR RECEIVED IN BUS_CB <" << error->message << ">" << endl;;
+        break;
+
+    case GST_MESSAGE_EOS:
+        debug() << "EOS reached\n";
+        player->fireOnStopEvent();
+        break;
+
+    default:
+        break;
+    }
+
+    gst_message_unref(msg);
+    return GST_BUS_DROP;
 }
 
 
