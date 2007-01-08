@@ -421,6 +421,8 @@ GstreamerPlayer :: isOpen(void)                                 throw ()
 Ptr<time_duration>::Ref
 GstreamerPlayer :: getPlaylength(void)              throw (std::logic_error)
 {
+    DEBUG_BLOCK
+
     Ptr<time_duration>::Ref   length;
     gint64                    ns;
     GstFormat                 format = GST_FORMAT_TIME;
@@ -446,6 +448,8 @@ GstreamerPlayer :: getPlaylength(void)              throw (std::logic_error)
 Ptr<time_duration>::Ref
 GstreamerPlayer :: getPosition(void)                throw (std::logic_error)
 {
+    DEBUG_BLOCK
+
     Ptr<time_duration>::Ref   length;
     gint64                    ns = 0;
 
@@ -486,6 +490,8 @@ GstreamerPlayer :: start(void)                      throw (std::logic_error)
 void
 GstreamerPlayer :: pause(void)                      throw (std::logic_error)
 {
+    DEBUG_BLOCK
+
     if (isPlaying()) {
         gst_element_set_state(m_pipeline, GST_STATE_PAUSED);
     }
@@ -498,6 +504,8 @@ GstreamerPlayer :: pause(void)                      throw (std::logic_error)
 bool
 GstreamerPlayer :: isPlaying(void)                  throw ()
 {
+    DEBUG_BLOCK
+
     GstState state;
     GstState pending;
 
@@ -513,6 +521,8 @@ GstreamerPlayer :: isPlaying(void)                  throw ()
 void
 GstreamerPlayer :: stop(void)                       throw (std::logic_error)
 {
+    DEBUG_BLOCK
+
     if (!isOpen()) {
         throw std::logic_error("GstreamerPlayer not opened yet");
     }
