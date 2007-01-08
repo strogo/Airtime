@@ -159,7 +159,6 @@ GstreamerPlayer :: deInitialize(void)                       throw ()
 
     if (m_initialized) {
         gst_element_set_state(m_pipeline, GST_STATE_NULL);
-//        gst_bin_sync_children_state(GST_BIN(m_pipeline));
 
         if (!gst_element_get_parent(m_audiosink)) {
             // delete manually, if audiosink wasn't added to the pipeline
@@ -271,8 +270,6 @@ GstreamerPlayer::newpadEventHandler(GstElement*, GstPad* pad, gboolean, gpointer
 
     if (gst_element_get_parent(player->m_audiosink) == NULL)
         gst_bin_add(GST_BIN(player->m_pipeline), player->m_audiosink);
-
-//    gst_bin_sync_children_state(GST_BIN(player->m_pipeline));
 }
 
 
