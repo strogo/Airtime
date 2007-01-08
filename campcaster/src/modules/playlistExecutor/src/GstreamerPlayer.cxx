@@ -391,9 +391,6 @@ GstreamerPlayer :: open(const std::string   fileUrl)
 
     gst_element_link_many(m_audioconvert, m_audioresample, m_audiosink, NULL);
 
-    // connect the eos signal handler
-    g_signal_connect(m_decoder, "eos", G_CALLBACK(eosEventHandler), this);
-
     m_preloadUrl.clear();
     
     if (gst_element_set_state(m_pipeline,GST_STATE_PAUSED) == GST_STATE_CHANGE_FAILURE) {
