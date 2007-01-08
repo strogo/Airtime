@@ -476,7 +476,11 @@ GstreamerPlayer :: start(void)                      throw (std::logic_error)
     }
 
     if (!isPlaying()) {
-        gst_element_set_state(m_pipeline, GST_STATE_PLAYING);
+        GstStateChangeReturn ret;
+        ret = gst_element_set_state(m_pipeline, GST_STATE_PLAYING);
+
+        if (ret == GST_STATE_CHANGE_FAILURE )
+            error() << "State change to PLAYING failed." << endl; 
     }
 }
 
