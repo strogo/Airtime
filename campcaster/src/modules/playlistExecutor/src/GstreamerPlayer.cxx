@@ -267,9 +267,6 @@ GstreamerPlayer::newpadEventHandler(GstElement*, GstPad* pad, gboolean, gpointer
     }
 
     gst_pad_link(pad, audiopad);
-
-    if (gst_element_get_parent(player->m_audiosink) == NULL)
-        gst_bin_add(GST_BIN(player->m_pipeline), player->m_audiosink);
 }
 
 
@@ -632,8 +629,8 @@ GstreamerPlayer :: setAudioDevice(const std::string &deviceName)
     }
 
     if (!m_audiosink) {
-        m_audiosink = (oss ? gst_element_factory_make("osssink", "osssink")
-                           : gst_element_factory_make("alsasink", "alsasink"));
+        m_audiosink = (oss ? gst_element_factory_make("osssink", "osssink") : gst_element_factory_make("alsasink", "alsasink"));
+        gst_bin_add(GST_BIN(m_pipeline), m_audiosink);
     }
     if (!m_audiosink) {
         return false;
