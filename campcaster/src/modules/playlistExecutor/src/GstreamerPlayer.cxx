@@ -638,7 +638,8 @@ GstreamerPlayer :: setAudioDevice(const std::string &deviceName)
     g_object_set(G_OBJECT(m_audiosink), "device", deviceName.c_str(), NULL);
 
     if (m_audioresample) {
-        gst_element_link_filtered(m_audioresample, m_audiosink, m_sinkCaps);
+        //gst_element_link_filtered(m_audioresample, m_audiosink, m_sinkCaps);
+        gst_element_link(m_audioresample, m_audiosink);
     }
 
     return true;
