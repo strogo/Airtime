@@ -338,6 +338,7 @@ GstreamerPlayer :: open(const std::string   fileUrl)
     if (isPreloaded)
         m_filesrc = m_preloadFilesrc;
     else {
+        //m_filesrc = gst_element_make_from_uri(GST_URI_SRC, filePath.c_str(), NULL);
         m_filesrc    = gst_element_factory_make("filesrc", "file-source");
         g_object_set(G_OBJECT(m_filesrc), "location", filePath.c_str(), NULL);
     }
