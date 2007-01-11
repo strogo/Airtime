@@ -370,6 +370,7 @@ GstreamerPlayer :: open(const std::string   fileUrl)
     // Using GStreamer's decodebin autoplugger for everything else
     else {
         m_decoder = gst_element_factory_make("decodebin", NULL);
+        gst_bin_add_many(GST_BIN(m_pipeline), m_filesrc, m_decoder, NULL);
         gst_element_link(m_filesrc, m_decoder);
         g_signal_connect(m_decoder, "new-decoded-pad", G_CALLBACK(newpadEventHandler), this);
     }
@@ -378,7 +379,7 @@ GstreamerPlayer :: open(const std::string   fileUrl)
         throw std::invalid_argument(std::string("can't open URL ") + fileUrl);
     }
 
-    gst_bin_add_many(GST_BIN(m_pipeline), m_filesrc, m_decoder, m_audioconvert, m_audioresample, NULL);
+    gst_bin_add_many(GST_BIN(m_pipeline), m_audioconvert, m_audioresample, NULL);
 
     gst_element_link_many(m_audioconvert, m_audioresample, m_audiosink, NULL);
 
