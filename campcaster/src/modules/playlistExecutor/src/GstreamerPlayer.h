@@ -191,6 +191,9 @@ class GstreamerPlayer : virtual public Configurable,
         ListenerVector          m_listeners;
 
 
+       static void
+       eventHandler(GstPad*, GstEvent* event, gpointer arg)   throw();
+ 
         /**
          *  Bus event handler, processes messages from the pipeline bus, 
          *  such as errors and EOS.

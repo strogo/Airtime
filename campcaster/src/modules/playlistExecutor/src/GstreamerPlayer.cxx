@@ -212,6 +212,27 @@ GstreamerPlayer :: fireOnStopEvent()                               throw ()
 }
 
 
+void
+GstreamerPlayer :: eventHandler(GstPad*, GstEvent* event, gpointer self) throw()
+{
+    DEBUG_BLOCK
+
+    GstreamerPlayer* const player = (GstreamerPlayer*) self;
+
+    switch ( static_cast<int>(event->type) )
+    {
+    case GST_EVENT_EOS:
+        debug() << "EOS reached\n";
+        player->fireOnStopEvent();
+        break;
+
+    default:
+        debug() << "** unknown event " << static_cast<int>(event->type) << endl;
+        break;
+    }
+}
+
+
 /*------------------------------------------------------------------------------
  * Bus event handler. Processes messages from the pipeline bus. 
  *----------------------------------------------------------------------------*/
@@ -230,11 +251,6 @@ GstreamerPlayer::busEventHandler(GstBus*, GstMessage* msg, gpointer self) throw(
 
         gst_message_parse_error(msg,&error,&debugs);
         debug() << "ERROR RECEIVED IN BUS_CB <" << error->message << ">" << endl;;
-        break;
-
-    case GST_MESSAGE_EOS:
-        debug() << "EOS reached\n";
-        player->fireOnStopEvent();
         break;
 
     default:
@@ -370,6 +386,14 @@ GstreamerPlayer :: open(const std::string   fileUrl)
     // Using GStreamer's decodebin autoplugger for everything else
     else {
         m_decoder = gst_element_factory_make("decodebin", NULL);
+
+        GstPad *p;
+        p = gst_element_get_pad (m_decoder, "sink");
+        if (p) {
+            gst_pad_add_event_probe (p, G_CALLBACK(eventHandler), this);
+            gst_object_unref (p);
+        }
+
         gst_bin_add_many(GST_BIN(m_pipeline), m_filesrc, m_decoder, NULL);
         gst_element_link(m_filesrc, m_decoder);
         g_signal_connect(m_decoder, "new-decoded-pad", G_CALLBACK(newpadEventHandler), this);
