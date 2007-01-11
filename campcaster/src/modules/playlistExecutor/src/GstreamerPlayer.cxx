@@ -410,8 +410,6 @@ GstreamerPlayer :: isOpen(void)                                 throw ()
 Ptr<time_duration>::Ref
 GstreamerPlayer :: getPlaylength(void)              throw (std::logic_error)
 {
-    DEBUG_BLOCK
-
     Ptr<time_duration>::Ref   length;
     gint64                    ns;
     GstFormat                 format = GST_FORMAT_TIME;
@@ -437,8 +435,6 @@ GstreamerPlayer :: getPlaylength(void)              throw (std::logic_error)
 Ptr<time_duration>::Ref
 GstreamerPlayer :: getPosition(void)                throw (std::logic_error)
 {
-    DEBUG_BLOCK
-
     Ptr<time_duration>::Ref   length;
     gint64                    ns = 0;
 
