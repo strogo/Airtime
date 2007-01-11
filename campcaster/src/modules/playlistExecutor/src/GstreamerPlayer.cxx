@@ -530,7 +530,7 @@ GstreamerPlayer :: pause(void)                      throw (std::logic_error)
 bool
 GstreamerPlayer :: isPlaying(void)                  throw ()
 {
-    if ( m_eos) {
+    if (m_eos) {
         m_eos = false;
         gst_element_set_state(m_pipeline, GST_STATE_READY);
         return false;
