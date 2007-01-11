@@ -223,6 +223,7 @@ GstreamerPlayer :: eventHandler(GstPad*, GstEvent* event, gpointer self) throw()
     {
     case GST_EVENT_EOS:
         debug() << "EOS reached\n";
+        gst_element_set_state(player->m_pipeline, GST_STATE_READY);
         player->fireOnStopEvent();
         break;
 
