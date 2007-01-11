@@ -195,13 +195,18 @@ GstreamerPlayer :: detachListener(AudioPlayerEventListener*     eventListener)
  *  Send the onStop event to all attached listeners.
  *----------------------------------------------------------------------------*/
 gboolean
-GstreamerPlayer :: fireOnStopEvent()                               throw ()
+GstreamerPlayer :: fireOnStopEvent(gpointer self)                       throw ()
 {
     DEBUG_BLOCK
 
-    ListenerVector::iterator    it  = m_listeners.begin();
-    ListenerVector::iterator    end = m_listeners.end();
+    GstreamerPlayer* const player = (GstreamerPlayer*) self;
 
+    // Stop the pipeline
+    if (GST_IS_ELEMENT(player->m_pipeline))
+        gst_element_set_state(player->m_pipeline, GST_STATE_READY);
+
+    ListenerVector::iterator    it  = player->m_listeners.begin();
+    ListenerVector::iterator    end = player->m_listeners.end();
     while (it != end) {
         (*it)->onStop();
         ++it;
@@ -217,14 +222,15 @@ GstreamerPlayer :: eventHandler(GstPad*, GstEvent* event, gpointer self) throw()
 {
     DEBUG_BLOCK
 
-    GstreamerPlayer* const player = (GstreamerPlayer*) self;
+    //GstreamerPlayer* const player = (GstreamerPlayer*) self;
 
     switch ( static_cast<int>(event->type) )
     {
     case GST_EVENT_EOS:
         debug() << "EOS reached\n";
-        gst_element_set_state(player->m_pipeline, GST_STATE_READY);
-        player->fireOnStopEvent();
+        // Important: We *must* use an idle function call here, so that the signal handler returns
+        // before fireOnStopEvent() is executed.
+        g_idle_add(fireOnStopEvent, self);
         break;
 
     default:
@@ -240,9 +246,11 @@ GstreamerPlayer :: eventHandler(GstPad*, GstEvent* event, gpointer self) throw()
 gboolean
 GstreamerPlayer::busEventHandler(GstBus*, GstMessage* msg, gpointer self) throw()
 {
+    return GST_BUS_DROP;
+#if 0
     DEBUG_FUNC_INFO
 
-    GstreamerPlayer* const player = (GstreamerPlayer*) self;
+    //GstreamerPlayer* const player = (GstreamerPlayer*) self;
 
     switch (GST_MESSAGE_TYPE(msg))
     {
@@ -260,6 +268,7 @@ GstreamerPlayer::busEventHandler(GstBus*, GstMessage* msg, gpointer self) throw(
 
     gst_message_unref(msg);
     return GST_BUS_DROP;
+#endif
 }
 
 
@@ -460,6 +469,8 @@ GstreamerPlayer :: getPlaylength(void)              throw (std::logic_error)
 Ptr<time_duration>::Ref
 GstreamerPlayer :: getPosition(void)                throw (std::logic_error)
 {
+    g_main_context_iteration(g_main_context_default(), false);
+
     Ptr<time_duration>::Ref   length;
     gint64                    ns = 0;
 
@@ -520,6 +531,8 @@ GstreamerPlayer :: pause(void)                      throw (std::logic_error)
 bool
 GstreamerPlayer :: isPlaying(void)                  throw ()
 {
+    g_main_context_iteration(g_main_context_default(), false);
+
     GstState state;
     GstState pending;
 

@@ -218,8 +218,8 @@ class GstreamerPlayer : virtual public Configurable,
         /**
          *  Send the onStop event to all attached listeners.
          */
-        gboolean
-        fireOnStopEvent()                               throw ();
+        static gboolean
+        fireOnStopEvent(gpointer self)                            throw ();
 
 
     public:
