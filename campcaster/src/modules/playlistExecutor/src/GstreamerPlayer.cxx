@@ -117,6 +117,8 @@ GstreamerPlayer :: initialize(void)                 throw (std::exception)
     m_audioconvert    = 0;
     m_audioresample   = 0;
 
+    m_eos = false;
+
     // TODO: read the caps from the config file
     m_sinkCaps = gst_caps_new_simple("audio/x-raw-int",
                                    "width", G_TYPE_INT, 16,
@@ -201,10 +203,6 @@ GstreamerPlayer :: fireOnStopEvent(gpointer self)                       throw ()
 
     GstreamerPlayer* const player = (GstreamerPlayer*) self;
 
-    // Stop the pipeline
-    if (GST_IS_ELEMENT(player->m_pipeline))
-        gst_element_set_state(player->m_pipeline, GST_STATE_READY);
-
     ListenerVector::iterator    it  = player->m_listeners.begin();
     ListenerVector::iterator    end = player->m_listeners.end();
     while (it != end) {
@@ -222,12 +220,13 @@ GstreamerPlayer :: eventHandler(GstPad*, GstEvent* event, gpointer self) throw()
 {
     DEBUG_BLOCK
 
-    //GstreamerPlayer* const player = (GstreamerPlayer*) self;
+    GstreamerPlayer* const player = (GstreamerPlayer*) self;
 
     switch ( static_cast<int>(event->type) )
     {
     case GST_EVENT_EOS:
         debug() << "EOS reached\n";
+        player->m_eos = true;
         // Important: We *must* use an idle function call here, so that the signal handler returns
         // before fireOnStopEvent() is executed.
         g_idle_add(fireOnStopEvent, self);
@@ -425,6 +424,8 @@ GstreamerPlayer :: open(const std::string   fileUrl)
         // the audio device (as it might be blocked by an other process
         throw std::runtime_error("can't open audio device " + m_audioDevice);
     }
+
+    m_eos = false;
 }
 
 
@@ -469,8 +470,6 @@ GstreamerPlayer :: getPlaylength(void)              throw (std::logic_error)
 Ptr<time_duration>::Ref
 GstreamerPlayer :: getPosition(void)                throw (std::logic_error)
 {
-    g_main_context_iteration(g_main_context_default(), false);
-
     Ptr<time_duration>::Ref   length;
     gint64                    ns = 0;
 
@@ -531,8 +530,12 @@ GstreamerPlayer :: pause(void)                      throw (std::logic_error)
 bool
 GstreamerPlayer :: isPlaying(void)                  throw ()
 {
-    g_main_context_iteration(g_main_context_default(), false);
-
+    if ( m_eos) {
+        m_eos = false;
+        gst_element_set_state(m_pipeline, GST_STATE_READY);
+        return false;
+    }
+        
     GstState state;
     GstState pending;
 

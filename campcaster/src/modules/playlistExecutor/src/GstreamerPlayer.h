@@ -177,6 +177,11 @@ class GstreamerPlayer : virtual public Configurable,
         gboolean                m_stopPreloader;
 
         /**
+         *  Flag that indicates that the pipeline has reached End-Of-Stream.  
+         */
+        gboolean                m_eos;
+
+        /**
          *  The type for the vector of listeners.
          *  Just a shorthand notation, to make reference to the type
          *  easier.
