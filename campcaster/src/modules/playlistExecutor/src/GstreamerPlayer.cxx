@@ -499,8 +499,6 @@ GstreamerPlayer :: pause(void)                      throw (std::logic_error)
 bool
 GstreamerPlayer :: isPlaying(void)                  throw ()
 {
-    DEBUG_BLOCK
-
     GstState state;
     GstState pending;
 
