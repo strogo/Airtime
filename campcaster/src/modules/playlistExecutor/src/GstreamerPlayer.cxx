@@ -580,7 +580,7 @@ GstreamerPlayer :: close(void)                       throw (std::logic_error)
         stop();
     }
 
-    gst_element_set_state(m_pipeline, GST_STATE_READY);
+    gst_element_set_state(m_pipeline, GST_STATE_NULL);
 
     // Unlink elements:
     if (m_filesrc && m_decoder) {
