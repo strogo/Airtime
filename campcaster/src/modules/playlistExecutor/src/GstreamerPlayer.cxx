@@ -225,11 +225,13 @@ GstreamerPlayer :: eventHandler(GstPad*, GstEvent* event, gpointer self) throw()
     switch ( static_cast<int>(event->type) )
     {
     case GST_EVENT_EOS:
-        debug() << "EOS reached\n";
-        player->m_eos = true;
-        // Important: We *must* use an idle function call here, so that the signal handler returns
-        // before fireOnStopEvent() is executed.
-        g_idle_add(fireOnStopEvent, self);
+        if (player->isOpen() && player->isPlaying()) {
+            debug() << "EOS reached\n";
+            player->m_eos = true;
+            // Important: We *must* use an idle function call here, so that the signal handler returns
+            // before fireOnStopEvent() is executed.
+            g_idle_add(fireOnStopEvent, self);
+        }
         break;
 
     default:
