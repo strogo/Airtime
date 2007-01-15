@@ -580,7 +580,7 @@ GstreamerPlayer :: close(void)                       throw (std::logic_error)
         stop();
     }
 
-    gst_element_set_state(m_pipeline, GST_STATE_NULL);
+    gst_element_set_state(m_pipeline, GST_STATE_READY);
 
     // Unlink elements:
     if (m_filesrc && m_decoder) {
@@ -609,10 +609,10 @@ GstreamerPlayer :: close(void)                       throw (std::logic_error)
     if (m_filesrc) {
         gst_bin_remove(GST_BIN(m_pipeline), m_filesrc);
     }
-    if (m_audiosink && gst_element_get_parent(m_audiosink) == GST_OBJECT(m_pipeline)) {
-        gst_object_ref(GST_OBJECT(m_audiosink));
-        gst_bin_remove(GST_BIN(m_pipeline), m_audiosink);
-    }
+    //if (m_audiosink && gst_element_get_parent(m_audiosink) == GST_OBJECT(m_pipeline)) {
+    //    gst_object_ref(GST_OBJECT(m_audiosink));
+    //    gst_bin_remove(GST_BIN(m_pipeline), m_audiosink);
+    //}
 
     m_filesrc         = 0;
     m_decoder         = 0;
