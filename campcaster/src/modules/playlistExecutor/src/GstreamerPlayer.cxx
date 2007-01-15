@@ -445,6 +445,8 @@ GstreamerPlayer :: isOpen(void)                                 throw ()
 Ptr<time_duration>::Ref
 GstreamerPlayer :: getPlaylength(void)              throw (std::logic_error)
 {
+    DEBUG_BLOCK
+
     Ptr<time_duration>::Ref   length;
     gint64                    ns;
     GstFormat                 format = GST_FORMAT_TIME;
@@ -453,13 +455,14 @@ GstreamerPlayer :: getPlaylength(void)              throw (std::logic_error)
         throw std::logic_error("player not open");
     }
 
-    if (m_decoder && gst_element_query_duration(m_decoder, &format, &ns) && format == GST_FORMAT_TIME) {
+    if (m_decoder && gst_element_query_duration(m_pipeline, &format, &ns) && format == GST_FORMAT_TIME) {
         // use microsec, as nanosec() is not found by the compiler (?)
         length.reset(new time_duration(microsec(ns / 1000LL)));
     } else {
         length.reset(new time_duration(microsec(0LL)));
     }
 
+    debug() << length << endl;
     return length;
 }
 
@@ -478,7 +481,7 @@ GstreamerPlayer :: getPosition(void)                throw (std::logic_error)
     }
     
     GstFormat fmt = GST_FORMAT_TIME;
-    gst_element_query_position(m_audiosink, &fmt, &ns);
+    gst_element_query_position(m_pipeline, &fmt, &ns);
     
     length.reset(new time_duration(microseconds(ns / 1000LL)));
 
