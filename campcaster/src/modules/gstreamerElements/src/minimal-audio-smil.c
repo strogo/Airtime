@@ -40,8 +40,6 @@
 #endif
 
 
-#include <gst/bytestream/bytestream.h>
-
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 
