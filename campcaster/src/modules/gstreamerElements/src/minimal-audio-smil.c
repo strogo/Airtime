@@ -516,7 +516,7 @@ element_eos_signal_handler(GstElement     * element,
     /* set the element into eos state */
 
     GST_INFO("setting element %p to eos", elem);
-    gst_element_set_eos(elem);
+    gst_element_set_state(elem, GST_STATE_READY);  //TODO Check if this is correct
 }
 
 
