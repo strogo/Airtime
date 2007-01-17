@@ -318,11 +318,12 @@ read_stream_into_memory(LivesupportMinimalAudioSmil    * smil,
     guint32                 length;
     guint8                * buffer;
     GstState                oldState;
+    GstState                pendingState;
 
     *outbuffer = 0;
     *outlength = 0;
 
-    oldState = gst_element_get_state(smil->oneshotReader);
+    gst_element_get_state(smil->oneshotReader, &oldState, &pendingState, 10000000);
     if (oldState != GST_STATE_PLAYING) {
         gst_element_set_state(smil->oneshotReader, GST_STATE_PLAYING);
     }
