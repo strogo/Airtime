@@ -807,15 +807,15 @@ livesupport_minimal_audio_smil_change_state(GstElement * element, GstStateChange
     smil = LIVESUPPORT_MINIMAL_AUDIO_SMIL(element);
 
     switch (transition) {
-        case GST_STATE_NULL_TO_READY:
+        case GST_STATE_CHANGE_NULL_TO_READY:
             gst_element_set_state(GST_ELEMENT(smil->bin), GST_STATE_READY);
             break;
 
-        case GST_STATE_READY_TO_PAUSED:
+        case GST_STATE_CHANGE_READY_TO_PAUSED:
             gst_element_set_state(GST_ELEMENT(smil->bin), GST_STATE_PAUSED);
             break;
 
-        case GST_STATE_PAUSED_TO_PLAYING:
+        case GST_STATE_CHANGE_PAUSED_TO_PLAYING:
             gst_element_set_state(GST_ELEMENT(smil->bin), GST_STATE_PLAYING);
 
             if (!process_smil_file(smil)) {
@@ -828,15 +828,15 @@ livesupport_minimal_audio_smil_change_state(GstElement * element, GstStateChange
 
             break;
 
-        case GST_STATE_PLAYING_TO_PAUSED:
+        case GST_STATE_CHANGE_PLAYING_TO_PAUSED:
             gst_element_set_state(GST_ELEMENT(smil->bin), GST_STATE_PAUSED);
             break;
             
-        case GST_STATE_PAUSED_TO_READY:
+        case GST_STATE_CHANGE_PAUSED_TO_READY:
             gst_element_set_state(GST_ELEMENT(smil->bin), GST_STATE_READY);
             break;
             
-        case GST_STATE_READY_TO_NULL:
+        case GST_STATE_CHANGE_READY_TO_NULL:
             gst_element_set_state(GST_ELEMENT(smil->bin), GST_STATE_NULL);
             break;
 
@@ -848,7 +848,7 @@ livesupport_minimal_audio_smil_change_state(GstElement * element, GstStateChange
         return GST_ELEMENT_CLASS(parent_class)->change_state(element);
     }
 
-    return GST_STATE_SUCCESS;
+    return GST_STATE_CHANGE_SUCCESS;
 }
 
 
