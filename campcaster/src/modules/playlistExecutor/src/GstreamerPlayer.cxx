@@ -441,6 +441,7 @@ GstreamerPlayer :: isOpen(void)                                 throw ()
 
 /*------------------------------------------------------------------------------
  *  Get the length of the current audio clip.
+ *  Currently not used by the Studio, but may be used later on.
  *----------------------------------------------------------------------------*/
 Ptr<time_duration>::Ref
 GstreamerPlayer :: getPlaylength(void)              throw (std::logic_error)
