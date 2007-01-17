@@ -357,10 +357,10 @@ GstreamerPlayer :: open(const std::string   fileUrl)
     const bool isSmil = fileUrl.substr(fileUrl.size()-5, fileUrl.size()) == ".smil" ? true : false;
     const bool isPreloaded = (m_preloadUrl == fileUrl);
 
-    if (isSmil) {
-        throw std::runtime_error("SMIL is not yet supported.");
-        return;
-    }
+//    if (isSmil) {
+//        throw std::runtime_error("SMIL is not yet supported.");
+//        return;
+//    }
 
     if (isPreloaded)
         m_filesrc = m_preloadFilesrc;
