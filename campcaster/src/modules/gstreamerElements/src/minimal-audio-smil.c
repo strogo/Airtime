@@ -245,8 +245,8 @@ process_smil_file(LivesupportMinimalAudioSmil * smil);
  *  @param element a MinimalAudioSmil object.
  *  @return the success or failure status of the state change.
  */
-static GstElementStateReturn
-livesupport_minimal_audio_smil_change_state(GstElement * element);
+static GstStateChangeReturn
+livesupport_minimal_audio_smil_change_state(GstElement * element, GstStateChange transition);
 
 /**
  *  Destroy a MinimalAudioSmil object.
@@ -799,11 +799,10 @@ process_smil_file(LivesupportMinimalAudioSmil * smil)
 /*------------------------------------------------------------------------------
  *  Handle state change for the MinimalAudioSmil element.
  *----------------------------------------------------------------------------*/
-static GstElementStateReturn
-livesupport_minimal_audio_smil_change_state(GstElement * element)
+static GstStateChangeReturn
+livesupport_minimal_audio_smil_change_state(GstElement * element, GstStateChange transition)
 {
     LivesupportMinimalAudioSmil   * smil;
-    GstElementState                 transition = (GstElementState)GST_STATE_TRANSITION(element);
 
     smil = LIVESUPPORT_MINIMAL_AUDIO_SMIL(element);
 
