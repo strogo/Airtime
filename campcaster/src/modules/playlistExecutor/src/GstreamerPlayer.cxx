@@ -303,6 +303,7 @@ GstreamerPlayer :: preload(const std::string   fileUrl)
 {
     DEBUG_BLOCK
 
+#if 0
     if (m_preloadThread) {
         m_preloadThread->stop();
         m_preloadThread->join();
@@ -314,6 +315,7 @@ GstreamerPlayer :: preload(const std::string   fileUrl)
 
     m_preloadThread.reset(new Thread(loader));
     m_preloadThread->start();
+#endif
 }
 
 
