@@ -317,7 +317,7 @@ read_stream_into_memory(LivesupportMinimalAudioSmil    * smil,
 {
     guint32                 length;
     guint8                * buffer;
-    GstElementState         oldState;
+    GstState                oldState;
 
     *outbuffer = 0;
     *outlength = 0;
