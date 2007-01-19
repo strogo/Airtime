@@ -792,7 +792,7 @@ process_smil_file(LivesupportMinimalAudioSmil * smil)
     /* free the XML document */
     xmlFreeDoc(document);
 
-    gst_bin_sync_children_state(GST_BIN(smil->bin));
+    //gst_bin_sync_children_state(GST_BIN(smil->bin));
 
     return TRUE;
 }
@@ -863,7 +863,7 @@ livesupport_minimal_audio_smil_dispose(GObject * object)
     LivesupportMinimalAudioSmil * smil = LIVESUPPORT_MINIMAL_AUDIO_SMIL(object);
 
     g_return_if_fail(LIVESUPPORT_IS_MINIMAL_AUDIO_SMIL(smil));
-    gst_caps_free(smil->caps);
+    gst_caps_unref(smil->caps);
     xmlCleanupParser();
     G_OBJECT_CLASS(parent_class)->dispose(object);
 }
@@ -1022,6 +1022,8 @@ livesupport_minimal_audio_smil_get_type(void)
 static gboolean
 plugin_init (GstPlugin * plugin)
 {
+    printf("REGISTERING.");
+
     return gst_element_register(plugin,
                                 "minimalaudiosmil",
                                 GST_RANK_SECONDARY,
