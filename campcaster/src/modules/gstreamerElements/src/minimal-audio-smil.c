@@ -719,9 +719,7 @@ handle_par_element(LivesupportMinimalAudioSmil    * smil,
     }
 
     gst_bin_add(GST_BIN(pipeline), adder);
-    gst_element_add_ghost_pad(GST_ELEMENT(pipeline),
-                              gst_element_get_pad(adder, "src"),
-                              "src");
+    gst_element_add_pad(GST_ELEMENT(pipeline), gst_element_get_pad(adder, "src"));
 
     return pipeline;
 }
@@ -910,20 +908,17 @@ livesupport_minimal_audio_smil_init(LivesupportMinimalAudioSmil * smil)
     gst_bin_add(smil->bin, smil->finalAdder);
     /* create and attach an adder to the src pad, so that the bin
      * actually has a src pad, that we can attach to ourselves below */
-    gst_element_add_ghost_pad(GST_ELEMENT(smil->bin),
-                              gst_element_get_pad(smil->finalAdder, "src"),
-                              "src");
+    gst_element_add_pad(GST_ELEMENT(smil->bin),
+                        gst_element_get_pad(smil->finalAdder, "src"));
 
     gst_bin_add(GST_BIN(smil), GST_ELEMENT(smil->bin));
-    smil->srcpad = gst_element_add_ghost_pad(GST_ELEMENT(smil),
-                            gst_element_get_pad(GST_ELEMENT(smil->bin), "src"),
-                            "src");
+    smil->srcpad = gst_element_add_pad(GST_ELEMENT(smil),
+                            gst_element_get_pad(GST_ELEMENT(smil->bin), "src"));
+
     smil->oneshotReader = gst_element_factory_make("oneshotreader", "oneshot");
     oneshotReaderSink = gst_element_get_pad(smil->oneshotReader, "sink");
     gst_bin_add(GST_BIN(smil), smil->oneshotReader);
-    smil->sinkpad = gst_element_add_ghost_pad(GST_ELEMENT(smil),
-                                              oneshotReaderSink,
-                                              "sink");
+    smil->sinkpad = gst_element_add_pad(GST_ELEMENT(smil), oneshotReaderSink);
 
     smil->fileProcessed = FALSE;
 }
