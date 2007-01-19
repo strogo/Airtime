@@ -687,12 +687,12 @@ handle_par_element(LivesupportMinimalAudioSmil    * smil,
 
     g_value_init(&gvalue, G_TYPE_BOOLEAN);
     g_value_set_boolean(&gvalue, TRUE);
-    gst_element_set_property(adder, "eos", &gvalue);
+    g_object_set(adder, "eos", &gvalue, NULL);
     g_value_unset(&gvalue);
 
     g_value_init(&gvalue, G_TYPE_POINTER);
     g_value_set_pointer(&gvalue, smil->caps);
-    gst_element_set_property(adder, "caps", &gvalue);
+    g_object_set(adder, "caps", &gvalue, NULL);
     g_value_unset(&gvalue);
 
 
