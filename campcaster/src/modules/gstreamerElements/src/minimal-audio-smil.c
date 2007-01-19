@@ -112,6 +112,10 @@ static GstStaticPadTemplate src_factory = GST_STATIC_PAD_TEMPLATE (
  */
 GST_DEBUG_CATEGORY_STATIC(minimal_audio_smil_debug);
 
+
+// FIXME Figure out why PACKAGE is undefined
+#define PACKAGE "foo"
+
 /**
  *  The plugin definition.
  */
