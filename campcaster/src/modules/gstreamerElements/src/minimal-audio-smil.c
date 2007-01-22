@@ -958,8 +958,8 @@ livesupport_minimal_audio_smil_class_init(
     gstelement_class = (GstElementClass *) klass;
     parent_class     = (GstBinClass*)g_type_class_ref(GST_TYPE_BIN);
 
-    g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_ABORT, g_param_spec_pointer
-                                    ("abort", "abort", "abort", (GParamFlags)G_PARAM_WRITABLE));
+    //g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_ABORT, g_param_spec_pointer
+    //                                ("abort", "abort", "abort", (GParamFlags)G_PARAM_WRITABLE));
 
     // Make sure that the abort pointer is always initialized
     klass->abort_initial = FALSE;
