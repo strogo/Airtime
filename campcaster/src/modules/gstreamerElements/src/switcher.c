@@ -42,7 +42,6 @@
 
 #include <gst/gst.h>
 
-#include "LiveSupport/GstreamerElements/autoplug.h"
 #include "smil-util.h"
 #include "switcher.h"
 
@@ -840,15 +839,10 @@ livesupport_switcher_chain(GstPad     * pad,
                 GstState        state;
                 gboolean        ret;
 
-                if (g_strrstr(gst_element_get_name(el), "decoder")) {
-                    position = ls_gst_autoplug_get_position(el);
-                    ret      = 1;
-                } else {
-                    ret = gst_element_query_position(el, &format, &position);
-                    if (!ret) {
-                        format = GST_FORMAT_BYTES;
-                        ret = gst_element_query_position(el, &format,&position);
-                    }
+                ret = gst_element_query_position(el, &format, &position);
+                if (!ret) {
+                    format = GST_FORMAT_BYTES;
+                    ret = gst_element_query_position(el, &format,&position);
                 }
 
                 gst_element_get_state(el, &state, 0, 0);
