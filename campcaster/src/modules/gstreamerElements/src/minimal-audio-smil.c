@@ -873,7 +873,7 @@ livesupport_minimal_audio_smil_dispose(GObject * object)
 static void
 livesupport_minimal_audio_smil_init(LivesupportMinimalAudioSmil * smil)
 {
-    printf("INIT().\n");
+    printf("INIT() BEGIN.\n");
 
     smil->myclass = (LivesupportMinimalAudioSmilClass*) G_OBJECT_GET_CLASS(smil);
 
@@ -926,6 +926,8 @@ livesupport_minimal_audio_smil_init(LivesupportMinimalAudioSmil * smil)
     smil->sinkpad = gst_element_add_pad(GST_ELEMENT(smil), oneshotReaderSink);
 
     smil->fileProcessed = FALSE;
+
+    printf("INIT() END.\n");
 }
 
 
