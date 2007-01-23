@@ -909,12 +909,12 @@ livesupport_minimal_audio_smil_init(LivesupportMinimalAudioSmil * smil)
     /* create and attach an adder to the src pad, so that the bin
      * actually has a src pad, that we can attach to ourselves below */
 
-    printf("Getting pad from adder.");
+    printf("Getting pad from adder.\n");
 
     gst_element_add_pad(GST_ELEMENT(smil->bin),
                         gst_element_get_pad(smil->finalAdder, "src"));
 
-    printf("Getting pad from bin.");
+    printf("Getting pad from bin.\n");
 
     gst_bin_add(GST_BIN(smil), GST_ELEMENT(smil->bin));
     smil->srcpad = gst_element_add_pad(GST_ELEMENT(smil),
