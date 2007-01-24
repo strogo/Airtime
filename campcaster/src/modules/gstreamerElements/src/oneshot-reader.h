@@ -26,3 +26,101 @@
     Location : $URL$
 
 ------------------------------------------------------------------------------*/
+#ifndef LivesSupport_GstreamerElements_OneShotReader_h
+#define LivesSupport_GstreamerElements_OneShotReader_h
+
+/**
+ *  @file
+ *  A gstreamer element that reads all input from it's sink pad, and
+ *  returns it in one byte array.
+ *
+ *  @author $Author$
+ *  @version $Revision$
+ */
+
+
+/* ============================================================ include files */
+
+#include <gst/gst.h>
+
+
+/* ================================================================ constants */
+
+
+/* =================================================================== macros */
+
+G_BEGIN_DECLS
+
+#define LIVESUPPORT_TYPE_ONE_SHOT_READER            \
+    (livesupport_one_shot_reader_get_type())
+
+#define LIVESUPPORT_ONE_SHOT_READER(obj)    \
+    (G_TYPE_CHECK_INSTANCE_CAST((obj),      \
+     LIVESUPPORT_TYPE_ONE_SHOT_READER,      \
+     LivesupportOneShotReader))
+
+#define LIVESUPPORT_ONE_SHOT_READER_CLASS(klass)    \
+    (G_TYPE_CHECK_CLASS_CAST((klass),               \
+     LIVESUPPORT_TYPE_ONE_SHOT_READER,              \
+     LivesupportOneShotReader))
+
+#define GST_IS_ONE_SHOT_READER(obj)             \
+    (G_TYPE_CHECK_INSTANCE_TYPE((obj), LIVESUPPORT_TYPE_ONE_SHOT_READER))
+
+#define GST_IS_ONE_SHOT_READER_CLASS(obj) \
+    (G_TYPE_CHECK_CLASS_TYPE((klass), LIVESUPPORT_TYPE_ONE_SHOT_READER))
+
+
+/* =============================================================== data types */
+
+typedef struct _LivesupportOneShotReader LivesupportOneShotReader;
+typedef struct _LivesupportOneShotReaderClass LivesupportOneShotReaderClass;
+
+/**
+ *  The OneShotReader structure.
+ */
+struct _LivesupportOneShotReader {
+    GstElement      parent;
+
+    GstPad        * sinkpad;
+
+    GstByteStream * bytestream;
+    gboolean        processed;
+    guint8        * contents;
+    guint32         length;
+};
+
+/**
+ *  The class of the OneShotReader.
+ */
+struct _LivesupportOneShotReaderClass {
+    GstElementClass parent_class;
+};
+
+
+/* ================================================= external data structures */
+
+
+/* ====================================================== function prototypes */
+
+/**
+ *  The plugin initialization function.
+ *
+ *  @param plugin the plugin itself.
+ *  @return TRUE if initialization was successful, FALSE otherwise.
+ */
+static gboolean
+plugin_init(GstPlugin * plugin);
+
+/**
+ *  Return the appropriate type for the element.
+ *
+ *  @return the type structure of the element.
+ */
+GType
+livesupport_one_shot_reader_get_type(void);
+
+
+G_END_DECLS
+
+#endif /* LivesSupport_GstreamerElements_OneShotReader_h */
