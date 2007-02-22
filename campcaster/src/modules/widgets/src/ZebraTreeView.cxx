@@ -310,7 +310,7 @@ ZebraTreeView :: lineNumberCellDataFunction(
 
 
 /*------------------------------------------------------------------------------
- *  Add a centered text column to the TreeView.
+ *  Add an editable centered text column to the TreeView.
  *----------------------------------------------------------------------------*/
 int 
 ZebraTreeView :: appendEditableColumn(

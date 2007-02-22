@@ -1,5 +1,10 @@
 <?php
-require(dirname(__FILE__).'/../ui_handler_init.php');
+require_once(dirname(__FILE__).'/../ui_handler_init.php');
+require_once("../Input.php");
+
+if (get_magic_quotes_gpc()) {
+    $_REQUEST = Input::CleanMagicQuotes($_REQUEST);
+}
 
 switch ($_REQUEST['act']) {
     case "login":
@@ -25,7 +30,7 @@ switch ($_REQUEST['act']) {
 	    $uiHandler->logout(TRUE);
 	    break;
 
-    ## file/webstream handling
+    // file/webstream handling
     case "addFileData":
 	    if (($ui_tmpid = $uiHandler->uploadFile(array_merge($_REQUEST, $_FILES), $ui_fmask["file"])) !== FALSE) {
 	    	$uiHandler->SCRATCHPAD->addItem($ui_tmpid);
@@ -260,9 +265,11 @@ switch ($_REQUEST['act']) {
 	    break;
 
     case "PL.addItem":
-	    if ($uiHandler->PLAYLIST->addItem($_REQUEST['id'], $_REQUEST['playlength']) !== FALSE) {
-	    	$uiHandler->SCRATCHPAD->addItem($_REQUEST['id']);
-	    }
+        if (isset($_REQUEST['id'])) {
+    	    if ($uiHandler->PLAYLIST->addItem($_REQUEST['id'], $_REQUEST['playlength']) !== FALSE) {
+    	    	$uiHandler->SCRATCHPAD->addItem($_REQUEST['id']);
+    	    }
+        }
 	    $uiHandler->PLAYLIST->setReload();
 	    break;
 

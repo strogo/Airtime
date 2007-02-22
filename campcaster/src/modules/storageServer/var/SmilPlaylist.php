@@ -75,7 +75,7 @@ class SmilPlaylist {
         if (PEAR::isError($r)) {
         	return $r;
         }
-        $r = $pl->replaceMetaData($lspl, 'string', 'playlist');
+        $r = $pl->setMetadata($lspl, 'string', 'playlist');
         if (PEAR::isError($r)) {
         	return $r;
         }
@@ -262,11 +262,11 @@ class SmilPlaylistAudioElement {
                     }
                    //break;
                 default:
-                    $ac = StoredFile::recallByGunid($gb, $gunid);
-                    if (PEAR::isError($ac)) {
+                    $ac = StoredFile::RecallByGunid($gunid);
+                    if (is_null($ac) || PEAR::isError($ac)) {
                     	return $ac;
                     }
-                    $r = $ac->md->getMetadataEl('dcterms:extent');
+                    $r = $ac->md->getMetadataElement('dcterms:extent');
                     if (PEAR::isError($r)) {
                     	return $r;
                     }

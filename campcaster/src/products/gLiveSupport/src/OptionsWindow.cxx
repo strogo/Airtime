@@ -102,6 +102,7 @@ OptionsWindow :: OptionsWindow (Ptr<GLiveSupport>::Ref    gLiveSupport,
     if (canBackup) {
                     backupSectionBox        = constructBackupSection();
     }
+    Gtk::Box *      rdsSectionBox           = constructRdsSection();
     Gtk::Box *      aboutSectionBox         = constructAboutSection();
 
     try {
@@ -117,6 +118,8 @@ OptionsWindow :: OptionsWindow (Ptr<GLiveSupport>::Ref    gLiveSupport,
             mainNotebook->appendPage(*backupSectionBox,
                             *getResourceUstring("backupSectionLabel"));
         }
+        mainNotebook->appendPage(*rdsSectionBox,
+                            *getResourceUstring("rdsSectionLabel"));
         mainNotebook->appendPage(*aboutSectionBox,
                             *getResourceUstring("aboutSectionLabel"));
 
@@ -180,6 +183,7 @@ OptionsWindow :: onCancelButtonClicked(void)                        throw ()
 {
     resetEntries();
     resetKeyBindings();
+    resetRds();
     onCloseButtonClicked(false);
 }
 
@@ -192,6 +196,7 @@ OptionsWindow :: onApplyButtonClicked(void)                         throw ()
 {
     bool changed = saveChangesInStringEntryFields();
     saveChangesInKeyBindings();                     // no need to restart
+    saveChangesInRds();                             // no need to restart
 
     if (changed) {
         try {
@@ -308,6 +313,16 @@ OptionsWindow :: saveChangesInKeyBindings(void)                     throw ()
             }
         }
     }
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Save the changes in the RDS settings.
+ *----------------------------------------------------------------------------*/
+void
+OptionsWindow :: saveChangesInRds(void)                             throw ()
+{
+    rdsView->saveChanges();
 }
 
 
@@ -800,6 +815,27 @@ OptionsWindow :: constructBackupSection(void)                       throw ()
 
 
 /*------------------------------------------------------------------------------
+ *  Construct the "RDS" section.
+ *----------------------------------------------------------------------------*/
+Gtk::VBox*
+OptionsWindow :: constructRdsSection(void)                          throw ()
+{
+    Ptr<ResourceBundle>::Ref    rdsBundle;
+    try {
+        rdsBundle = gLiveSupport->getBundle("rdsView");
+        
+    } catch (std::invalid_argument &e) {
+        // TODO: signal error
+        std::cerr << e.what() << std::endl;
+        std::exit(1);
+    }
+    
+    rdsView = Gtk::manage(new RdsView(gLiveSupport, rdsBundle));
+    return rdsView;
+}
+
+
+/*------------------------------------------------------------------------------
  *  Construct the "About" section.
  *----------------------------------------------------------------------------*/
 Gtk::VBox*
@@ -807,17 +843,16 @@ OptionsWindow :: constructAboutSection(void)                        throw ()
 {
     Glib::ustring   aboutLabelContents;
 
+    aboutLabelContents.append("\n");
     aboutLabelContents.append(PACKAGE_NAME);
     aboutLabelContents.append(" ");
     aboutLabelContents.append(PACKAGE_VERSION);
     try {
-        aboutLabelContents.append(" (");
-        aboutLabelContents.append(*getResourceUstring("webSiteUrlText"));
-        aboutLabelContents.append(")\n\n");
+        aboutLabelContents.append("\n\n");
         aboutLabelContents.append(*formatMessage("reportBugsToText",
                                                  PACKAGE_BUGREPORT ));
         aboutLabelContents.append("\n\n");
-        aboutLabelContents.append(*getResourceUstring("creditsText"));
+        aboutLabelContents.append(*getBinaryResourceAsUstring("creditsText"));
     
     } catch (std::invalid_argument &e) {
         // TODO: signal error
@@ -869,6 +904,16 @@ OptionsWindow :: resetKeyBindings(void)                             throw ()
     keyBindingsModel->clear();
     fillKeyBindingsModel();
     keyBindingsView->expand_all();
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Reset the RDS settings to their saved state.
+ *----------------------------------------------------------------------------*/
+void
+OptionsWindow :: resetRds(void)                                     throw ()
+{
+    rdsView->reset();
 }
 
 

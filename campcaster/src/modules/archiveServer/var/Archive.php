@@ -89,12 +89,18 @@ class Archive extends XR_LocStor {
                 if (PEAR::isError($parid)) {
                 	return $parid;
                 }
-                $res = $this->bsPutFile($parid, $pars['name'],
-                    $fname, $mdfname,
-                    $pars['gunid'], 'audioclip', 'file');
-                if (PEAR::isError($res)) {
-                	return $res;
+                $values = array(
+                    "filename" => $pars['name'],
+                    "filepath" => $fname,
+                    "metadata" => $mdfname,
+                    "gunid" => $pars['gunid'],
+                    "filetype" => "audioclip"
+                );
+                $storedFile = $this->bsPutFile($parid, $values);
+                if (PEAR::isError($storedFile)) {
+                	return $storedFile;
                 }
+                $res = $storedFile->getId();
                 @unlink($fname);
                 @unlink($mdfname);
                 break;
@@ -106,12 +112,17 @@ class Archive extends XR_LocStor {
                 if (PEAR::isError($parid)) {
                 	return $parid;
                 }
-                $res = $this->bsPutFile($parid, $pars['name'],
-                    '', $fname,
-                    $pars['gunid'], 'playlist', 'file');
-                if (PEAR::isError($res)) {
-                	return $res;
+                $values = array(
+                    "filename" => $pars['name'],
+                    "metadata" => $fname,
+                    "gunid" => $pars['gunid'],
+                    "filetype" => "playlist"
+                );
+                $storedFile = $this->bsPutFile($parid, $values);
+                if (PEAR::isError($storedFile)) {
+                	return $storedFile;
                 }
+                $res = $storedFile->getId();
                 @unlink($fname);
                 break;
             case "playlistPkg":
@@ -142,7 +153,7 @@ class Archive extends XR_LocStor {
                 $realfile = tempnam($this->accessDir, 'searchjob_');
                 @chmod($realfile, 0660);
                 $len = file_put_contents($realfile, serialize($results));
-                $acc = $this->bsAccess($realfile, '', NULL, 'download');
+                $acc = BasicStor::bsAccess($realfile, '', NULL, 'download');
                 if (PEAR::isError($acc)) {
                 	return $acc;
                 }
@@ -227,7 +238,7 @@ class Archive extends XR_LocStor {
                 }
                 $fname = "transported_playlist.lspl";
                 $id = BasicStor::IdFromGunid($gunid);
-                $acc = $this->bsAccess($plfpath, 'lspl', NULL, 'download');
+                $acc = BasicStor::bsAccess($plfpath, 'lspl', NULL, 'download');
                 if (PEAR::isError($acc)) {
                 	return $acc;
                 }
@@ -301,7 +312,7 @@ class Archive extends XR_LocStor {
                 $res = $this->releasePlaylist(NULL/*$sessid*/, $token);
                 return $res;
             case "playlistPkg":
-                $res = $this->bsRelease($token, 'download');
+                $res = BasicStor::bsRelease($token, 'download');
                 if (PEAR::isError($res)) {
                 	return $res;
                 }
@@ -316,7 +327,7 @@ class Archive extends XR_LocStor {
                 }
                 return $res;
             case "searchjob":
-                $res = $this->bsRelease($token, 'download');
+                $res = BasicStor::bsRelease($token, 'download');
                 return $res;
             case "file":
                 return array();

@@ -182,6 +182,15 @@ const std::string   authenticationNotReachableKey =
  *----------------------------------------------------------------------------*/
 const std::string   localeNotAvailableKey = "localeNotAvailableMsg";
 
+/*------------------------------------------------------------------------------
+ *  The name of the config element for the serial device
+ *----------------------------------------------------------------------------*/
+const std::string   serialPortConfigElementName = "serialPort";
+
+/*------------------------------------------------------------------------------
+ *  The default serial device
+ *----------------------------------------------------------------------------*/
+const std::string   serialPortDefaultDevice = "/dev/ttyS0";
 }
 
 /* ===============================================  local function prototypes */
@@ -396,6 +405,15 @@ GLiveSupport :: configure(const xmlpp::Element    & element)
     testAudioUrl.reset(new Glib::ustring(
                            testAudioUrlElement->get_attribute("path")
                                               ->get_value() ));
+
+    // read the serial port's file name
+    nodes = element.get_children(serialPortConfigElementName);
+    if (nodes.size() < 1) {
+        Ptr<const Glib::ustring>::Ref   serialDevice(new const Glib::ustring(
+                                                    serialPortDefaultDevice));
+        optionsContainer->setOptionItem(OptionsContainer::serialDeviceName,
+                                        serialDevice);
+    }
 }
 
 
@@ -500,7 +518,7 @@ GLiveSupport :: checkConfiguration(void)                    throw ()
  *----------------------------------------------------------------------------*/
 void
 LiveSupport :: GLiveSupport ::
-GLiveSupport :: displayMessageWindow(Ptr<Glib::ustring>::Ref    message)
+GLiveSupport :: displayMessageWindow(Ptr<const Glib::ustring>::Ref    message)
                                                                     throw ()
 {
     std::cerr << "gLiveSupport: " << *message << std::endl;
@@ -1300,7 +1318,8 @@ GLiveSupport :: stopOutputAudio(void)
  *----------------------------------------------------------------------------*/
 void
 LiveSupport :: GLiveSupport ::
-GLiveSupport :: onStop(void)                                throw ()
+GLiveSupport :: onStop(Ptr<const Glib::ustring>::Ref      errorMessage)
+                                                    throw ()
 {
     outputItemPlayingNow.reset();
     try {
@@ -1314,6 +1333,10 @@ GLiveSupport :: onStop(void)                                throw ()
     } catch (std::logic_error) {
         std::cerr << "logic_error caught in GLiveSupport::onStop()\n";
         std::exit(1);
+    }
+    
+    if (errorMessage) {
+        displayMessageWindow(errorMessage);
     }
 }
 
@@ -1780,4 +1803,88 @@ GLiveSupport :: createScratchpadWindow(void)
         masterPanel->createScratchpadWindow();
     }
 }    
+
+
+/*------------------------------------------------------------------------------
+ *  Write a string to the serial device.
+ *----------------------------------------------------------------------------*/
+void
+LiveSupport :: GLiveSupport ::
+GLiveSupport :: writeToSerial(Ptr<const Glib::ustring>::Ref     message)
+                                                                    throw ()
+{
+    Ptr<const Glib::ustring>::Ref
+        serialDevice = optionsContainer->getOptionItem(
+                                            OptionsContainer::serialDeviceName);
+    try {
+        serialStream->Open(*serialDevice);
+        (*serialStream) << *message;
+        serialStream->flush();
+        serialStream->Close();
+    } catch (...) {
+        // TODO: handle this somehow
+        std::cerr << "IO error in GLiveSupport::writeToSerial()" << std::endl;
+    }
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Replace the placeholders in the RDS settings with the current values.
+ *----------------------------------------------------------------------------*/
+void
+LiveSupport :: GLiveSupport ::
+GLiveSupport :: substituteRdsData(Ptr<Glib::ustring>::Ref   rdsString)
+                                                                    throw ()
+{
+    Ptr<Playable>::Ref  playable = masterPanel->getCurrentInnerPlayable();
+    
+    // these substitutions are documented in the doxygen docs of the
+    // public updateRds() function
+    substituteRdsItem(rdsString, "%c", playable, "dc:creator");
+    substituteRdsItem(rdsString, "%t", playable, "dc:title");
+    substituteRdsItem(rdsString, "%d", playable, "dc:format:extent");
+    substituteRdsItem(rdsString, "%s", playable, "dc:source");
+    substituteRdsItem(rdsString, "%y", playable, "ls:year");
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Replace a single placeholders in the RDS settings.
+ *----------------------------------------------------------------------------*/
+void
+LiveSupport :: GLiveSupport ::
+GLiveSupport :: substituteRdsItem(Ptr<Glib::ustring>::Ref   rdsString,
+                                  const std::string &       placeholder,
+                                  Ptr<Playable>::Ref        playable,
+                                  const std::string &       metadataKey)
+                                                                    throw ()
+{
+    unsigned int    pos;
+    while ((pos = rdsString->find(placeholder)) != std::string::npos) {
+        Ptr<const Glib::ustring>::Ref   value;
+        if (playable) {
+            value = playable->getMetadata(metadataKey);
+        }
+        if (!value) {
+            value.reset(new Glib::ustring(""));
+        }
+        rdsString->replace(pos, placeholder.length(), *value);
+    }
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Read the RDS settings, and send them to the serial port.
+ *----------------------------------------------------------------------------*/
+void
+LiveSupport :: GLiveSupport ::
+GLiveSupport :: updateRds(void)                                     throw ()
+{
+    Ptr<Glib::ustring>::Ref
+                        rdsString = optionsContainer->getCompleteRdsString();
+    if (rdsString) {
+        substituteRdsData(rdsString);
+        writeToSerial(rdsString);
+    }
+}
 

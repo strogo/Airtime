@@ -65,6 +65,14 @@ OptionsContainer :: OptionsContainer(
 {
     optionsDocument.create_root_node_by_import(&optionsElement, true);
                                                         // true == recursive
+
+    xmlpp::Node::NodeList   nodes = optionsElement.get_children(
+                                        RdsContainer::getConfigElementName());
+    if (nodes.size() > 0) {
+        rdsContainer.reset(new RdsContainer());
+        rdsContainer->configure(
+                        *dynamic_cast<const xmlpp::Element*>(nodes.front()));
+    }
 }
 
 
@@ -79,6 +87,10 @@ OptionsContainer :: setOptionItem(OptionItemString                  optionItem,
     bool              isAttribute  = false; // text node or attr node
     xmlpp::Node *     targetNode = selectNode(optionItem, isAttribute);
 
+    if (!targetNode) {
+        targetNode = createNode(optionItem);
+    }
+    
     if (isAttribute) {
         xmlpp::Attribute *  attr = dynamic_cast<xmlpp::Attribute*>(targetNode);
         if (attr != 0) {
@@ -152,6 +164,53 @@ OptionsContainer :: setKeyboardShortcutItem(
 
     } else {
         throw std::invalid_argument("keyboard shortcut not found");
+    }
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Set the value of an RDS string.
+ *----------------------------------------------------------------------------*/
+void
+OptionsContainer :: setRdsOptions(Ptr<const Glib::ustring>::Ref  key,
+                                  Ptr<const Glib::ustring>::Ref  value,
+                                  bool                           enabled)
+                                                                    throw ()
+{
+    if (!rdsContainer) {
+        rdsContainer.reset(new RdsContainer());
+    }
+    
+    rdsContainer->setRdsOptions(key, value, enabled);
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Get the value of an RDS string.
+ *----------------------------------------------------------------------------*/
+Ptr<const Glib::ustring>::Ref
+OptionsContainer :: getRdsValue(Ptr<const Glib::ustring>::Ref  key)
+                                                throw (std::invalid_argument)
+{
+    if (rdsContainer) {
+        return rdsContainer->getRdsValue(key);
+    } else {
+        throw std::invalid_argument("no RDS container found");
+    }
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Get the enabled/disabled state of an RDS option.
+ *----------------------------------------------------------------------------*/
+bool
+OptionsContainer :: getRdsEnabled(Ptr<const Glib::ustring>::Ref  key)
+                                                throw (std::invalid_argument)
+{
+    if (rdsContainer) {
+        return rdsContainer->getRdsEnabled(key);
+    } else {
+        throw std::invalid_argument("no RDS container found");
     }
 }
 
@@ -232,6 +291,11 @@ OptionsContainer :: selectNode(OptionItemString     optionItem,
                                   "schedulerDaemonXmlRpcClient/@xmlRpcUri");
             isAttribute = true;
             break;
+        
+        case serialDeviceName :
+            targetNode  = getNode("serialPort/@path");
+            isAttribute = true;
+            break;
     }
     
     return targetNode;
@@ -283,12 +347,53 @@ OptionsContainer :: getNode(const Glib::ustring &   xPath)
 
 
 /*------------------------------------------------------------------------------
+ *  Create the node corresponding to an OptionItemString value.
+ *----------------------------------------------------------------------------*/
+xmlpp::Node *
+OptionsContainer :: createNode(OptionItemString     optionItem)     throw ()
+{
+    xmlpp::Element *    rootNode = optionsDocument.get_root_node();
+    xmlpp::Element *    element = 0;
+    xmlpp::Attribute *  attribute = 0;
+    
+    // only supports the serialDeviceName option item, for now
+    switch (optionItem) {
+        case serialDeviceName :
+            element = dynamic_cast<xmlpp::Element*>(
+                                                getNode("serialPort"));
+            if (!element) {
+                element = rootNode->add_child("serialPort");
+            }
+            attribute = dynamic_cast<xmlpp::Attribute*>(
+                                                getNode("serialPort/@path"));
+            if (!attribute) {
+                attribute = element->set_attribute("path", "");
+            }
+            return attribute;
+        
+        default:
+            return 0;
+    }
+}
+
+
+/*------------------------------------------------------------------------------
  *  Save the options to a file.
  *----------------------------------------------------------------------------*/
 void
 OptionsContainer :: writeToFile(void)                               throw ()
 {
     if (configFileName) {
+        if (rdsContainer && rdsContainer->isTouched()) {
+            xmlpp::Element *        rootNode = optionsDocument.get_root_node();
+            xmlpp::Node::NodeList   nodes    = rootNode->get_children(
+                                        RdsContainer::getConfigElementName());
+            if (nodes.size() > 0) {
+                rootNode->remove_child(nodes.front());
+            }
+            rootNode->import_node(rdsContainer->toXmlElement(), true);
+        }
+
         std::ofstream   file(configFileName->c_str());
         if (file.good()) {
             optionsDocument.write_to_stream_formatted(file, "utf-8");

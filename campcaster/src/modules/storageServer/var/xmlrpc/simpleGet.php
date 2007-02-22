@@ -58,7 +58,7 @@ if (preg_match("|^[0-9a-fA-F]{16}$|", $_REQUEST['id'])) {
 }
 
 // stored file recall:
-$ac = StoredFile::recallByGunid($locStor, $gunid);
+$ac = StoredFile::RecallByGunid($gunid);
 if (PEAR::isError($ac)) {
     switch ($ac->getCode()) {
         case GBERR_DENY:
@@ -83,8 +83,8 @@ if (PEAR::isError($ftype)) {
 }
 switch ($ftype) {
     case "audioclip":
-        $realFname  = $ac->_getRealRADFname();
-        $mime = $ac->rmd->getMime();
+        $realFname  = $ac->getRealFileName();
+        $mime = $ac->getMime();
         header("Content-type: $mime");
         header("Content-length: ".filesize($realFname));
         readfile($realFname);

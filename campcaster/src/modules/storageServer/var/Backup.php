@@ -133,25 +133,23 @@ class Backup
         $this->sessid   = $sessid;
         $this->criteria = $criteria;
 
-        # get ids (and real filenames) which files match with criteria
+        // get ids (and real filenames) which files match with criteria
         $srch = $this->gb->localSearch($this->criteria,$this->sessid);
         if (PEAR::isError($srch)) {
         	return $srch;
         }
         $this->setIDs($srch);
-        #echo '<XMP>this->ids:'; print_r($this->ids); echo '</XMP>';
 
-        # get real filenames
+        // get real filenames
         if (is_array($this->ids)) {
             $this->setFilenames();
-            #echo '<XMP>this->filenames:'; print_r($this->filenames); echo '</XMP>';
 
             $this->setEnviroment(true);
 
-            # write a status file
+            // write a status file
             file_put_contents($this->statusFile, 'working');
 
-            # save the metafile to tmpdir
+            // save the metafile to tmpdir
             $hostname = trim(`hostname`);
             $ctime      = time();
             $ctime_f    = date("Ymd-H:i:s");
@@ -165,10 +163,10 @@ class Backup
                 "/><!-- $ctime_f -->\n"
             );
 
-            # copy all file to tmpdir
+            // copy all file to tmpdir
             $this->copyAllFiles();
 
-            # do everything
+            // do everything
             $this->doIt();
 
             return array('token'=>$this->token);
@@ -230,7 +228,7 @@ class Backup
         # post procedures
         $this->token = $token;
         $this->setEnviroment();
-        $this->gb->bsRelease($token,ACCESS_TYPE);
+        BasicStor::bsRelease($token, ACCESS_TYPE);
         Backup::rRmDir($this->tmpDir);
         unlink($this->statusFile);
         unlink($this->tmpFile);
@@ -298,11 +296,11 @@ class Backup
             $this->addLogItem("-I- ".date("Ymd-H:i:s")." setFilenames\n");
         }
         if (is_array($this->ids)) {
-            foreach ($this->ids as $i=>$item) {
+            foreach ($this->ids as $i => $item) {
                 $gunid = $item['gunid'];
                 // get a stored file object of this gunid
-                $sf = StoredFile::recallByGunid($this->gb, $gunid);
-                if (PEAR::isError($sf)) {
+                $sf = StoredFile::RecallByGunid($gunid);
+                if (is_null($sf) || PEAR::isError($sf)) {
                 	return $sf;
                 }
                 $lid = BasicStor::IdFromGunid($gunid);
@@ -310,19 +308,19 @@ class Backup
                     $this->addLogItem("-E- ".date("Ymd-H:i:s")." setFilenames - authorize gunid:$gunid\n");
                     return PEAR::raiseError('Backup::setFilenames : Authorize ... error.');
                 }
-                // if the file is a playlist then it have only meta file
-                if (strtolower($sf->md->format)!='playlist') {
+                // if the file is a playlist then it has only a meta file
+                if (strtolower($sf->md->format) != 'playlist') {
                     $this->filenames[] = array(
-                        'filename'  => $sf->_getRealRADFname(), // get real filename of raw media data
+                        'filename'  => $sf->getRealFileName(),
                         'format'    => $sf->md->format
                     );
                 }
                 $this->filenames[] = array(
-                    'filename'  => $sf->_getRealMDFname(), # get real filename of metadata file
+                    'filename'  => $sf->getRealMetadataFileName(),
                     'format'    => $sf->md->format
                 );
                 if ($this->loglevel=='debug') {
-                    $this->addLogItem("-I- ".date("Ymd-H:i:s")." setFilenames - add file: {$sf->md->format}|".$sf->_getRealMDFname()."\n");
+                    $this->addLogItem("-I- ".date("Ymd-H:i:s")." setFilenames - add file: {$sf->md->format}|".$sf->getRealMetadataFileName()."\n");
                 }
             }
             return $this->filenames;
@@ -342,11 +340,11 @@ class Backup
         if ($this->loglevel=='debug') {
             $this->addLogItem("-I- ".date("Ymd-H:i:s")." doIt\n");
         }
-        $command = dirname(__FILE__).'/../bin/backup.sh'.
-            " {$this->tmpDir}".
-            " {$this->tmpFile}".
-            " {$this->statusFile}".
-            " >> {$this->logFile} &";
+        $command = dirname(__FILe__)."/../bin/backup.sh"
+            ." {$this->tmpDir}"
+            ." {$this->tmpFile}"
+            ." {$this->statusFile}"
+            ." >> {$this->logFile} &";
         $res = system("$command");
         sleep(2);
         if ($this->loglevel=='debug') {
@@ -442,7 +440,7 @@ class Backup
      */
     private function genToken()
     {
-        $acc = $this->gb->bsAccess($this->tmpFile, BACKUP_EXT, null, ACCESS_TYPE);
+        $acc = BasicStor::bsAccess($this->tmpFile, BACKUP_EXT, null, ACCESS_TYPE);
         if (PEAR::isError($acc)) {
         	return $acc;
         }

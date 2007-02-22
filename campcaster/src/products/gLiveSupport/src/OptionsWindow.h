@@ -61,6 +61,7 @@
 #include "GLiveSupport.h"
 #include "MasterPanelUserInfoWidget.h"
 #include "BackupView.h"
+#include "RdsView.h"
 
 namespace LiveSupport {
 namespace GLiveSupport {
@@ -165,6 +166,12 @@ class OptionsWindow : public GuiWindow
         resetKeyBindings(void)                                      throw ();
 
         /**
+         *  Reset the RDS settings to their saved state.
+         */
+        void
+        resetRds(void)                                              throw ();
+
+        /**
          *  Fill the key bindings model from the KeyboardShortcutList.
          */
         void
@@ -200,6 +207,12 @@ class OptionsWindow : public GuiWindow
          */
         void
         saveChangesInKeyBindings(void)                              throw ();
+
+        /**
+         *  Save the changes in the RDS settings.
+         */
+        void
+        saveChangesInRds(void)                                      throw ();
 
         /**
          *  Construct the "Sound" section.
@@ -241,6 +254,14 @@ class OptionsWindow : public GuiWindow
          */
         Gtk::VBox*
         constructBackupSection(void)                                throw ();
+
+        /**
+         *  Construct the "RDS" section.
+         *
+         *  @return a pointer to the new box (already Gtk::manage()'ed)
+         */
+        Gtk::VBox*
+        constructRdsSection(void)                                   throw ();
 
         /**
          *  Construct the "About" section.
@@ -407,6 +428,11 @@ class OptionsWindow : public GuiWindow
          *  The backup view shown in the backup section.
          */
         BackupView *                    backupView;
+
+        /**
+         *  The RdsView shown in the RDS section.
+         */
+        RdsView *                       rdsView;
 
 
     public:

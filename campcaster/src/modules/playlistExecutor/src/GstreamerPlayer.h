@@ -151,6 +151,16 @@ class GstreamerPlayer : virtual public Configurable,
         std::string             m_audioDevice;
 
         /**
+         *  Contains runtime error messages from GStreamer.
+         */
+        Ptr<const Glib::ustring>::Ref       m_errorMessage;
+
+        /**
+         *  Flag that indicates that a GStreamer error had previously occured.
+         */
+        bool                    m_errorWasRaised;
+
+        /**
          *  The URL of the preloaded file. Empty if nothing is preloaded.
          */
         std::string             m_preloadUrl;
@@ -196,9 +206,29 @@ class GstreamerPlayer : virtual public Configurable,
         ListenerVector          m_listeners;
 
 
-       static void
-       eventHandler(GstPad*, GstEvent* event, gpointer arg)   throw();
- 
+        /**
+         *  Handler to recieve errors from gstreamer.
+         *
+         *  @param pipeline the pipeline generating the error
+         *  @param source the source of the error
+         *  @param error the error itself
+         *  @param debug debug info
+         *  @param self pointer to the associated GsreamerPlayer object.
+         */
+        static void
+        errorHandler(GstElement   * pipeline,
+                     GstElement   * source,
+                     GError       * error,
+                     gchar        * debug,
+                     gpointer       self)                           throw ();
+
+
+        /**
+         *  TODO: add documentation here.
+         */
+        static void
+        eventHandler(GstPad*, GstEvent* event, gpointer arg)   throw();
+
         /**
          *  Bus event handler, processes messages from the pipeline bus, 
          *  such as errors and EOS.

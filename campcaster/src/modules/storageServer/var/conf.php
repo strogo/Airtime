@@ -31,7 +31,7 @@
  *  </dl>
  */
 
-define('CAMPCASTER_VERSION', '1.1.1');
+include("campcaster_version.php");
 
 // these are the default values for the config
 global $CC_CONFIG;
@@ -132,6 +132,9 @@ $CC_CONFIG['treeTable'] = $CC_CONFIG['tblNamePrefix'].'tree';
 $CC_CONFIG['structTable'] = $CC_CONFIG['tblNamePrefix'].'struct';
 $CC_CONFIG['transTable'] = $CC_CONFIG['tblNamePrefix'].'trans';
 $CC_CONFIG['prefTable'] = $CC_CONFIG['tblNamePrefix'].'pref';
+$CC_CONFIG['playlogTable'] = 'playlog';
+$CC_CONFIG['scheduleTable'] = 'schedule';
+$CC_CONFIG['backupTable'] = 'backup';
 
 $CC_CONFIG['sysSubjs'] = array(
     'root', $CC_CONFIG['AdminsGr'], $CC_CONFIG['AllGr'], $CC_CONFIG['StationPrefsGr']
@@ -163,15 +166,17 @@ if (!is_null($this_file)) {
     }
 }
 
-// make dirpaths better (without ../)
+// make dirpaths better (without "../")
 foreach (array('storageDir', 'bufferDir', 'transDir', 'accessDir', 'pearPath', 'cronDir') as $d) {
     $rp = realpath($CC_CONFIG[$d]);
     // workaround for missing dirs
-    if ( $rp === FALSE ) {
-        mkdir( $CC_CONFIG[$d] );
-        $rp = realpath($CC_CONFIG[$d]);
+//    if ( $rp === FALSE ) {
+//        mkdir( $CC_CONFIG[$d] );
+//        $rp = realpath($CC_CONFIG[$d]);
+//    }
+    if ($rp) {
+        $CC_CONFIG[$d] = $rp;
     }
-    $CC_CONFIG[$d] = $rp;
 }
 
 ?>

@@ -1,6 +1,5 @@
 <?php
 /**
- * @author Tomas Hlava <th@red2head.com>
  * @author Paul Baranowski <paul@paulbaranowski.org>
  * @version $Revision$
  * @package Campcaster
@@ -29,6 +28,8 @@ echo "*************************\n";
 
 require_once('../conf.php');
 require_once('../GreenBox.php');
+require_once("installInit.php");
+campcaster_db_connect(true);
 require_once('installMain.php');
 require_once('installStorage.php');
 

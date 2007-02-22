@@ -24,23 +24,10 @@ define('ALIBERR_BADSMEMB', 21);
 class Subjects {
 //class Subjects extends ObjClasses {
 
-    /**
-     * Constructor
-     *
-     * @param object $dbc
-     * @param array $config
-     * @return this
-     */
-//    public function __construct(&$dbc, $config)
-//    {
-//        parent::__construct($dbc, $config);
-//    } // constructor
-
-
     /* ======================================================= public methods */
 
     /**
-     * Add new subject
+     * Add new subject (a.k.a. "user")
      *
      * @param string $p_login
      * @param string $p_pass
@@ -62,8 +49,8 @@ class Subjects {
         if (!is_null($p_pass) && !$p_passenc) {
             $p_pass = md5($p_pass);
         }
-        $sql = "INSERT INTO ".$CC_CONFIG['subjTable']." (id, login, pass, type, realname)
-            VALUES ($id, '$p_login', ".
+        $sql = "INSERT INTO ".$CC_CONFIG['subjTable']." (id, login, pass, type, realname)"
+            ." VALUES ($id, '$p_login', ".
                 (is_null($p_pass) ? "'!', 'G'" : "'$p_pass', 'U'").",
                 '$p_realname')";
         $r = $CC_DBC->query($sql);
@@ -71,7 +58,7 @@ class Subjects {
             return $r;
         }
         return $id;
-    } // fn addSubj
+    }
 
 
     /**
@@ -79,7 +66,6 @@ class Subjects {
      *
      * @param string $login
      * @param int $uid
-     * 		optional, default: null
      * @return boolean|PEAR_Error
      */
     public static function RemoveSubj($login, $uid=NULL)
@@ -91,14 +77,14 @@ class Subjects {
         if (PEAR::isError($uid)) {
             return $uid;
         }
-        $sql = "DELETE FROM ".$CC_CONFIG['smembTable']."
-            WHERE (uid='$uid' OR gid='$uid') AND mid is null";
+        $sql = "DELETE FROM ".$CC_CONFIG['smembTable']
+            ." WHERE (uid='$uid' OR gid='$uid') AND mid is null";
         $r = $CC_DBC->query($sql);
         if (PEAR::isError($r)) {
             return $r;
         }
-        $sql2 = "DELETE FROM ".$CC_CONFIG['subjTable']."
-            WHERE login='$login'";
+        $sql2 = "DELETE FROM ".$CC_CONFIG['subjTable']
+            ." WHERE login='$login'";
         $r = $CC_DBC->query($sql2);
         if (PEAR::isError($r)) {
             return $r;
@@ -119,8 +105,8 @@ class Subjects {
     {
         global $CC_CONFIG, $CC_DBC;
         $cpass = md5($pass);
-        $sql = "SELECT id FROM ".$CC_CONFIG['subjTable']."
-            WHERE login='$login' AND pass='$cpass' AND type='U'";
+        $sql = "SELECT id FROM ".$CC_CONFIG['subjTable']
+            ." WHERE login='$login' AND pass='$cpass' AND type='U'";
         $id = $CC_DBC->getOne($sql);
         if (PEAR::isError($id)) {
             return $id;
@@ -141,8 +127,8 @@ class Subjects {
     {
         global $CC_CONFIG, $CC_DBC;
         $fld = ($failed ? 'lastfail' : 'lastlogin');
-        $sql = "UPDATE ".$CC_CONFIG['subjTable']." SET $fld=now()
-            WHERE login='$login'";
+        $sql = "UPDATE ".$CC_CONFIG['subjTable']." SET $fld=now()"
+            ." WHERE login='$login'";
         $r = $CC_DBC->query($sql);
         if (PEAR::isError($r)) {
             return $r;
@@ -177,8 +163,8 @@ class Subjects {
         } else {
             $oldpCond = '';
         }
-        $sql = "UPDATE ".$CC_CONFIG['subjTable']." SET pass='$cpass'
-            WHERE login='$login' $oldpCond AND type='U'";
+        $sql = "UPDATE ".$CC_CONFIG['subjTable']." SET pass='$cpass'"
+            ." WHERE login='$login' $oldpCond AND type='U'";
         $r = $CC_DBC->query($sql);
         if (PEAR::isError($r)) {
             return $r;
@@ -253,8 +239,8 @@ class Subjects {
         if (PEAR::isError($gid)) {
             return $gid;
         }
-        $sql = "SELECT id FROM ".$CC_CONFIG['smembTable']."
-            WHERE uid='$uid' AND gid='$gid' AND mid is null";
+        $sql = "SELECT id FROM ".$CC_CONFIG['smembTable']
+            ." WHERE uid='$uid' AND gid='$gid' AND mid is null";
         $mid = $CC_DBC->getOne($sql);
         if (is_null($mid)) {
             return FALSE;
@@ -288,8 +274,8 @@ class Subjects {
     {
         global $CC_CONFIG;
         global $CC_DBC;
-        $sql = "SELECT id FROM ".$CC_CONFIG['subjTable']."
-            WHERE login='$login'";
+        $sql = "SELECT id FROM ".$CC_CONFIG['subjTable']
+            ." WHERE login='$login'";
         return $CC_DBC->getOne($sql);
     } // fn getSubjId
 
@@ -305,10 +291,31 @@ class Subjects {
     {
         global $CC_CONFIG;
         global $CC_DBC;
-        $sql = "SELECT $fld FROM ".$CC_CONFIG['subjTable']."
-            WHERE id='$id'";
+        $sql = "SELECT $fld FROM ".$CC_CONFIG['subjTable']
+            ." WHERE id='$id'";
         return $CC_DBC->getOne($sql);
     } // fn getSubjName
+
+
+    /**
+     * Get one subject from the table.
+     *
+     * @param string $p_fieldValue
+     * @param string $p_fieldName
+     * @return array
+     */
+    public static function GetSubject($p_fieldValue, $p_fieldName='login')
+    {
+        global $CC_CONFIG, $CC_DBC;
+        if (!in_array($p_fieldName, array("login", "id"))) {
+            return null;
+        }
+        $escapedValue = pg_escape_string($p_fieldValue);
+        $sql = "SELECT * FROM ".$CC_CONFIG['subjTable']
+            ." WHERE $p_fieldName='$escapedValue'";
+        $row = $CC_DBC->GetRow($sql);
+        return $row;
+    }
 
 
     /**
@@ -333,13 +340,12 @@ class Subjects {
     public static function GetSubjectsWCnt()
     {
         global $CC_CONFIG, $CC_DBC;
-        $sql = "
-            SELECT count(m.uid)as cnt, s.id, s.login, s.type
-            FROM ".$CC_CONFIG['subjTable']." s
-            LEFT JOIN ".$CC_CONFIG['smembTable']." m ON m.gid=s.id
-            WHERE m.mid is null
-            GROUP BY s.id, s.login, s.type
-            ORDER BY s.id";
+        $sql = "SELECT count(m.uid)as cnt, s.id, s.login, s.type"
+            ." FROM ".$CC_CONFIG['subjTable']." s"
+            ." LEFT JOIN ".$CC_CONFIG['smembTable']." m ON m.gid=s.id"
+            ." WHERE m.mid is null"
+            ." GROUP BY s.id, s.login, s.type"
+            ." ORDER BY s.id";
         return $CC_DBC->getAll($sql);
     } // fn getSubjectsWCnt
 
@@ -353,8 +359,11 @@ class Subjects {
     public static function IsGroup($gid)
     {
         global $CC_CONFIG, $CC_DBC;
-        $sql = "SELECT type FROM ".$CC_CONFIG['subjTable']."
-            WHERE id='$gid'";
+        if (empty($gid)) {
+            return FALSE;
+        }
+        $sql = "SELECT type FROM ".$CC_CONFIG['subjTable']
+            ." WHERE id='$gid'";
         $r = $CC_DBC->getOne($sql);
         if (PEAR::isError($r)) {
             return $r;
@@ -372,9 +381,9 @@ class Subjects {
     public static function ListGroup($gid)
     {
         global $CC_CONFIG, $CC_DBC;
-        $sql = "SELECT s.id, s.login, s.type
-            FROM ".$CC_CONFIG['smembTable']." m, ".$CC_CONFIG['subjTable']." s
-            WHERE m.uid=s.id AND m.mid is null AND m.gid='$gid'";
+        $sql = "SELECT s.id, s.login, s.type"
+            ." FROM ".$CC_CONFIG['smembTable']." m, ".$CC_CONFIG['subjTable']." s"
+            ." WHERE m.uid=s.id AND m.mid is null AND m.gid='$gid'";
         return $CC_DBC->getAll($sql);
     } // fn listGroup
 
@@ -391,11 +400,9 @@ class Subjects {
     public static function IsMemberOf($uid, $gid)
     {
         global $CC_CONFIG, $CC_DBC;
-        $sql = "
-            SELECT count(*)as cnt
-            FROM ".$CC_CONFIG['smembTable']."
-            WHERE uid='$uid' AND gid='$gid'
-        ";
+        $sql = "SELECT count(*)as cnt"
+            ." FROM ".$CC_CONFIG['smembTable']
+            ." WHERE uid='$uid' AND gid='$gid'";
         $res = $CC_DBC->getOne($sql);
         if (PEAR::isError($res)) {
             return $res;
@@ -421,8 +428,8 @@ class Subjects {
         if ($uid == $gid) {
             return PEAR::raiseError("Subjects::_addMemb: uid==gid ($uid)", ALIBERR_BADSMEMB);
         }
-        $sql = "SELECT id, level, mid FROM ".$CC_CONFIG['smembTable']."
-            WHERE uid='$uid' AND gid='$gid' ORDER BY level ASC";
+        $sql = "SELECT id, level, mid FROM ".$CC_CONFIG['smembTable']
+            ." WHERE uid='$uid' AND gid='$gid' ORDER BY level ASC";
         $a = $CC_DBC->getAll($sql);
         if (PEAR::isError($a)) {
             return $a;
@@ -431,8 +438,8 @@ class Subjects {
             $a0 = $a[0];
             $id = $a0['id'];
             if ($level < intval($a0['level'])){
-                $sql2 = "UPDATE ".$CC_CONFIG['smembTable']."
-                    SET level='$level', mid=$mid WHERE id='{$a0['id']}'";
+                $sql2 = "UPDATE ".$CC_CONFIG['smembTable']
+                    ." SET level='$level', mid=$mid WHERE id='{$a0['id']}'";
                 $r = $CC_DBC->query($sql2);
                 if (PEAR::isError($r)) {
                     return $r;
@@ -443,10 +450,8 @@ class Subjects {
             if (PEAR::isError($id)) {
                 return $id;
             }
-            $sql3 = "
-                INSERT INTO ".$CC_CONFIG['smembTable']." (id, uid, gid, level, mid)
-                VALUES ($id, $uid, $gid, $level, $mid)
-            ";
+            $sql3 = "INSERT INTO ".$CC_CONFIG['smembTable']." (id, uid, gid, level, mid)"
+                ." VALUES ($id, $uid, $gid, $level, $mid)";
             $r = $CC_DBC->query($sql3);
             if (PEAR::isError($r)) {
                 return $r;
@@ -465,8 +470,8 @@ class Subjects {
     private static function _removeMemb($mid)
     {
         global $CC_CONFIG, $CC_DBC;
-        $sql = "DELETE FROM ".$CC_CONFIG['smembTable']."
-            WHERE id='$mid'";
+        $sql = "DELETE FROM ".$CC_CONFIG['smembTable']
+            ." WHERE id='$mid'";
         return $CC_DBC->query($sql);
     } // fn _removeMemb
 
@@ -481,9 +486,8 @@ class Subjects {
     private static function _listMemb($gid, $uid=NULL)
     {
         global $CC_CONFIG, $CC_DBC;
-        $sql = "
-            SELECT id, uid, level FROM ".$CC_CONFIG['smembTable']."
-            WHERE gid='$gid'".(is_null($uid) ? '' : " AND uid='$uid'");
+        $sql = "SELECT id, uid, level FROM ".$CC_CONFIG['smembTable']
+            ." WHERE gid='$gid'".(is_null($uid) ? '' : " AND uid='$uid'");
         return $CC_DBC->getAll($sql);
     } // fn _listMemb
 
@@ -498,9 +502,8 @@ class Subjects {
     private static function _listRMemb($uid, $gid=NULL)
     {
         global $CC_CONFIG, $CC_DBC;
-        $sql = "
-            SELECT id, gid, level FROM ".$CC_CONFIG['smembTable']."
-            WHERE uid='$uid'".(is_null($gid) ? '' : " AND gid='$gid'");
+        $sql = "SELECT id, gid, level FROM ".$CC_CONFIG['smembTable']
+            ." WHERE uid='$uid'".(is_null($gid) ? '' : " AND gid='$gid'");
         return $CC_DBC->getAll($sql);
     } // fn listRMemb
 
@@ -533,7 +536,7 @@ class Subjects {
             }
         }
         return $mid;
-    } 
+    }
 
 
     /**
@@ -550,8 +553,9 @@ class Subjects {
         if (PEAR::isError($r)) {
             return $r;
         }
-        $r = $CC_DBC->query("DELETE FROM ".$CC_CONFIG['smembTable']."
-            WHERE mid is not null");
+        $sql = "DELETE FROM ".$CC_CONFIG['smembTable']
+            ." WHERE mid is not null";
+        $r = $CC_DBC->query($sql);
         if (PEAR::isError($r)) {
             return $r;
         }
@@ -574,7 +578,7 @@ class Subjects {
                 }
             }
         }
-        $r = $CC_DBC->query("COMMIT");   
+        $r = $CC_DBC->query("COMMIT");
         if (PEAR::isError($r)) {
             return $r;
         }
@@ -680,57 +684,6 @@ class Subjects {
                 "dump:\n{$test_dump}\n</pre>\n");
         }
     } // fn test
-
-
-    /**
-     * Create tables + initialize
-     *
-     */
-//    public function install()
-//    {
-//        parent::install();
-//        $CC_DBC->query("CREATE TABLE {$this->subjTable} (
-//            id int not null PRIMARY KEY,
-//            login varchar(255) not null default'',
-//            pass varchar(255) not null default'',
-//            type char(1) not null default 'U',
-//            realname varchar(255) not null default'',
-//            lastlogin timestamp,
-//            lastfail timestamp
-//        )");
-//        $CC_DBC->query("CREATE UNIQUE INDEX {$this->subjTable}_id_idx
-//            ON {$this->subjTable} (id)");
-//        $CC_DBC->query("CREATE UNIQUE INDEX {$this->subjTable}_login_idx
-//            ON {$this->subjTable} (login)");
-//        $CC_DBC->createSequence("{$this->subjTable}_id_seq");
-//
-//        $CC_DBC->query("CREATE TABLE {$this->smembTable} (
-//            id int not null PRIMARY KEY,
-//            uid int not null default 0,
-//            gid int not null default 0,
-//            level int not null default 0,
-//            mid int
-//        )");
-//        $CC_DBC->query("CREATE UNIQUE INDEX {$this->smembTable}_id_idx
-//            ON {$this->smembTable} (id)");
-//        $CC_DBC->createSequence("{$this->smembTable}_id_seq");
-//    } // fn install
-
-
-    /**
-     * Drop tables etc.
-     *
-     * @return void
-     */
-//    public function uninstall()
-//    {
-//        global $CC_CONFIG, $CC_DBC;
-//        $CC_DBC->query("DROP TABLE ".$CC_CONFIG['subjTable']);
-//        $CC_DBC->dropSequence($CC_CONFIG['subjTable']."_id_seq");
-//        $CC_DBC->query("DROP TABLE ".$CC_CONFIG['smembTable']);
-//        $CC_DBC->dropSequence($CC_CONFIG['smembTable']."_id_seq");
-//        parent::uninstall();
-//    } // fn uninstall
 
 } // class Subjects
 ?>

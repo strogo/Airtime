@@ -26,8 +26,8 @@
     Location : $URL$
 
 ------------------------------------------------------------------------------*/
-#ifndef LiveSupport_GLiveSupport_NowPlaying_h
-#define LiveSupport_GLiveSupport_NowPlaying_h
+#ifndef NowPlaying_h
+#define NowPlaying_h
 
 #ifndef __cplusplus
 #error This is a C++ include file
@@ -84,9 +84,15 @@ class NowPlaying : public Gtk::HBox,
         bool                    isPaused;
 
         /**
-         *  The item which is currently playing.
+         *  The item which is currently playing (audio clip or playlist).
          */
         Ptr<Playable>::Ref      playable;
+
+        /**
+         *  The audio clip which is currently playing (could be nested
+         *  several levels inside the "playable" object).
+         */
+        Ptr<Playable>::Ref      currentInnerPlayable;
 
         /**
          *  The label holding the title of the now playing item.
@@ -279,6 +285,21 @@ class NowPlaying : public Gtk::HBox,
         {
             onStopButtonClicked();
         }
+
+        /**
+         *  Get the Playable object which is playing now.
+         *  If a playlist is playing, does not return the playlist, but
+         *  the audio clip inside the playlist (possibly several levels deep).
+         *
+         *  This is used by GLiveSupport::substituteRdsData().
+         *
+         *  @return the currently playing item; 0 if nothing is playing.
+         */
+        Ptr<Playable>::Ref
+        getCurrentInnerPlayable(void)                   throw ()
+        {
+            return currentInnerPlayable;
+        }
 };
 
 
@@ -291,5 +312,5 @@ class NowPlaying : public Gtk::HBox,
 } // namespace GLiveSupport
 } // namespace LiveSupport
 
-#endif // LiveSupport_GLiveSupport_NowPlaying_h
+#endif // NowPlaying_h
 

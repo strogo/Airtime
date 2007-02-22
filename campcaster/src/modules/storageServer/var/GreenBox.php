@@ -39,7 +39,7 @@ class GreenBox extends BasicStor {
         if (($res = BasicStor::Authorize('write', $parid, $sessid)) !== TRUE) {
             return $res;
         }
-        return $this->bsCreateFolder($parid, $folderName);
+        return BasicStor::bsCreateFolder($parid, $folderName);
     } // fn createFolder
 
 
@@ -60,18 +60,15 @@ class GreenBox extends BasicStor {
      * @param string $ftype
      * 		Internal file type
      * @return int
-     * @exception PEAR::error
+     *      ID of the StoredFile that was created.
      */
-    public function putFile($parid, $fileName,
-         $mediaFileLP, $mdataFileLP, $sessid='',
-         $gunid=NULL, $ftype='audioclip')
+    public function putFile($p_parentId, $p_values, $p_sessionId='')
     {
-        if (($res = BasicStor::Authorize('write', $parid, $sessid)) !== TRUE) {
+        if (($res = BasicStor::Authorize('write', $p_parentId, $p_sessionId)) !== TRUE) {
             return $res;
         }
-        return $this->bsPutFile(
-            $parid, $fileName, $mediaFileLP, $mdataFileLP, $gunid, $ftype
-        );
+        $storedFile = $this->bsPutFile($p_parentId, $p_values);
+        return $storedFile;
     } // fn putFile
 
 
@@ -102,12 +99,17 @@ class GreenBox extends BasicStor {
         if (!file_exists($mdataFileLP)) {
             $mdataFileLP = dirname(__FILE__).'/emptyWebstream.xml';
         }
-        $oid = $this->bsPutFile(
-            $parid, $fileName, '', $mdataFileLP, $gunid, 'webstream'
+        $values = array(
+            "filename" => $fileName,
+            "metadata" => $mdataFileLP,
+            "gunid" => $gunid,
+            "filetype" => "webstream"
         );
-        if (PEAR::isError($oid)) {
-            return $oid;
+        $storedFile = $this->bsPutFile($parid, $values);
+        if (PEAR::isError($storedFile)) {
+            return $storedFile;
         }
+        $oid = $storedFile->getId();
         $r = $this->bsSetMetadataValue(
             $oid, 'ls:url', $url, NULL, NULL, 'metadata');
         if (PEAR::isError($r)) {
@@ -132,7 +134,7 @@ class GreenBox extends BasicStor {
 //            return $res;
 //        }
 //        $gunid = BasicStor::GunidFromId($id);
-//        $r = $this->bsAccess(NULL, '', $gunid, 'access');
+//        $r = BasicStor::bsAccess(NULL, '', $gunid, 'access');
 //        if (PEAR::isError($r)) {
 //            return $r;
 //        }
@@ -152,7 +154,7 @@ class GreenBox extends BasicStor {
      */
 //    function releaseFile($token, $sessid='')
 //    {
-//        $r = $this->bsRelease($token, 'access');
+//        $r = BasicStor::bsRelease($token, 'access');
 //        if (PEAR::isError($r)) {
 //            return $r;
 //        }
@@ -297,13 +299,13 @@ class GreenBox extends BasicStor {
      *      session id
      * @return boolean|PEAR_Error
      */
-    public function replaceMetadata($id, $mdata, $mdataLoc='file', $sessid='')
-    {
-        if (($res = BasicStor::Authorize('write', $id, $sessid)) !== TRUE) {
-            return $res;
-        }
-        return $this->bsReplaceMetadata($id, $mdata, $mdataLoc);
-    } // fn replaceMetadata
+//    public function replaceMetadata($id, $mdata, $mdataLoc='file', $sessid='')
+//    {
+//        if (($res = BasicStor::Authorize('write', $id, $sessid)) !== TRUE) {
+//            return $res;
+//        }
+//        return $this->bsReplaceMetadata($id, $mdata, $mdataLoc);
+//    } // fn replaceMetadata
 
 
     /**
@@ -316,13 +318,13 @@ class GreenBox extends BasicStor {
      * @return string|PEAR_Error
      * @todo rename this function to "getMetadata"
      */
-    public function getMdata($id, $sessid='')
+    public function getMetadata($id, $sessid='')
     {
         if (($res = BasicStor::Authorize('read', $id, $sessid)) !== TRUE) {
             return $res;
         }
         return $this->bsGetMetadata($id);
-    } // fn getMdata
+    }
 
 
     /**
@@ -337,18 +339,17 @@ class GreenBox extends BasicStor {
      * @param string $sessid
      *      session ID
      * @return array
-     * @todo rename this function to "getMdataArray"
      */
-    public function getMdataArray($id, $sessid)
+    public function getMetadataArray($id, $sessid)
     {
         if (($res = BasicStor::Authorize('read', $id, $sessid)) !== TRUE) {
             return $res;
         }
-        $ac = StoredFile::recall($this, $id);
-        if (PEAR::isError($ac)) {
-            return $ac;
+        $storedFile = StoredFile::Recall($id);
+        if (is_null($storedFile) || PEAR::isError($storedFile)) {
+            return $storedFile;
         }
-        $arr = $ac->md->genPhpArray();
+        $arr = $storedFile->md->genPhpArray();
         $md = FALSE;
         foreach ($arr['children'] as $i=>$a) {
             if ($a['elementname'] == 'metadata'){
@@ -358,7 +359,7 @@ class GreenBox extends BasicStor {
         }
         if ($md === FALSE) {
             return PEAR::raiseError(
-                "GreenBox::getMdataArray: no metadata container found"
+                "GreenBox::getMetadataArray: no metadata container found"
             );
         }
         $res = array();
@@ -372,7 +373,7 @@ class GreenBox extends BasicStor {
             }
         }
         return $res;
-    } // fn getMdataArray
+    }
 
 
     /**
@@ -399,6 +400,9 @@ class GreenBox extends BasicStor {
     public function getMetadataValue($id, $category, $sessid='',
         $lang=NULL, $deflang=NULL)
     {
+        if (!is_numeric($id)) {
+            return null;
+        }
         if (($res = BasicStor::Authorize('read', $id, $sessid)) !== TRUE) {
             return $res;
         }
@@ -507,7 +511,7 @@ class GreenBox extends BasicStor {
      *       cnt : integer - number of matching values
      * @see BasicStor::bsBrowseCategory
      */
-    public function browseCategory($category, $criteria, $sessid = '')
+    public function browseCategory($category, $criteria = null, $sessid = '')
     {
         $limit = 0;
         $offset = 0;
@@ -575,7 +579,7 @@ class GreenBox extends BasicStor {
      */
 //    function getPlaylistXml($id, $sessid)
 //    {
-//        return $this->getMdata($id, $sessid);
+//        return $this->getMetadata($id, $sessid);
 //    } // fn getPlaylistXml
 
 
@@ -591,8 +595,8 @@ class GreenBox extends BasicStor {
     public function getPlaylistArray($id, $sessid)
     {
         $gunid = BasicStor::GunidFromId($id);
-        $pl = StoredFile::recall($this, $id);
-        if (PEAR::isError($pl)) {
+        $pl = StoredFile::Recall($id);
+        if (is_null($pl) || PEAR::isError($pl)) {
             return $pl;
         }
         $gunid = $pl->gunid;
@@ -638,11 +642,11 @@ class GreenBox extends BasicStor {
         if (PEAR::isError($gunid)) {
             return $gunid;
         }
-        $ac = StoredFile::recallByGunid($this, $gunid);
-        if (PEAR::isError($ac)) {
-            return $ac;
+        $storedFile = StoredFile::RecallByGunid($gunid);
+        if (is_null($storedFile) || PEAR::isError($storedFile)) {
+            return $storedFile;
         }
-        $r = $ac->md->regenerateXmlFile();
+        $r = $storedFile->md->regenerateXmlFile();
         if (PEAR::isError($r)) {
             return $r;
         }
@@ -674,9 +678,9 @@ class GreenBox extends BasicStor {
     public function addAudioClipToPlaylist($token, $acId, $sessid,
         $fadeIn=NULL, $fadeOut=NULL, $length=NULL, $pause=NULL)
     {
-        require_once"Playlist.php";
-        $pl = Playlist::recallByToken($this, $token);
-        if (PEAR::isError($pl)) {
+        require_once("Playlist.php");
+        $pl = StoredFile::RecallByToken($token);
+        if (is_null($pl) || PEAR::isError($pl)) {
             return $pl;
         }
         $acGunid = BasicStor::GunidFromId($acId);
@@ -716,8 +720,8 @@ class GreenBox extends BasicStor {
     public function delAudioClipFromPlaylist($token, $plElGunid, $sessid)
     {
         require_once("Playlist.php");
-        $pl = Playlist::recallByToken($this, $token);
-        if (PEAR::isError($pl)) {
+        $pl = StoredFile::RecallByToken($token);
+        if (is_null($pl) || PEAR::isError($pl)) {
             return $pl;
         }
         $res = $pl->delAudioClip($plElGunid);
@@ -751,8 +755,8 @@ class GreenBox extends BasicStor {
     public function changeFadeInfo($token, $plElGunid, $fadeIn, $fadeOut, $sessid)
     {
         require_once("Playlist.php");
-        $pl = Playlist::recallByToken($this, $token);
-        if (PEAR::isError($pl)) {
+        $pl = StoredFile::RecallByToken($token);
+        if (is_null($pl) || PEAR::isError($pl)) {
             return $pl;
         }
         $res = $pl->changeFadeInfo($plElGunid, $fadeIn, $fadeOut);
@@ -787,8 +791,8 @@ class GreenBox extends BasicStor {
     public function moveAudioClipInPlaylist($token, $plElGunid, $newPos, $sessid)
     {
         require_once("Playlist.php");
-        $pl = Playlist::recallByToken($this, $token);
-        if (PEAR::isError($pl)) {
+        $pl = StoredFile::RecallByToken($token);
+        if (is_null($pl) || PEAR::isError($pl)) {
             return $pl;
         }
         $res = $pl->moveAudioClip($plElGunid, $newPos);
@@ -866,9 +870,9 @@ class GreenBox extends BasicStor {
     public function displayPlaylistClipAtOffset($sessid, $plid, $offset, $distance=0,
         $lang=NULL, $deflang=NULL)
     {
-        require_once "Playlist.php";
-        $pl = Playlist::recallByGunid($this, $plid);
-        if (PEAR::isError($pl)) {
+        require_once("Playlist.php");
+        $pl = StoredFile::RecallByGunid($plid);
+        if (is_null($pl) || PEAR::isError($pl)) {
             return $pl;
         }
         $res = $pl->displayPlaylistClipAtOffset($offset, $distance);
@@ -1840,7 +1844,7 @@ class GreenBox extends BasicStor {
                     "GreenBox::passwd: access denied (oldpass)", GBERR_DENY);
             }
         }
-        $res = parent::passwd($login, $oldpass, $pass);
+        $res = Subjects::Passwd($login, $oldpass, $pass);
         if (PEAR::isError($res)) {
             return $res;
         }
@@ -1869,7 +1873,7 @@ class GreenBox extends BasicStor {
         if (($res = BasicStor::Authorize('editPerms', $parid, $sessid)) !== TRUE) {
             return $res;
         }
-        return parent::addPerm($sid, $action, $oid, $type);
+        return Alib::AddPerm($sid, $action, $oid, $type);
     } // fn addPerm
 
 

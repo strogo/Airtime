@@ -67,8 +67,9 @@ case "$1" in
         fi
 
         # remove generated files
-        rm -rf $installdir/var/Campcaster/storageServer/var/stor/*
         rm -rf $installdir/var/Campcaster/archiveServer/var/stor/*
+        rm -rf $installdir/var/Campcaster/storageServer/var/stor/*
+        rm -f  $installdir/storageServer.wasMounted
     ;;
 
     *)

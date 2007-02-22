@@ -42,9 +42,10 @@
 
 #include <stdexcept>
 #include <glibmm/ustring.h>
-#include "libxml++/libxml++.h"
+#include <libxml++/libxml++.h>
 
 #include "LiveSupport/Core/Ptr.h"
+#include "LiveSupport/Core/RdsContainer.h"
 
 
 namespace LiveSupport {
@@ -61,6 +62,9 @@ namespace Core {
 /**
  *  A container for the options in gLiveSupport.xml.
  *
+ *  It supports a number of named string options (see OptionItemString),
+ *  plus two special kinds of options: keyboard shortcuts, and RDS strings.
+ *
  *  @author  $Author $
  *  @version $Revision $
  */
@@ -72,8 +76,6 @@ class OptionsContainer
          *  
          *  These are options of type Glib::ustring; any string is accepted
          *  as value, no range checking is done.
-         *  
-         *  For the moment, this is the only kind of option supported. 
          */
         typedef enum { outputPlayerDeviceName,
                        cuePlayerDeviceName,
@@ -85,7 +87,8 @@ class OptionsContainer
                        storagePath,
                        schedulerServer,
                        schedulerPort,
-                       schedulerPath }  OptionItemString;
+                       schedulerPath,
+                       serialDeviceName }   OptionItemString;
         
 
     private:
@@ -103,6 +106,11 @@ class OptionsContainer
          *  Remember if we have been touched.
          */
         bool                            touched;
+        
+        /**
+         *  Container for the RDS settings.
+         */
+        Ptr<RdsContainer>::Ref          rdsContainer;
         
         /**
          *  Default constructor.
@@ -160,6 +168,23 @@ class OptionsContainer
         getNode(const Glib::ustring &   xPath)
                                                  throw (std::invalid_argument);
         
+        /**
+         *  Create a node corresponding to an option item.
+         *
+         *  So far, this is only implemented for serialDeviceName;
+         *  for all other option items, it returns a 0 pointer.
+         *  The XML element or attribute is created with a value of "".
+         *
+         *  TODO: implement this properly; ideally, the paths would be read
+         *  from the DTD of the default config file, and added to the current
+         *  config file as needed.
+         *
+         *  @param  optionItem  the option item to be created.
+         *  @return a pointer to the node created, or 0.
+         */
+        xmlpp::Node *
+        createNode(OptionItemString     optionItem)                  throw ();
+        
         
     public:
         /**
@@ -185,7 +210,7 @@ class OptionsContainer
         bool
         isTouched(void)                                             throw ()
         {
-            return touched;
+            return touched || (rdsContainer && rdsContainer->isTouched());
         }
 
         /**
@@ -224,6 +249,60 @@ class OptionsContainer
                                 Ptr<const Glib::ustring>::Ref   value)
                                                  throw (std::invalid_argument);
         
+        /**
+         *  Set the value of the RDS options.
+         *  The key can be any of the RDS data codes, like PS, PI, PTY, RT,
+         *  etc.  If there is already a value set for this code, it gets
+         *  overwritten, otherwise a new key-value pair is added.
+         *
+         *  @param      key      which setting to modify
+         *  @param      value    the new value of the RDS setting
+         *  @param      enabled  the new enabled/disabled state of the 
+         *                       RDS setting
+         */
+        void
+        setRdsOptions(Ptr<const Glib::ustring>::Ref     key,
+                      Ptr<const Glib::ustring>::Ref     value,
+                      bool                              enabled)    throw ();
+        
+        /**
+         *  Get the value of an RDS string.
+         *  The key can be any of the RDS data codes, like PS, PI, PTY, RT,
+         *  etc.
+         *
+         *  @param      key     which setting to modify
+         *  @return     the value of the RDS setting
+         *  @exception  std::invalid_argument   if there is no such RDS option.
+         */
+        Ptr<const Glib::ustring>::Ref
+        getRdsValue(Ptr<const Glib::ustring>::Ref  key)
+                                                throw (std::invalid_argument);
+        
+        /**
+         *  Get the enabled/disabled state of an RDS option.
+         *
+         *  @param      key     which setting to modify
+         *  @return     true if the RDS option is enabled, false otherwise.
+         *  @exception  std::invalid_argument   if there is no such RDS option.
+         */
+        bool
+        getRdsEnabled(Ptr<const Glib::ustring>::Ref  key)
+                                                throw (std::invalid_argument);
+        
+        /**
+         *  Get a string containing all the RDS values.
+         *  This string can be sent to the RDS encoder.
+         *
+         *  @return     a string which can be sent to the RDS encoder;
+         *              a 0 pointer if no RDS options have been defined.
+         */
+        Ptr<Glib::ustring>::Ref
+        getCompleteRdsString(void)                                  throw ()
+        {
+            return rdsContainer ? rdsContainer->toString()
+                                : Ptr<Glib::ustring>::Ref();
+        }
+
         /**
          *  Save the options to a file.
          *

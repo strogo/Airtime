@@ -27,6 +27,13 @@ case "$1" in
                         --postgresql-dir=/etc/postgresql/8.1/main \
                         --postgresql-init-script=/etc/init.d/postgresql-8.1
 
+        # remount the NFS share if we have a 2-computer setup
+        if [ -f $installdir/storageServer.wasMounted ]; then
+            echo "Remounting the remote storage..."
+            mount $installdir/var/Campcaster/storageServer
+            rm $installdir/storageServer.wasMounted
+        fi
+
         # register and start the Campcaster scheduler daemon
         cp -f $installdir/etc/campcaster-scheduler /etc/init.d
         update-rc.d campcaster-scheduler defaults 92 || true

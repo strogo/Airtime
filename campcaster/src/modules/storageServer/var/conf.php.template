@@ -32,7 +32,7 @@
  *  </dl>
  */
 
-define('CAMPCASTER_VERSION', '1.1.1');
+include("campcaster_version.php");
 
 // these are the default values for the config
 
@@ -53,12 +53,12 @@ $CC_CONFIG = array(
     'StationPrefsGr'=> 'StationPrefs',
     'AllGr'         => 'All',
     'TrashName'     => 'trash_',
-    'storageDir'    =>  dirname(__FILE__).'/../../storageServer/var/stor',
-    'bufferDir'     =>  dirname(__FILE__).'/../../storageServer/var/stor/buffer',
-    'transDir'      =>  dirname(__FILE__).'/../../storageServer/var/trans',
-    'accessDir'     =>  dirname(__FILE__).'/../../storageServer/var/access',
-    'pearPath'      =>  'ls_lib_dir/pear',
-    'cronDir'       =>  dirname(__FILE__).'/../../storageServer/var/cron',
+    'storageDir'    => dirname(__FILE__).'/../../storageServer/var/stor',
+    'bufferDir'     => dirname(__FILE__).'/../../storageServer/var/stor/buffer',
+    'transDir'      => dirname(__FILE__).'/../../storageServer/var/trans',
+    'accessDir'     => dirname(__FILE__).'/../../storageServer/var/access',
+    'pearPath'      => 'ls_lib_dir/pear',
+    'cronDir'       => dirname(__FILE__).'/../../storageServer/var/cron',
     'isArchive'     =>  FALSE,
     'validate'      =>  TRUE,
     'useTrash'      =>  TRUE,
@@ -132,6 +132,9 @@ $CC_CONFIG['treeTable'] = $CC_CONFIG['tblNamePrefix'].'tree';
 $CC_CONFIG['structTable'] = $CC_CONFIG['tblNamePrefix'].'struct';
 $CC_CONFIG['transTable'] = $CC_CONFIG['tblNamePrefix'].'trans';
 $CC_CONFIG['prefTable'] = $CC_CONFIG['tblNamePrefix'].'pref';
+$CC_CONFIG['playlogTable'] = 'playlog';
+$CC_CONFIG['scheduleTable'] = 'schedule';
+$CC_CONFIG['backupTable'] = 'backup';
 
 $CC_CONFIG['sysSubjs'] = array(
     'root', $CC_CONFIG['AdminsGr'], $CC_CONFIG['AllGr'], $CC_CONFIG['StationPrefsGr']

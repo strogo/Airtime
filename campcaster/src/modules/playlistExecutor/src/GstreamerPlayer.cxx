@@ -118,6 +118,8 @@ GstreamerPlayer :: initialize(void)                 throw (std::exception)
     m_audioresample   = 0;
 
     m_eos = false;
+    
+    g_signal_connect(m_pipeline, "error", G_CALLBACK(errorHandler), this);
 
     // TODO: read the caps from the config file
     m_sinkCaps = gst_caps_new_simple("audio/x-raw-int",
@@ -132,6 +134,35 @@ GstreamerPlayer :: initialize(void)                 throw (std::exception)
 
     // set up other variables
     m_initialized = true;
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Handler for gstreamer errors.
+ *----------------------------------------------------------------------------*/
+void
+GstreamerPlayer :: errorHandler(GstElement   * pipeline,
+                                GstElement   * source,
+                                GError       * error,
+                                gchar        * debug,
+                                gpointer       self)
+                                                                throw ()
+{
+    DEBUG_BLOCK
+
+    GstreamerPlayer* const player = (GstreamerPlayer*) self;
+
+    // We make sure that we don't send multiple error messages in a row to the GUI
+    if (!player->m_errorWasRaised) {
+        player->m_errorMessage.reset(new const Glib::ustring(error->message));
+        player->m_errorWasRaised = true;
+
+        std::cerr << "gstreamer error: " << error->message << std::endl;
+
+        // Important: We *must* use an idle function call here, so that the signal handler returns 
+        // before fireOnStopEvent() is executed.
+        g_idle_add(fireOnStopEvent, self);
+    }
 }
 
 
@@ -206,9 +237,11 @@ GstreamerPlayer :: fireOnStopEvent(gpointer self)                       throw ()
     ListenerVector::iterator    it  = player->m_listeners.begin();
     ListenerVector::iterator    end = player->m_listeners.end();
     while (it != end) {
-        (*it)->onStop();
+        (*it)->onStop(player->m_errorMessage);
         ++it;
     }
+
+    player->m_errorMessage.reset();
 
     // false == Don't call this idle function again
     return false;
@@ -338,6 +371,9 @@ GstreamerPlayer :: open(const std::string   fileUrl)
 
     debug() << "Opening URL: " << fileUrl << endl;
     debug() << "Timestamp: " << *TimeConversion::now() << endl;
+
+    m_errorMessage.reset();
+    m_errorWasRaised = false;
 
     std::string filePath;
 

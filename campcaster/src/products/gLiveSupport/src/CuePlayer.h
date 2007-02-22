@@ -26,8 +26,8 @@
     Location : $URL$
 
 ------------------------------------------------------------------------------*/
-#ifndef LiveSupport_GLiveSupport_CuePlayer_h
-#define LiveSupport_GLiveSupport_CuePlayer_h
+#ifndef CuePlayer_h
+#define CuePlayer_h
 
 #ifndef __cplusplus
 #error This is a C++ include file
@@ -180,9 +180,13 @@ class CuePlayer : public Gtk::HBox,
 
         /**
          *  Event handler for the "cue audio player has stopped" event.
+         *
+         *  @param errorMessage is a 0 pointer if the player stopped normally
          */
         virtual void
-        onStop(void)                                    throw ();
+        onStop(Ptr<const Glib::ustring>::Ref  errorMessage
+                                              = Ptr<const Glib::ustring>::Ref())
+                                                        throw ();
 };
 
 
@@ -195,5 +199,5 @@ class CuePlayer : public Gtk::HBox,
 } // namespace GLiveSupport
 } // namespace LiveSupport
 
-#endif // LiveSupport_GLiveSupport_CuePlayer_h
+#endif // CuePlayer_h
 

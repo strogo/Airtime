@@ -122,6 +122,8 @@ root:table
         unsupportedFileTypeMsg:string   { "Unsupported file type." }
         missingTitleMsg:string          { "Please enter a title." }
         badMetadataMsg:string           { "Invalid data for {0}." }
+        duplicateFileMsg:string         { "Error: the file is in the storage "
+                                          "already." }
     }
 
     simplePlaylistManagementWindow:table
@@ -276,6 +278,7 @@ root:table
         serversSectionLabel:string      { "Servers" }
         schedulerSectionLabel:string    { "Scheduler" }
         backupSectionLabel:string       { "Backup" }
+        rdsSectionLabel:string          { "RDS" }
         aboutSectionLabel:string        { "About" }
 
         cancelButtonLabel:string    { "Cancel" }
@@ -308,30 +311,15 @@ root:table
         schedulerStartButtonLabel:string    { "Start" }
         schedulerStopButtonLabel:string     { "Stop" }
 
-        webSiteUrlText:string       { "http://campcaster.campware.org" }
         reportBugsToText:string     { "Report bugs to: {0}" }
-        creditsText:string          { "Credits:\n"
-                "Ferenc Gerlits (fgerlits@campware.org)\n"
-                "    - Studio GUI, scheduler, packaging\n"
-                "Mark Kretschmann (markey@web.de)\n"
-                "    - Audio player\n"
-                "Paul Baranowski (paul@paulbaranowski.org)\n"
-                "    - Project manager, HTML UI, storage server, scheduler\n"
-                "Douglas Arellanes (Douglas.Arellanes@mdlf.org)\n"
-                "    - Tester and user feedback\n"
-                "Tomáš Hlava (th@red2head.com)\n"
-                "    - Scheduler, storage server\n"
-                "János Csikós (retired)\n"
-                "    - HTML UI\n"
-                "Ákos Maróy (retired)\n"
-                "    - Architecture design, scheduler, audio player" }
+        creditsText:import          { "../../../../CREDITS" }
     }
 
     backupView:table
     {
-        workingStatus:string        { "in progress" }
-        successStatus:string        { "ready" }
-        faultStatus:string          { "error: {0}" }
+        workingStatus:string        { "In progress..." }
+        successStatus:string        { "Ready" }
+        faultStatus:string          { "Error: {0}" }
 
         titleColumnLabel:string     { "Title" }
         dateColumnLabel:string      { "Date" }
@@ -350,6 +338,14 @@ root:table
 
         fileChooserDialogTitle:string   { "Save File" }
         backupErrorMsg:string       { "Backup error: " }
+    }
+
+    rdsView:table
+    {
+        deviceLabel:string          { "Serial port:" }
+        PSrdsLabel:string           { "Station name:" }
+        PIrdsLabel:string           { "Station code:" }
+        RTrdsLabel:string           { "Clip info:" }
     }
 
     dateTimeChooserWindow:table
@@ -384,9 +380,9 @@ root:table
 
     transportList:table
     {
-        workingStatus:string        { "in progress" }
-        successStatus:string        { "ready" }
-        faultStatus:string          { "error: {0}" }
+        workingStatus:string        { "In progress..." }
+        successStatus:string        { "Ready" }
+        faultStatus:string          { "Error: {0}" }
 
         titleColumnLabel:string     { "Title" }
         dateColumnLabel:string      { "Date" }
@@ -396,6 +392,8 @@ root:table
         cancelDownloadMenuItem:string   { "Cancel download" }
 
         cannotCancelTransportMsg:string { "Canceling failed: {0}." }
+        duplicateFileMsg:string         { "the file is in the network "
+                                          "hub already." }
     }
 
     restoreBackupWindow:table

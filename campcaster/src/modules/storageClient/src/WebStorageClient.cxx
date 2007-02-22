@@ -756,7 +756,7 @@ const std::string    restoreBackupSessionIdParamName    = "sessid";
 /*------------------------------------------------------------------------------
  *  The name of the file name parameter in the input structure
  *----------------------------------------------------------------------------*/
-const std::string    restoreBackupFileNameParamName     = "filename";
+const std::string    restoreBackupChecksumParamName     = "chsum";
 
 /*------------------------------------------------------------------------------
  *  The name of the URL parameter in the input or output structure
@@ -1102,12 +1102,11 @@ WebStorageClient :: execute(const std::string &     methodName,
     xmlRpcClient.close();
     
     if (xmlRpcClient.isFault()) {
-        std::stringstream eMsg;
-        eMsg << "XML-RPC method '" 
-             << methodName
-             << "' returned error message:\n"
-             << result;
-        throw Core::XmlRpcMethodFaultException(eMsg.str());
+        int                 faultCode   = result[errorCodeParamName];
+        std::string         faultString = result[errorMessageParamName];
+        throw Core::XmlRpcMethodFaultException(methodName,
+                                               faultCode,
+                                               faultString);
     }
 }
 
@@ -2525,14 +2524,22 @@ WebStorageClient :: restoreBackupOpen(
                         Ptr<const Glib::ustring>::Ref   path)           const
                                                 throw (XmlRpcException)
 {
+    std::ifstream   ifs(path->c_str());
+    if (!ifs) {
+        ifs.close();
+        throw XmlRpcIOException("Could not read the playlist archive file.");
+    }
+    std::string     md5string = Md5(ifs);
+    ifs.close();
+
     XmlRpcValue     parameters;
     XmlRpcValue     result;
 
     parameters.clear();
     parameters[restoreBackupSessionIdParamName] 
             = sessionId->getId();
-    parameters[restoreBackupFileNameParamName] 
-            = std::string(*path);
+    parameters[restoreBackupChecksumParamName] 
+            = md5string;
 
     execute(restoreBackupOpenMethodName, parameters, result);
     

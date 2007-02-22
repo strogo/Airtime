@@ -44,8 +44,9 @@ class Restore {
     /**
      * @var string
      */
-    private $loglevel = 'warn';
-    #private $loglevel = 'debug';
+    // private $loglevel = 'warn';
+    public $loglevel = 'warn';
+    // public $loglevel = 'debug';
 
     /**
      * @var GreenBox
@@ -86,7 +87,7 @@ class Restore {
         }
         $this->sessid = $sessid;
 
-        //generate token
+        // generate token
         $this->token = StoredFile::CreateGunid();
 
         // status file -> working
@@ -97,7 +98,10 @@ class Restore {
         $command = dirname(__FILE__).'/../bin/restore.php';
         $runLog = "/dev/null";
         $params = "{$backup_file} {$this->statusFile} {$this->token} {$sessid}>> $runLog &";
-        system("$command $params");
+        $ret = system("$command $params", $st);
+        if ($this->loglevel=='debug') {
+            $this->addLogItem("-I-".date("Ymd-H:i:s")." restore.php call: $st/$ret\n");
+        }
 
         return array('token'=>$this->token);
     }
@@ -147,7 +151,7 @@ class Restore {
      * @param string $token
      * @return array
      * 		hasharray with field:
-     *      status  : boolean - is susccess
+     *      status  : boolean - is success
      */
     function closeRestore($token)
     {
@@ -158,7 +162,7 @@ class Restore {
         $this->setEnviroment();
         $this->rRmDir($this->tmpDir);
         unlink($this->statusFile);
-        return !is_file($this->statusFile);
+        return array("status" => !is_file($this->statusFile));
     }
 
 
@@ -185,7 +189,7 @@ class Restore {
         $this->setEnviroment();
 
         // extract tarball
-        $command = 'tar -xf '.$backupfile.' --directory '.$this->tmpDir;
+        $command = 'tar -xf '.$backupfile .' --directory '.$this->tmpDir;
         $res = system($command);
         //$this->addLogItem('command: '.$command."\n");
         //$this->addLogItem('res: '.$res."\n");
@@ -215,6 +219,7 @@ class Restore {
           	return;
         }
         file_put_contents($this->statusFile, 'success');
+        // unlink($backupfile);
     }
 
 
@@ -268,7 +273,7 @@ class Restore {
         if ($this->loglevel=='debug') {
             $this->addLogItem("-I- ".date("Ymd-H:i:s")." addFileToStorage - file:$file | type:$type | id:$gunid\n");
         }
-        require_once "XmlParser.php";
+        require_once("XmlParser.php");
         $tree = XmlParser::parse($file);
         $mediaFileLP = str_replace('.xml','',$file);
         $mediaFileLP = ($type=='audioClip' && is_file($mediaFileLP))?$mediaFileLP:'';
@@ -299,7 +304,6 @@ class Restore {
         } else {
             // add as new
             $parid = $this->gb->_getHomeDirIdFromSess($this->sessid);
-            #$this->addLogItem("Parid:$parid\n");
             $name = $tree->children[0]->children[0]->content;
             if (empty($name)) {
             	$name = $tree->attrs['title']->val;
@@ -312,16 +316,15 @@ class Restore {
                     "$parid, $name, $mediaFileLP, $file, {$this->sessid}, $gunid, $type \n"
                 );
             }
-            $put = $this->gb->putFile(
-                $parid,             # parent id
-                $name,              # name of original file
-                $mediaFileLP,       # media file if have
-                $file,              # meta file
-                $this->sessid,      # sessid
-                $gunid,             # gunid
-                $type               # type
+            $values = array(
+                "filename" => $name,
+                "filepath" => $mediaFileLP,
+                "metadata" => $file,
+                "gunid" => $gunid,
+                "filetype" => $type
             );
-         #   $this->addLogItem("add as new \n");
+            $put = $this->gb->putFile($parid, $values, $this->sessid);
+            //$this->addLogItem("add as new \n");
             if (PEAR::isError($put)) {
                 $this->addLogItem("-E- ".date("Ymd-H:i:s").
                     " addFileToStorage - putFile Error ".
@@ -333,8 +336,8 @@ class Restore {
                 return $put;
             }
         }
-        $ac = StoredFile::recallByGunid($this->gb, $gunid);
-        if (PEAR::isError($ac)) {
+        $ac = StoredFile::RecallByGunid($gunid);
+        if (is_null($ac) || PEAR::isError($ac)) {
         	return $ac;
         }
         $res = $ac->setState('ready');
@@ -351,6 +354,7 @@ class Restore {
      */
     function setEnviroment()
     {
+        global $CC_CONFIG;
         if ($this->loglevel=='debug') {
             $this->addLogItem("-I- ".date("Ymd-H:i:s")." setEnviroment\n");
         }

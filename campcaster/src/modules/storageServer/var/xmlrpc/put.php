@@ -32,16 +32,17 @@
 
 define('USE_FLOCK', TRUE);
 
-require_once dirname(__FILE__).'/../conf.php';
-require_once 'DB.php';
-require_once dirname(__FILE__).'/../LocStor.php';
+require_once(dirname(__FILE__).'/../conf.php');
+require_once('DB.php');
+require_once(dirname(__FILE__).'/../LocStor.php');
 
 PEAR::setErrorHandling(PEAR_ERROR_RETURN);
 $CC_DBC = DB::connect($CC_CONFIG['dsn'], TRUE);
 $CC_DBC->setFetchMode(DB_FETCHMODE_ASSOC);
 $gb = new LocStor();
 
-function http_error($code, $err) {
+function http_error($code, $err)
+{
     header("HTTP/1.1 $code");
     header("Content-type: text/plain; charset=UTF-8");
     echo "$err\r\n";
@@ -55,9 +56,13 @@ if (preg_match("|^[0-9a-fA-F]{16}$|", $_REQUEST['token'])) {
     http_error(400, "Error on token parameter. ({$_REQUEST['token']})");
 }
 
-$tc = $gb->bsCheckToken($token, 'put');
-if(PEAR::isError($tc)){ http_error(500, $ex->getMessage()); }
-if(!$tc){ http_error(403, "put.php: Token not valid ($token)."); }
+$tc = BasicStor::bsCheckToken($token, 'put');
+if (PEAR::isError($tc)) {
+    http_error(500, $ex->getMessage());
+}
+if (!$tc) {
+    http_error(403, "put.php: Token not valid ($token).");
+}
 
 header("Content-type: text/plain");
 

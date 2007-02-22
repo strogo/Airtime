@@ -85,7 +85,10 @@ DIV.blockquote
 
 <h1>Quick Start - {$UI_VERSION_FULLNAME}</h1>
 <div class="copyright">
-    {$UI_VERSION} &copy;2005 <a href="http://www.mdlf.org" target="_blank">MDLF</a> - maintained and distributed under GNU/GPL by <a href="http://www.campware.org" target="_blank">CAMPWARE</a>
+    {$UI_VERSION} &copy;{$UI_COPYRIGHT_DATE}
+    <a href="http://www.mdlf.org" target="_blank">MDLF</a>
+    - maintained and distributed under GNU/GPL by
+    <a href="http://www.campware.org" target="_blank">CAMPWARE</a>
 </div>
 
 
@@ -276,9 +279,7 @@ DIV.blockquote
 	manual</A> chapter 4.12.
 	</P>
 	<H2>Where to go for help</H2>
-	<P>Campcaster has a mailing list for support-related questions at
-	<A HREF="mailto:ls-support@campware.org">ls-support@campware.org</A>,
-	or you can visit the Campcaster forums at <A HREF="http://www.campware.org/" TARGET="_blank">http://www.campware.org</A></P>
+	<P>Campcaster has <a href="http://www.campware.org/en/camp/campcaster_news/649/">mailing lists and forums for support-related questions</a>.</P>
     </P>
 
     {if tra('_Name of translator') !== '_Name of translator'}

@@ -2,7 +2,7 @@
 ini_set('memory_limit', '64M');
 
 // Warning/Error level
-define('UI_DEBUG', TRUE);
+define('UI_DEBUG', FALSE);
 define('UI_VERBOSE', FALSE);
 define('UI_WARNING', TRUE);
 define('UI_ERROR', TRUE);
@@ -11,8 +11,6 @@ if (UI_DEBUG) {
 	error_reporting(E_ALL);
 }
 
-define('UI_VERSION', 'Campcaster 1.1.1');
-define('UI_VERSION_FULLNAME', 'Campcaster 1.1.1');
 define('UI_TESTSTREAM_MU3_TMP', 'img/listen.m3u');
 
 // Local settings
@@ -70,7 +68,7 @@ define('UI_MDATA_VALUE_FORMAT_FILE', 'File');
 define('UI_MDATA_VALUE_FORMAT_STREAM', 'live stream');
 
 // Search/Browse preferences
-define('UI_SIMPLESEARCH_FILETYPE', 'File');
+define('UI_SIMPLESEARCH_FILETYPE', 'Audioclip');
 define('UI_SIMPLESEARCH_OPERATOR', 'OR');
 define('UI_SIMPLESEARCH_LIMIT', 10);
 define('UI_SIMPLESEARCH_ROWS', 3);
@@ -116,8 +114,10 @@ define('UI_PL_ELEM_FADEOUT', 'fadeOut');
 define('UI_BACKUPTOKEN_KEY', 'backupToken');
 define('UI_RESTORETOKEN_KEY', 'restoreToken');
 
-//require_once('PEAR.php');
 require_once('../../../storageServer/var/conf.php');
+define('UI_VERSION', CAMPCASTER_VERSION);
+define('UI_VERSION_FULLNAME', 'Campcaster '.UI_VERSION);
+define('UI_COPYRIGHT_DATE', CAMPCASTER_COPYRIGHT_DATE);
 
 // extent config
 $CC_CONFIG = array_merge($CC_CONFIG,
@@ -171,7 +171,13 @@ require_once('HTML/QuickForm.php');
 // Connect to the database
 $CC_DBC = DB::connect($CC_CONFIG['dsn'], TRUE);
 if (PEAR::isError($CC_DBC)) {
-    die($CC_DBC->getMessage());
+    echo "Could not connect to database.  Your current configuration is:<br>";
+    echo "<table border=1>";
+    echo "<tr><td>Host name:</td><td>".$CC_CONFIG['dsn']['hostspec']."</td></tr>";
+    echo "<tr><td>Database name:</td><td>".$CC_CONFIG['dsn']['database']."</td></tr>";
+    echo "<tr><td>User name:</td><td>".$CC_CONFIG['dsn']['username']."</td></tr>";
+    echo "</table>";
+    exit;
 }
 $CC_DBC->setFetchMode(DB_FETCHMODE_ASSOC);
 

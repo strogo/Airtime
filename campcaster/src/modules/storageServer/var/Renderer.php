@@ -1,7 +1,7 @@
 <?php
 define('RENDER_EXT', 'ogg');
 
-require_once "LsPlaylist.php";
+require_once("Playlist.php");
 
 /**
  * Renderer caller class
@@ -37,8 +37,8 @@ class Renderer
     {
         global $CC_CONFIG;
         // recall playlist:
-        $pl = LsPlaylist::recallByGunid($gb, $plid);
-        if (PEAR::isError($pl)) {
+        $pl = StoredFile::RecallByGunid($plid);
+        if (is_null($pl) || PEAR::isError($pl)) {
         	return $pl;
         }
         // smil export:
@@ -58,7 +58,7 @@ class Renderer
         $logf = $CC_CONFIG['bufferDir']."/renderer.log";
         file_put_contents($logf, "--- ".date("Ymd-H:i:s")."\n", FILE_APPEND);
         // open access to output file:         /*gunid*/      /*parent*/
-        $acc = $gb->bsAccess($outf, RENDER_EXT, $plid, 'render', 0, $owner);
+        $acc = BasicStor::bsAccess($outf, RENDER_EXT, $plid, 'render', 0, $owner);
         if (PEAR::isError($acc)) {
         	return $acc;
         }
@@ -144,7 +144,7 @@ class Renderer
     function rnRender2FileClose(&$gb, $token)
     {
         global $CC_CONFIG;
-        $r = $gb->bsRelease($token, 'render');
+        $r = BasicStor::bsRelease($token, 'render');
         if (PEAR::isError($r)) {
         	return $r;
         }
@@ -209,7 +209,7 @@ class Renderer
      */
     function rnRender2StorageCore(&$gb, $token)
     {
-        $r = $gb->bsRelease($token, 'render');
+        $r = BasicStor::bsRelease($token, 'render');
         if (PEAR::isError($r)) {
         	return $r;
         }
@@ -232,16 +232,17 @@ class Renderer
         }
         $mdata = "<audioClip>\n <metadata>\n$mdata </metadata>\n</audioClip>\n";
         //$mdata = "<audioClip>\n <metadata>\n$mdata<dcterms:extent>0</dcterms:extent>\n</metadata>\n</audioClip>\n";
-        $id = $gb->bsPutFile($parid, $fileName, $realOgg, $mdata,
-            NULL, 'audioclip', 'string');
-        if (PEAR::isError($id)) {
-        	return $id;
+        $values = array(
+            "filename" => $fileName,
+            "filepath" => $realOgg,
+            "metadata" => $mdata,
+            "filetype" => "audioclip"
+        );
+        $storedFile = $gb->bsPutFile($parid, $values);
+        if (PEAR::isError($storedFile)) {
+        	return $storedFile;
         }
-        $ac = StoredFile::recall($gb, $id);
-        if (PEAR::isError($ac)) {
-        	return $ac;
-        }
-        return array('gunid' => $ac->gunid);
+        return array('gunid' => $storedFile->getGunid());
     }
 
 

@@ -279,7 +279,9 @@ G_LIVESUPPORT_OBJS = ${TMP_DIR}/GLiveSupport.o \
                      ${TMP_DIR}/ExportFormatRadioButtons.o \
                      ${TMP_DIR}/TransportList.o \
                      ${TMP_DIR}/RestoreBackupWindow.o \
-                     ${TMP_DIR}/TaskbarIcons.o
+                     ${TMP_DIR}/TaskbarIcons.o \
+                     ${TMP_DIR}/RdsView.o \
+                     ${TMP_DIR}/RdsEntry.o
 
 G_LIVESUPPORT_RES = ${TMP_DIR}/${RESOURCE_BUNDLE_NAME}_root.res \
                     ${TMP_DIR}/${RESOURCE_BUNDLE_NAME}_en.res \
@@ -302,7 +304,7 @@ G_LIVESUPPORT_EXE_LIBS = -l${PLAYLIST_EXECUTOR_LIB} \
                          -l${SCHEDULER_CLIENT_LIB} \
                          -l${CORE_LIB} \
                          ${BOOST_DATE_TIME_LIB} \
-                         -lxmlrpc++ -lssl -ltar
+                         -lxmlrpc++ -lssl -ltar -lserial
 
 TEST_RUNNER_OBJS = ${G_LIVESUPPORT_OBJS} \
                    ${TMP_DIR}/TestRunner.o \

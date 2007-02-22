@@ -127,8 +127,8 @@ CuePlayer :: onPlayItem(void)                                       throw ()
     if (iter) {
         Ptr<Playable>::Ref  playable = (*iter)[modelColumns.playableColumn];
         try {
-            gLiveSupport->playCueAudio(playable);
             setAudioState(playingState);
+            gLiveSupport->playCueAudio(playable);
         } catch (std::runtime_error &e) {
             std::cerr << "GLiveSupport::playCueAudio() error:"
                         << std::endl << e.what() << std::endl;
@@ -205,9 +205,13 @@ CuePlayer :: onStopButtonClicked(void)                              throw ()
  *  Event handler for the "cue audio player has stopped" event.
  *----------------------------------------------------------------------------*/
 void
-CuePlayer :: onStop(void)                                           throw ()
+CuePlayer :: onStop(Ptr<const Glib::ustring>::Ref  errorMessage)    throw ()
 {
     setAudioState(waitingState);
+    
+    if (errorMessage) {
+        gLiveSupport->displayMessageWindow(errorMessage);
+    }
 }
 
 

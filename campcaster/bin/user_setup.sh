@@ -143,7 +143,8 @@ test_result=`chgrp $apache_group $group_tmp_file 2> /dev/null`
 if [ $? != 0 ]; then
     rm -f $group_tmp_file;
     echo "Unable to use apache deamon group $apache_group.";
-    echo "Please check if $apache_group is a correct user group.";
+    echo "Please check if $apache_group is a correct user group,";
+    echo "and that the current user is a member of this group.";
     exit 1;
 fi
 rm -f $group_tmp_file;
@@ -327,6 +328,22 @@ make -C $modules_dir/archiveServer storage || exit 1
 
 
 #-------------------------------------------------------------------------------
+#  Setup the database tables for the scheduler
+#-------------------------------------------------------------------------------
+echo "Setting up database tables for the scheduler..."
+
+make -C $products_dir/scheduler init || exit 1
+
+
+#-------------------------------------------------------------------------------
+#  Add "scheduler" user
+#-------------------------------------------------------------------------------
+echo "Adding the 'scheduler' user..."
+
+php $modules_dir/storageServer/var/install/campcaster-user.php --addupdate scheduler $scheduler_storage_pass
+
+
+#-------------------------------------------------------------------------------
 #  Setup directory permissions
 #-------------------------------------------------------------------------------
 echo "Setting up directory permissions..."
@@ -345,7 +362,6 @@ chgrp $apache_group $modules_dir/storageServer/var/stor
 chgrp $apache_group $modules_dir/storageServer/var/access
 chgrp $apache_group $modules_dir/storageServer/var/trans
 chgrp $apache_group $modules_dir/storageServer/var/stor/buffer
-
 chmod g+sw $modules_dir/storageServer/var/stor
 chmod g+sw $modules_dir/storageServer/var/access
 chmod g+sw $modules_dir/storageServer/var/trans

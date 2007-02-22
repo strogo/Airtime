@@ -45,6 +45,7 @@
 #include <map>
 #include <boost/enable_shared_from_this.hpp>
 #include <unicode/resbund.h>
+#include <SerialStream.h>
 
 #include "LiveSupport/Core/Ptr.h"
 #include "LiveSupport/Core/LocalizedConfigurable.h"
@@ -253,17 +254,22 @@ class GLiveSupport : public LocalizedConfigurable,
         /**
          *  The location of the test audio file.
          */
-        Ptr<Glib::ustring>::Ref        testAudioUrl;
+        Ptr<Glib::ustring>::Ref         testAudioUrl;
 
         /**
          *  The command which starts the scheduler daemon.
          */
-        Ptr<Glib::ustring>::Ref        schedulerDaemonStartCommand;
+        Ptr<Glib::ustring>::Ref         schedulerDaemonStartCommand;
 
         /**
          *  The command which stops the scheduler daemon.
          */
-        Ptr<Glib::ustring>::Ref        schedulerDaemonStopCommand;
+        Ptr<Glib::ustring>::Ref         schedulerDaemonStopCommand;
+
+        /**
+         *  The serial stream object.
+         */
+        Ptr<LibSerial::SerialStream>::Ref       serialStream;
 
         /**
          *  Read a supportedLanguages configuration element,
@@ -357,6 +363,41 @@ class GLiveSupport : public LocalizedConfigurable,
         refreshPlaylistInLiveMode(Ptr<Playlist>::Ref    playlist)
                                                                 throw ();
 
+        /**
+         *  Replace the placeholders in the RDS settings with the
+         *  current values.
+         *
+         *  @param  rdsString   the string with the placeholders;
+         *                      they will be replaced in place.
+         */
+        void
+        substituteRdsData(Ptr<Glib::ustring>::Ref   rdsString)
+                                                                throw ();
+
+        /**
+         *  Replace a single placeholders in the RDS settings.
+         *  If the corresponding metadata is not found, an empty string
+         *  is substituted instead.
+         *
+         *  @param  rdsString   the string with the placeholders;
+         *                      they will be replaced in place.
+         *  @param  placeholder the string to be substituted, e.g. "%t".
+         *  @param  playable    the Playable object whose data is to be used.
+         *  @param  metadataKay the kind of metadata to be substituted.
+         */
+        void
+        substituteRdsItem(Ptr<Glib::ustring>::Ref   rdsString,
+                          const std::string &       placeholder,
+                          Ptr<Playable>::Ref        playable,
+                          const std::string &       metadataKey)
+                                                                    throw ();
+
+        /**
+         *  Write a string to the serial device.
+         */
+        void
+        writeToSerial(Ptr<const Glib::ustring>::Ref     message)    throw ();
+
 
     protected:
         /**
@@ -375,6 +416,7 @@ class GLiveSupport : public LocalizedConfigurable,
         {
             openedAudioClips.reset(new AudioClipMap());
             openedPlaylists.reset(new PlaylistMap());
+            serialStream.reset(new LibSerial::SerialStream());
         }
 
         /**
@@ -444,7 +486,7 @@ class GLiveSupport : public LocalizedConfigurable,
          *  @param message the message to display
          */
         void
-        displayMessageWindow(Ptr<Glib::ustring>::Ref    message)
+        displayMessageWindow(Ptr<const Glib::ustring>::Ref    message)
                                                                 throw ();
 
         /**
@@ -1014,9 +1056,13 @@ class GLiveSupport : public LocalizedConfigurable,
 
         /**
          *  Event handler for the "output audio player has stopped" event.
+         *
+         *  @param errorMessage is a 0 pointer if the player stopped normally
          */
         virtual void
-        onStop(void)                            throw ();
+        onStop(Ptr<const Glib::ustring>::Ref  errorMessage
+                                              = Ptr<const Glib::ustring>::Ref())
+                                                throw ();
 
         /**
          *  Display the playable item on the master panel as "now playing".
@@ -1277,6 +1323,24 @@ class GLiveSupport : public LocalizedConfigurable,
          */
         void
         createScratchpadWindow(void)                            throw ();
+
+        /**
+         *  Read the RDS settings, and send them to the serial port.
+         *
+         *  The following RDS placeholders will be substituted:
+         *
+         *  <ul>
+         *      <li>"%c" ---> "dc:creator" (Creator)</li>
+         *      <li>"%t" ---> "dc:title" (Title)</li>
+         *      <li>"%d" ---> "dc:format:extent" (Duration)</li>
+         *      <li>"%s" ---> "dc:source" (Album)</li>
+         *      <li>"%y" ---> "ls:year" (Year)</li>
+         *  </ul>
+         *
+         *  @see substituteRdsData()
+         */
+        void
+        updateRds(void)                                         throw ();
 };
 
 /* ================================================= external data structures */

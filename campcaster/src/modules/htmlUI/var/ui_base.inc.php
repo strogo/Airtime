@@ -233,11 +233,13 @@ class uiBase
             } else {
                 $this->id = M2tree::GetObjId($this->login, $this->gb->storId);
             }
-            $parentId = M2tree::GetParent($this->id);
-            $this->pid = ($parentId != 1) ? $parentId : FALSE;
-            $this->type = Greenbox::getFileType($this->id);
-            $this->fid = ($this->type == 'Folder') ? $this->id : $this->pid;
-            $this->homeid = M2tree::GetObjId($this->login, $this->gb->storId);
+            if (!is_null($this->id)) {
+                $parentId = M2tree::GetParent($this->id);
+                $this->pid = ($parentId != 1) ? $parentId : FALSE;
+                $this->type = Greenbox::getFileType($this->id);
+                $this->fid = ($this->type == 'Folder') ? $this->id : $this->pid;
+                $this->homeid = M2tree::GetObjId($this->login, $this->gb->storId);
+            }
         }
 
     }
@@ -512,6 +514,9 @@ class uiBase
 
     public function getMetadataValue($id, $key, $langid=NULL, $deflangid=UI_DEFAULT_LANGID)
     {
+        if (!is_numeric($id)) {
+            return null;
+        }
         if (!$langid) {
             $langid = $_SESSION['langid'];
         }
@@ -525,9 +530,9 @@ class uiBase
         if (!$langid) {
             $langid = UI_DEFAULT_LANGID;
         }
-        if (ini_get('magic_quotes_gpc')) {
-            $value = str_replace("\'", "'", $value);
-        }
+//        if (ini_get('magic_quotes_gpc')) {
+//            $value = str_replace("\'", "'", $value);
+//        }
 
         if ($this->gb->setMetadataValue($id, $key, $this->sessid, $value, $langid)) {
             return TRUE;
