@@ -84,7 +84,7 @@ struct _LivesupportOneShotReader {
 
     GstPad        * sinkpad;
 
-    GstByteStream * bytestream;
+    GstAdapter    * adapter;
     gboolean        processed;
     guint8        * contents;
     guint32         length;
