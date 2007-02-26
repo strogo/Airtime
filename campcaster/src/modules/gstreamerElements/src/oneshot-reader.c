@@ -371,9 +371,9 @@ livesupport_one_shot_reader_dispose(GObject * object)
 {
     LivesupportOneShotReader * reader = LIVESUPPORT_ONE_SHOT_READER(object);
 
-    if (reader->bytestream) {
-        gst_bytestream_destroy(reader->bytestream);
-        reader->bytestream = 0;
+    if (reader->adapter) {
+        g_object_unref(G_OBJECT(reader->adapter));
+        reader->adapter = 0;
     }
     if (reader->contents) {
         g_free(reader->contents);
