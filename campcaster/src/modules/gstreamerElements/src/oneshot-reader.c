@@ -224,57 +224,16 @@ read_stream_into_memory(LivesupportOneShotReader  * reader,
     *outbuffer = 0;
     *outlength = 0;
 
-    if (!reader->bytestream) {
+    if (!reader->adapter) {
         GST_ELEMENT_ERROR(GST_ELEMENT(reader),
                           CORE,
                           PAD,
-                          ("missing bytestream"),
+                          ("missing adapter"),
                           (NULL));
         return;
     }
 
-    /* seek to the beginning, to make sure... */
-    gst_bytestream_seek(reader->bytestream, 0LL, GST_SEEK_METHOD_SET);
 
-    length = (guint32) gst_bytestream_length(reader->bytestream);
-    buffer = g_malloc(length + 1);
-    read   = 0;
-    while (read < length) {
-        guint32     r;
-        guint8    * buf;
-        GstEvent  * event;
-
-        /* look if we've reached eos, and exit the loop if so */
-        gst_bytestream_get_status(reader->bytestream, &r, &event);
-        if (event) {
-            if (GST_EVENT_TYPE(event) == GST_EVENT_EOS) {
-                gst_event_unref(event);
-                break;
-            }
-            gst_event_unref(event);
-        }
-
-        r = gst_bytestream_peek_bytes(reader->bytestream, &buf, length - read);
-        memcpy(buffer + read, buf, r);
-        read += r;
-    }
-
-    /* check if we could read everything */
-    if (read < length) {
-        g_free(buffer);
-        GST_ELEMENT_ERROR(GST_ELEMENT(reader),
-                          RESOURCE,
-                          READ,
-                          ("couldn't read the whole of the input"),
-                          (NULL));
-        return;
-    }
-
-    /* flush the bytestream, as we've read all from it anyway */
-    gst_bytestream_flush_fast(reader->bytestream, length);
-
-    /* re-seek to the beginning, to make sure it can be set to PLAYING again */
-    gst_bytestream_seek(reader->bytestream, 0LL, GST_SEEK_METHOD_SET);
 
     /* put a 0 character at the end of the buffer */
     buffer[length] = '\0';
