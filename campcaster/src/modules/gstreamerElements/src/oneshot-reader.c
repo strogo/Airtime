@@ -326,7 +326,6 @@ static GstFlowReturn
 livesupport_sink_pad_chain (GstPad *pad, GstBuffer *buffer)
 {
   MyElement *this;
-  GstAdapter *adapter;
   GstFlowReturn ret = GST_FLOW_OK;
   
   // will give the element an extra ref; remember to drop it 
@@ -338,7 +337,6 @@ livesupport_sink_pad_chain (GstPad *pad, GstBuffer *buffer)
   // while we can read out 512 bytes, process them
   while (gst_adapter_available (adapter) >= 512 && ret == GST_FLOW_OK) {
     // use flowreturn as an error value
-    ret = my_library_foo (gst_adapter_peek (adapter, 512));
     gst_adapter_flush (adapter, 512);
   }
   
@@ -437,13 +435,12 @@ livesupport_one_shot_reader_init(LivesupportOneShotReader * reader)
     reader->sinkpad = gst_pad_new("sink", GST_PAD_SINK);
     gst_element_add_pad(GST_ELEMENT(reader), reader->sinkpad);
 
+    gst_pad_add_chain_function(reader->sinkpad, livesupport_sink_pad_chain);
+
     gst_pad_set_link_function(reader->sinkpad,
                               GST_DEBUG_FUNCPTR(gst_pad_proxy_pad_link));
     gst_pad_set_getcaps_function(reader->sinkpad,
                                  GST_DEBUG_FUNCPTR(gst_pad_proxy_getcaps));
-
-    gst_element_set_loop_function(GST_ELEMENT(reader),
-                                  livesupport_one_shot_reader_loop);
 
     reader->bytestream = 0;
     reader->contents   = 0;
