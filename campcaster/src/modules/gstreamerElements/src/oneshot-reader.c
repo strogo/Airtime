@@ -134,13 +134,6 @@ read_stream_into_memory(LivesupportOneShotReader  * reader,
                         guint8                   ** outbuffer,
                         guint32                   * outlength);
 
-/**
- *  The main loop function of the element.
- *
- *  @param element a OneShotReader element to loop on.
- */
-static void
-livesupport_one_shot_reader_loop(GstElement   * element);
 
 /**
  *  The state change function of the element.
@@ -287,45 +280,11 @@ read_stream_into_memory(LivesupportOneShotReader  * reader,
 }
 
 
-/*------------------------------------------------------------------------------
- *  The loop function of the reader.
- *----------------------------------------------------------------------------*/
-static void
-livesupport_one_shot_reader_loop(GstElement * element)
-{
-    LivesupportOneShotReader  * reader;
-    GstData                   * data;
-
-    g_return_if_fail(element != NULL);
-    g_return_if_fail(GST_IS_ONE_SHOT_READER(element));
-
-    reader = LIVESUPPORT_ONE_SHOT_READER(element);
-
-    if (!reader->processed) {
-        /* read the source document into memory */
-        read_stream_into_memory(reader, &reader->contents, &reader->length);
-        if (!reader->contents) {
-            GST_ELEMENT_ERROR(GST_ELEMENT(reader),
-                              STREAM,
-                              WRONG_TYPE,
-                              ("unable to process input"),
-                              (NULL));
-        }
-        reader->processed = TRUE;
-    }
-
-    /* just pull the data from the source and don't care about it */
-    data = gst_pad_pull(reader->sinkpad);
-
-    gst_element_set_eos(element);
-}
-
-
-
 static GstFlowReturn
 livesupport_sink_pad_chain (GstPad *pad, GstBuffer *buffer)
 {
   MyElement *this;
+  GstAdapter *adapter;
   GstFlowReturn ret = GST_FLOW_OK;
   
   // will give the element an extra ref; remember to drop it 
