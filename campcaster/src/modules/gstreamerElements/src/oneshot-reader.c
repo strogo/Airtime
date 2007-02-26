@@ -318,7 +318,7 @@ livesupport_one_shot_reader_change_state(GstElement   * element)
             break;
 
         case GST_STATE_READY_TO_PAUSED:
-            reader->bytestream = gst_bytestream_new(reader->sinkpad);
+            reader->adapter = gst_adapter_new();
             break;
 
         case GST_STATE_PAUSED_TO_PLAYING:
@@ -400,7 +400,7 @@ livesupport_one_shot_reader_init(LivesupportOneShotReader * reader)
     gst_pad_set_getcaps_function(reader->sinkpad,
                                  GST_DEBUG_FUNCPTR(gst_pad_proxy_getcaps));
 
-    reader->bytestream = 0;
+    reader->adapter    = 0;
     reader->contents   = 0;
     reader->length     = 0L;
 
