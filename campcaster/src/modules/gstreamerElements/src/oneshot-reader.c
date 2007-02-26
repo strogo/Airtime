@@ -135,6 +135,10 @@ read_stream_into_memory(LivesupportOneShotReader  * reader,
                         guint32                   * outlength);
 
 
+static GstFlowReturn
+livesupport_one_shot_reader_sink_pad_chain(GstPad *pad, GstBuffer *buffer);
+
+
 /**
  *  The state change function of the element.
  *
@@ -281,7 +285,7 @@ read_stream_into_memory(LivesupportOneShotReader  * reader,
 
 
 static GstFlowReturn
-livesupport_sink_pad_chain (GstPad *pad, GstBuffer *buffer)
+livesupport_one_shot_reader_sink_pad_chain (GstPad *pad, GstBuffer *buffer)
 {
   MyElement *this;
   GstAdapter *adapter;
