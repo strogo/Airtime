@@ -245,6 +245,8 @@ read_stream_into_memory(LivesupportOneShotReader  * reader,
 static GstFlowReturn
 livesupport_one_shot_reader_sink_pad_chain (GstPad *pad, GstBuffer *buffer)
 {
+    printf("livesupport_one_shot_reader_sink_pad_chain()");
+
     MyElement *this;
     GstAdapter *adapter;
     GstFlowReturn ret = GST_FLOW_OK;
