@@ -245,19 +245,19 @@ read_stream_into_memory(LivesupportOneShotReader  * reader,
 static GstFlowReturn
 livesupport_one_shot_reader_sink_pad_chain (GstPad *pad, GstBuffer *buffer)
 {
-  MyElement *this;
-  GstAdapter *adapter;
-  GstFlowReturn ret = GST_FLOW_OK;
-  
-  // will give the element an extra ref; remember to drop it 
-  this = MY_ELEMENT (gst_pad_get_parent (pad));
-  adapter = this->adapter;
-  
-  // put buffer into adapter
-  gst_adapter_push (adapter, buffer);
-  
-  gst_object_unref (this);
-  return ret;
+    MyElement *this;
+    GstAdapter *adapter;
+    GstFlowReturn ret = GST_FLOW_OK;
+    
+    // will give the element an extra ref; remember to drop it 
+    this = MY_ELEMENT (gst_pad_get_parent (pad));
+    adapter = this->adapter;
+    
+    // put buffer into adapter
+    gst_adapter_push (adapter, buffer);
+    
+    gst_object_unref (this);
+    return ret;
 }
 
 
