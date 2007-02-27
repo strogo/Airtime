@@ -247,12 +247,12 @@ livesupport_one_shot_reader_sink_pad_chain (GstPad *pad, GstBuffer *buffer)
 {
     printf("livesupport_one_shot_reader_sink_pad_chain()");
 
-    MyElement *this;
+    LivesupportOneShotReader *this;
     GstAdapter *adapter;
     GstFlowReturn ret = GST_FLOW_OK;
     
     // will give the element an extra ref; remember to drop it 
-    this = MY_ELEMENT (gst_pad_get_parent (pad));
+    this = LIVESUPPORT_ONE_SHOT_READER(gst_pad_get_parent (pad));
     adapter = this->adapter;
     
     // put buffer into adapter
