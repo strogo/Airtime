@@ -878,6 +878,7 @@ livesupport_minimal_audio_smil_init(LivesupportMinimalAudioSmil * smil)
     smil->myclass = (LivesupportMinimalAudioSmilClass*) G_OBJECT_GET_CLASS(smil);
 
     GValue      gvalue = { 0 };
+    GstPad    * adderSource;
     GstPad    * oneshotReaderSink;
 
     smil->bin    = GST_BIN(gst_bin_new("smilbin"));
@@ -911,7 +912,8 @@ livesupport_minimal_audio_smil_init(LivesupportMinimalAudioSmil * smil)
 
     printf("Getting pad from adder.\n");
 
-    gst_element_add_pad(GST_ELEMENT(smil->bin), gst_element_get_pad(smil->finalAdder, "src"));
+    adderSource = gst_ghost_pad_new("src", gst_element_get_pad(smil->finalAdder, "src"));
+    gst_element_add_pad(GST_ELEMENT(smil->bin), adderSource);
 
     printf("Getting pad from bin.\n");
 
