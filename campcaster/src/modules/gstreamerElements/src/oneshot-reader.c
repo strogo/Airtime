@@ -354,7 +354,7 @@ livesupport_one_shot_reader_init(LivesupportOneShotReader * reader)
     reader->sinkpad = gst_pad_new("sink", GST_PAD_SINK);
     gst_element_add_pad(GST_ELEMENT(reader), reader->sinkpad);
 
-    gst_pad_add_chain_function(reader->sinkpad, livesupport_one_shot_reader_sink_pad_chain);
+    gst_pad_set_chain_function(reader->sinkpad, livesupport_one_shot_reader_sink_pad_chain);
 
 //    gst_pad_set_link_function(reader->sinkpad,
 //                              GST_DEBUG_FUNCPTR(gst_pad_proxy_pad_link));
