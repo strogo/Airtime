@@ -911,15 +911,16 @@ livesupport_minimal_audio_smil_init(LivesupportMinimalAudioSmil * smil)
 
     printf("Getting pad from adder.\n");
 
-    gst_element_add_pad(GST_ELEMENT(smil->bin),
-                        gst_element_get_pad(smil->finalAdder, "src"));
+    gst_element_add_pad(GST_ELEMENT(smil->bin), gst_element_get_pad(smil->finalAdder, "src"));
 
     printf("Getting pad from bin.\n");
 
     gst_bin_add(GST_BIN(smil), GST_ELEMENT(smil->bin));
-    smil->srcpad = gst_element_add_pad(GST_ELEMENT(smil),
-                            gst_element_get_pad(GST_ELEMENT(smil->bin), "src"));
 
+
+    smil->srcpad = gst_element_get_pad(GST_ELEMENT(smil->bin), "src");
+    gst_element_add_pad(GST_ELEMENT(smil), smil->srcpad );
+    
     smil->oneshotReader = gst_element_factory_make("oneshotreader", "oneshot");
     oneshotReaderSink = gst_element_get_pad(smil->oneshotReader, "sink");
     gst_bin_add(GST_BIN(smil), smil->oneshotReader);
