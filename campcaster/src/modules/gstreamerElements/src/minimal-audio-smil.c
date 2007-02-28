@@ -924,7 +924,9 @@ livesupport_minimal_audio_smil_init(LivesupportMinimalAudioSmil * smil)
     smil->oneshotReader = gst_element_factory_make("oneshotreader", "oneshot");
     oneshotReaderSink = gst_element_get_pad(smil->oneshotReader, "sink");
     gst_bin_add(GST_BIN(smil), smil->oneshotReader);
-    smil->sinkpad = gst_element_add_pad(GST_ELEMENT(smil), oneshotReaderSink);
+
+    smil->sinkpad = gst_ghost_pad_new("sink", oneshotReaderSink);
+    gst_element_add_pad(GST_ELEMENT(smil), smil->sinkpad);
 
     smil->fileProcessed = FALSE;
 
