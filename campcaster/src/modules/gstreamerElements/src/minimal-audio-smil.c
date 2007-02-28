@@ -719,7 +719,7 @@ handle_par_element(LivesupportMinimalAudioSmil    * smil,
     }
 
     gst_bin_add(GST_BIN(pipeline), adder);
-    gst_element_add_pad(GST_ELEMENT(pipeline), gst_element_get_pad(adder, "src"));
+    gst_element_add_pad(GST_ELEMENT(pipeline), gst_element_ghost_pad_new("src", gst_element_get_pad(adder, "src")));
 
     return pipeline;
 }
