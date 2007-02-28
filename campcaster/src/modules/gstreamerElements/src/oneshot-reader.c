@@ -144,8 +144,8 @@ livesupport_one_shot_reader_sink_pad_chain(GstPad *pad, GstBuffer *buffer);
  *
  *  @param element a OneShotReader element to change the state for.
  */
-static GstElementStateReturn
-livesupport_one_shot_reader_change_state(GstElement   * element);
+//static GstStateChangeReturn
+//livesupport_one_shot_reader_change_state(GstElement   * element);
 
 /**
  *  The dispose function of the element.
@@ -263,10 +263,11 @@ livesupport_one_shot_reader_sink_pad_chain (GstPad *pad, GstBuffer *buffer)
 }
 
 
+#if 0
 /*------------------------------------------------------------------------------
  *  The state change function of the element.
  *----------------------------------------------------------------------------*/
-static GstElementStateReturn
+static GstStateChangeReturn
 livesupport_one_shot_reader_change_state(GstElement   * element)
 {
     LivesupportOneShotReader   * reader;
@@ -321,7 +322,7 @@ livesupport_one_shot_reader_change_state(GstElement   * element)
 
     return GST_STATE_SUCCESS;
 }
-
+#endif
 
 /*------------------------------------------------------------------------------
  *  The dispose function.
@@ -355,8 +356,8 @@ livesupport_one_shot_reader_init(LivesupportOneShotReader * reader)
 
     gst_pad_add_chain_function(reader->sinkpad, livesupport_one_shot_reader_sink_pad_chain);
 
-    gst_pad_set_link_function(reader->sinkpad,
-                              GST_DEBUG_FUNCPTR(gst_pad_proxy_pad_link));
+//    gst_pad_set_link_function(reader->sinkpad,
+//                              GST_DEBUG_FUNCPTR(gst_pad_proxy_pad_link));
     gst_pad_set_getcaps_function(reader->sinkpad,
                                  GST_DEBUG_FUNCPTR(gst_pad_proxy_getcaps));
 
@@ -398,7 +399,7 @@ livesupport_one_shot_reader_class_init(LivesupportOneShotReaderClass * klass)
     parent_class = g_type_class_ref(GST_TYPE_ELEMENT);
 
     gobject_class->dispose         = livesupport_one_shot_reader_dispose;
-    gstelement_class->change_state = livesupport_one_shot_reader_change_state;
+//    gstelement_class->change_state = livesupport_one_shot_reader_change_state;
 
     g_object_class_install_property(gobject_class,
                                     ARG_CONTENTS,
