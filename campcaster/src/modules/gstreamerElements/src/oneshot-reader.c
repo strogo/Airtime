@@ -256,7 +256,7 @@ livesupport_one_shot_reader_sink_pad_chain (GstPad *pad, GstBuffer *buffer)
     adapter = this->adapter;
     
     // put buffer into adapter
-    gst_adapter_push (adapter, buffer);
+    //gst_adapter_push (adapter, buffer);
     
     gst_object_unref (this);
     return ret;
