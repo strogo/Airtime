@@ -464,6 +464,8 @@ livesupport_one_shot_reader_get_type(void)
 static gboolean
 plugin_init(GstPlugin * plugin)
 {
+    printf("REGISTERING.");
+
     return gst_element_register(plugin,
                                 "oneshotreader",
                                 GST_RANK_NONE,
