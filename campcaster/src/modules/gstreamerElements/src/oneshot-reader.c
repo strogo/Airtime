@@ -61,7 +61,7 @@ static GstElementDetails livesupport_one_shot_reader_details =
              GST_ELEMENT_DETAILS("OneShotReader",
                                  "Generic",
                                  "A reader, reading the contents in one shot",
-                                 "Akos Maroy <maroy@campware.org>");
+                                 "Campware <contact@campware.org>");
 
 /**
  *  The parent class.
@@ -100,7 +100,7 @@ GST_PLUGIN_DEFINE(GST_VERSION_MAJOR,
                   plugin_init,
                   "$Revision$",
                   "GPL",
-                  "LiveSupport",
+                  "Campcaster",
                   "http://campcaster.campware.org/")
 
 

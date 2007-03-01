@@ -1,26 +1,26 @@
 /*------------------------------------------------------------------------------
 
     Copyright (c) 2004 Media Development Loan Fund
- 
+
     This file is part of the Campcaster project.
     http://campcaster.campware.org/
     To report bugs, send an e-mail to bugs@campware.org
- 
+
     Campcaster is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation; either version 2 of the License, or
     (at your option) any later version.
-  
+
     Campcaster is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
- 
+
     You should have received a copy of the GNU General Public License
     along with Campcaster; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- 
- 
+
+
     Author   : $Author$
     Version  : $Revision$
     Location : $URL$
@@ -67,8 +67,8 @@ GST_PLUGIN_DEFINE (
     plugin_init,
     "$Revision$",
     "GPL",
-    "LiveSupport",
-    "http://livesupport.campware.org/"
+    "Campcaster",
+    "http://campcaster.campware.org/"
 )
 */
 
@@ -323,7 +323,7 @@ livesupport_switcher_base_init(LivesupportSwitcherClass   * klass)
         "Switcher",
         "Generic/Switcher",
        "A plugin that is connected to a switch element, and changes its source",
-        "Akos Maroy <maroy@campware.org>"
+        "Campware <contact@campware.org>"
     };
     GstElementClass   * element_class = GST_ELEMENT_CLASS (klass);
 
@@ -572,7 +572,7 @@ livesupport_switcher_dispose(GObject * object)
     }
     if (switcher->sourceConfigList) {
         GList     * element;
-       
+
         for (element = g_list_first(switcher->sourceConfigList);
              element;
              element = g_list_next(element)) {
@@ -633,7 +633,7 @@ livesupport_switcher_change_state(GstElement      * element,
 
 g_printerr("size of config list: %d\n",
            g_list_length(switcher->sourceConfigList));
-                
+
                 switcher->currentConfig =
                                     g_list_first(switcher->sourceConfigList);
                 if (switcher->currentConfig) {
@@ -687,7 +687,7 @@ config, peerPad);
             }
         } break;
 
-        case GST_STATE_CHANGE_PAUSED_TO_PLAYING: 
+        case GST_STATE_CHANGE_PAUSED_TO_PLAYING:
             break;
 
         case GST_STATE_CHANGE_PLAYING_TO_PAUSED:

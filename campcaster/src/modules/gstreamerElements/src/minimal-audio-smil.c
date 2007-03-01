@@ -63,7 +63,7 @@ static GstElementDetails livesupport_minimal_audio_smil_details =
              GST_ELEMENT_DETAILS("MinimalAudioSmil",
                                  "Parse/Smil",
                                  "A minimal SMIL player, supporting only audio",
-                                 "Akos Maroy <maroy@campware.org>");
+                                 "Campware <contact@campware.org>");
 
 /**
  *  The parent class.
@@ -126,7 +126,7 @@ GST_PLUGIN_DEFINE(GST_VERSION_MAJOR,
                   plugin_init,
                   "$Revision$",
                   "GPL",
-                  "LiveSupport",
+                  "Campcaster",
                   "http://campcaster.campware.org/")
 
 
