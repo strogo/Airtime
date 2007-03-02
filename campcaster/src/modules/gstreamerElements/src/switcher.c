@@ -57,8 +57,13 @@ enum {
     ARG_CAPS
 };
 
+//
+// FIXME Figure out why PACKAGE is undefined
+#define PACKAGE "foo"
+
 /**
  *  The plugin registry definition.
+*/
 GST_PLUGIN_DEFINE (
     GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
@@ -70,7 +75,6 @@ GST_PLUGIN_DEFINE (
     "Campcaster",
     "http://campcaster.campware.org/"
 )
-*/
 
 
 /* ================================================  local constants & macros */
