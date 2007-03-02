@@ -179,6 +179,17 @@ livesupport_one_shot_reader_base_init(gpointer  g_class);
 static void
 livesupport_one_shot_reader_class_init(LivesupportOneShotReaderClass * klass);
 
+/**
+ *  Function to handle events that come in from all the pads.
+ *
+ *  @param pad the pad the brings the event.
+ *  @param event the event to handle.
+ *  @return TRUE if the event was handled, FALSE otherwise.
+ */
+static gboolean
+event_handler(GstPad      * pad,
+              GstEvent    * event);
+
 
 /* =============================================================  module code */
 
@@ -245,7 +256,7 @@ read_stream_into_memory(LivesupportOneShotReader  * reader,
 static GstFlowReturn
 livesupport_one_shot_reader_sink_pad_chain (GstPad *pad, GstBuffer *buffer)
 {
-    printf("livesupport_one_shot_reader_sink_pad_chain()");
+    printf("livesupport_one_shot_reader_sink_pad_chain()\n");
 
     LivesupportOneShotReader *this;
     GstAdapter *adapter;
@@ -325,6 +336,34 @@ livesupport_one_shot_reader_change_state(GstElement   * element)
 #endif
 
 /*------------------------------------------------------------------------------
+ *  The event handler for all the pads.
+ *----------------------------------------------------------------------------*/
+static gboolean
+event_handler(GstPad      * pad,
+              GstEvent    * event)
+{
+    LivesupportOneShotReader   * reader;
+
+    reader = (LivesupportOneShotReader*) gst_pad_get_parent(pad);
+
+    g_printerr("got %s event from  %s:%s\n",
+               gst_event_type_get_name(GST_EVENT_TYPE(event)),
+               gst_element_get_name(gst_pad_get_parent_element(pad)),
+               gst_pad_get_name(pad));
+
+    switch (GST_EVENT_TYPE(event)) {
+        case GST_EVENT_EOS:
+            printf("Oneshotreader: EOS EVENT\n");
+            break;
+
+        default:
+            gst_pad_event_default(pad, event);
+    }
+
+    return TRUE;
+}
+
+/*------------------------------------------------------------------------------
  *  The dispose function.
  *----------------------------------------------------------------------------*/
 static void
@@ -355,6 +394,7 @@ livesupport_one_shot_reader_init(LivesupportOneShotReader * reader)
     gst_element_add_pad(GST_ELEMENT(reader), reader->sinkpad);
 
     gst_pad_set_chain_function(reader->sinkpad, livesupport_one_shot_reader_sink_pad_chain);
+    gst_pad_set_event_function(reader->sinkpad, event_handler);
 
 //    gst_pad_set_link_function(reader->sinkpad,
 //                              GST_DEBUG_FUNCPTR(gst_pad_proxy_pad_link));
