@@ -326,9 +326,11 @@ read_stream_into_memory(LivesupportMinimalAudioSmil    * smil,
     *outlength = 0;
 
     gst_element_get_state(smil->oneshotReader, &oldState, &pendingState, 10000000);
+    printf("Setting oneshotreader to PLAYING...\n");
     if (oldState != GST_STATE_PLAYING) {
         gst_element_set_state(smil->oneshotReader, GST_STATE_PLAYING);
     }
+    printf("done\n");
     g_object_get(G_OBJECT(smil->oneshotReader), "length", &length, NULL);
     g_object_get(G_OBJECT(smil->oneshotReader), "contents", &buffer, NULL);
 
