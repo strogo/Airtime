@@ -738,6 +738,8 @@ process_smil_file(LivesupportMinimalAudioSmil * smil)
     xmlDocPtr               document;
     xmlNode               * node;
 
+    printf("process_smil_file()\n");
+
     if (smil->fileProcessed) {
         return TRUE;
     }
@@ -804,6 +806,8 @@ process_smil_file(LivesupportMinimalAudioSmil * smil)
 static GstStateChangeReturn
 livesupport_minimal_audio_smil_change_state(GstElement * element, GstStateChange transition)
 {
+    printf("livesupport_minimal_audio_smil_change_state()\n");
+
     LivesupportMinimalAudioSmil   * smil;
 
     smil = LIVESUPPORT_MINIMAL_AUDIO_SMIL(element);
