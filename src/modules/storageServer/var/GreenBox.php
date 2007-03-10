@@ -383,7 +383,7 @@ class GreenBox extends BasicStor{
     function getAnonymURL($gunid,$sessid,$lang=NULL) {
         require_once 'AnonymAccess.php';
         $aa = new AnonymAccess($this,$sessid);
-        return $this->config['anonymAccessURL'].'/'.$aa->getM3UByGunid($gunid,$lang);
+        return $this->config['niceUrlURL'].'/'.$aa->getM3UByGunid($gunid,$lang);
     }
 
     /**

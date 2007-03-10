@@ -70,11 +70,11 @@ class AnonymAccess {
         $this->mediafile = $ac->md->resDir.'/'.$ac->md->gunid;
         //$this->debug($this->mediafile,'mediafile');
         
-        $this->old_link = $this->gb->config['anonymAccessDir'].'/'.$this->old_linkname.$this->extension;
-        $this->new_link = $this->gb->config['anonymAccessDir'].'/'.$this->new_linkname.$this->extension;
-        $this->old_m3u  = $this->gb->config['anonymAccessDir'].'/'.$this->old_linkname.'.m3u';
-        $this->new_m3u  = $this->gb->config['anonymAccessDir'].'/'.$this->new_linkname.'.m3u';
-        $this->new_url  = $this->gb->config['anonymAccessURL'].'/'.$this->new_linkname.'.mp3';
+        $this->old_link = $this->gb->config['niceUrlDir'].'/'.$this->old_linkname.$this->extension;
+        $this->new_link = $this->gb->config['niceUrlDir'].'/'.$this->new_linkname.$this->extension;
+        $this->old_m3u  = $this->gb->config['niceUrlDir'].'/'.$this->old_linkname.'.m3u';
+        $this->new_m3u  = $this->gb->config['niceUrlDir'].'/'.$this->new_linkname.'.m3u';
+        $this->new_url  = $this->gb->config['niceUrlURL'].'/'.$this->new_linkname.'.mp3';
         
         //$this->debug();
         
