@@ -267,7 +267,7 @@ livesupport_one_shot_reader_sink_pad_chain (GstPad *pad, GstBuffer *buffer)
     adapter = this->adapter;
     
     // put buffer into adapter
-    //gst_adapter_push (adapter, buffer);
+    gst_adapter_push (adapter, buffer);
     
     gst_object_unref (this);
     return ret;
@@ -402,7 +402,7 @@ livesupport_one_shot_reader_init(LivesupportOneShotReader * reader)
     gst_pad_set_getcaps_function(reader->sinkpad,
                                  GST_DEBUG_FUNCPTR(gst_pad_proxy_getcaps));
 
-    reader->adapter    = 0;
+    reader->adapter    = gst_adapter_new();
     reader->contents   = 0;
     reader->length     = 0L;
 
@@ -442,6 +442,8 @@ livesupport_one_shot_reader_class_init(LivesupportOneShotReaderClass * klass)
     gobject_class->dispose         = livesupport_one_shot_reader_dispose;
 //    gstelement_class->change_state = livesupport_one_shot_reader_change_state;
 
+    gobject_class->get_property = get_property;
+
     g_object_class_install_property(gobject_class,
                                     ARG_CONTENTS,
                                     g_param_spec_pointer("contents",
@@ -458,8 +460,6 @@ livesupport_one_shot_reader_class_init(LivesupportOneShotReaderClass * klass)
                                                       G_MAXUINT,
                                                       0,
                                                       G_PARAM_READABLE));
-
-    gobject_class->get_property = get_property;
 }
 
 
