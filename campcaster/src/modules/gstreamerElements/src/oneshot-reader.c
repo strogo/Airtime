@@ -354,6 +354,8 @@ event_handler(GstPad      * pad,
     switch (GST_EVENT_TYPE(event)) {
         case GST_EVENT_EOS:
             printf("Oneshotreader: EOS EVENT\n");
+            reader->length = gst_adapter_available(reader->adapter);
+            reader->contents = gst_adapter_take(reader->adapter, reader->length);
             gst_element_set_state(GST_ELEMENT_PARENT(GST_ELEMENT(reader)), GST_STATE_PLAYING);
             break;
 
