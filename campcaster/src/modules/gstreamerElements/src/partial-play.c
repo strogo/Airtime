@@ -290,9 +290,8 @@ livesupport_partial_play_change_state(GstElement * element, GstStateChange trans
             break;
     }
 
-    if (GST_ELEMENT_CLASS(parent_class)->change_state) {
-        return GST_ELEMENT_CLASS(parent_class)->change_state(element);
-    }
+    if (GST_ELEMENT_CLASS(parent_class)->change_state)
+        return GST_ELEMENT_CLASS(parent_class)->change_state(element, transition);
 
     return GST_STATE_CHANGE_SUCCESS;
 }
