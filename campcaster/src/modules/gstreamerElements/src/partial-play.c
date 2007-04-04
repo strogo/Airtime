@@ -77,6 +77,10 @@ static GstStaticPadTemplate src_factory = GST_STATIC_PAD_TEMPLATE (
  */
 static GstBinClass    * parent_class = NULL;
 
+
+//FIXME
+#define PACKAGE "foo"
+
 /**
  *  The plugin definition structure.
  */
