@@ -342,6 +342,8 @@ read_stream_into_memory(LivesupportMinimalAudioSmil    * smil,
         return;
     }
 
+    printf(buffer);
+
     *outbuffer = (guint8*)g_malloc(length);
     *outlength = length;
     memcpy(*outbuffer, buffer, length);
