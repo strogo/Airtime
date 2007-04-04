@@ -242,16 +242,16 @@ livesupport_partial_play_change_state(GstElement * element, GstStateChange trans
 
     pplay = LIVESUPPORT_PARTIAL_PLAY(element);
 
-    switch (GST_STATE_TRANSITION (element)) {
-        case GST_STATE_NULL_TO_READY:
+    switch (transition) {
+        case GST_STATE_CHANGE_NULL_TO_READY:
             livesupport_seek_pack_set_state(pplay->seekPack, GST_STATE_READY);
             break;
 
-        case GST_STATE_READY_TO_PAUSED:
+        case GST_STATE_CHANGE_READY_TO_PAUSED:
             livesupport_seek_pack_set_state(pplay->seekPack, GST_STATE_PAUSED);
             break;
 
-        case GST_STATE_PAUSED_TO_PLAYING:
+        case GST_STATE_CHANGE_PAUSED_TO_PLAYING:
             if (!pplay->seekPackInited) {
                 pplay->seekPackInited = TRUE;
                 if (pplay->source) {
@@ -273,16 +273,16 @@ livesupport_partial_play_change_state(GstElement * element, GstStateChange trans
             livesupport_seek_pack_set_state(pplay->seekPack, GST_STATE_PLAYING);
             break;
 
-        case GST_STATE_PLAYING_TO_PAUSED:
+        case GST_STATE_CHANGE_PLAYING_TO_PAUSED:
             livesupport_seek_pack_set_state(pplay->seekPack, GST_STATE_PAUSED);
             break;
             
-        case GST_STATE_PAUSED_TO_READY:
+        case GST_STATE_CHANGE_PAUSED_TO_READY:
             livesupport_seek_pack_set_state(pplay->seekPack, GST_STATE_READY);
             /* TODO: maybe de-init seekPack somehow? */
             break;
             
-        case GST_STATE_READY_TO_NULL:
+        case GST_STATE_CHANGE_READY_TO_NULL:
             livesupport_seek_pack_set_state(pplay->seekPack, GST_STATE_NULL);
             break;
 
@@ -294,7 +294,7 @@ livesupport_partial_play_change_state(GstElement * element, GstStateChange trans
         return GST_ELEMENT_CLASS(parent_class)->change_state(element);
     }
 
-    return GST_STATE_SUCCESS;
+    return GST_STATE_CHANGE_SUCCESS;
 }
 
 
