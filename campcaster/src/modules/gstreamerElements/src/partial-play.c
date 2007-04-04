@@ -427,7 +427,7 @@ livesupport_partial_play_dispose(GObject * object)
     g_return_if_fail(LIVESUPPORT_IS_PARTIAL_PLAY(object));
     pplay = LIVESUPPORT_PARTIAL_PLAY(object);
 
-    gst_caps_free(pplay->caps);
+    gst_caps_unref(pplay->caps);
     g_free(pplay->location);
     g_free(pplay->config);
     G_OBJECT_CLASS(parent_class)->dispose(object);
