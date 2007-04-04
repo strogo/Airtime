@@ -382,6 +382,8 @@ seek_pack_eos_signal_handler(GstElement     * element,
 static void
 livesupport_partial_play_init(LivesupportPartialPlay  * pplay)
 {
+    GstPad * ghostPad;
+
     pplay->caps = gst_caps_new_simple("audio/x-raw-int",
                                        "width", G_TYPE_INT, 16,
                                        "depth", G_TYPE_INT, 16,
@@ -395,9 +397,9 @@ livesupport_partial_play_init(LivesupportPartialPlay  * pplay)
     pplay->seekPackInited = FALSE;
 
     livesupport_seek_pack_add_to_bin(pplay->seekPack, GST_BIN(pplay));
-    pplay->srcpad = gst_element_add_ghost_pad(GST_ELEMENT(pplay),
-                            gst_element_get_pad(pplay->seekPack->bin, "src"),
-                            "src");
+
+    ghostPad = gst_ghost_pad_new("src", gst_element_get_pad(pplay->seekPack->bin, "src")); 
+    gst_element_add_pad(GST_ELEMENT(pplay), ghostPad);
 
     g_signal_connect(pplay->seekPack->bin,
                      "eos",
