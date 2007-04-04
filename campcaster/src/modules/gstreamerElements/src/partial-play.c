@@ -372,7 +372,9 @@ seek_pack_eos_signal_handler(GstElement     * element,
     /* set the container into eos state */
 
     GST_DEBUG("SeekPack.bin setting PartialPlay to eos");
-    gst_element_set_eos(container);
+
+    // FIXME this call is deprecated. Replacement?
+    //gst_element_set_eos(container);
 }
 
 
