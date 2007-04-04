@@ -187,8 +187,8 @@ livesupport_partial_play_get_type(void);
  *  @return GST_STATE_SUCCES if the state change was successful, 
  *          GST_STATE_FAILURE on failure.
  */
-static GstElementStateReturn
-livesupport_partial_play_change_state(GstElement * element);
+static GstStateChangeReturn
+livesupport_partial_play_change_state(GstElement * element, GstStateChange transition);
 
 /**
  *  Update the source configration for a PartialPlay object.
@@ -235,8 +235,8 @@ livesupport_partial_play_get_type(void)
 /*------------------------------------------------------------------------------
  *  Handle the state change for a partial play object.
  *----------------------------------------------------------------------------*/
-static GstElementStateReturn
-livesupport_partial_play_change_state(GstElement * element)
+static GstStateChangeReturn
+livesupport_partial_play_change_state(GstElement * element, GstStateChange transition)
 {
     LivesupportPartialPlay   * pplay;
 
