@@ -120,20 +120,6 @@ get_property(GObject      * object,
              GValue       * value,
              GParamSpec   * pspec);
 
-/**
- *  Read a stream into memory.
- *
- *  @param read the OneShotReader to read from.
- *  @param outbuffer the buffer to return the whole stream in, plus
- *                   an extra terminating NULL character.
- *                   must be freed after it's not needed.
- *  @param outlength the length of the returned buffer.
- */
-static void
-read_stream_into_memory(LivesupportOneShotReader  * reader,
-                        guint8                   ** outbuffer,
-                        guint32                   * outlength);
-
 
 static GstFlowReturn
 livesupport_one_shot_reader_sink_pad_chain(GstPad *pad, GstBuffer *buffer);
@@ -217,39 +203,6 @@ get_property(GObject      * object,
             G_OBJECT_WARN_INVALID_PROPERTY_ID(object, propId, pspec);
             break;
     }
-}
-
-
-/*------------------------------------------------------------------------------
- *  Read the whole stream into memory.
- *----------------------------------------------------------------------------*/
-static void
-read_stream_into_memory(LivesupportOneShotReader  * reader,
-                        guint8                   ** outbuffer,
-                        guint32                   * outlength)
-{
-    guint32         length;
-    guint32         read;
-    guint8        * buffer;
-
-    *outbuffer = 0;
-    *outlength = 0;
-
-    if (!reader->adapter) {
-        GST_ELEMENT_ERROR(GST_ELEMENT(reader),
-                          CORE,
-                          PAD,
-                          ("missing adapter"),
-                          (NULL));
-        return;
-    }
-
-
-    /* put a 0 character at the end of the buffer */
-    buffer[length] = '\0';
-
-    *outbuffer = buffer;
-    *outlength = length;
 }
 
 
