@@ -333,6 +333,9 @@ livesupport_partial_play_class_init(LivesupportPartialPlayClass   * klass)
 
     gobject_class->dispose         = livesupport_partial_play_dispose;
 
+    gobject_class->set_property = livesupport_partial_play_set_property;
+    gobject_class->get_property = livesupport_partial_play_get_property;
+
     g_object_class_install_property(gobject_class,
                                     ARG_LOCATION,
                                     g_param_spec_string("location",
@@ -349,8 +352,6 @@ livesupport_partial_play_class_init(LivesupportPartialPlayClass   * klass)
                                                          "",
                                                          G_PARAM_READWRITE));
 
-    gobject_class->set_property = livesupport_partial_play_set_property;
-    gobject_class->get_property = livesupport_partial_play_get_property;
 
     gstelement_class->change_state = livesupport_partial_play_change_state;
 }
