@@ -643,8 +643,8 @@ handle_audio_element(LivesupportMinimalAudioSmil  * smil,
             }
 
             if (elem) {
-                gst_element_link(element, elem);
                 gst_bin_add(bin, elem);
+                gst_element_link(element, elem);
 
                 /* FIXME: this is an ugly workaround.
                  *        for some reason, the EOS event does not get
@@ -703,6 +703,7 @@ handle_par_element(LivesupportMinimalAudioSmil    * smil,
     g_object_set(adder, "caps", &gvalue, NULL);
     g_value_unset(&gvalue);
 
+    gst_bin_add(GST_BIN(pipeline), adder);
 
     for (index = 0, node = par->children; node && !(*smil->myclass->abort); node = node->next, ++index) {
         if (node->type == XML_ELEMENT_NODE) {
@@ -726,7 +727,6 @@ handle_par_element(LivesupportMinimalAudioSmil    * smil,
         }
     }
 
-    gst_bin_add(GST_BIN(pipeline), adder);
     gst_element_add_pad(GST_ELEMENT(pipeline), gst_ghost_pad_new("src", gst_element_get_pad(adder, "src")));
 
     return pipeline;
