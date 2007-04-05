@@ -157,10 +157,14 @@ livesupport_seek_pack_init(LivesupportSeekPack    * seekPack,
     }
     g_object_set(seekPack->switcher, "source-config", str, NULL);
 
+    printf("********** TEST ***********\n");
+    printf(name);
     g_snprintf(name, len, "%s_seekPackDecoder", seekPack->name);
-    seekPack->decoder = ls_gst_autoplug_plug_source(seekPack->source,
-                                                    name,
-                                                    seekPack->caps);
+    
+    //FIXME we need a replacement for Akos's autoplugger here
+    seekPack->decoder    = gst_element_factory_make("mad", "mp3decoder");
+    //seekPack->decoder = ls_gst_autoplug_plug_source(seekPack->source, name, seekPack->caps);
+
     /* TODO: only add scale element if needed */
     g_snprintf(name, len, "%s_seekPackDecoderScale", seekPack->name);
     seekPack->decoderScale = gst_element_factory_make("audioresample", name);
