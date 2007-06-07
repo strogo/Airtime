@@ -116,9 +116,6 @@ MasterPanelWindow :: MasterPanelWindow (Ptr<GLiveSupport>::Ref    gLiveSupport,
     masterPanelWindow->signal_key_press_event().connect(sigc::mem_fun(
                                         *this,
                                         &MasterPanelWindow::onKeyPressed));
-// DEBUG
-std::cerr << "window name: '" << masterPanelWindow->get_name() << "'\n";
-//
 
     // get a reference for the window-opener buttons
     glade->get_widget("liveModeButton", liveModeButton);
@@ -157,7 +154,9 @@ std::cerr << "window name: '" << masterPanelWindow->get_name() << "'\n";
     // set the size and location of the window, according to the screen size
     Glib::RefPtr<Gdk::Screen>   screen = masterPanelWindow->get_screen();
     int                         width  = screen->get_width();
-    masterPanelWindow->set_default_size(width, -1);
+    int                         height = masterPanelWindow->get_height();
+    masterPanelWindow->set_default_size(width, height);
+    masterPanelWindow->resize(width, height);
     masterPanelWindow->move(0, 0);
 
     // show what's there to see

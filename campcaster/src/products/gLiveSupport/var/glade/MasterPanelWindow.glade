@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.2.0 on Thu Jun  7 16:16:14 2007 by fgerlits@desktop-->
+<!--Generated with glade3 3.2.0 on Thu Jun  7 17:48:49 2007 by fgerlits@desktop-->
 <glade-interface>
   <widget class="GtkWindow" id="masterPanelWindow">
     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
@@ -136,7 +136,7 @@
               <widget class="GtkHButtonBox" id="mainButtonBox">
                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                 <child>
-                  <widget class="GtkButton" id="liveModeButton">
+                  <widget class="GtkToggleButton" id="liveModeButton">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -145,7 +145,7 @@
                   </widget>
                 </child>
                 <child>
-                  <widget class="GtkButton" id="uploadFileButton">
+                  <widget class="GtkToggleButton" id="uploadFileButton">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -157,7 +157,7 @@
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkButton" id="scratchpadButton">
+                  <widget class="GtkToggleButton" id="scratchpadButton">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -169,7 +169,7 @@
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkButton" id="playlistButton">
+                  <widget class="GtkToggleButton" id="playlistButton">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -181,7 +181,7 @@
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkButton" id="schedulerButton">
+                  <widget class="GtkToggleButton" id="schedulerButton">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -193,7 +193,7 @@
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkButton" id="searchButton">
+                  <widget class="GtkToggleButton" id="searchButton">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -205,7 +205,7 @@
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkButton" id="optionsButton">
+                  <widget class="GtkToggleButton" id="optionsButton">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -230,7 +230,7 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkButton" id="loginButton">
+              <widget class="GtkToggleButton" id="loginButton">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
