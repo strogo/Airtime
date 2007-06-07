@@ -7,7 +7,7 @@ hu:table
     liveModeButtonLabel:string              { "Élő adás" }
     uploadFileButtonLabel:string            { "Filefeltöltés" }
     scratchpadButtonLabel:string            { "Scratchpad" }
-    simplePlaylistMgmtButtonLabel:string    { "Műsorkezelés" }
+    playlistButtonLabel:string              { "Műsorkezelés" }
     schedulerButtonLabel:string             { "Időzítő" }
     searchButtonLabel:string                { "Keresés" }
     optionsButtonLabel:string               { "Beállítások" }
@@ -124,7 +124,7 @@ hu:table
                                           "already.#" }
     }
 
-    simplePlaylistManagementWindow:table
+    playlistWindow:table
     {
         windowTitle:string          { "Műsorszerkesztő" }
 

@@ -7,7 +7,7 @@ pl:table
     liveModeButtonLabel:string              { "Na żywo" }
     uploadFileButtonLabel:string            { "Załaduj plik" }
     scratchpadButtonLabel:string            { "Przybornik" }
-    simplePlaylistMgmtButtonLabel:string    { "Listę utworów" }
+    playlistButtonLabel:string              { "Listę utworów" }
     schedulerButtonLabel:string             { "Programacja" }
     searchButtonLabel:string                { "Szukaj" }
     optionsButtonLabel:string               { "Options" }
@@ -125,7 +125,7 @@ pl:table
                                           "already.#" }
     }
 
-    simplePlaylistManagementWindow:table
+    playlistWindow:table
     {
         windowTitle:string          { "Zarządzanie listą utworów" }
 

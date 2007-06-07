@@ -7,7 +7,7 @@ sr_CS:table
     liveModeButtonLabel:string              { "Uživo" }
     uploadFileButtonLabel:string            { "Aploud" }
     scratchpadButtonLabel:string            { "Priprema" }
-    simplePlaylistMgmtButtonLabel:string    { "Plej lista" }
+    playlistButtonLabel:string              { "Plej lista" }
     schedulerButtonLabel:string             { "Raspored" }
     searchButtonLabel:string                { "Pretraga" }
     optionsButtonLabel:string               { "Opcije" }
@@ -123,7 +123,7 @@ sr_CS:table
         duplicateFileMsg:string         { "Greška:fajl je već u arhivi." }
     }
 
-    simplePlaylistManagementWindow:table
+    playlistWindow:table
     {
         windowTitle:string          { "Plej lista" }
 

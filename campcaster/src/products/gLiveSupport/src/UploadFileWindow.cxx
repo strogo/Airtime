@@ -70,7 +70,7 @@ using namespace LiveSupport::GLiveSupport;
 UploadFileWindow :: UploadFileWindow (
                                 Ptr<GLiveSupport>::Ref      gLiveSupport,
                                 Ptr<ResourceBundle>::Ref    bundle,
-                                Button *                    windowOpenerButton)
+                                Gtk::ToggleButton *         windowOpenerButton)
                                                                     throw ()
           : GuiWindow(gLiveSupport,
                       bundle,

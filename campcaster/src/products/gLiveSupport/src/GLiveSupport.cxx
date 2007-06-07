@@ -539,11 +539,12 @@ GLiveSupport :: show(void)                              throw ()
 {
     masterPanel.reset(new MasterPanelWindow(shared_from_this(), getBundle()));
 
-    masterPanel->set_icon_list(taskbarIcons->getIconList());
-    masterPanel->set_default_icon_list(taskbarIcons->getIconList());
+    masterPanel->getWindow()->set_icon_list(taskbarIcons->getIconList());
+    masterPanel->getWindow()->set_default_icon_list(
+                                            taskbarIcons->getIconList());
 
     // Shows the window and returns when it is closed.
-    Gtk::Main::run(*masterPanel);
+    Gtk::Main::run(*masterPanel->getWindow());
 
     masterPanel.reset();
 }
@@ -1068,7 +1069,7 @@ GLiveSupport :: openPlaylistForEditing(Ptr<const UniqueId>::Ref   playlistId)
         
     editedPlaylist->createSavedCopy();
 
-    masterPanel->updateSimplePlaylistMgmtWindow();
+    masterPanel->updatePlaylistWindow();
 }
 
 
@@ -1121,7 +1122,7 @@ GLiveSupport :: addToPlaylist(Ptr<const UniqueId>::Ref  id)
         editedPlaylist->addAudioClip(clip, editedPlaylist->getPlaylength());
     }
 
-    masterPanel->updateSimplePlaylistMgmtWindow();
+    masterPanel->updatePlaylistWindow();
     emitSignalEditedPlaylistModified();
 }
 
@@ -1468,11 +1469,11 @@ GLiveSupport :: detachCueAudioListener(AudioPlayerEventListener *   listener)
 /*------------------------------------------------------------------------------
  *  Return an image containing the radio station logo.
  *----------------------------------------------------------------------------*/
-Gtk::Image *
+Glib::RefPtr<Gdk::Pixbuf>
 LiveSupport :: GLiveSupport ::
-GLiveSupport :: getStationLogoImage(void)       throw()
+GLiveSupport :: getStationLogoPixbuf(void)      throw()
 {
-    return new Gtk::Image(stationLogoPixbuf);
+    return stationLogoPixbuf;
 }
 
 

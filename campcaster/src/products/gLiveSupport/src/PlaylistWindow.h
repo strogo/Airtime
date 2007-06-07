@@ -26,8 +26,8 @@
     Location : $URL$
 
 ------------------------------------------------------------------------------*/
-#ifndef SimplePlaylistManagementWindow_h
-#define SimplePlaylistManagementWindow_h
+#ifndef PlaylistWindow_h
+#define PlaylistWindow_h
 
 #ifndef __cplusplus
 #error This is a C++ include file
@@ -90,7 +90,7 @@ using namespace LiveSupport::Widgets;
  *  @author $Author$
  *  @version $Revision$
  */
-class SimplePlaylistManagementWindow : public GuiWindow
+class PlaylistWindow : public GuiWindow
 {
     private:
 
@@ -413,17 +413,17 @@ class SimplePlaylistManagementWindow : public GuiWindow
          *  @param windowOpenerButton   the button which was pressed to open
          *                              this window.
          */
-        SimplePlaylistManagementWindow(
+        PlaylistWindow(
                             Ptr<GLiveSupport>::Ref      gLiveSupport,
                             Ptr<ResourceBundle>::Ref    bundle,
-                            Button *                    windowOpenerButton)
+                            Gtk::ToggleButton *         windowOpenerButton)
                                                                 throw ();
 
         /**
          *  Virtual destructor.
          */
         virtual
-        ~SimplePlaylistManagementWindow(void)                   throw ();
+        ~PlaylistWindow(void)                   throw ();
 
         /**
          *  Show / update the contents of the playlist management window.
@@ -455,5 +455,5 @@ class SimplePlaylistManagementWindow : public GuiWindow
 } // namespace GLiveSupport
 } // namespace LiveSupport
 
-#endif // SimplePlaylistManagementWindow_h
+#endif // PlaylistWindow_h
 

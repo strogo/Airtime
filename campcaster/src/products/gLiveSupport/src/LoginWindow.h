@@ -196,7 +196,7 @@ class LoginWindow : public GuiWindow
          */
         LoginWindow(Ptr<GLiveSupport>::Ref      gLiveSupport,
                     Ptr<ResourceBundle>::Ref    bundle,
-                    Button *                    windowOpenerButton)
+                    Gtk::ToggleButton *         windowOpenerButton)
                                                             throw ();
 
         /**

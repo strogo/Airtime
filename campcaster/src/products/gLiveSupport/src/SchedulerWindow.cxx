@@ -72,7 +72,7 @@ const Glib::ustring     windowName = "schedulerWindow";
 SchedulerWindow :: SchedulerWindow (
                             Ptr<GLiveSupport>::Ref      gLiveSupport,
                             Ptr<ResourceBundle>::Ref    bundle,
-                            Button *                    windowOpenerButton)
+                            Gtk::ToggleButton *         windowOpenerButton)
                                                     throw (XmlRpcException)
           : GuiWindow(gLiveSupport,
                       bundle, 

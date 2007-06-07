@@ -7,7 +7,7 @@ sr_CS_CYRILLIC:table
     liveModeButtonLabel:string              { "Уживо" }
     uploadFileButtonLabel:string            { "Аплоуд" }
     scratchpadButtonLabel:string            { "Припрема" }
-    simplePlaylistMgmtButtonLabel:string    { "Плеј листа" }
+    playlistButtonLabel:string              { "Плеј листа" }
     schedulerButtonLabel:string             { "Распоред" }
     searchButtonLabel:string                { "Претрага" }
     optionsButtonLabel:string               { "Опције" }
@@ -123,7 +123,7 @@ sr_CS_CYRILLIC:table
         duplicateFileMsg:string         { "Грешка:фајл је већ у архиви." }
     }
 
-    simplePlaylistManagementWindow:table
+    playlistWindow:table
     {
         windowTitle:string          { "Плеј листа" }
 

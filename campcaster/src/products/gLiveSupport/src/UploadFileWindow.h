@@ -333,7 +333,7 @@ class UploadFileWindow : public GuiWindow
          */
         UploadFileWindow(Ptr<GLiveSupport>::Ref     gLiveSupport,
                          Ptr<ResourceBundle>::Ref   bundle,
-                         Button *                   windowOpenerButton)
+                         Gtk::ToggleButton *        windowOpenerButton)
                                                                 throw ();
 
         /**

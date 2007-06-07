@@ -78,7 +78,7 @@ const Glib::ustring     userPreferencesKeyName = "liveModeContents";
  *----------------------------------------------------------------------------*/
 LiveModeWindow :: LiveModeWindow (Ptr<GLiveSupport>::Ref    gLiveSupport,
                                   Ptr<ResourceBundle>::Ref  bundle,
-                                  Button *                  windowOpenerButton)
+                                  Gtk::ToggleButton *       windowOpenerButton)
                                                                     throw ()
           : GuiWindow(gLiveSupport,
                       bundle, 

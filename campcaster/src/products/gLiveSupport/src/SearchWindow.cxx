@@ -86,7 +86,7 @@ const int               searchResultsSize = 25;
  *----------------------------------------------------------------------------*/
 SearchWindow :: SearchWindow (Ptr<GLiveSupport>::Ref      gLiveSupport,
                               Ptr<ResourceBundle>::Ref    bundle,
-                              Button *                    windowOpenerButton)
+                              Gtk::ToggleButton *         windowOpenerButton)
                                                                 throw ()
           : GuiWindow(gLiveSupport,
                       bundle,

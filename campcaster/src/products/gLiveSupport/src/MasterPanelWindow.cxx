@@ -40,7 +40,6 @@
 #include <gdkmm/pixbuf.h>
 
 #include "LiveSupport/Core/TimeConversion.h"
-#include "LiveSupport/Widgets/MasterPanelBin.h"
 
 #include "MasterPanelWindow.h"
 
@@ -56,9 +55,9 @@ using namespace LiveSupport::GLiveSupport;
 namespace {
 
 /**
- *  The name of the window, used by the keyboard shortcuts (or by the .gtkrc).
+ *  The location of the glade file.
  */
-const Glib::ustring     windowName = "masterPanelWindow";
+const Glib::ustring     gladePath = "./var/glade/MasterPanelWindow.glade";
 
 /**
  *  The name of the application, shown on the task bar.
@@ -68,7 +67,6 @@ const Glib::ustring     applicationTitleSuffix = " - Campcaster";
 /**
  *  Number of times per second that onUpdateTime() is called.
  *  It's a good idea to make this a divisor of 1000.
- *  If you change this, then you must change NowPlaying::blinkingConstant, too.
  */
 const int               updateTimeConstant = 20;
 
@@ -94,135 +92,78 @@ MasterPanelWindow :: MasterPanelWindow (Ptr<GLiveSupport>::Ref    gLiveSupport,
                         : LocalizedObject(bundle),
                           gLiveSupport(gLiveSupport)
 {
-    Ptr<WidgetFactory>::Ref widgetFactory = WidgetFactory::getInstance();
-
-    radioLogoWidget = Gtk::manage(gLiveSupport->getStationLogoImage());
-    resizeImage(radioLogoWidget, 120, 104);
-    radioLogoWidget->set_size_request(120, 104);
-
-    // set up the layout, which is a button box
-    layout = Gtk::manage(new Gtk::Table());
+    glade = Gnome::Glade::Xml::create(gladePath);
+    
+    // load the station logo image
+    Gtk::Image *        stationLogoImage;
+    glade->get_widget("stationLogoImage", stationLogoImage);
+    stationLogoImage->set(gLiveSupport->getStationLogoPixbuf());
 
     // set up the time label
-    timeWidget = Gtk::manage(new Gtk::Label());
+    glade->get_widget("timeLabel", timeLabel);
     Pango::Attribute    fontDescriptionAttribute = 
                             Pango::Attribute::create_attr_font_desc(
                                 Pango::FontDescription(
                                     "Bitstream Vera Sans Bold 20"));
     fontDescriptionAttribute.set_start_index(0);
     fontDescriptionAttribute.set_end_index(10);
-    Pango::AttrList     timeWidgetAttributes;
-    timeWidgetAttributes.insert(fontDescriptionAttribute);
-    timeWidget->set_attributes(timeWidgetAttributes);
-    timeBin = Gtk::manage(widgetFactory->createBlueBin());
-    timeBin->add(*timeWidget);
-    timeBin->set_size_request(140, 104);
-
-    // set up the now playing widget
-    nowPlayingWidget = Gtk::manage(new NowPlaying(gLiveSupport, bundle));
-    Gtk::Alignment *    nowPlayingAlignment = Gtk::manage(new Gtk::Alignment(
-                                                        0.0, 0.7, 1.0, 0.0 ));
-    nowPlayingAlignment->add(*nowPlayingWidget);
-    nowPlayingBin = Gtk::manage(widgetFactory->createDarkBlueBin());
-    nowPlayingBin->add(*nowPlayingAlignment);
-    nowPlayingBin->set_size_request(-1, 104);
-
-/*  temporarily disabled
-    // set up the VU meter widget
-    vuMeterWidget = Gtk::manage(new Gtk::Label(""));
-    vuMeterBin = Gtk::manage(widgetFactory->createBlueBin());
-    vuMeterBin->add(*vuMeterWidget);
-    vuMeterBin->set_size_request(200, 40);
-*/
-    
-/*  temporarily disabled
-    // set up the next playing widget
-    nextPlayingWidget = Gtk::manage(new Gtk::Label(""));
-    nextPlayingBin = Gtk::manage(widgetFactory->createBlueBin());
-    nextPlayingBin->add(*nextPlayingWidget);
-    nextPlayingBin->set_size_request(200, 59);
-*/
-
-    // create the bottom bar
-    bottomBar = Gtk::manage(new Gtk::HBox());
-    buttonBar = Gtk::manage(new Gtk::Table());
-    buttonBar->set_homogeneous(true);
-    buttonBarAlignment = Gtk::manage(new Gtk::Alignment(Gtk::ALIGN_LEFT,
-                                                        Gtk::ALIGN_CENTER,
-                                                        0, 0));
-    buttonBarAlignment->add(*buttonBar);
-    userInfoWidget = Gtk::manage(new MasterPanelUserInfoWidget(gLiveSupport,
-                                                               bundle));
-    userInfoAlignment = Gtk::manage(new Gtk::Alignment(Gtk::ALIGN_RIGHT,
-                                                       Gtk::ALIGN_CENTER,
-                                                       0, 0));
-    userInfoAlignment->add(*userInfoWidget);
-    bottomBar->pack_start(*buttonBarAlignment, Gtk::PACK_EXPAND_WIDGET, 0);
-    bottomBar->pack_start(*userInfoAlignment,  Gtk::PACK_EXPAND_WIDGET, 0);
-    
-    // a bit of extra vertical space above the buttons
-    Gtk::HBox *     extraSpace = Gtk::manage(new Gtk::HBox());
-    
-    // set up the main window, and show everything
-    // all the localized widgets were set up in changeLanguage()
-    layout->set_border_width(5);
-    layout->attach(*timeBin,            0, 1, 0, 2,
-                    Gtk::SHRINK, Gtk::SHRINK,
-                    0, 0);
-    layout->attach(*nowPlayingBin,      1, 2, 0, 2,
-                    Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK,
-                    5, 0);
-//    layout->attach(*vuMeterBin,         2, 3, 0, 1,
-//                    Gtk::SHRINK, Gtk::SHRINK,
-//                    0, 0);
-//    layout->attach(*nextPlayingBin,     2, 3, 1, 2,
-//                    Gtk::SHRINK, Gtk::SHRINK,
-//                    0, 0);
-    layout->attach(*radioLogoWidget,    3, 4, 0, 2,
-                    Gtk::SHRINK, Gtk::SHRINK,
-                    5, 0);
-    layout->attach(*extraSpace,         0, 4, 2, 3,
-                    Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL,
-                    0, 2);
-    layout->attach(*bottomBar,          0, 4, 3, 4,
-                    Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL,
-                    0, 0);
-    
-    // add the bottom border
-    MasterPanelBin *    bin = Gtk::manage(new MasterPanelBin());
-    bin->add(*layout);
-    this->add(*bin);
+    Pango::AttrList     timeLabelAttributes;
+    timeLabelAttributes.insert(fontDescriptionAttribute);
+    timeLabel->set_attributes(timeLabelAttributes);
 
     // register the signal handler for keyboard key presses
-    this->signal_key_press_event().connect(sigc::mem_fun(*this,
+    glade->get_widget("masterPanelWindow", masterPanelWindow);
+    masterPanelWindow->signal_key_press_event().connect(sigc::mem_fun(
+                                        *this,
                                         &MasterPanelWindow::onKeyPressed));
+// DEBUG
+std::cerr << "window name: '" << masterPanelWindow->get_name() << "'\n";
+//
 
-    // set the background to white
-    bgColor = Colors::getColor(Colors::White);
-    modify_bg(Gtk::STATE_NORMAL, bgColor);
+    // get a reference for the window-opener buttons
+    glade->get_widget("liveModeButton", liveModeButton);
+    glade->get_widget("uploadFileButton", uploadFileButton);
+    glade->get_widget("scratchpadButton", scratchpadButton);
+    glade->get_widget("playlistButton", playlistButton);
+    glade->get_widget("schedulerButton", schedulerButton);
+    glade->get_widget("searchButton", searchButton);
+    glade->get_widget("optionsButton", optionsButton);
+
+    // bind events to the buttons
+    liveModeButton->signal_clicked().connect(sigc::mem_fun(
+                                *this,
+                                &MasterPanelWindow::onLiveModeButtonClicked));
+    uploadFileButton->signal_clicked().connect(sigc::mem_fun(
+                                *this,
+                                &MasterPanelWindow::onUploadFileButtonClicked));
+    scratchpadButton->signal_clicked().connect(sigc::mem_fun(
+                                *this,
+                                &MasterPanelWindow::onScratchpadButtonClicked));
+    playlistButton->signal_clicked().connect(sigc::mem_fun(
+                                *this,
+                                &MasterPanelWindow::onPlaylistButtonClicked));
+    schedulerButton->signal_clicked().connect(sigc::mem_fun(
+                                *this,
+                                &MasterPanelWindow::onSchedulerButtonClicked));
+    searchButton->signal_clicked().connect(sigc::mem_fun(
+                                *this,
+                                &MasterPanelWindow::onSearchButtonClicked));
+
+    // get a reference for some other widgets
+    glade->get_widget("mainButtonBox", mainButtonBox);
+    glade->get_widget("userLoggedInLabel", userLoggedInLabel);
+    glade->get_widget("loginButton", loginButton);
 
     // set the size and location of the window, according to the screen size
-    Glib::RefPtr<Gdk::Screen>   screen = get_screen();
+    Glib::RefPtr<Gdk::Screen>   screen = masterPanelWindow->get_screen();
     int                         width  = screen->get_width();
-    set_default_size(width, -1);
-    move(0, 0);
-    set_decorated(false);
-    set_name(windowName);
-
-    // set the localized resources
-    liveModeButton           = 0;
-    uploadFileButton         = 0;
-    scratchpadButton         = 0;
-    simplePlaylistMgmtButton = 0;
-    schedulerButton          = 0;
-    searchButton             = 0;
-    optionsButton            = 0;
-    changeLanguage(bundle);
+    masterPanelWindow->set_default_size(width, -1);
+    masterPanelWindow->move(0, 0);
 
     // show what's there to see
     showAnonymousUI();
 
-    // set the timer, that will update timeWidget
+    // set the timer, that will update timeLabel
     setTimer();
 }
 
@@ -230,7 +171,7 @@ MasterPanelWindow :: MasterPanelWindow (Ptr<GLiveSupport>::Ref    gLiveSupport,
 /*------------------------------------------------------------------------------
  *  Destructor.
  *----------------------------------------------------------------------------*/
-MasterPanelWindow :: ~MasterPanelWindow (void)                        throw ()
+MasterPanelWindow :: ~MasterPanelWindow (void)                      throw ()
 {
     resetTimer();
     gLiveSupport->stopOutputAudio();
@@ -247,115 +188,46 @@ MasterPanelWindow :: changeLanguage(Ptr<ResourceBundle>::Ref    bundle)
 {
     setBundle(bundle);
 
-    if (liveModeButton) {
-        buttonBar->remove(*liveModeButton);
-    }
-    if (uploadFileButton) {
-        buttonBar->remove(*uploadFileButton);
-    }
-    if (scratchpadButton) {
-        buttonBar->remove(*scratchpadButton);
-    }
-    if (simplePlaylistMgmtButton) {
-        buttonBar->remove(*simplePlaylistMgmtButton);
-    }
-    if (schedulerButton) {
-        buttonBar->remove(*schedulerButton);
-    }
-    if (searchButton) {
-        buttonBar->remove(*searchButton);
-    }
-    if (optionsButton) {
-        buttonBar->remove(*optionsButton);
-    }
-
     try {
+        const Glib::ustring         windowName = masterPanelWindow->get_name();
         Ptr<Glib::ustring>::Ref     title = getResourceUstring(
                                                     windowName.c_str(),
                                                     "windowTitle");
         title->append(applicationTitleSuffix);
-        set_title(*title);
+        masterPanelWindow->set_title(*title);
 
         Ptr<WidgetFactory>::Ref wf = WidgetFactory::getInstance();
 
-        liveModeButton = Gtk::manage(wf->createButton(
-                                *getResourceUstring("liveModeButtonLabel"),
-                                WidgetConstants::radioButton));
-        uploadFileButton = Gtk::manage(wf->createButton(
-                                *getResourceUstring("uploadFileButtonLabel"),
-                                WidgetConstants::radioButton));
-        scratchpadButton = Gtk::manage(wf->createButton(
-                                *getResourceUstring("scratchpadButtonLabel"),
-                                WidgetConstants::radioButton));
-        simplePlaylistMgmtButton = Gtk::manage(wf->createButton(
-                        *getResourceUstring("simplePlaylistMgmtButtonLabel"),
-                        WidgetConstants::radioButton));
-        schedulerButton = Gtk::manage(wf->createButton(
-                                *getResourceUstring("schedulerButtonLabel"),
-                                WidgetConstants::radioButton));
-        searchButton = Gtk::manage(wf->createButton(
-                                *getResourceUstring("searchButtonLabel"),
-                                WidgetConstants::radioButton));
-        optionsButton = Gtk::manage(wf->createButton(
-                                *getResourceUstring("optionsButtonLabel"),
-                                WidgetConstants::radioButton));
+        liveModeButton->set_label(*getResourceUstring(
+                                            "liveModeButtonLabel"));
+        uploadFileButton->set_label(*getResourceUstring(
+                                            "uploadFileButtonLabel"));
+        scratchpadButton->set_label(*getResourceUstring(
+                                            "scratchpadButtonLabel"));
+        playlistButton->set_label(*getResourceUstring(
+                                            "playlistButtonLabel"));
+        schedulerButton->set_label(*getResourceUstring(
+                                            "schedulerButtonLabel"));
+        searchButton->set_label(*getResourceUstring(
+                                            "searchButtonLabel"));
+        optionsButton->set_label(*getResourceUstring(
+                                            "optionsButtonLabel"));
     } catch (std::invalid_argument &e) {
         std::cerr << e.what() << std::endl;
         std::exit(1);
     }
 
-    userInfoWidget->changeLanguage(bundle);
+    updateUserLoggedInInfo();
 
-    // re-attach the localized widgets to the layout
-    buttonBar->attach(*liveModeButton,             0, 1, 0, 1,
-                      Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL,
-                      0, 0);
-    buttonBar->attach(*uploadFileButton,           1, 2, 0, 1,
-                      Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL,
-                      5, 0);
-    buttonBar->attach(*scratchpadButton,           2, 3, 0, 1,
-                      Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL,
-                      0, 0);
-    buttonBar->attach(*simplePlaylistMgmtButton,   3, 4, 0, 1,
-                      Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL,
-                      5, 0);
-    buttonBar->attach(*schedulerButton,            4, 5, 0, 1,
-                      Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL,
-                      0, 0);
-    buttonBar->attach(*searchButton,               5, 6, 0, 1,
-                      Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL,
-                      5, 0);
-    buttonBar->attach(*optionsButton,              6, 7, 0, 1,
-                      Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL,
-                      0, 0);
-
-    if (gLiveSupport->isStorageAvailable()) {
-        // re-bind events to the buttons
-        liveModeButton->signal_clicked().connect(sigc::mem_fun(*this,
-                                &MasterPanelWindow::onLiveModeButtonClicked));
-        uploadFileButton->signal_clicked().connect(sigc::mem_fun(*this,
-                                &MasterPanelWindow::onUploadFileButtonClicked));
-        scratchpadButton->signal_clicked().connect(sigc::mem_fun(*this,
-                                &MasterPanelWindow::onScratchpadButtonClicked));
-        simplePlaylistMgmtButton->signal_clicked().connect(
-                sigc::mem_fun(*this,
-                     &MasterPanelWindow::onSimplePlaylistMgmtButtonClicked));
-        schedulerButton->signal_clicked().connect(sigc::mem_fun(*this,
-                                &MasterPanelWindow::onSchedulerButtonClicked));
-        searchButton->signal_clicked().connect(sigc::mem_fun(*this,
-                                &MasterPanelWindow::onSearchButtonClicked));
-    } else {
+    if (!gLiveSupport->isStorageAvailable()) {
         // gray out all the buttons except Options
-        liveModeButton->setDisabled(true);
-        uploadFileButton->setDisabled(true);
-        scratchpadButton->setDisabled(true);
-        simplePlaylistMgmtButton->setDisabled(true);
-        schedulerButton->setDisabled(true);
-        searchButton->setDisabled(true);
+        liveModeButton->set_sensitive(false);
+        uploadFileButton->set_sensitive(false);
+        scratchpadButton->set_sensitive(false);
+        playlistButton->set_sensitive(false);
+        schedulerButton->set_sensitive(false);
+        searchButton->set_sensitive(false);
     }
-
-    optionsButton->signal_clicked().connect(sigc::mem_fun(*this,
-                                &MasterPanelWindow::onOptionsButtonClicked));
 }
 
 
@@ -363,11 +235,12 @@ MasterPanelWindow :: changeLanguage(Ptr<ResourceBundle>::Ref    bundle)
  *  Set the timer
  *----------------------------------------------------------------------------*/
 void
-MasterPanelWindow :: setTimer(void)                                  throw ()
+MasterPanelWindow :: setTimer(void)                                 throw ()
 {
-    sigc::slot<bool>    slot = sigc::bind(sigc::mem_fun(*this,
-                                              &MasterPanelWindow::onUpdateTime),
-                                              0);
+    sigc::slot<bool>    slot = sigc::bind(sigc::mem_fun(
+                                                *this,
+                                                &MasterPanelWindow::onUpdateTime),
+                                          0);
 
     // set the timer to activate every 1/somethingth of a second
     timer.reset(new sigc::connection(
@@ -379,7 +252,7 @@ MasterPanelWindow :: setTimer(void)                                  throw ()
  *  Clear the timer
  *----------------------------------------------------------------------------*/
 void
-MasterPanelWindow :: resetTimer(void)                                throw ()
+MasterPanelWindow :: resetTimer(void)                               throw ()
 {
     timer->disconnect();
     timer.reset();
@@ -387,10 +260,10 @@ MasterPanelWindow :: resetTimer(void)                                throw ()
 
 
 /*------------------------------------------------------------------------------
- *  Update the timeWidget display, with the current time
+ *  Update the timeLabel display, with the current time
  *----------------------------------------------------------------------------*/
 bool
-MasterPanelWindow :: onUpdateTime(int   dummy)                       throw ()
+MasterPanelWindow :: onUpdateTime(int   dummy)                      throw ()
 {
     Ptr<const ptime>::Ref   now;
 
@@ -414,10 +287,10 @@ MasterPanelWindow :: onUpdateTime(int   dummy)                       throw ()
                                            dayTime.seconds(),
                                            0);
 
-        timeWidget->set_text(to_simple_string(dayTimeSec));
+        timeLabel->set_text(to_simple_string(dayTimeSec));
     }
 
-    nowPlayingWidget->onUpdateTime();
+    updateNowPlayingInfo();
     
     // check on the progress of the async methods
     static int      backupCounter = 0;
@@ -507,7 +380,7 @@ MasterPanelWindow :: updateUploadFileWindow(void)                   throw ()
  *----------------------------------------------------------------------------*/
 void
 MasterPanelWindow :: createScratchpadWindow(void)
-                                                                     throw ()
+                                                                    throw ()
 {
     if (!scratchpadWindow.get()) {
         Ptr<ResourceBundle>::Ref    bundle;
@@ -530,7 +403,7 @@ MasterPanelWindow :: createScratchpadWindow(void)
  *----------------------------------------------------------------------------*/
 void
 MasterPanelWindow :: updateScratchpadWindow(Ptr<Playable>::Ref  playable)
-                                                                     throw ()
+                                                                    throw ()
 {
     createScratchpadWindow();
     
@@ -543,29 +416,28 @@ MasterPanelWindow :: updateScratchpadWindow(Ptr<Playable>::Ref  playable)
 
 
 /*------------------------------------------------------------------------------
- *  The event when the Simple Playlist Management button has been clicked.
+ *  The event when the Playlist button has been clicked.
  *----------------------------------------------------------------------------*/
 void
-MasterPanelWindow :: updateSimplePlaylistMgmtWindow(void)           throw ()
+MasterPanelWindow :: updatePlaylistWindow(void)                     throw ()
 {
-    if (!simplePlaylistMgmtWindow.get()) {
+    if (!playlistWindow.get()) {
         Ptr<ResourceBundle>::Ref    bundle;
         try {
-            bundle       = getBundle("simplePlaylistManagementWindow");
+            bundle       = getBundle("playlistWindow");
         } catch (std::invalid_argument &e) {
             std::cerr << e.what() << std::endl;
             return;
         }
 
-        simplePlaylistMgmtWindow.reset(new SimplePlaylistManagementWindow(
-                                                    gLiveSupport,
-                                                    bundle,
-                                                    simplePlaylistMgmtButton));
+        playlistWindow.reset(new PlaylistWindow(gLiveSupport,
+                                                bundle,
+                                                playlistButton));
     }
     
-    simplePlaylistMgmtWindow->showContents();
+    playlistWindow->showContents();
     
-    simplePlaylistMgmtWindow->present();
+    playlistWindow->present();
 }
 
 
@@ -669,14 +541,8 @@ MasterPanelWindow :: updateOptionsWindow(void)                      throw ()
 void
 MasterPanelWindow :: showAnonymousUI(void)                          throw ()
 {
-    show_all();
-    liveModeButton->hide();
-    uploadFileButton->hide();
-    scratchpadButton->hide();
-    simplePlaylistMgmtButton->hide();
-    schedulerButton->hide();
-    searchButton->hide();
-    optionsButton->hide();
+    masterPanelWindow->show_all();
+    mainButtonBox->hide();
     
     if (liveModeWindow.get()) {
         gLiveSupport->storeWindowContents(liveModeWindow);
@@ -698,11 +564,11 @@ MasterPanelWindow :: showAnonymousUI(void)                          throw ()
         }
         scratchpadWindow.reset();
     }
-    if (simplePlaylistMgmtWindow.get()) {
-        if (simplePlaylistMgmtWindow->is_visible()) {
-            simplePlaylistMgmtWindow->hide();
+    if (playlistWindow.get()) {
+        if (playlistWindow->is_visible()) {
+            playlistWindow->hide();
         }
-        simplePlaylistMgmtWindow.reset();
+        playlistWindow.reset();
     }
     if (schedulerWindow.get()) {
         if (schedulerWindow->is_visible()) {
@@ -730,13 +596,13 @@ MasterPanelWindow :: showAnonymousUI(void)                          throw ()
 
 
 /*------------------------------------------------------------------------------
- *  Cancel the playlist edited in the SimplePlaylistMgmtWindow, if any.
+ *  Cancel the playlist edited in the PlaylistWindow, if any.
  *----------------------------------------------------------------------------*/
 bool
 MasterPanelWindow :: cancelEditedPlaylist(void)                     throw ()
 {
-    if (simplePlaylistMgmtWindow) {
-        return simplePlaylistMgmtWindow->cancelPlaylist();
+    if (playlistWindow) {
+        return playlistWindow->cancelPlaylist();
     } else {
         return true;
     }
@@ -749,14 +615,14 @@ MasterPanelWindow :: cancelEditedPlaylist(void)                     throw ()
 void
 MasterPanelWindow :: showLoggedInUI(void)                           throw ()
 {
-    show_all();
+    masterPanelWindow->show_all();
     
     if (!gLiveSupport->isStorageAvailable()) { 
-        liveModeButton->setDisabled(true);
-        uploadFileButton->setDisabled(true);
-        scratchpadButton->setDisabled(true);
-        simplePlaylistMgmtButton->setDisabled(true);
-        searchButton->setDisabled(true);
+        liveModeButton->set_sensitive(false);
+        uploadFileButton->set_sensitive(false);
+        scratchpadButton->set_sensitive(false);
+        playlistButton->set_sensitive(false);
+        searchButton->set_sensitive(false);
     }
     
     setSchedulerAvailable(gLiveSupport->isSchedulerAvailable());
@@ -820,20 +686,23 @@ MasterPanelWindow :: onKeyPressed(GdkEventKey *    event)           throw ()
 {
     if (event->type == GDK_KEY_PRESS) {
         KeyboardShortcut::Action    action = gLiveSupport->findAction(
-                                                windowName,
+                                                masterPanelWindow->get_name(),
                                                 Gdk::ModifierType(event->state),
                                                 event->keyval);
         switch (action) {
             case KeyboardShortcut::playAudio :
-                                    nowPlayingWidget->onPlayAudio();
+                                    // FIXME
+                                    // nowPlayingWidget->onPlayAudio();
                                     return true;
             
             case KeyboardShortcut::pauseAudio :
-                                    nowPlayingWidget->onPauseAudio();
+                                    // FIXME
+                                    // nowPlayingWidget->onPauseAudio();
                                     return true;
             
             case KeyboardShortcut::stopAudio :
-                                    nowPlayingWidget->onStopAudio();
+                                    // FIXME
+                                    // nowPlayingWidget->onStopAudio();
                                     return true;
             
             case KeyboardShortcut::nextTrack :
@@ -889,7 +758,7 @@ MasterPanelWindow :: setSchedulerAvailable(bool  status)            throw ()
     }
     
     if (schedulerButton) {
-        schedulerButton->setDisabled(!status);
+        schedulerButton->set_sensitive(status);
     }
 }
 
@@ -908,4 +777,25 @@ MasterPanelWindow :: showCuePlayerStopped(void)                     throw ()
         liveModeWindow->showCuePlayerStopped();
     }
 }
+
+
+/*------------------------------------------------------------------------------
+ *  Update the Now Playing info.
+ *----------------------------------------------------------------------------*/
+void
+MasterPanelWindow :: updateNowPlayingInfo()                         throw ()
+{
+    // FIXME
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Update the User Logged In info.
+ *----------------------------------------------------------------------------*/
+void
+MasterPanelWindow :: updateUserLoggedInInfo()                       throw ()
+{
+    // FIXME
+}
+
 

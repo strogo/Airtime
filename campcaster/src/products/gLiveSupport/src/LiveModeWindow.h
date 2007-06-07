@@ -347,7 +347,7 @@ class LiveModeWindow : public GuiWindow,
          */
         LiveModeWindow(Ptr<GLiveSupport>::Ref      gLiveSupport,
                        Ptr<ResourceBundle>::Ref    bundle,
-                       Button *                    windowOpenerButton)
+                       Gtk::ToggleButton *         windowOpenerButton)
                                                                 throw ();
 
         /**

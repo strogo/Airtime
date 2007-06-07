@@ -356,7 +356,7 @@ class ScratchpadWindow : public GuiWindow,
          */
         ScratchpadWindow(Ptr<GLiveSupport>::Ref     gLiveSupport,
                          Ptr<ResourceBundle>::Ref   bundle,
-                         Button *                   windowOpenerButton)
+                         Gtk::ToggleButton *        windowOpenerButton)
                                                                 throw ();
 
         /**

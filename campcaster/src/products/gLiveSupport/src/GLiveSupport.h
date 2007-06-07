@@ -816,7 +816,7 @@ class GLiveSupport : public LocalizedConfigurable,
          *  to return a non-0 value.
          *
          *  If there is a playlist being edited, the
-         *  SimplePlaylistManagementWindow's confirmation message is displayed.
+         *  PlaylistWindow's confirmation message is displayed.
          *  If the user presses "Cancel", then this function does nothing.
          *
          *  @param playlistId the id of the playlist to open for editing.
@@ -1072,13 +1072,12 @@ class GLiveSupport : public LocalizedConfigurable,
                                                 throw ();
 
         /**
-         *  Return an image containing the radio station logo.
-         *  It is the responsibility of the caller to dispose of this object.
+         *  Return a pixbuf containing the radio station logo.
          *
-         *  @return the station logo image.
+         *  @return a pixbuf containing the station logo image.
          */
-        Gtk::Image*
-        getStationLogoImage()                   throw ();
+        Glib::RefPtr<Gdk::Pixbuf>
+        getStationLogoPixbuf()                  throw ();
 
         /**
          *  The signal raised when the edited playlist is modified.

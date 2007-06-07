@@ -38,7 +38,7 @@
 
 #include "LiveSupport/Core/TimeConversion.h"
 
-#include "SimplePlaylistManagementWindow.h"
+#include "PlaylistWindow.h"
 
 
 using namespace Glib;
@@ -57,7 +57,7 @@ namespace {
 /**
  *  The name of the window, used by the keyboard shortcuts (or by the .gtkrc).
  */
-const Glib::ustring     windowName = "simplePlaylistManagementWindow";
+const Glib::ustring     windowName = "playlistWindow";
 
 }
 
@@ -69,10 +69,10 @@ const Glib::ustring     windowName = "simplePlaylistManagementWindow";
 /*------------------------------------------------------------------------------
  *  Constructor.
  *----------------------------------------------------------------------------*/
-SimplePlaylistManagementWindow :: SimplePlaylistManagementWindow (
+PlaylistWindow :: PlaylistWindow (
                                 Ptr<GLiveSupport>::Ref      gLiveSupport,
                                 Ptr<ResourceBundle>::Ref    bundle,
-                                Button *                    windowOpenerButton)
+                                Gtk::ToggleButton *         windowOpenerButton)
                                                                     throw ()
           : GuiWindow(gLiveSupport,
                       bundle,
@@ -96,7 +96,7 @@ SimplePlaylistManagementWindow :: SimplePlaylistManagementWindow (
 
     nameEntry             = Gtk::manage(wf->createEntryBin());
     nameEntry->signal_changed().connect(sigc::mem_fun(
-                    *this, &SimplePlaylistManagementWindow::onTitleEdited ));
+                    *this, &PlaylistWindow::onTitleEdited ));
 
     entriesScrolledWindow = Gtk::manage(new Gtk::ScrolledWindow());
     entriesModel          = Gtk::ListStore::create(modelColumns);
@@ -136,11 +136,11 @@ SimplePlaylistManagementWindow :: SimplePlaylistManagementWindow (
     }
 
     entriesView->signal_button_press_event().connect_notify(sigc::mem_fun(
-                    *this, &SimplePlaylistManagementWindow::onEntryClicked ));
+                    *this, &PlaylistWindow::onEntryClicked ));
     entriesView->signalCellEdited().connect(sigc::mem_fun(
-                    *this, &SimplePlaylistManagementWindow::onFadeInfoEdited ));
+                    *this, &PlaylistWindow::onFadeInfoEdited ));
     entriesView->signal_key_press_event().connect(sigc::mem_fun(
-                    *this, &SimplePlaylistManagementWindow::onKeyPressed));
+                    *this, &PlaylistWindow::onKeyPressed));
 
     // create the right-click entry context menu
     rightClickMenu = Gtk::manage(new Gtk::Menu());
@@ -150,15 +150,15 @@ SimplePlaylistManagementWindow :: SimplePlaylistManagementWindow (
         rightClickMenuList.push_back(Gtk::Menu_Helpers::MenuElem(
                 *getResourceUstring("upMenuItem"),
                 sigc::mem_fun(*this,
-                        &SimplePlaylistManagementWindow::onUpItem)));
+                        &PlaylistWindow::onUpItem)));
         rightClickMenuList.push_back(Gtk::Menu_Helpers::MenuElem(
                 *getResourceUstring("downMenuItem"),
                 sigc::mem_fun(*this,
-                        &SimplePlaylistManagementWindow::onDownItem)));
+                        &PlaylistWindow::onDownItem)));
         rightClickMenuList.push_back(Gtk::Menu_Helpers::MenuElem(
                 *getResourceUstring("removeMenuItem"),
                 sigc::mem_fun(*this,
-                        &SimplePlaylistManagementWindow::onRemoveItem)));
+                        &PlaylistWindow::onRemoveItem)));
     } catch (std::invalid_argument &e) {
         std::cerr << e.what() << std::endl;
         std::exit(1);
@@ -179,7 +179,7 @@ SimplePlaylistManagementWindow :: SimplePlaylistManagementWindow (
     areFadesLocked = true;
     lockFadesCheckButton->signal_toggled().connect(sigc::mem_fun(
             *this, 
-            &SimplePlaylistManagementWindow::onLockFadesCheckButtonClicked ));
+            &PlaylistWindow::onLockFadesCheckButtonClicked ));
     
     // construct the "total time" display
     Gtk::Label *        lengthTextLabel = Gtk::manage(new Gtk::Label(
@@ -221,9 +221,9 @@ SimplePlaylistManagementWindow :: SimplePlaylistManagementWindow (
 
     // Register the signal handlers for the buttons
     saveButton->signal_clicked().connect(sigc::mem_fun(*this,
-                &SimplePlaylistManagementWindow::onSaveButtonClicked));
+                &PlaylistWindow::onSaveButtonClicked));
     closeButton->signal_clicked().connect(sigc::mem_fun(*this,
-                &SimplePlaylistManagementWindow::onBottomCloseButtonClicked));
+                &PlaylistWindow::onBottomCloseButtonClicked));
 
     // show
     set_name(windowName);
@@ -251,14 +251,14 @@ SimplePlaylistManagementWindow :: SimplePlaylistManagementWindow (
                                         gLiveSupport->getBundle() ));
 
     gLiveSupport->signalEditedPlaylistModified().connect(sigc::mem_fun(
-            *this, &SimplePlaylistManagementWindow::onPlaylistModified ));
+            *this, &PlaylistWindow::onPlaylistModified ));
 }
 
 
 /*------------------------------------------------------------------------------
  *  Destructor.
  *----------------------------------------------------------------------------*/
-SimplePlaylistManagementWindow :: ~SimplePlaylistManagementWindow (void)
+PlaylistWindow :: ~PlaylistWindow (void)
                                                                     throw ()
 {
 }
@@ -268,7 +268,7 @@ SimplePlaylistManagementWindow :: ~SimplePlaylistManagementWindow (void)
  *  Save the edited playlist.
  *----------------------------------------------------------------------------*/
 bool
-SimplePlaylistManagementWindow :: savePlaylist(bool reopen)         throw ()
+PlaylistWindow :: savePlaylist(bool reopen)         throw ()
 {
     try {
         Ptr<Playlist>::Ref              playlist
@@ -308,7 +308,7 @@ SimplePlaylistManagementWindow :: savePlaylist(bool reopen)         throw ()
  *  Signal handler for the save button getting clicked.
  *----------------------------------------------------------------------------*/
 void
-SimplePlaylistManagementWindow :: onSaveButtonClicked(void)         throw ()
+PlaylistWindow :: onSaveButtonClicked(void)         throw ()
 {
     savePlaylist(true);
 }
@@ -318,7 +318,7 @@ SimplePlaylistManagementWindow :: onSaveButtonClicked(void)         throw ()
  *  Cancel the edited playlist, after asking for confirmation.
  *----------------------------------------------------------------------------*/
 bool
-SimplePlaylistManagementWindow :: cancelPlaylist(void)        throw ()
+PlaylistWindow :: cancelPlaylist(void)        throw ()
 {
     if (gLiveSupport->getEditedPlaylist()) {
         if (!isPlaylistModified) {
@@ -359,7 +359,7 @@ SimplePlaylistManagementWindow :: cancelPlaylist(void)        throw ()
  *  Clean and close the window.
  *----------------------------------------------------------------------------*/
 void
-SimplePlaylistManagementWindow :: closeWindow(void)                 throw ()
+PlaylistWindow :: closeWindow(void)                 throw ()
 {
     statusBar->set_text("");
     nameEntry->set_text("");
@@ -374,7 +374,7 @@ SimplePlaylistManagementWindow :: closeWindow(void)                 throw ()
  *  Signal handler for the save button getting clicked.
  *----------------------------------------------------------------------------*/
 void
-SimplePlaylistManagementWindow :: onBottomCloseButtonClicked(void)  throw ()
+PlaylistWindow :: onBottomCloseButtonClicked(void)  throw ()
 {
     if (cancelPlaylist()) {
         closeWindow();
@@ -386,7 +386,7 @@ SimplePlaylistManagementWindow :: onBottomCloseButtonClicked(void)  throw ()
  *  Signal handler for the "lock fades" check button toggled.
  *----------------------------------------------------------------------------*/
 void
-SimplePlaylistManagementWindow :: onLockFadesCheckButtonClicked(void)
+PlaylistWindow :: onLockFadesCheckButtonClicked(void)
                                                                     throw ()
 {
     areFadesLocked = !areFadesLocked;
@@ -397,7 +397,7 @@ SimplePlaylistManagementWindow :: onLockFadesCheckButtonClicked(void)
  *  Show the contents of the currently edited playlist.
  *----------------------------------------------------------------------------*/
 void
-SimplePlaylistManagementWindow :: showContents(void)                throw ()
+PlaylistWindow :: showContents(void)                throw ()
 {
     Ptr<Playlist>::Ref          playlist;
     Playlist::const_iterator    it;
@@ -454,7 +454,7 @@ SimplePlaylistManagementWindow :: showContents(void)                throw ()
  *  Signal handler for the fade info being edited.
  *----------------------------------------------------------------------------*/
 void
-SimplePlaylistManagementWindow :: onTitleEdited(void)               throw()
+PlaylistWindow :: onTitleEdited(void)               throw()
 {
     Ptr<Playlist>::Ref          playlist = gLiveSupport->getEditedPlaylist();
     if (!playlist) {
@@ -463,7 +463,7 @@ SimplePlaylistManagementWindow :: onTitleEdited(void)               throw()
             playlist = gLiveSupport->getEditedPlaylist();
             
         } catch (XmlRpcException &e) {
-            std::cerr << "error in SimplePlaylistManagementWindow::"
+            std::cerr << "error in PlaylistWindow::"
                          "onTitleEdited(): "
                       << e.what() << std::endl;
             return;
@@ -484,7 +484,7 @@ SimplePlaylistManagementWindow :: onTitleEdited(void)               throw()
  *  Signal handler for the fade info being edited.
  *----------------------------------------------------------------------------*/
 void
-SimplePlaylistManagementWindow :: onFadeInfoEdited(
+PlaylistWindow :: onFadeInfoEdited(
                                         const Glib::ustring &  pathString,
                                         int                    columnId,
                                         const Glib::ustring &  newText)
@@ -543,7 +543,7 @@ SimplePlaylistManagementWindow :: onFadeInfoEdited(
  *  Auxilliary function: set the fade in of a playlist element.
  *----------------------------------------------------------------------------*/
 void
-SimplePlaylistManagementWindow :: setFadeIn(
+PlaylistWindow :: setFadeIn(
                           Ptr<PlaylistElement>::Ref     playlistElement,
                           Ptr<time_duration>::Ref       newFadeIn)
                                                                     throw()
@@ -571,7 +571,7 @@ SimplePlaylistManagementWindow :: setFadeIn(
  *  Auxilliary function: set the fade out of a playlist element.
  *----------------------------------------------------------------------------*/
 void
-SimplePlaylistManagementWindow :: setFadeOut(
+PlaylistWindow :: setFadeOut(
                             Ptr<PlaylistElement>::Ref     playlistElement,
                             Ptr<time_duration>::Ref       newFadeOut)
                                                                     throw()
@@ -599,7 +599,7 @@ SimplePlaylistManagementWindow :: setFadeOut(
  *  Auxilliary function: check that fades are not longer than the whole clip.
  *----------------------------------------------------------------------------*/
 inline bool
-SimplePlaylistManagementWindow :: isLengthOkay(
+PlaylistWindow :: isLengthOkay(
                             Ptr<PlaylistElement>::Ref     playlistElement,
                             Ptr<FadeInfo>::Ref            newFadeInfo)
                                                                     throw()
@@ -614,7 +614,7 @@ SimplePlaylistManagementWindow :: isLengthOkay(
  *  Signal handler for the playlist being modified outside the window.
  *----------------------------------------------------------------------------*/
 void
-SimplePlaylistManagementWindow :: onPlaylistModified(void)          throw()
+PlaylistWindow :: onPlaylistModified(void)          throw()
 {
     setPlaylistModified(true);
 }
@@ -624,7 +624,7 @@ SimplePlaylistManagementWindow :: onPlaylistModified(void)          throw()
  *  Event handler for an entry being clicked in the list
  *----------------------------------------------------------------------------*/
 void
-SimplePlaylistManagementWindow :: onEntryClicked(GdkEventButton * event)
+PlaylistWindow :: onEntryClicked(GdkEventButton * event)
                                                                     throw()
 {
     if (event->type == GDK_BUTTON_PRESS && event->button == 3) {
@@ -651,7 +651,7 @@ SimplePlaylistManagementWindow :: onEntryClicked(GdkEventButton * event)
  *  Event handler for the Up menu item selected from the context menu.
  *----------------------------------------------------------------------------*/
 void
-SimplePlaylistManagementWindow :: onUpItem(void)                    throw()
+PlaylistWindow :: onUpItem(void)                    throw()
 {
     if (currentItem && currentItem != entriesModel->children().begin()) {
         int             rowNumber    = (*currentItem)
@@ -670,7 +670,7 @@ SimplePlaylistManagementWindow :: onUpItem(void)                    throw()
  *  Event handler for the Down menu item selected from the context menu.
  *----------------------------------------------------------------------------*/
 void
-SimplePlaylistManagementWindow :: onDownItem(void)                  throw()
+PlaylistWindow :: onDownItem(void)                  throw()
 {
     if (currentItem) {
         Gtk::TreeIter   nextItem  = currentItem;
@@ -691,7 +691,7 @@ SimplePlaylistManagementWindow :: onDownItem(void)                  throw()
  *  Swap two playlist elements in the edited playlist.
  *----------------------------------------------------------------------------*/
 void
-SimplePlaylistManagementWindow :: swapPlaylistElements(
+PlaylistWindow :: swapPlaylistElements(
                                         Gtk::TreeIter   firstIter,
                                         Gtk::TreeIter   secondIter)
                                                                     throw()
@@ -769,7 +769,7 @@ SimplePlaylistManagementWindow :: swapPlaylistElements(
  *  Event handler for the Remove menu item selected from the context menu.
  *----------------------------------------------------------------------------*/
 void
-SimplePlaylistManagementWindow :: onRemoveItem(void)                throw()
+PlaylistWindow :: onRemoveItem(void)                throw()
 {
     if (currentItem) {
         Ptr<Playlist>::Ref 
@@ -791,7 +791,7 @@ SimplePlaylistManagementWindow :: onRemoveItem(void)                throw()
  *  Event handler for a key pressed.
  *----------------------------------------------------------------------------*/
 bool
-SimplePlaylistManagementWindow :: onKeyPressed(GdkEventKey *    event)
+PlaylistWindow :: onKeyPressed(GdkEventKey *    event)
                                                                     throw ()
 {
     if (event->type == GDK_KEY_PRESS) {
@@ -827,7 +827,7 @@ SimplePlaylistManagementWindow :: onKeyPressed(GdkEventKey *    event)
  *  Find (an iterator pointing to) the currently selected row.
  *----------------------------------------------------------------------------*/
 void
-SimplePlaylistManagementWindow :: findCurrentItem(void)             throw ()
+PlaylistWindow :: findCurrentItem(void)             throw ()
 {
     Glib::RefPtr<Gtk::TreeView::Selection>  selection
                                             = entriesView->get_selection();
@@ -839,7 +839,7 @@ SimplePlaylistManagementWindow :: findCurrentItem(void)             throw ()
  *  Select (highlight) the nth row.
  *----------------------------------------------------------------------------*/
 void
-SimplePlaylistManagementWindow :: selectRow(int rowNumber)          throw ()
+PlaylistWindow :: selectRow(int rowNumber)          throw ()
 {
     Gtk::TreeModel::iterator    iter = entriesModel->children().begin();
     for (; rowNumber > 0; --rowNumber) {
@@ -857,7 +857,7 @@ SimplePlaylistManagementWindow :: selectRow(int rowNumber)          throw ()
  *  Set the value of the isPlaylistModified variable.
  *----------------------------------------------------------------------------*/
 void
-SimplePlaylistManagementWindow :: setPlaylistModified(bool  newValue)
+PlaylistWindow :: setPlaylistModified(bool  newValue)
                                                                     throw ()
 {
     isPlaylistModified = newValue;
