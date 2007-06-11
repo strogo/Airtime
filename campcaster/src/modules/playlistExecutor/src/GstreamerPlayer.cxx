@@ -445,6 +445,7 @@ GstreamerPlayer :: open(const std::string   fileUrl)
 
         gst_bin_add_many(GST_BIN(m_pipeline), m_filesrc, m_decoder, NULL);
         gst_element_link(m_filesrc, m_decoder);
+        debug() << "Connecting newPadEventHandler" << endl;
         g_signal_connect(m_decoder, "new-decoded-pad", G_CALLBACK(newpadEventHandler), this);
     }
 
