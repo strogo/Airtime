@@ -266,7 +266,21 @@ GstreamerPlayer :: eventHandler(GstPad*, GstEvent* event, gpointer self) throw()
             g_idle_add(fireOnStopEvent, self);
         }
         break;
-
+    case GST_EVENT_NEWSEGMENT:
+        debug() << "GST_EVENT_NEWSEGMENT" << endl;
+        break;
+    case GST_EVENT_TAG:
+        debug() << "GST_EVENT_TAG" << endl;
+        break;
+    case GST_EVENT_FLUSH_START:
+        debug() << "GST_EVENT_FLUSH_START" << endl;
+        break;
+    case GST_EVENT_FLUSH_STOP:
+        debug() << "GST_EVENT_FLUSH_STOP" << endl;
+        break;
+    case GST_EVENT_BUFFERSIZE:
+        debug() << "GST_EVENT_BUFFERSIZE" << endl;
+        break;
     default:
         debug() << "** unknown event " << static_cast<int>(event->type) << endl;
         break;
