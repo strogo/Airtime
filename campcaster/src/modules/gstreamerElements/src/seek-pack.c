@@ -117,7 +117,8 @@ livesupport_seek_pack_new(const gchar    * uniqueName,
     seekPack->sendingSilence = TRUE;
 
     printf("MARKER1\n");
-    gst_element_add_pad(seekPack->bin, gst_ghost_pad_new("src", gst_element_get_pad(seekPack->switcher, "src")));
+    GstPad* ghost = gst_ghost_pad_new("src", gst_element_get_pad(seekPack->switcher, "src"));
+    gst_element_add_pad(seekPack->bin, ghost);
     printf("MARKER2\n");
 
     return seekPack;
