@@ -30,7 +30,7 @@
 # To read more about gstreamer, see http://gstreamer.freedesktop.org/
 #-------------------------------------------------------------------------------
 liboil=liboil-0.3.10
-gstreamer=gstreamer-0.10.11
+gstreamer=gstreamer-0.10.13
 plugins_base=gst-plugins-base-0.10.11
 plugins_good=gst-plugins-good-0.10.4
 plugins_ugly=gst-plugins-ugly-0.10.5
