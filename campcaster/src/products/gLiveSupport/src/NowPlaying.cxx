@@ -58,6 +58,16 @@ namespace {
  */
 const int   blinkingConstant = 5;
 
+/**
+ *  The string which identifies the Play stock image.
+ */
+const Glib::ustring     playStockImageName = "gtk-media-play";
+
+/**
+ *  The string which identifies the Pause stock image.
+ */
+const Glib::ustring     pauseStockImageName = "gtk-media-pause";
+
 }
 
 /* ===============================================  local function prototypes */
@@ -68,106 +78,46 @@ const int   blinkingConstant = 5;
 /*------------------------------------------------------------------------------
  *  Constructor.
  *----------------------------------------------------------------------------*/
-NowPlaying :: NowPlaying(Ptr<GLiveSupport>::Ref     gLiveSupport,
-                         Ptr<ResourceBundle>::Ref   bundle)
+NowPlaying :: NowPlaying(Ptr<GLiveSupport>::Ref             gLiveSupport,
+                         Ptr<ResourceBundle>::Ref           bundle,
+                         Glib::RefPtr<Gnome::Glade::Xml>    glade)
                                                                     throw ()
           : LocalizedObject(bundle),
+            glade(glade),
             gLiveSupport(gLiveSupport)
 {
-    Ptr<WidgetFactory>::Ref     wf = WidgetFactory::getInstance();
-    
-    playButton = Gtk::manage(wf->createButton(
-                                    WidgetConstants::masterPlayButton ));
-    pauseButton = Gtk::manage(wf->createButton(
-                                    WidgetConstants::masterPauseButton ));
-    stopButton = Gtk::manage(wf->createButton(
-                                    WidgetConstants::masterStopButton ));
+    glade->get_widget("playButton", playButton);
+    glade->get_widget("stopButton", stopButton);
 
     playButton->signal_clicked().connect(sigc::mem_fun(*this,
                                         &NowPlaying::onPlayButtonClicked ));
-    pauseButton->signal_clicked().connect(sigc::mem_fun(*this,
-                                        &NowPlaying::onPauseButtonClicked ));
     stopButton->signal_clicked().connect(sigc::mem_fun(*this,
                                         &NowPlaying::onStopButtonClicked ));
 
     isActive = false;
     isPaused = false;
 
-    titleLabel = createFormattedLabel(14);
-    titleLabel->set_ellipsize(Pango::ELLIPSIZE_END);
-    
-    creatorLabel = createFormattedLabel(8);
-    creatorLabel->set_ellipsize(Pango::ELLIPSIZE_END);
-    
-    playlistLabel = createFormattedLabel(8);
-    playlistLabel->set_ellipsize(Pango::ELLIPSIZE_END);
-    
-    Gtk::Label *    elapsedLabel = createFormattedLabel(7);
-    Gtk::Label *    remainsLabel = createFormattedLabel(7);
-    elapsedTime = createFormattedLabel(16);
-    remainsTime = createFormattedLabel(16);
-    
-    Gtk::HBox *         elapsedTimeHBox = Gtk::manage(new Gtk::HBox);
-    Gtk::VBox *         elapsedTimeVBox = Gtk::manage(new Gtk::VBox);
-    elapsedTimeHBox->pack_start(*elapsedTime,     Gtk::PACK_SHRINK, 5);
-    elapsedTimeVBox->pack_start(*elapsedTimeHBox, Gtk::PACK_SHRINK, 2);
-    
-    remainsTimeBox = Gtk::manage(new Gtk::EventBox);
-    Gtk::HBox *         remainsTimeHBox = Gtk::manage(new Gtk::HBox);
-    Gtk::VBox *         remainsTimeVBox = Gtk::manage(new Gtk::VBox);
-    remainsTimeHBox->pack_start(*remainsTime,     Gtk::PACK_SHRINK, 5);
-    remainsTimeVBox->pack_start(*remainsTimeHBox, Gtk::PACK_SHRINK, 2);
-    remainsTimeBox->add(*remainsTimeVBox);
-    resetRemainsTimeState();
+    glade->get_widget("titleLabel", titleLabel);
+    glade->get_widget("creatorLabel", creatorLabel);
+    glade->get_widget("elapsedTimeLabel", elapsedTimeLabel);
+    glade->get_widget("remainsTimeBox", remainsTimeBox);
+    glade->get_widget("remainsTimeLabel", remainsTimeLabel);
+    glade->get_widget("playlistLabel", playlistLabel);
 
+    Gtk::Label *    elapsedTimeText;
+    Gtk::Label *    remainsTimeText;
+    glade->get_widget("elapsedTimeText", elapsedTimeText);
+    glade->get_widget("remainsTimeText", remainsTimeText);
     try {
-        elapsedLabel->set_text(*getResourceUstring("elapsedTimeLabel"));
-        remainsLabel->set_text(*getResourceUstring("remainingTimeLabel"));
+        elapsedTimeText->set_text(*getResourceUstring("elapsedTimeLabel"));
+        remainsTimeText->set_text(*getResourceUstring("remainingTimeLabel"));
     } catch (std::invalid_argument &e) {
         std::cerr << e.what() << std::endl;
         std::exit(1);
     }
     
-    Gtk::Box *      titleBox = Gtk::manage(new Gtk::HBox);
-    titleBox->pack_start(*titleLabel, Gtk::PACK_EXPAND_WIDGET, 5);
-    
-    Gtk::Box *      creatorBox = Gtk::manage(new Gtk::HBox);
-    creatorBox->pack_start(*creatorLabel, Gtk::PACK_EXPAND_WIDGET, 5);
-    
-    Gtk::Box *      extraSpace = Gtk::manage(new Gtk::HBox);
-    
-    Gtk::Box *      playlistBox = Gtk::manage(new Gtk::HBox);
-    playlistBox->pack_start(*playlistLabel, Gtk::PACK_EXPAND_WIDGET, 5);
-    
-    Gtk::Box *      elapsedTextBox = Gtk::manage(new Gtk::HBox);
-    elapsedTextBox->pack_start(*elapsedLabel, Gtk::PACK_EXPAND_WIDGET, 5);
-    elapsedTextBox->set_size_request(150);      // set a fixed width
-    
-    Gtk::Box *      elapsedBox = Gtk::manage(new Gtk::VBox);
-    elapsedBox->pack_start(*elapsedTextBox,     Gtk::PACK_SHRINK, 0);
-    elapsedBox->pack_start(*elapsedTimeVBox,    Gtk::PACK_SHRINK, 0);
-    
-    Gtk::Box *      remainsTextBox = Gtk::manage(new Gtk::HBox);
-    remainsTextBox->pack_start(*remainsLabel, Gtk::PACK_EXPAND_WIDGET, 5);
-    
-    Gtk::Box *      remainsBox = Gtk::manage(new Gtk::VBox);
-    remainsBox->pack_start(*remainsTextBox, Gtk::PACK_SHRINK, 0);
-    remainsBox->pack_start(*remainsTimeBox, Gtk::PACK_SHRINK, 0);
-    
-    Gtk::Box *      timeBox = Gtk::manage(new Gtk::HBox);
-    timeBox->pack_start(*elapsedBox, Gtk::PACK_SHRINK, 0);
-    timeBox->pack_start(*remainsBox, Gtk::PACK_SHRINK, 0);
-    
-    Gtk::Box *      textBox = Gtk::manage(new Gtk::VBox);
-    textBox->pack_start(*titleBox,      Gtk::PACK_SHRINK, 0);
-    textBox->pack_start(*creatorBox,    Gtk::PACK_SHRINK, 0);
-    textBox->pack_start(*extraSpace,    Gtk::PACK_SHRINK, 2);
-    textBox->pack_start(*timeBox,       Gtk::PACK_SHRINK, 0);
-    textBox->pack_start(*playlistBox,   Gtk::PACK_SHRINK, 0);
-    
-    pack_end(*textBox, Gtk::PACK_EXPAND_WIDGET, 0);
-    pack_end(*stopButton, Gtk::PACK_SHRINK, 0);
-    pack_end(*playButton, Gtk::PACK_SHRINK, 2);
+    Ptr<Playable>::Ref      nullPointer;
+    setPlayable(nullPointer);
 }
 
 
@@ -179,10 +129,11 @@ NowPlaying :: setPlayable(Ptr<Playable>::Ref  playable)             throw ()
 {
     if (playable) {
         if (!isActive || isPaused) {
-            remove(*playButton);
-            pack_end(*pauseButton, Gtk::PACK_SHRINK, 2);
-            pauseButton->show();
+            playButton->set_label(pauseStockImageName);
         }
+        playButton->set_sensitive(true);
+        stopButton->set_sensitive(true);
+
         this->playable = playable;
         isActive = true;
         isPaused = false;
@@ -191,22 +142,21 @@ NowPlaying :: setPlayable(Ptr<Playable>::Ref  playable)             throw ()
         
     } else {
         if (isActive && !isPaused) {
-            remove(*pauseButton);
-            pack_end(*playButton, Gtk::PACK_SHRINK, 2);
-            playButton->show();
+            playButton->set_label(playStockImageName);
             isActive = false;
         }
+        playButton->set_sensitive(false);
+        stopButton->set_sensitive(false);
+
         titleLabel->set_text("");
         creatorLabel->set_text("");
-        elapsedTime->set_text("");
-        remainsTime->set_text("");
+        elapsedTimeLabel->set_text("");
+        remainsTimeLabel->set_text("");
         playlistLabel->set_text("");
         resetRemainsTimeState();
         this->playable.reset();
         this->currentInnerPlayable.reset();
     }
-
-    gLiveSupport->updateRds();
 }
 
 
@@ -216,32 +166,16 @@ NowPlaying :: setPlayable(Ptr<Playable>::Ref  playable)             throw ()
 void
 NowPlaying :: onPlayButtonClicked(void)                             throw ()
 {
-    if (isActive && isPaused) {
-        gLiveSupport->pauseOutputAudio();       // i.e., restart
-
-        remove(*playButton);
-        pack_end(*pauseButton, Gtk::PACK_SHRINK, 2);
-        pauseButton->show();
-        
-        isPaused = false;
-    }
-}
-
-
-/*------------------------------------------------------------------------------
- *  Event handler for the Pause button being clicked.
- *----------------------------------------------------------------------------*/
-void
-NowPlaying :: onPauseButtonClicked(void)                            throw ()
-{
-    if (isActive && !isPaused) {
-        gLiveSupport->pauseOutputAudio();
-        
-        remove(*pauseButton);
-        pack_end(*playButton, Gtk::PACK_SHRINK, 2);
-        playButton->show();   
-    
-        isPaused = true;
+    if (isActive) {
+        if (isPaused) {
+            gLiveSupport->pauseOutputAudio();       // i.e., restart
+            playButton->set_label(pauseStockImageName);
+            isPaused = false;
+        } else {
+            gLiveSupport->pauseOutputAudio();
+            playButton->set_label(playStockImageName);
+            isPaused = true;
+        }
     }
 }
 
@@ -256,34 +190,6 @@ NowPlaying :: onStopButtonClicked(void)                             throw ()
         gLiveSupport->stopOutputAudio();    // triggers a call to GLiveSupport::
     }                                       // onStop(), which in turn calls
 }                                           // setPlayable() with a 0 argument
-
-
-/*------------------------------------------------------------------------------
- *  Construct a label with the font attribute already set.
- *----------------------------------------------------------------------------*/
-Gtk::Label *
-NowPlaying :: createFormattedLabel(int    fontSize)                 throw ()
-{
-    Gtk::Label *    label = Gtk::manage(new Gtk::Label("", Gtk::ALIGN_LEFT,
-                                                           Gtk::ALIGN_CENTER));
-    
-    Pango::FontDescription  fontDescription;
-    fontDescription.set_family("Bitstream Vera Sans");
-    fontDescription.set_weight(Pango::WEIGHT_BOLD);
-    fontDescription.set_size(fontSize * Pango::SCALE);
-    
-    Pango::Attribute        fontDescriptionAttribute = 
-                                Pango::Attribute::create_attr_font_desc(
-                                    fontDescription);
-    fontDescriptionAttribute.set_start_index(0);
-    fontDescriptionAttribute.set_end_index(255);
-    
-    Pango::AttrList         attributeList;
-    attributeList.insert(fontDescriptionAttribute);
-    label->set_attributes(attributeList);
-    
-    return label;
-}
 
 
 /*------------------------------------------------------------------------------
@@ -379,10 +285,10 @@ NowPlaying :: onUpdateTime(void)                                    throw ()
         creatorLabel->set_text("");
     }
     
-    elapsedTime->set_text(*TimeConversion::timeDurationToHhMmSsString(
-                                                innerElapsed ));
-    remainsTime->set_text(*TimeConversion::timeDurationToHhMmSsString(
-                                                innerRemains ));
+    elapsedTimeLabel->set_text(*TimeConversion::timeDurationToHhMmSsString(
+                                                        innerElapsed ));
+    remainsTimeLabel->set_text(*TimeConversion::timeDurationToHhMmSsString(
+                                                        innerRemains ));
 
     currentInnerPlayable = innerPlayable;
 }
@@ -396,28 +302,28 @@ NowPlaying :: setRemainsTimeColor(RemainsTimeStateType  state)      throw ()
 {
     bool        isBlinkOn = (remainsTimeCounter < blinkingConstant);
 
-    Gdk::Color  color;
-    
     if (isBlinkOn) {
         switch (state) {
             case TIME_GREEN:
-                color = Colors::getColor(Colors::MasterPanelCenterBlue);
+                remainsTimeBox->unset_bg(Gtk::STATE_NORMAL);
                 break;
                 
             case TIME_YELLOW:
-                color = Colors::getColor(Colors::Yellow);
+                remainsTimeBox->modify_bg(Gtk::STATE_NORMAL,
+                                          Colors::getColor(Colors::Yellow));
                 break;
                 
             case TIME_RED:
-                color = Colors::getColor(Colors::Red);
+                remainsTimeBox->modify_bg(Gtk::STATE_NORMAL,
+                                          Colors::getColor(Colors::Red));
                 break;
         }
     } else {
-        color = Colors::getColor(Colors::MasterPanelCenterBlue);
+        remainsTimeBox->unset_bg(Gtk::STATE_NORMAL);
     }
-    
-    remainsTimeBox->modify_bg(Gtk::STATE_NORMAL, color);
-}                
+
+    gLiveSupport->runMainLoop();
+}
 
 
 /*------------------------------------------------------------------------------

@@ -119,6 +119,13 @@ MasterPanelWindow :: MasterPanelWindow (Ptr<GLiveSupport>::Ref    gLiveSupport,
                                         *this,
                                         &MasterPanelWindow::onKeyPressed));
 
+    // create the Now Playing widget
+    Gtk::Box *      nowPlayingBox;
+    glade->get_widget("nowPlayingWidget", nowPlayingBox);
+    nowPlayingWidget.reset(new NowPlaying(gLiveSupport,
+                                          bundle,
+                                          glade));
+
     // get a reference for the window-opener buttons
     glade->get_widget("liveModeButton", liveModeButton);
     glade->get_widget("uploadFileButton", uploadFileButton);
@@ -296,7 +303,7 @@ MasterPanelWindow :: onUpdateTime(int   dummy)                      throw ()
         timeLabel->set_text(to_simple_string(dayTimeSec));
     }
 
-    updateNowPlayingInfo();
+    nowPlayingWidget->onUpdateTime();
     
     // check on the progress of the async methods
     static int      backupCounter = 0;
@@ -696,18 +703,13 @@ MasterPanelWindow :: onKeyPressed(GdkEventKey *    event)           throw ()
                                                 event->keyval);
         switch (action) {
             case KeyboardShortcut::playAudio :
-                                    // FIXME
-                                    // nowPlayingWidget->onPlayAudio();
-                                    return true;
-            
+
             case KeyboardShortcut::pauseAudio :
-                                    // FIXME
-                                    // nowPlayingWidget->onPauseAudio();
+                                    nowPlayingWidget->onPlayAudio();
                                     return true;
             
             case KeyboardShortcut::stopAudio :
-                                    // FIXME
-                                    // nowPlayingWidget->onStopAudio();
+                                    nowPlayingWidget->onStopAudio();
                                     return true;
             
             case KeyboardShortcut::nextTrack :
@@ -881,16 +883,6 @@ MasterPanelWindow :: updateUserInfo(Ptr<const Glib::ustring>::Ref   loginName)
         loginButton->set_label(*loginButtonLabel);
         userInfoLabel->set_label(*notLoggedInMsg);
     }
-}
-
-
-/*------------------------------------------------------------------------------
- *  Update the Now Playing info.
- *----------------------------------------------------------------------------*/
-void
-MasterPanelWindow :: updateNowPlayingInfo(void)                     throw ()
-{
-    // FIXME
 }
 
 

@@ -47,6 +47,7 @@
 #include "LiveSupport/Core/LocalizedObject.h"
 
 #include "GLiveSupport.h"
+#include "NowPlaying.h"
 #include "LiveModeWindow.h"
 #include "UploadFileWindow.h"
 #include "ScratchpadWindow.h"
@@ -97,6 +98,7 @@ using namespace LiveSupport::Widgets;
 class MasterPanelWindow : public LocalizedObject
 {
     private:
+
         /**
          *  The Glade object, containing the visual design.
          */
@@ -141,6 +143,11 @@ class MasterPanelWindow : public LocalizedObject
          *  second, and will update the time display on each wakeup.
          */
         Ptr<sigc::connection>::Ref          timer;
+
+        /**
+         *  The 'now playing' display.
+         */
+        Ptr<NowPlaying>::Ref                nowPlayingWidget;
 
         /**
          *  The button to invoke the Live Mode window.
@@ -523,12 +530,6 @@ class MasterPanelWindow : public LocalizedObject
         updateOptionsWindow(void)                               throw ();
 
         /**
-         *  Update the Now Playing info.
-         */
-        void
-        updateNowPlayingInfo(void)                              throw ();
-
-        /**
          *  Update the User info.
          *
          *  @param  loginName   the login name (only when userIsLoggedIn).
@@ -556,8 +557,8 @@ class MasterPanelWindow : public LocalizedObject
         void
         setNowPlaying(Ptr<Playable>::Ref    playable)           throw ()
         {
-            // FIXME
-            // nowPlayingWidget->setPlayable(playable);
+            nowPlayingWidget->setPlayable(playable);
+            gLiveSupport->updateRds();
         }
 
         /**
@@ -568,10 +569,8 @@ class MasterPanelWindow : public LocalizedObject
         Ptr<Playable>::Ref
         getCurrentInnerPlayable(void)                           throw ()
         {
-            // FIXME
             Ptr<Playable>::Ref      nullPointer;
-            return nullPointer;
-            //return nowPlayingWidget->getCurrentInnerPlayable();
+            return nowPlayingWidget->getCurrentInnerPlayable();
         }
 
         /**

@@ -41,6 +41,7 @@
 #endif
 
 #include <gtkmm.h>
+#include <libglademm.h>
 
 #include "LiveSupport/Core/Ptr.h"
 #include "LiveSupport/Core/LocalizedObject.h"
@@ -68,11 +69,15 @@ using namespace LiveSupport::Widgets;
  *  @author  $Author$
  *  @version $Revision$
  */
-class NowPlaying : public Gtk::HBox,
-                   public LocalizedObject
+class NowPlaying : public LocalizedObject
 {
     private:
     
+        /**
+         *  The Glade object, containing the visual design.
+         */
+        Glib::RefPtr<Gnome::Glade::Xml>     glade;
+
         /**
          *  Whether anything is shown in the widget.
          */
@@ -113,12 +118,12 @@ class NowPlaying : public Gtk::HBox,
         /**
          *  The label holding the elapsed time.
          */
-        Gtk::Label *            elapsedTime;
+        Gtk::Label *            elapsedTimeLabel;
 
         /**
          *  The label holding the remaining time.
          */
-        Gtk::Label *            remainsTime;
+        Gtk::Label *            remainsTimeLabel;
 
         /**
          *  A box around the remaining time label, so we can modify its color.
@@ -128,17 +133,12 @@ class NowPlaying : public Gtk::HBox,
         /**
          *  The play button.
          */
-        ImageButton *           playButton;
-
-        /**
-         *  The pause button.
-         */
-        ImageButton *           pauseButton;
+        Gtk::Button *           playButton;
 
         /**
          *  The stop button.
          */
-        ImageButton *           stopButton;
+        Gtk::Button *           stopButton;
 
         /**
          *  The possible states of the 'time remains' label.
@@ -173,26 +173,10 @@ class NowPlaying : public Gtk::HBox,
         onPlayButtonClicked(void)                       throw ();
 
         /**
-         *  Event handler for the Pause button being clicked.
-         */
-        void
-        onPauseButtonClicked(void)                      throw ();
-
-        /**
          *  Event handler for the Stop button being clicked.
          */
         void
         onStopButtonClicked(void)                       throw ();
-
-        /**
-         *  Return a Gtk::manage'd Gtk::Label*, with the Bitstream Vera
-         *  font attributes set.
-         *
-         *  @param  fontSize    the size of the text in the label, in points
-         *  @return the new label
-         */
-        Gtk::Label *
-        createFormattedLabel(int    fontSize)           throw ();
 
         /**
          *  Set the color of the 'remains time' label.
@@ -225,9 +209,12 @@ class NowPlaying : public Gtk::HBox,
          *  @param gLiveSupport the GLiveSupport, application object.
          *  @param bundle the resource bundle holding the localized
          *         resources for this widget
+         *  @param glade    the Glade file which specifies the visual
+         *                  components for this class.
          */
-        NowPlaying(Ptr<GLiveSupport>::Ref       gLiveSupport,
-                   Ptr<ResourceBundle>::Ref     bundle)
+        NowPlaying(Ptr<GLiveSupport>::Ref           gLiveSupport,
+                   Ptr<ResourceBundle>::Ref         bundle,
+                   Glib::RefPtr<Gnome::Glade::Xml>  glade)
                                                         throw ();
 
         /**
@@ -262,17 +249,6 @@ class NowPlaying : public Gtk::HBox,
         onPlayAudio(void)                               throw ()
         {
             onPlayButtonClicked();
-        }
-
-        /**
-         *  Public interface for pausing the audio.
-         *
-         *  This is used by MasterPanelWindow::onKeyPressed().
-         */
-        void
-        onPauseAudio(void)                              throw ()
-        {
-            onPauseButtonClicked();
         }
 
         /**
