@@ -569,7 +569,6 @@ class MasterPanelWindow : public LocalizedObject
         Ptr<Playable>::Ref
         getCurrentInnerPlayable(void)                           throw ()
         {
-            Ptr<Playable>::Ref      nullPointer;
             return nowPlayingWidget->getCurrentInnerPlayable();
         }
 
