@@ -584,18 +584,6 @@ class GLiveSupport : public LocalizedConfigurable,
         }
 
         /**
-         *  Show the UI components that are visible when no one is logged in.
-         */
-        void
-        showAnonymousUI(void)                                   throw ();
-
-        /**
-         *  Show the UI components that are visible when someone is logged in.
-         */
-        void
-        showLoggedInUI(void)                                    throw ();
-
-        /**
          *  Upload an audio clip to the storage.
          *
          *  @param  audioClip   the audio clip to upload.

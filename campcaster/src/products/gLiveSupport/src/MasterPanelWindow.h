@@ -96,12 +96,36 @@ using namespace LiveSupport::Widgets;
  */
 class MasterPanelWindow : public LocalizedObject
 {
-    protected:
+    private:
         /**
          *  The Glade object, containing the visual design.
          */
         Glib::RefPtr<Gnome::Glade::Xml>     glade;
 
+        /**
+         *  The gLiveSupport object, handling the logic of the application.
+         */
+        Ptr<GLiveSupport>::Ref              gLiveSupport;
+
+        /**
+         *  Whether a user is currently logged in.
+         */
+        bool                                userIsLoggedIn;
+
+        /**
+         *  Log in.
+         */
+        void
+        login(void)                                         throw ();
+
+        /**
+         *  Log out.
+         */
+        void
+        logout(void)                                        throw ();
+
+
+    protected:
         /**
          *  The main window.
          */
@@ -161,52 +185,47 @@ class MasterPanelWindow : public LocalizedObject
         /**
          *  The label for the "logged in as" info.
          */
-        Gtk::Label *                        userLoggedInLabel;
+        Gtk::Label *                        userInfoLabel;
 
         /**
          *  The button to log in or log out.
          */
-        Gtk::ToggleButton *                 loginButton;
-
-        /**
-         *  The gLiveSupport object, handling the logic of the application.
-         */
-        Ptr<GLiveSupport>::Ref      gLiveSupport;
+        Gtk::Button *                       loginButton;
 
         /**
          *  The one and only Live Mode window.
          */
-        Ptr<LiveModeWindow>::Ref    liveModeWindow;
+        Ptr<LiveModeWindow>::Ref            liveModeWindow;
 
         /**
          *  The one and only Upload File window.
          */
-        Ptr<UploadFileWindow>::Ref  uploadFileWindow;
+        Ptr<UploadFileWindow>::Ref          uploadFileWindow;
 
         /**
          *  The one and only Scratchpad window.
          */
-        Ptr<ScratchpadWindow>::Ref  scratchpadWindow;
+        Ptr<ScratchpadWindow>::Ref          scratchpadWindow;
 
         /**
          *  The one and only simple playlist management window.
          */
-        Ptr<PlaylistWindow>::Ref    playlistWindow;
+        Ptr<PlaylistWindow>::Ref            playlistWindow;
 
         /**
          *  The one and only scheduler window.
          */
-        Ptr<SchedulerWindow>::Ref   schedulerWindow;
+        Ptr<SchedulerWindow>::Ref           schedulerWindow;
 
         /**
          *  The one and only search window.
          */
-        Ptr<SearchWindow>::Ref      searchWindow;
+        Ptr<SearchWindow>::Ref              searchWindow;
 
         /**
          *  The one and only options window.
          */
-        Ptr<OptionsWindow>::Ref     optionsWindow;
+        Ptr<OptionsWindow>::Ref             optionsWindow;
 
         /**
          *  Function that updates timeLabel with the current time.
@@ -339,6 +358,13 @@ class MasterPanelWindow : public LocalizedObject
                 optionsWindow->hide();
             }
         }
+
+        /**
+         *  Function to catch the event of the Login/Logout button
+         *  button being pressed.
+         */
+        virtual void
+        onLoginButtonClicked(void)                            throw ();
 
         /**
          *  Signal handler for a key pressed at one of the entries.
@@ -503,10 +529,14 @@ class MasterPanelWindow : public LocalizedObject
         updateNowPlayingInfo(void)                              throw ();
 
         /**
-         *  Update the User Logged In info.
+         *  Update the User info.
+         *
+         *  @param  loginName   the login name (only when userIsLoggedIn).
          */
         void
-        updateUserLoggedInInfo(void)                            throw ();
+        updateUserInfo(Ptr<const Glib::ustring>::Ref    loginName
+                                            = Ptr<const Glib::ustring>::Ref())
+                                                                throw ();
 
         /**
          *  Get the next item from the top of the Live Mode window.

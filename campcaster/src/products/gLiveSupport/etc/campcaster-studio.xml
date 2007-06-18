@@ -430,7 +430,7 @@
         </keyboardShortcutContainer>
 
         <keyboardShortcutContainer
-                    windowName ="simplePlaylistManagementWindow">
+                    windowName ="playlistWindow">
             <keyboardShortcut   action  = "moveItemUp"
                                 key     = "&lt;Alt&gt;Up"   />
             <keyboardShortcut   action  = "moveItemDown"

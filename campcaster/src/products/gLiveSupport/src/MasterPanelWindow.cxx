@@ -40,6 +40,7 @@
 #include <gdkmm/pixbuf.h>
 
 #include "LiveSupport/Core/TimeConversion.h"
+#include "LoginWindow.h"
 
 #include "MasterPanelWindow.h"
 
@@ -90,7 +91,8 @@ MasterPanelWindow :: MasterPanelWindow (Ptr<GLiveSupport>::Ref    gLiveSupport,
                                         Ptr<ResourceBundle>::Ref  bundle)
                                                                     throw ()
                         : LocalizedObject(bundle),
-                          gLiveSupport(gLiveSupport)
+                          gLiveSupport(gLiveSupport),
+                          userIsLoggedIn(false)                          
 {
     glade = Gnome::Glade::Xml::create(gladePath);
     
@@ -126,6 +128,11 @@ MasterPanelWindow :: MasterPanelWindow (Ptr<GLiveSupport>::Ref    gLiveSupport,
     glade->get_widget("searchButton", searchButton);
     glade->get_widget("optionsButton", optionsButton);
 
+    // get a reference for some other widgets
+    glade->get_widget("mainButtonBox", mainButtonBox);
+    glade->get_widget("userInfoLabel", userInfoLabel);
+    glade->get_widget("loginButton", loginButton);
+
     // bind events to the buttons
     liveModeButton->signal_clicked().connect(sigc::mem_fun(
                                 *this,
@@ -145,22 +152,22 @@ MasterPanelWindow :: MasterPanelWindow (Ptr<GLiveSupport>::Ref    gLiveSupport,
     searchButton->signal_clicked().connect(sigc::mem_fun(
                                 *this,
                                 &MasterPanelWindow::onSearchButtonClicked));
+    optionsButton->signal_clicked().connect(sigc::mem_fun(
+                                *this,
+                                &MasterPanelWindow::onOptionsButtonClicked));
 
-    // get a reference for some other widgets
-    glade->get_widget("mainButtonBox", mainButtonBox);
-    glade->get_widget("userLoggedInLabel", userLoggedInLabel);
-    glade->get_widget("loginButton", loginButton);
+    loginButton->signal_clicked().connect(sigc::mem_fun(
+                                *this,
+                                &MasterPanelWindow::onLoginButtonClicked));
 
     // set the size and location of the window, according to the screen size
     Glib::RefPtr<Gdk::Screen>   screen = masterPanelWindow->get_screen();
-    int                         width  = screen->get_width();
-    int                         height = masterPanelWindow->get_height();
-    masterPanelWindow->set_default_size(width, height);
-    masterPanelWindow->resize(width, height);
+    masterPanelWindow->set_default_size(screen->get_width(), -1);
     masterPanelWindow->move(0, 0);
 
     // show what's there to see
     showAnonymousUI();
+    updateUserInfo();
 
     // set the timer, that will update timeLabel
     setTimer();
@@ -216,7 +223,7 @@ MasterPanelWindow :: changeLanguage(Ptr<ResourceBundle>::Ref    bundle)
         std::exit(1);
     }
 
-    updateUserLoggedInInfo();
+    updateUserInfo();
 
     if (!gLiveSupport->isStorageAvailable()) {
         // gray out all the buttons except Options
@@ -540,7 +547,6 @@ MasterPanelWindow :: updateOptionsWindow(void)                      throw ()
 void
 MasterPanelWindow :: showAnonymousUI(void)                          throw ()
 {
-    masterPanelWindow->show_all();
     mainButtonBox->hide();
     
     if (liveModeWindow.get()) {
@@ -614,7 +620,7 @@ MasterPanelWindow :: cancelEditedPlaylist(void)                     throw ()
 void
 MasterPanelWindow :: showLoggedInUI(void)                           throw ()
 {
-    masterPanelWindow->show_all();
+    mainButtonBox->show();
     
     if (!gLiveSupport->isStorageAvailable()) { 
         liveModeButton->set_sensitive(false);
@@ -779,20 +785,110 @@ MasterPanelWindow :: showCuePlayerStopped(void)                     throw ()
 
 
 /*------------------------------------------------------------------------------
- *  Update the Now Playing info.
+ *  Handle the event of the Login/Logout button being clicked.
  *----------------------------------------------------------------------------*/
 void
-MasterPanelWindow :: updateNowPlayingInfo()                         throw ()
+MasterPanelWindow :: onLoginButtonClicked(void)                     throw ()
 {
-    // FIXME
+    if (userIsLoggedIn) {
+        logout();
+    } else {
+        login();
+    }
 }
 
 
 /*------------------------------------------------------------------------------
- *  Update the User Logged In info.
+ *  Let the user log in.
  *----------------------------------------------------------------------------*/
 void
-MasterPanelWindow :: updateUserLoggedInInfo()                       throw ()
+MasterPanelWindow :: login(void)                                    throw ()
+{
+    Ptr<ResourceBundle>::Ref    loginBundle;
+    try {
+        loginBundle       = getBundle("loginWindow");
+    } catch (std::invalid_argument &e) {
+        std::cerr << e.what() << std::endl;
+        return;
+    }
+
+    Ptr<LoginWindow>::Ref       loginWindow(new LoginWindow(gLiveSupport,
+                                                            loginBundle,
+                                                            0));
+    userIsLoggedIn = loginWindow->run();
+
+    if (userIsLoggedIn) {
+        Ptr<const Glib::ustring>::Ref   loginName = loginWindow->getLogin();
+        updateUserInfo(loginName);
+        showLoggedInUI();
+
+    } else {
+        // TODO: display an "incorrect login" dialog
+    }
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Let the user log out.
+ *----------------------------------------------------------------------------*/
+void
+MasterPanelWindow :: logout(void)                                   throw ()
+{
+    bool userCanceledTheLogout = !gLiveSupport->logout();
+    if (userCanceledTheLogout) {
+        return;
+    }
+
+    userIsLoggedIn = false;
+    updateUserInfo();
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Show the user info and the login button.
+ *----------------------------------------------------------------------------*/
+void
+MasterPanelWindow :: updateUserInfo(Ptr<const Glib::ustring>::Ref   loginName)
+                                                                    throw ()
+{
+    if (userIsLoggedIn) {
+        Ptr<Glib::ustring>::Ref         logoutButtonLabel;
+        Ptr<Glib::ustring>::Ref         loggedInMsg;
+
+        try {
+            logoutButtonLabel   = getResourceUstring("logoutButtonLabel");
+            loggedInMsg         = formatMessage("loggedInMsg", *loginName);
+        } catch (std::invalid_argument &e) {
+            std::cerr << e.what() << std::endl;
+            std::exit(1);
+        }
+
+        loginButton->set_label(*logoutButtonLabel);
+        userInfoLabel->set_label(*loggedInMsg);
+
+    } else {
+        Ptr<Glib::ustring>::Ref         loginButtonLabel;
+        Ptr<Glib::ustring>::Ref         notLoggedInMsg;
+
+        try {
+            loginButtonLabel = getResourceUstring("loginButtonLabel");
+            notLoggedInMsg   = getResourceUstring("notLoggedInMsg");
+        } catch (std::invalid_argument &e) {
+            std::cerr << e.what() << std::endl;
+            std::exit(1);
+        }
+
+        loginButton->set_label(*loginButtonLabel);
+        userInfoLabel->set_label(*notLoggedInMsg);
+    }
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Update the Now Playing info.
+ *----------------------------------------------------------------------------*/
+void
+MasterPanelWindow :: updateNowPlayingInfo(void)                     throw ()
 {
     // FIXME
 }

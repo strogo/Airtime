@@ -636,12 +636,12 @@ GLiveSupport :: logout(void)                                throw ()
         return false;
     }
     
-    if (masterPanel && !masterPanel->cancelEditedPlaylist()) {
+    if (!masterPanel->cancelEditedPlaylist()) {
         return false;   // do nothing if the user presses the cancel button
     }
     
     stopCueAudio();
-    showAnonymousUI();
+    masterPanel->showAnonymousUI();
     
     storeWindowPositions();
     windowPositions.clear();
@@ -711,32 +711,6 @@ GLiveSupport :: loadWindowContents(ContentsStorable *   window)
     }
     
     window->setContents(windowContents);
-}
-
-
-/*------------------------------------------------------------------------------
- *  Show the anonymous UI
- *----------------------------------------------------------------------------*/
-void
-LiveSupport :: GLiveSupport ::
-GLiveSupport :: showAnonymousUI(void)                       throw ()
-{
-    if (masterPanel.get()) {
-        masterPanel->showAnonymousUI();
-    }
-}
-
-
-/*------------------------------------------------------------------------------
- *  Show the UI when someone is logged in
- *----------------------------------------------------------------------------*/
-void
-LiveSupport :: GLiveSupport ::
-GLiveSupport :: showLoggedInUI(void)                        throw ()
-{
-    if (masterPanel.get()) {
-        masterPanel->showLoggedInUI();
-    }
 }
 
 
