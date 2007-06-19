@@ -58,7 +58,7 @@ namespace {
 /**
  *  The location of the glade file.
  */
-const Glib::ustring     gladePath = "./var/glade/MasterPanelWindow.glade";
+const Glib::ustring     gladePath = "./var/glade/campcaster-studio.glade";
 
 /**
  *  The name of the application, shown on the task bar.
@@ -113,11 +113,14 @@ MasterPanelWindow :: MasterPanelWindow (Ptr<GLiveSupport>::Ref    gLiveSupport,
     timeLabelAttributes.insert(fontDescriptionAttribute);
     timeLabel->set_attributes(timeLabelAttributes);
 
-    // register the signal handler for keyboard key presses
+    // register the signal handlers for the main window
     glade->get_widget("masterPanelWindow", masterPanelWindow);
     masterPanelWindow->signal_key_press_event().connect(sigc::mem_fun(
                                         *this,
                                         &MasterPanelWindow::onKeyPressed));
+    masterPanelWindow->signal_delete_event().connect(sigc::mem_fun(
+                                        *this,
+                                        &MasterPanelWindow::onDeleteEvent));
 
     // create the Now Playing widget
     Gtk::Box *      nowPlayingBox;
@@ -201,34 +204,29 @@ MasterPanelWindow :: changeLanguage(Ptr<ResourceBundle>::Ref    bundle)
 {
     setBundle(bundle);
 
-    try {
-        const Glib::ustring         windowName = masterPanelWindow->get_name();
-        Ptr<Glib::ustring>::Ref     title = getResourceUstring(
-                                                    windowName.c_str(),
-                                                    "windowTitle");
-        title->append(applicationTitleSuffix);
-        masterPanelWindow->set_title(*title);
+    const Glib::ustring         windowName = masterPanelWindow->get_name();
+    Ptr<Glib::ustring>::Ref     title = getResourceUstring(
+                                                windowName.c_str(),
+                                                "windowTitle");
+    title->append(applicationTitleSuffix);
+    masterPanelWindow->set_title(*title);
 
-        Ptr<WidgetFactory>::Ref wf = WidgetFactory::getInstance();
+    Ptr<WidgetFactory>::Ref wf = WidgetFactory::getInstance();
 
-        liveModeButton->set_label(*getResourceUstring(
-                                            "liveModeButtonLabel"));
-        uploadFileButton->set_label(*getResourceUstring(
-                                            "uploadFileButtonLabel"));
-        scratchpadButton->set_label(*getResourceUstring(
-                                            "scratchpadButtonLabel"));
-        playlistButton->set_label(*getResourceUstring(
-                                            "playlistButtonLabel"));
-        schedulerButton->set_label(*getResourceUstring(
-                                            "schedulerButtonLabel"));
-        searchButton->set_label(*getResourceUstring(
-                                            "searchButtonLabel"));
-        optionsButton->set_label(*getResourceUstring(
-                                            "optionsButtonLabel"));
-    } catch (std::invalid_argument &e) {
-        std::cerr << e.what() << std::endl;
-        std::exit(1);
-    }
+    liveModeButton->set_label(*getResourceUstring(
+                                        "liveModeButtonLabel"));
+    uploadFileButton->set_label(*getResourceUstring(
+                                        "uploadFileButtonLabel"));
+    scratchpadButton->set_label(*getResourceUstring(
+                                        "scratchpadButtonLabel"));
+    playlistButton->set_label(*getResourceUstring(
+                                        "playlistButtonLabel"));
+    schedulerButton->set_label(*getResourceUstring(
+                                        "schedulerButtonLabel"));
+    searchButton->set_label(*getResourceUstring(
+                                        "searchButtonLabel"));
+    optionsButton->set_label(*getResourceUstring(
+                                        "optionsButtonLabel"));
 
     updateUserInfo();
 
@@ -342,13 +340,7 @@ MasterPanelWindow :: updateLiveModeWindow(Ptr<Playable>::Ref    playable)
                                                                     throw ()
 {
     if (!liveModeWindow.get()) {
-        Ptr<ResourceBundle>::Ref    bundle;
-        try {
-            bundle       = getBundle("liveModeWindow");
-        } catch (std::invalid_argument &e) {
-            std::cerr << e.what() << std::endl;
-            return;
-        }
+        Ptr<ResourceBundle>::Ref    bundle = getBundle("liveModeWindow");
 
         liveModeWindow.reset(new LiveModeWindow(gLiveSupport,
                                                 bundle,
@@ -371,13 +363,7 @@ void
 MasterPanelWindow :: updateUploadFileWindow(void)                   throw ()
 {
     if (!uploadFileWindow.get()) {
-        Ptr<ResourceBundle>::Ref    bundle;
-        try {
-            bundle       = getBundle("uploadFileWindow");
-        } catch (std::invalid_argument &e) {
-            std::cerr << e.what() << std::endl;
-            return;
-        }
+        Ptr<ResourceBundle>::Ref    bundle = getBundle("uploadFileWindow");
 
         uploadFileWindow.reset(new UploadFileWindow(gLiveSupport,
                                                     bundle,
@@ -396,13 +382,8 @@ MasterPanelWindow :: createScratchpadWindow(void)
                                                                     throw ()
 {
     if (!scratchpadWindow.get()) {
-        Ptr<ResourceBundle>::Ref    bundle;
-        try {
-            bundle       = getBundle("scratchpadWindow");
-        } catch (std::invalid_argument &e) {
-            std::cerr << e.what() << std::endl;
-            return;
-        }
+        Ptr<ResourceBundle>::Ref    bundle = getBundle("scratchpadWindow");
+
         scratchpadWindow.reset(new ScratchpadWindow(gLiveSupport,
                                                     bundle,
                                                     scratchpadButton));
@@ -435,13 +416,7 @@ void
 MasterPanelWindow :: updatePlaylistWindow(void)                     throw ()
 {
     if (!playlistWindow.get()) {
-        Ptr<ResourceBundle>::Ref    bundle;
-        try {
-            bundle       = getBundle("playlistWindow");
-        } catch (std::invalid_argument &e) {
-            std::cerr << e.what() << std::endl;
-            return;
-        }
+        Ptr<ResourceBundle>::Ref    bundle = getBundle("playlistWindow");
 
         playlistWindow.reset(new PlaylistWindow(gLiveSupport,
                                                 bundle,
@@ -463,13 +438,7 @@ MasterPanelWindow :: updateSchedulerWindow(
                                                                     throw ()
 {
     if (!schedulerWindow.get()) {
-        Ptr<ResourceBundle>::Ref    bundle;
-        try {
-            bundle       = getBundle("schedulerWindow");
-        } catch (std::invalid_argument &e) {
-            std::cerr << e.what() << std::endl;
-            return;
-        }
+        Ptr<ResourceBundle>::Ref    bundle = getBundle("schedulerWindow");
         
         try {
             schedulerWindow.reset(new SchedulerWindow(gLiveSupport,
@@ -503,13 +472,7 @@ void
 MasterPanelWindow :: updateSearchWindow(void)                       throw ()
 {
     if (!searchWindow.get()) {
-        Ptr<ResourceBundle>::Ref    bundle;
-        try {
-            bundle       = getBundle("searchWindow");
-        } catch (std::invalid_argument &e) {
-            std::cerr << e.what() << std::endl;
-            return;
-        }
+        Ptr<ResourceBundle>::Ref    bundle = getBundle("searchWindow");
 
         searchWindow.reset(new SearchWindow(gLiveSupport,
                                             bundle,
@@ -527,13 +490,7 @@ void
 MasterPanelWindow :: updateOptionsWindow(void)                      throw ()
 {
     if (!optionsWindow.get()) {
-        Ptr<ResourceBundle>::Ref    bundle;
-        try {
-            bundle       = getBundle("optionsWindow");
-        } catch (std::invalid_argument &e) {
-            std::cerr << e.what() << std::endl;
-            return;
-        }
+        Ptr<ResourceBundle>::Ref    bundle = getBundle("optionsWindow");
 
         optionsWindow.reset(new OptionsWindow(gLiveSupport,
                                               bundle,
@@ -733,13 +690,7 @@ MasterPanelWindow :: uploadToHub(Ptr<Playable>::Ref     playable)
                                                                     throw ()
 {
     if (!searchWindow.get()) {
-        Ptr<ResourceBundle>::Ref    bundle;
-        try {
-            bundle       = getBundle("searchWindow");
-        } catch (std::invalid_argument &e) {
-            std::cerr << e.what() << std::endl;
-            return;
-        }
+        Ptr<ResourceBundle>::Ref    bundle = getBundle("searchWindow");
 
         searchWindow.reset(new SearchWindow(gLiveSupport,
                                             bundle,
@@ -806,13 +757,7 @@ MasterPanelWindow :: onLoginButtonClicked(void)                     throw ()
 void
 MasterPanelWindow :: login(void)                                    throw ()
 {
-    Ptr<ResourceBundle>::Ref    loginBundle;
-    try {
-        loginBundle       = getBundle("loginWindow");
-    } catch (std::invalid_argument &e) {
-        std::cerr << e.what() << std::endl;
-        return;
-    }
+    Ptr<ResourceBundle>::Ref    loginBundle = getBundle("loginWindow");
 
     Ptr<LoginWindow>::Ref       loginWindow(new LoginWindow(gLiveSupport,
                                                             loginBundle,
@@ -857,13 +802,8 @@ MasterPanelWindow :: updateUserInfo(Ptr<const Glib::ustring>::Ref   loginName)
         Ptr<Glib::ustring>::Ref         logoutButtonLabel;
         Ptr<Glib::ustring>::Ref         loggedInMsg;
 
-        try {
-            logoutButtonLabel   = getResourceUstring("logoutButtonLabel");
-            loggedInMsg         = formatMessage("loggedInMsg", *loginName);
-        } catch (std::invalid_argument &e) {
-            std::cerr << e.what() << std::endl;
-            std::exit(1);
-        }
+        logoutButtonLabel   = getResourceUstring("logoutButtonLabel");
+        loggedInMsg         = formatMessage("loggedInMsg", *loginName);
 
         loginButton->set_label(*logoutButtonLabel);
         userInfoLabel->set_label(*loggedInMsg);
@@ -872,17 +812,47 @@ MasterPanelWindow :: updateUserInfo(Ptr<const Glib::ustring>::Ref   loginName)
         Ptr<Glib::ustring>::Ref         loginButtonLabel;
         Ptr<Glib::ustring>::Ref         notLoggedInMsg;
 
-        try {
-            loginButtonLabel = getResourceUstring("loginButtonLabel");
-            notLoggedInMsg   = getResourceUstring("notLoggedInMsg");
-        } catch (std::invalid_argument &e) {
-            std::cerr << e.what() << std::endl;
-            std::exit(1);
-        }
+        loginButtonLabel = getResourceUstring("loginButtonLabel");
+        notLoggedInMsg   = getResourceUstring("notLoggedInMsg");
 
         loginButton->set_label(*loginButtonLabel);
         userInfoLabel->set_label(*notLoggedInMsg);
     }
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Event handler for when the user closes the master panel.
+ *----------------------------------------------------------------------------*/
+bool
+MasterPanelWindow :: onDeleteEvent(GdkEventAny *    event)          throw ()
+{
+    Gtk::Dialog *       exitConfirmationDialog;
+    Gtk::Label *        exitConfirmationDialogLabel;
+    glade->get_widget("exitConfirmationDialog", exitConfirmationDialog);
+    glade->get_widget("exitConfirmationDialogLabel",
+                                                exitConfirmationDialogLabel);
+    Glib::ustring       message = "<span weight=\"bold\" ";
+    message += " size=\"larger\">";
+    message += *getResourceUstring("sureToExitMsg");
+    message += "</span>";
+    exitConfirmationDialogLabel->set_label(message);
+
+    int     response = exitConfirmationDialog->run();
+    if (response != Gtk::RESPONSE_YES) {
+        exitConfirmationDialog->hide();
+        return true;
+    }
+
+    gLiveSupport->stopOutputAudio();
+
+    Ptr<OptionsContainer>::Ref  optionsContainer
+                                = gLiveSupport->getOptionsContainer();
+    if (optionsContainer && optionsContainer->isTouched()) {
+        optionsContainer->writeToFile();
+    }
+
+    return false;
 }
 
 
