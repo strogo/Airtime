@@ -135,6 +135,8 @@ class AdvancedSearchItem : public Gtk::HBox,
          *  @param isFirst        true if this is the first search condition
          *                            (so it does not need a Close button)
          *  @param metadataTypes  container holding all known metadata types
+         *  @param bundle         the resource bundle holding the localized
+         *                        resources for this widget.
          */
         AdvancedSearchItem(bool                             isFirst,
                            Ptr<MetadataTypeContainer>::Ref  metadataTypes,

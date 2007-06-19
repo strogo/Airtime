@@ -230,7 +230,8 @@ class BrowseItem : public Gtk::VBox,
          *  if we also need to change the parent criteria.  Same as onShow(),
          *  plus changing the parent criteria.
          *
-         *  @param criteria     the new parent search criteria
+         *  @param  leftNeighbor    the neighbor where the parent criteria
+         *                          are coming from.
          */
         void
         onParentChangedShow(BrowseItem *    leftNeighbor)

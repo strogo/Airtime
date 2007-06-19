@@ -173,6 +173,8 @@ class MetadataType : public Configurable
          *  @param id3Tag the ID3v2 tag assciated with the metadata.
          *  @param localizationKey the key to get the localized name for
          *         the metadata
+         *  @param tab  in which tab to show this kind of metadata in the
+         *              Upload File window (default: none of them).
          */
         MetadataType(Ptr<MetadataTypeContainer>::Ref    container,
                      Glib::ustring                      dcName,
@@ -196,7 +198,7 @@ class MetadataType : public Configurable
         /**
          *  Configure the metadata object based on an XML configuration element.
          *
-         *  @param elemen the XML configuration element.
+         *  @param element the XML configuration element.
          *  @exception std::invalid_argument of the supplied XML element
          *             contains bad configuration information
          */
