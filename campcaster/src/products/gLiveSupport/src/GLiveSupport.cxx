@@ -1003,7 +1003,10 @@ LiveSupport :: GLiveSupport ::
 GLiveSupport :: setNowPlaying(Ptr<Playable>::Ref    playable)
                                                             throw ()
 {
-    masterPanel->setNowPlaying(playable);
+    // test needed: this gets called indirectly from ~MasterPanelWindow
+    if (masterPanel) {
+        masterPanel->setNowPlaying(playable);
+    }
 }
 
 
@@ -1411,7 +1414,10 @@ GLiveSupport :: stopCueAudio(void)
         cuePlayerIsPaused = false;
         cueItemPlayingNow.reset();
         
-        masterPanel->showCuePlayerStopped();
+        // test needed: this gets called indirectly from ~MasterPanelWindow
+        if (masterPanel) {
+            masterPanel->showCuePlayerStopped();
+        }
     }
 }
 
