@@ -57,7 +57,6 @@
 #include "RestoreBackupWindow.h"
 #include "GuiWindow.h"
 #include "GLiveSupport.h"
-#include "MasterPanelUserInfoWidget.h"
 
 namespace LiveSupport {
 namespace GLiveSupport {

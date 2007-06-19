@@ -205,13 +205,13 @@ MasterPanelWindow :: changeLanguage(Ptr<ResourceBundle>::Ref    bundle)
     setBundle(bundle);
 
     const Glib::ustring         windowName = masterPanelWindow->get_name();
-    Ptr<Glib::ustring>::Ref     title = getResourceUstring(
+    Glib::ustring               title = *getResourceUstring(
                                                 windowName.c_str(),
                                                 "windowTitle");
-    title->append(applicationTitleSuffix);
-    masterPanelWindow->set_title(*title);
+    title += applicationTitleSuffix;
+    masterPanelWindow->set_title(title);
 
-    Ptr<WidgetFactory>::Ref wf = WidgetFactory::getInstance();
+    nowPlayingWidget->changeLanguage(bundle);
 
     liveModeButton->set_label(*getResourceUstring(
                                         "liveModeButtonLabel"));

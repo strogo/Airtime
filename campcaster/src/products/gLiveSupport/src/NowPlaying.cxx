@@ -104,17 +104,10 @@ NowPlaying :: NowPlaying(Ptr<GLiveSupport>::Ref             gLiveSupport,
     glade->get_widget("remainsTimeLabel", remainsTimeLabel);
     glade->get_widget("playlistLabel", playlistLabel);
 
-    Gtk::Label *    elapsedTimeText;
-    Gtk::Label *    remainsTimeText;
     glade->get_widget("elapsedTimeText", elapsedTimeText);
     glade->get_widget("remainsTimeText", remainsTimeText);
-    try {
-        elapsedTimeText->set_text(*getResourceUstring("elapsedTimeLabel"));
-        remainsTimeText->set_text(*getResourceUstring("remainingTimeLabel"));
-    } catch (std::invalid_argument &e) {
-        std::cerr << e.what() << std::endl;
-        std::exit(1);
-    }
+    elapsedTimeText->set_text(*getResourceUstring("elapsedTimeLabel"));
+    remainsTimeText->set_text(*getResourceUstring("remainingTimeLabel"));
     
     Ptr<Playable>::Ref      nullPointer;
     setPlayable(nullPointer);
@@ -336,4 +329,19 @@ NowPlaying :: resetRemainsTimeState(void)                           throw ()
     remainsTimeCounter = 0;
     setRemainsTimeColor(TIME_GREEN);
 }
+
+
+/*------------------------------------------------------------------------------
+ *  Change the language of the widget.
+ *----------------------------------------------------------------------------*/
+void
+NowPlaying :: changeLanguage(Ptr<ResourceBundle>::Ref    bundle)
+                                                                    throw ()
+{
+    setBundle(bundle);
+
+    elapsedTimeText->set_text(*getResourceUstring("elapsedTimeLabel"));
+    remainsTimeText->set_text(*getResourceUstring("remainingTimeLabel"));
+}
+
 

@@ -59,7 +59,6 @@
 #include "LiveSupport/Widgets/ZebraTreeView.h"
 #include "GuiWindow.h"
 #include "GLiveSupport.h"
-#include "MasterPanelUserInfoWidget.h"
 #include "BackupView.h"
 #include "RdsView.h"
 

@@ -116,9 +116,19 @@ class NowPlaying : public LocalizedObject
         Gtk::Label *            playlistLabel;
 
         /**
+         *  The label which says "elapsed time".
+         */
+        Gtk::Label *            elapsedTimeText;
+
+        /**
          *  The label holding the elapsed time.
          */
         Gtk::Label *            elapsedTimeLabel;
+
+        /**
+         *  The label which says "remaining time".
+         */
+        Gtk::Label *            remainsTimeText;
 
         /**
          *  The label holding the remaining time.
@@ -276,6 +286,14 @@ class NowPlaying : public LocalizedObject
         {
             return currentInnerPlayable;
         }
+
+        /**
+         *  Change the user interface language of the widget.
+         *
+         *  @param  bundle  the new resource bundle.
+         */
+        void
+        changeLanguage(Ptr<ResourceBundle>::Ref     bundle)         throw ();
 };
 
 
