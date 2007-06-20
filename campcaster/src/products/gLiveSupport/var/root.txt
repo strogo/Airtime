@@ -40,10 +40,9 @@ root:table
     {
         windowTitle:string          { "Login" }
 
-        loginLabel:string           { "User name:" }
-        passwordLabel:string        { "Password:" }
-        okButtonLabel:string        { "OK" }
-        cancelButtonLabel:string    { "Cancel" }
+        userNameLabel:string        { "User name" }
+        passwordLabel:string        { "Password" }
+        languageLabel:string        { "Language" }
 
         pleaseWaitMsg:string        { "Logging in, please wait." }
     }

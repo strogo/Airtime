@@ -39,10 +39,9 @@ pl:table
     {
         windowTitle:string          { "LOGOWANIE" }
 
-        loginLabel:string           { "Login" }
+        userNameLabel:string        { "Login" }
         passwordLabel:string        { "Hasło" }
-        okButtonLabel:string        { "OK" }
-        cancelButtonLabel:string    { "Anuluj" }
+        languageLabel:string        { "#Language#" }
 
         pleaseWaitMsg:string        { "Logging in, please wait." }
     }

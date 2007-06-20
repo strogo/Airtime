@@ -38,12 +38,11 @@ hu:table
     {
         windowTitle:string          { "Belépés" }
 
-        loginLabel:string           { "Azonosító" }
+        userNameLabel:string        { "Azonosító" }
         passwordLabel:string        { "Jelszó" }
-        okButtonLabel:string        { "Belépés" }
-        cancelButtonLabel:string    { "Mégsem" }
+        languageLabel:string        { "Nyelv" }
 
-        pleaseWaitMsg:string        { "Logging in, please wait." }
+        pleaseWaitMsg:string        { "Kérem, várjon..." }
     }
 
     audioClipListWindow:table

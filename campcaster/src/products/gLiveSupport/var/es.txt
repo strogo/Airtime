@@ -40,10 +40,9 @@ es:table
     {
         windowTitle:string          { "INGRESO" }
 
-        loginLabel:string           { "Identificador" }
+        userNameLabel:string        { "Identificador" }
         passwordLabel:string        { "Clave de acceso" }
-        okButtonLabel:string        { "OK" }
-        cancelButtonLabel:string    { "Cancelar" }
+        languageLabel:string        { "#Language#" }
 
         pleaseWaitMsg:string        { "Logging in, please wait." }
     }

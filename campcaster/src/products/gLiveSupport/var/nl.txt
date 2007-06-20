@@ -40,10 +40,9 @@ nl:table
     {
         windowTitle:string          { "AANMELDEN" }
 
-        loginLabel:string           { "Gebruikersnaam" }
+        userNameLabel:string        { "Gebruikersnaam" }
         passwordLabel:string        { "Wachtwoord" }
-        okButtonLabel:string        { "OK" }
-        cancelButtonLabel:string    { "Annuleer" }
+        languageLabel:string        { "#Language#" }
 
         pleaseWaitMsg:string        { "Logging in, please wait." }
     }

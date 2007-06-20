@@ -38,10 +38,9 @@ sr_CS_CYRILLIC:table
     {
         windowTitle:string          { "ПРИЈАВА" }
 
-        loginLabel:string           { "Пријави се" }
+        userNameLabel:string        { "Пријави се" }
         passwordLabel:string        { "Лозинка" }
-        okButtonLabel:string        { "У реду" }
-        cancelButtonLabel:string    { "Откажи" }
+        languageLabel:string        { "#Language#" }
 
         pleaseWaitMsg:string        { "Пријава је у току, сачекајте" }
     }

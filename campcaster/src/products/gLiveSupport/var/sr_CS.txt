@@ -38,10 +38,9 @@ sr_CS:table
     {
         windowTitle:string          { "PRIJAVA" }
 
-        loginLabel:string           { "Prijavi se" }
+        userNameLabel:string        { "Prijavi se" }
         passwordLabel:string        { "Lozinka" }
-        okButtonLabel:string        { "U redu" }
-        cancelButtonLabel:string    { "Otkaži" }
+        languageLabel:string        { "#Language#" }
 
         pleaseWaitMsg:string        { "Prijava je u toku, sačekajte" }
     }

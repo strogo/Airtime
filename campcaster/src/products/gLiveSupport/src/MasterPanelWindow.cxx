@@ -58,13 +58,18 @@ namespace {
 /**
  *  The location of the glade file.
  */
-const Glib::ustring     gladePath = "./var/glade/MasterPanelWindow.glade";
+const Glib::ustring     gladeDir = "./var/glade/";
 
 /**
- *  The location of the glade file for the exit confirmation dialog.
+ *  The name of the glade file.
  */
-const Glib::ustring     exitConfirmationDialogGladePath
-                        = "./var/glade/ExitConfirmationDialog.glade";
+const Glib::ustring     gladeFileName   = "MasterPanelWindow.glade";
+
+/**
+ *  The name of the glade file for the exit confirmation dialog.
+ */
+const Glib::ustring     exitConfirmationDialogGladeFileName
+                                        = "ExitConfirmationDialog.glade";
 
 /**
  *  The name of the application, shown on the task bar.
@@ -100,7 +105,7 @@ MasterPanelWindow :: MasterPanelWindow (Ptr<GLiveSupport>::Ref    gLiveSupport,
                           gLiveSupport(gLiveSupport),
                           userIsLoggedIn(false)                          
 {
-    glade = Gnome::Glade::Xml::create(gladePath);
+    glade = Gnome::Glade::Xml::create(gladeDir + gladeFileName);
     
     // load the station logo image
     Gtk::Image *        stationLogoImage;
@@ -767,7 +772,7 @@ MasterPanelWindow :: login(void)                                    throw ()
 
     Ptr<LoginWindow>::Ref       loginWindow(new LoginWindow(gLiveSupport,
                                                             loginBundle,
-                                                            0));
+                                                            gladeDir));
     userIsLoggedIn = loginWindow->run();
 
     if (userIsLoggedIn) {
@@ -834,7 +839,8 @@ bool
 MasterPanelWindow :: onDeleteEvent(GdkEventAny *    event)          throw ()
 {
     Glib::RefPtr<Gnome::Glade::Xml>
-        glade = Gnome::Glade::Xml::create(exitConfirmationDialogGladePath);
+        glade = Gnome::Glade::Xml::create(gladeDir +
+                                          exitConfirmationDialogGladeFileName);
 
     Gtk::Dialog *       exitConfirmationDialog;
     Gtk::Label *        exitConfirmationDialogLabel;
