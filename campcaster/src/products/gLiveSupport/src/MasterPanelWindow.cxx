@@ -66,12 +66,6 @@ const Glib::ustring     gladeDir = "./var/glade/";
 const Glib::ustring     gladeFileName   = "MasterPanelWindow.glade";
 
 /**
- *  The name of the glade file for the exit confirmation dialog.
- */
-const Glib::ustring     exitConfirmationDialogGladeFileName
-                                        = "ExitConfirmationDialog.glade";
-
-/**
  *  The name of the application, shown on the task bar.
  */
 const Glib::ustring     applicationTitleSuffix = " - Campcaster";
@@ -838,10 +832,6 @@ MasterPanelWindow :: updateUserInfo(Ptr<const Glib::ustring>::Ref   loginName)
 bool
 MasterPanelWindow :: onDeleteEvent(GdkEventAny *    event)          throw ()
 {
-    Glib::RefPtr<Gnome::Glade::Xml>
-        glade = Gnome::Glade::Xml::create(gladeDir +
-                                          exitConfirmationDialogGladeFileName);
-
     Gtk::Dialog *       exitConfirmationDialog;
     Gtk::Label *        exitConfirmationDialogLabel;
     glade->get_widget("exitConfirmationDialog", exitConfirmationDialog);
