@@ -162,7 +162,7 @@ class LoginWindow : public LocalizedObject
          */
         LoginWindow(Ptr<GLiveSupport>::Ref      gLiveSupport,
                     Ptr<ResourceBundle>::Ref    bundle,
-                    const Glib::ustring &       gladePath)
+                    const Glib::ustring &       gladeDir)
                                                             throw ();
 
         /**

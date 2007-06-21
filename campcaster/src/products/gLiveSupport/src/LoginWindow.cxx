@@ -53,10 +53,10 @@ using namespace LiveSupport::GLiveSupport;
 
 namespace {
 
-/**
+/*------------------------------------------------------------------------------
  *  The name of the glade file.
- */
-const Glib::ustring     gladeFileName   = "LoginWindow.glade";
+ *----------------------------------------------------------------------------*/
+const Glib::ustring     gladeFileName = "LoginWindow.glade";
 
 }
 
