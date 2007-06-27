@@ -391,7 +391,7 @@ MasterPanelWindow :: createScratchpadWindow(void)
 
         scratchpadWindow.reset(new ScratchpadWindow(gLiveSupport,
                                                     bundle,
-                                                    scratchpadButton));
+                                                    gladeDir));
         gLiveSupport->loadWindowContents(scratchpadWindow);
     }
 }

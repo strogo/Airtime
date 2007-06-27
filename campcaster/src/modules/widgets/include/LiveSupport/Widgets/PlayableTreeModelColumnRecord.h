@@ -40,11 +40,16 @@
 #include "configure.h"
 #endif
 
+#include <gtkmm/treemodelcolumn.h>
+
+#include "LiveSupport/Core/Ptr.h"
 #include "LiveSupport/Core/Playable.h"
-#include "LiveSupport/Widgets/ZebraTreeModelColumnRecord.h"
+
 
 namespace LiveSupport {
 namespace Widgets {
+
+using namespace LiveSupport::Core;
 
 /* ================================================================ constants */
 
@@ -61,7 +66,7 @@ namespace Widgets {
  *  @author  $Author$
  *  @version $Revision$
  */
-class PlayableTreeModelColumnRecord : public ZebraTreeModelColumnRecord
+class PlayableTreeModelColumnRecord : public Gtk::TreeModelColumnRecord
 {
     public:
         /**

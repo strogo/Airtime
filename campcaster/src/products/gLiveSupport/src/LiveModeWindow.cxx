@@ -138,12 +138,12 @@ LiveModeWindow :: LiveModeWindow (Ptr<GLiveSupport>::Ref    gLiveSupport,
     ImageButton *       outputPlayButton = Gtk::manage(wf->createButton(
                                         WidgetConstants::hugePlayButton ));
     
-    Gtk::VBox *         cueAudioBox = Gtk::manage(new Gtk::VBox);
-    Gtk::HBox *         cueAudioLabelBox = Gtk::manage(new Gtk::HBox);
+//    Gtk::VBox *         cueAudioBox = Gtk::manage(new Gtk::VBox);
+//    Gtk::HBox *         cueAudioLabelBox = Gtk::manage(new Gtk::HBox);
     
     try {
-        cueAudioLabel = Gtk::manage(new Gtk::Label(
-                                *getResourceUstring("cuePlayerLabel") ));
+//        cueAudioLabel = Gtk::manage(new Gtk::Label(
+//                                *getResourceUstring("cuePlayerLabel") ));
         clearListButton = Gtk::manage(wf->createButton(
                                 *getResourceUstring("clearListButtonLabel")));
         removeButton = Gtk::manage(wf->createButton(
@@ -152,9 +152,9 @@ LiveModeWindow :: LiveModeWindow (Ptr<GLiveSupport>::Ref    gLiveSupport,
         std::cerr << e.what() << std::endl;
         std::exit(1);
     }
-    Gtk::HBox *         cueAudioButtonsBox = Gtk::manage(new Gtk::HBox);
-    cueAudioButtons = Gtk::manage(new CuePlayer(
-                                    gLiveSupport, treeView, modelColumns ));
+//    Gtk::HBox *         cueAudioButtonsBox = Gtk::manage(new Gtk::HBox);
+//    cueAudioButtons = Gtk::manage(new CuePlayer(
+//                                    gLiveSupport, treeView, modelColumns ));
 
     Gtk::HBox *         autoPlayNextBox = Gtk::manage(new Gtk::HBox);
     try {
@@ -167,12 +167,12 @@ LiveModeWindow :: LiveModeWindow (Ptr<GLiveSupport>::Ref    gLiveSupport,
     autoPlayNextBox->pack_start(*autoPlayNext, Gtk::PACK_SHRINK, 10);
     
     topButtonBox->pack_start(*outputPlayButton,  Gtk::PACK_EXPAND_PADDING, 10);
-    topButtonBox->pack_start(*cueAudioBox,       Gtk::PACK_EXPAND_PADDING, 10);
-    cueAudioBox->pack_start(*cueAudioLabelBox,   Gtk::PACK_SHRINK, 6);
-    cueAudioLabelBox->pack_start(*cueAudioLabel, Gtk::PACK_EXPAND_PADDING, 1);
-    cueAudioBox->pack_start(*cueAudioButtonsBox, Gtk::PACK_SHRINK, 0);
-    cueAudioButtonsBox->pack_start(*cueAudioButtons, 
-                                                 Gtk::PACK_EXPAND_PADDING, 1);
+//    topButtonBox->pack_start(*cueAudioBox,       Gtk::PACK_EXPAND_PADDING, 10);
+//    cueAudioBox->pack_start(*cueAudioLabelBox,   Gtk::PACK_SHRINK, 6);
+//    cueAudioLabelBox->pack_start(*cueAudioLabel, Gtk::PACK_EXPAND_PADDING, 1);
+//    cueAudioBox->pack_start(*cueAudioButtonsBox, Gtk::PACK_SHRINK, 0);
+//    cueAudioButtonsBox->pack_start(*cueAudioButtons, 
+//                                                 Gtk::PACK_EXPAND_PADDING, 1);
     
     bottomButtonBox->set_layout(Gtk::BUTTONBOX_END);
     bottomButtonBox->set_spacing(5);
@@ -591,10 +591,10 @@ LiveModeWindow :: constructAudioClipContextMenu(void)           throw ()
                                  *getResourceUstring("playMenuItem"),
                                   sigc::mem_fun(*this,
                                         &LiveModeWindow::onOutputPlay)));
-        contextMenuList.push_back(Gtk::Menu_Helpers::MenuElem(
-                                 *getResourceUstring("cueMenuItem"),
-                                  sigc::mem_fun(*cueAudioButtons,
-                                        &CuePlayer::onPlayItem)));
+//        contextMenuList.push_back(Gtk::Menu_Helpers::MenuElem(
+//                                 *getResourceUstring("cueMenuItem"),
+//                                  sigc::mem_fun(*cueAudioButtons,
+//                                        &CuePlayer::onPlayItem)));
         contextMenuList.push_back(Gtk::Menu_Helpers::MenuElem(
                                 *getResourceUstring("addToPlaylistMenuItem"),
                                 sigc::mem_fun(*this,
@@ -632,10 +632,10 @@ LiveModeWindow :: constructPlaylistContextMenu(void)            throw ()
                                  *getResourceUstring("playMenuItem"),
                                   sigc::mem_fun(*this,
                                         &LiveModeWindow::onOutputPlay)));
-        contextMenuList.push_back(Gtk::Menu_Helpers::MenuElem(
-                                 *getResourceUstring("cueMenuItem"),
-                                  sigc::mem_fun(*cueAudioButtons,
-                                        &CuePlayer::onPlayItem)));
+//        contextMenuList.push_back(Gtk::Menu_Helpers::MenuElem(
+//                                 *getResourceUstring("cueMenuItem"),
+//                                  sigc::mem_fun(*cueAudioButtons,
+//                                        &CuePlayer::onPlayItem)));
         contextMenuList.push_back(Gtk::Menu_Helpers::MenuElem(
                                 *getResourceUstring("addToPlaylistMenuItem"),
                                 sigc::mem_fun(*this,
@@ -734,7 +734,7 @@ LiveModeWindow :: updateStrings(void)                               throw ()
         setBundle(gLiveSupport->getBundle("liveModeWindow"));
         
         set_title(*getResourceUstring("windowTitle"));
-        cueAudioLabel->set_label(*getResourceUstring("cuePlayerLabel"));
+//        cueAudioLabel->set_label(*getResourceUstring("cuePlayerLabel"));
         clearListButton->set_label(*getResourceUstring("clearListButtonLabel"));
         removeButton->set_label(*getResourceUstring("removeButtonLabel"));
     

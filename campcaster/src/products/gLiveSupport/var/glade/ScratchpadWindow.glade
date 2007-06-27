@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.2.0 on Thu Jun 21 18:07:50 2007 by fgerlits@desktop-->
+<!--Generated with glade3 3.2.0 on Wed Jun 27 13:01:55 2007 by fgerlits@desktop-->
 <glade-interface>
-  <widget class="GtkWindow" id="window1">
+  <widget class="GtkWindow" id="scratchpadWindow">
     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
     <property name="border_width">8</property>
     <child>
@@ -20,7 +20,7 @@
                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                 <property name="spacing">3</property>
                 <child>
-                  <widget class="GtkButton" id="playButton">
+                  <widget class="GtkButton" id="cuePlayButton">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -30,7 +30,7 @@
                   </widget>
                 </child>
                 <child>
-                  <widget class="GtkButton" id="stopButton">
+                  <widget class="GtkButton" id="cueStopButton">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>

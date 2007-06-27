@@ -44,7 +44,6 @@
 
 #include "LiveSupport/Core/Ptr.h"
 #include "LiveSupport/PlaylistExecutor/AudioPlayerEventListener.h"
-#include "LiveSupport/Widgets/ImageButton.h"
 #include "LiveSupport/Widgets/PlayableTreeModelColumnRecord.h"
 
 #include "GLiveSupport.h"
@@ -89,17 +88,12 @@ class CuePlayer : public Gtk::HBox,
         /**
          *  The play button.
          */
-        ImageButton *               playButton;
-
-        /**
-         *  The pause button.
-         */
-        ImageButton *               pauseButton;
+        Gtk::Button *               playButton;
 
         /**
          *  The stop button.
          */
-        ImageButton *               stopButton;
+        Gtk::Button *               stopButton;
 
         /**
          *  The GLiveSupport object, holding the state of the application.
@@ -123,16 +117,16 @@ class CuePlayer : public Gtk::HBox,
         CuePlayer(void)                                throw ();
 
         /**
+         *  Pause the song.
+         */
+        void
+        onPauseItem(void)                               throw ();
+
+        /**
          *  Event handler for the Play button being clicked.
          */
         void
         onPlayButtonClicked(void)                       throw ();
-
-        /**
-         *  Event handler for the Pause button being clicked.
-         */
-        void
-        onPauseButtonClicked(void)                      throw ();
 
         /**
          *  Event handler for the Stop button being clicked.
@@ -159,10 +153,13 @@ class CuePlayer : public Gtk::HBox,
          *  @param gLiveSupport the GLiveSupport, application object.
          *  @param treeView     the TreeView object showing the selection.
          *  @param modelColumns the object holding the types of the columns.
+         *  @param glade        the Glade file which specifies the visual
+         *                      components for this class.
          */
         CuePlayer(Ptr<GLiveSupport>::Ref                    gLiveSupport,
                   Gtk::TreeView *                           treeView,
-                  const PlayableTreeModelColumnRecord &     modelColumns)
+                  const PlayableTreeModelColumnRecord &     modelColumns,
+                  Glib::RefPtr<Gnome::Glade::Xml>           glade)
                                                         throw ();
 
         /**

@@ -46,8 +46,8 @@
 #include <libglademm.h>
 
 #include "LiveSupport/Core/Ptr.h"
-#include "LiveSupport/Core/LocalizedObject.h"
 #include "LiveSupport/Widgets/PlayableTreeModelColumnRecord.h"
+#include "BasicWindow.h"
 #include "CuePlayer.h"
 #include "ContentsStorable.h"
 #include "ExportPlaylistWindow.h"
@@ -74,25 +74,10 @@ using namespace LiveSupport::Widgets;
  *  @author $Author$
  *  @version $Revision$
  */
-class ScratchpadWindow : public LocalizedObject,
+class ScratchpadWindow : public BasicWindow,
                          public ContentsStorable
 {
     private:
-        /**
-         *  The Glade object, containing the visual design.
-         */
-        Glib::RefPtr<Gnome::Glade::Xml>     glade;
-
-        /**
-         *  The GLiveSupport object, holding the state of the application.
-         */
-        Ptr<GLiveSupport>::Ref              gLiveSupport;
-
-        /**
-         *  The window itself.
-         */
-        Gtk::Window *                       scratchpadWindow;
-
         /**
          *  The user preferences key.
          */
@@ -293,15 +278,6 @@ class ScratchpadWindow : public LocalizedObject,
         virtual void
         onRemoveMenuOption(void)                                throw ();
 
-        /**
-         *  Event handler called when the the window gets hidden.
-         *
-         *  This overrides GuiWindow::on_hide(), and closes the Export Playlist
-         *  window, if it is still open.
-         */
-        virtual void
-        on_hide(void)                                           throw ();
-
 
     public:
         /**
@@ -381,8 +357,17 @@ class ScratchpadWindow : public LocalizedObject,
         void
         showCuePlayerStopped(void)                              throw ()
         {
-            cueAudioButtons->onStop();
+            cuePlayer->onStop();
         }
+
+        /**
+         *  Hide the window.
+         *
+         *  This overrides BasicWindow::hide(), and closes the Export Playlist
+         *  and Schedule Playlist pop-up windows, if they are still open.
+         */
+        virtual void
+        hide(void)                                              throw ();
 };
 
 /* ================================================= external data structures */
