@@ -61,7 +61,7 @@ hu:table
     {
         windowTitle:string                  { "Scratchpad" }
 
-        typeColumnLabel:string              { "Típus" }
+        creatorColumnLabel:string           { "Előadó" }
         titleColumnLabel:string             { "Cím" }
         addToPlaylistButtonLabel:string     { "Műsorhoz hozzáadni" }
         clearListButtonLabel:string         { "Lista törlése" }

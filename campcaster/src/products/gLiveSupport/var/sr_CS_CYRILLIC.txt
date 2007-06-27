@@ -61,7 +61,7 @@ sr_CS_CYRILLIC:table
     {
         windowTitle:string                  { "Припрема" }
 
-        typeColumnLabel:string              { "Тип" }
+        creatorColumnLabel:string           { "Аутор" }
         titleColumnLabel:string             { "Наслов" }
         addToPlaylistButtonLabel:string     { "Додај у плеј листу" }
         clearListButtonLabel:string         { "Обриши листу" }

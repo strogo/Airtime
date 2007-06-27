@@ -63,7 +63,7 @@ root:table
     {
         windowTitle:string              { "Scratchpad" }
 
-        typeColumnLabel:string          { "Type" }
+        creatorColumnLabel:string       { "Creator" }
         titleColumnLabel:string         { "Title" }
         addToPlaylistButtonLabel:string { "Add to playlist" }
         clearListButtonLabel:string     { "Clear list" }

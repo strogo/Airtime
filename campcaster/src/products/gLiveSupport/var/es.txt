@@ -63,7 +63,7 @@ es:table
     {
         windowTitle:string              { "Scratchpad" }
 
-        typeColumnLabel:string          { "Tipo" }
+        creatorColumnLabel:string       { "Creador" }
         titleColumnLabel:string         { "Título" }
         addToPlaylistButtonLabel:string { "Añadir a lista de reproducción" }
         clearListButtonLabel:string     { "Limpiar la lista" }

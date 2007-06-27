@@ -61,7 +61,7 @@ sr_CS:table
     {
         windowTitle:string                  { "Priprema" }
 
-        typeColumnLabel:string              { "Tip" }
+        creatorColumnLabel:string           { "Autor" }
         titleColumnLabel:string             { "Naslov" }
         addToPlaylistButtonLabel:string     { "Dodaj u plej listu" }
         clearListButtonLabel:string         { "Obriši listu" }

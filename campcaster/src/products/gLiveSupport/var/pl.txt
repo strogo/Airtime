@@ -62,7 +62,7 @@ pl:table
     {
         windowTitle:string              { "Przybornik" }
 
-        typeColumnLabel:string          { "Rodzaj" }
+        creatorColumnLabel:string       { "Autor" }
         titleColumnLabel:string         { "Tytuł" }
         addToPlaylistButtonLabel:string { "Dodaj do listy utworów" }
         clearListButtonLabel:string     { "Wyczyść listę" }

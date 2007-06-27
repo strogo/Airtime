@@ -144,6 +144,11 @@ class ScratchpadWindow : public BasicWindow,
                                                             typeColumn;
 
                 /**
+                 *  The column for the creator of the audio clip or playlist.
+                 */
+                Gtk::TreeModelColumn<Glib::ustring>         creatorColumn;
+
+                /**
                  *  The column for the title of the audio clip or playlist.
                  */
                 Gtk::TreeModelColumn<Glib::ustring>         titleColumn;
@@ -154,6 +159,7 @@ class ScratchpadWindow : public BasicWindow,
                 ModelColumns(void)                              throw ()
                 {
                     add(typeColumn);
+                    add(creatorColumn);
                     add(titleColumn);
                 }
         };

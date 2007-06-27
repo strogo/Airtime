@@ -63,7 +63,7 @@ nl:table
     {
         windowTitle:string                  { "Scratchpad" }
 
-        typeColumnLabel:string              { "Type" }
+        creatorColumnLabel:string           { "Maker" }
         titleColumnLabel:string             { "Titel" }
         addToPlaylistButtonLabel:string     { "Toevoegen aan Playlist" }
         clearListButtonLabel:string         { "Lijst leeg maken" }

@@ -55,7 +55,7 @@ namespace {
 /*------------------------------------------------------------------------------
  *  The name of the glade file.
  *----------------------------------------------------------------------------*/
-const Glib::ustring     gladeFileName = "ScratchPadWindow.glade";
+const Glib::ustring     gladeFileName = "ScratchpadWindow.glade";
 
 /*------------------------------------------------------------------------------
  *  The name of the user preference for storing Scratchpad contents
@@ -86,14 +86,18 @@ ScratchpadWindow :: ScratchpadWindow (
     setTitle(*getResourceUstring("windowTitle"));
 
     // create the tree view
-    treeModel = Gtk::ListStore::create(modelColumns);
     glade->get_widget("scratchpadTreeView", treeView);
     treeView->get_selection()->set_mode(Gtk::SELECTION_MULTIPLE);
 
-    treeView->append_column(*getResourceUstring("typeColumnLabel"),
+    treeView->append_column("",
                             modelColumns.typeColumn);
+    treeView->append_column(*getResourceUstring("creatorColumnLabel"),
+                            modelColumns.creatorColumn);
     treeView->append_column(*getResourceUstring("titleColumnLabel"),
                             modelColumns.titleColumn);
+
+    treeModel = Gtk::ListStore::create(modelColumns);
+    treeView->set_model(treeModel);
 
     // register the signal handlers for treeview
     treeView->signal_button_press_event().connect_notify(sigc::mem_fun(*this,
@@ -535,6 +539,12 @@ ScratchpadWindow :: addItem(Ptr<Playable>::Ref    playable)
             break;
     }
     
+    Ptr<const Glib::ustring>::Ref   creator = playable->getMetadata(
+                                                        "dc:creator");
+    if (creator) {
+        row[modelColumns.creatorColumn]   = Glib::Markup::escape_text(
+                                                        *creator);
+    }
     row[modelColumns.titleColumn]         = Glib::Markup::escape_text(
                                                         *playable->getTitle());
 }
