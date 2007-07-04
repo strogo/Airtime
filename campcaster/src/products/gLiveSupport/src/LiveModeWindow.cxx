@@ -78,7 +78,7 @@ const Glib::ustring     userPreferencesKeyName = "liveModeContents";
  *----------------------------------------------------------------------------*/
 LiveModeWindow :: LiveModeWindow (Ptr<GLiveSupport>::Ref    gLiveSupport,
                                   Ptr<ResourceBundle>::Ref  bundle,
-                        const Glib::ustring &       gladeDir)
+                                  const Glib::ustring &     gladeDir)
                                                                     throw ()
           : BasicWindow(gLiveSupport, bundle),
             isDeleting(false)

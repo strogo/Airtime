@@ -123,7 +123,7 @@ class LiveModeWindow : public BasicWindow,
         /**
          *  Construct the right-click context menu for local audio clips.
          *
-         *  @return the context menu created (already Gtk::manage()'ed).
+         *  @return the context menu created.
          */
         Ptr<Gtk::Menu>::Ref
         constructAudioClipContextMenu(void)                     throw ();
@@ -131,7 +131,7 @@ class LiveModeWindow : public BasicWindow,
         /**
          *  Construct the right-click context menu for local playlists.
          *
-         *  @return the context menu created (already Gtk::manage()'ed).
+         *  @return the context menu created.
          */
         Ptr<Gtk::Menu>::Ref
         constructPlaylistContextMenu(void)                      throw ();

@@ -41,17 +41,14 @@
 #endif
 
 #include <string>
-
 #include <unicode/resbund.h>
 #include <gtkmm.h>
+#include <libglademm.h>
 
 #include "LiveSupport/Core/Ptr.h"
 #include "LiveSupport/Core/LocalizedObject.h"
-#include "LiveSupport/Widgets/Button.h"
 #include "LiveSupport/Widgets/PlayableTreeModelColumnRecord.h"
-#include "LiveSupport/Widgets/ScrolledWindow.h"
-#include "LiveSupport/Widgets/ScrolledNotebook.h"
-#include "GuiWindow.h"
+#include "BasicWindow.h"
 #include "AdvancedSearchEntry.h"
 #include "BrowseEntry.h"
 #include "GLiveSupport.h"
@@ -80,10 +77,9 @@ using namespace LiveSupport::Widgets;
  *  @author $Author$
  *  @version $Revision$
  */
-class SearchWindow : public GuiWindow
+class SearchWindow : public BasicWindow
 {
     private:
-
         /**
          *  The criteria for the last local search.
          */
@@ -112,32 +108,32 @@ class SearchWindow : public GuiWindow
         /**
          *  The simple search input field.
          */
-        EntryBin *                  simpleSearchEntry;
+        Gtk::Entry *                simpleSearchEntry;
 
         /**
          *  The box containing the advanced search input fields.
          */
-        AdvancedSearchEntry *       advancedSearchEntry;
+        Ptr<AdvancedSearchEntry>::Ref   advancedSearchEntry;
 
         /**
          *  The box containing the browse input fields.
          */
-        BrowseEntry *               browseEntry;
+        Ptr<BrowseEntry>::Ref       browseEntry;
 
         /**
          *  The list of transports in progress.
          */
-        TransportList *             transportList;
+        Ptr<TransportList>::Ref     transportList;
 
         /**
          *  The button for paging in the search results backward.
          */
-        Button *                    backwardButton;
+        Gtk::Button *               backwardButton;
 
         /**
          *  The button for paging in the search results forward.
          */
-        Button *                    forwardButton;
+        Gtk::Button *               forwardButton;
 
         /**
          *  The Schedule Playlist pop-up window.
@@ -172,7 +168,7 @@ class SearchWindow : public GuiWindow
         /**
          *  The notebook for the various tabs in the window.
          */
-        ScrolledNotebook *              searchInput;
+        Gtk::Notebook *                 searchInput;
 
         /**
          *  The transport token used when a remote search is pending.
@@ -182,26 +178,24 @@ class SearchWindow : public GuiWindow
         /**
          *  The pop-up context menu for local audio clips.
          */
-        Gtk::Menu *                     audioClipContextMenu;
+        Ptr<Gtk::Menu>::Ref             audioClipContextMenu;
 
         /**
          *  The pop-up context menu for local playlists.
          */
-        Gtk::Menu *                     playlistContextMenu;
+        Ptr<Gtk::Menu>::Ref             playlistContextMenu;
 
         /**
          *  The pop-up context menu for remote audio clips and playlists.
          */
-        Gtk::Menu *                     remoteContextMenu;
+        Ptr<Gtk::Menu>::Ref             remoteContextMenu;
 
         /**
          *  Construct the "search where" box.
          *  This contains a combo box, where the user can choose between
          *  local search or hub search.
-         *
-         *  @return a pointer to the new box (already Gtk::manage()'ed)
          */
-        Gtk::VBox*
+        void
         constructSearchWhereBox(void)                           throw ();
 
         /**
@@ -212,67 +206,57 @@ class SearchWindow : public GuiWindow
          *  items (both audio clips and playlists) where either the title
          *  (dc:title), the creator (dc:creator) or the album (dc:source)
          *  metadata fields contain this string.
-         *
-         *  @return a pointer to the new box (already Gtk::manage()'ed)
          */
-        Gtk::VBox*
+        void
         constructSimpleSearchView(void)                         throw ();
 
         /**
          *  Construct the advanced search view.
-         *
-         *  @return a pointer to the new box (already Gtk::manage()'ed)
          */
-        Gtk::VBox*
+        void
         constructAdvancedSearchView(void)                       throw ();
 
         /**
          *  Construct the browse view.
-         *
-         *  @return a pointer to the new box (already Gtk::manage()'ed)
          */
-        Gtk::VBox*
+        void
         constructBrowseView(void)                               throw ();
 
         /**
          *  Construct the advanced search view.
-         *
-         *  @return a pointer to the new box (already Gtk::manage()'ed)
          */
-        Gtk::VBox*
+        void
         constructTransportsView(void)                           throw ();
 
         /**
          *  Construct the search results display.
-         *
-         *  @return a pointer to the new view (already Gtk::manage()'ed)
          */
-        Gtk::Box *
+        void
         constructSearchResultsView(void)                        throw ();
 
         /**
          *  Construct the right-click context menu for local audio clips.
          *
-         *  @return the context menu created (already Gtk::manage()'ed).
+         *  @return the context menu created.
          */
-        Gtk::Menu *
+        Ptr<Gtk::Menu>::Ref
         constructAudioClipContextMenu(void)                     throw ();
 
         /**
          *  Construct the right-click context menu for local playlists.
          *
-         *  @return the context menu created (already Gtk::manage()'ed).
+         *  @return the context menu created.
          */
-        Gtk::Menu *
+        Ptr<Gtk::Menu>::Ref
         constructPlaylistContextMenu(void)                      throw ();
 
         /**
          *  Construct the right-click context menu for remote audio clips
          *  and playlists.
          *
-         *  @return the context menu created (already Gtk::manage()'ed).
+         *  @return the context menu created.
          */
-        Gtk::Menu *
+        Ptr<Gtk::Menu>::Ref
         constructRemoteContextMenu(void)                        throw ();
 
         /**
@@ -417,7 +401,6 @@ class SearchWindow : public GuiWindow
 
 
     protected:
-
         /**
          *  The columns model needed by Gtk::TreeView.
          *  Lists one clip per row.
@@ -621,7 +604,6 @@ class SearchWindow : public GuiWindow
         
 
     public:
-
         /**
          *  Constructor.
          *
@@ -629,12 +611,11 @@ class SearchWindow : public GuiWindow
          *                          all the vital info.
          *  @param  bundle          the resource bundle holding the localized
          *                          resources for this window.
-         *  @param windowOpenerButton   the button which was pressed to open
-         *                              this window.
+         *  @param  gladeDir        the directory where the glade file is.
          */
         SearchWindow(Ptr<GLiveSupport>::Ref      gLiveSupport,
                      Ptr<ResourceBundle>::Ref    bundle,
-                     Gtk::ToggleButton *         windowOpenerButton)
+                     const Glib::ustring &       gladeDir)
                                                                 throw ();
 
         /**
