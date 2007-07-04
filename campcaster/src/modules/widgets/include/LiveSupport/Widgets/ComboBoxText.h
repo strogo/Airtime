@@ -71,11 +71,10 @@ class ComboBoxText : public Gtk::ComboBoxText
 {
     public:
         /**
-         *  Constructor.
+         *  Constructor to be used with Glade::Xml::get_widget_derived().
          *
-         *  @param leftImage the left image of the widget.
-         *  @param centerImage the image under the text display.
-         *  @param rightImage the right image for the widget.
+         *  @param baseClass    widget of the parent class, created by Glade.
+         *  @param glade        the Glade object.
          */
         ComboBoxText(GtkComboBox *                              baseClass,
                      const Glib::RefPtr<Gnome::Glade::Xml> &    glade)

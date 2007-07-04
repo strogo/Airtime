@@ -41,17 +41,13 @@
 #endif
 
 #include <string>
-
 #include <unicode/resbund.h>
-
 #include <gtkmm.h>
+#include <libglademm.h>
 
 #include "LiveSupport/Core/Ptr.h"
-#include "LiveSupport/Core/LocalizedObject.h"
-#include "LiveSupport/Widgets/Button.h"
-#include "LiveSupport/Widgets/ZebraTreeView.h"
 #include "LiveSupport/Widgets/PlayableTreeModelColumnRecord.h"
-#include "GuiWindow.h"
+#include "BasicWindow.h"
 #include "ContentsStorable.h"
 #include "CuePlayer.h"
 #include "GLiveSupport.h"
@@ -79,7 +75,7 @@ using namespace LiveSupport::Widgets;
  *  @author $Author$
  *  @version $Revision$
  */
-class LiveModeWindow : public GuiWindow,
+class LiveModeWindow : public BasicWindow,
                        public ContentsStorable
 {
     private:
@@ -111,22 +107,12 @@ class LiveModeWindow : public GuiWindow,
         /**
          *  The cue player widget with play/pause and stop buttons.
          */
-        CuePlayer *                         cueAudioButtons;
+        Ptr<CuePlayer>::Ref                 cuePlayer;
 
         /**
          *  The label for the cue player.
          */
-        Gtk::Label *                        cueAudioLabel;
-
-        /**
-         *  The button for removing every item from the window.
-         */
-        Button *                            clearListButton;
-
-        /**
-         *  The button for removing the selected items from the window.
-         */
-        Button *                            removeButton;
+        Gtk::Label *                        cueLabel;
 
         /**
          *  If checked, the top item in the window will start playing
@@ -139,7 +125,7 @@ class LiveModeWindow : public GuiWindow,
          *
          *  @return the context menu created (already Gtk::manage()'ed).
          */
-        Gtk::Menu *
+        Ptr<Gtk::Menu>::Ref
         constructAudioClipContextMenu(void)                     throw ();
 
         /**
@@ -147,7 +133,7 @@ class LiveModeWindow : public GuiWindow,
          *
          *  @return the context menu created (already Gtk::manage()'ed).
          */
-        Gtk::Menu *
+        Ptr<Gtk::Menu>::Ref
         constructPlaylistContextMenu(void)                      throw ();
 
         /**
@@ -174,12 +160,6 @@ class LiveModeWindow : public GuiWindow,
         {
             public:
                 /**
-                 *  The column for the play button.
-                 */
-//              Gtk::TreeModelColumn<Glib::RefPtr<Gdk::Pixbuf> >
-//                                                          playButtonColumn;
-
-                /**
                  *  The column for the title, creator, etc.
                  */
                 Gtk::TreeModelColumn<Glib::ustring>         infoColumn;
@@ -189,7 +169,6 @@ class LiveModeWindow : public GuiWindow,
                  */
                 ModelColumns(void)                              throw ()
                 {
-//                  add(playButtonColumn);
                     add(infoColumn);
                 }
         };
@@ -223,12 +202,12 @@ class LiveModeWindow : public GuiWindow,
         /**
          *  The right-click context menu for audio clips.
          */
-        Gtk::Menu *                 audioClipContextMenu;
+        Ptr<Gtk::Menu>::Ref         audioClipContextMenu;
 
         /**
          *  The right-click context menu for playlists.
          */
-        Gtk::Menu *                 playlistContextMenu;
+        Ptr<Gtk::Menu>::Ref         playlistContextMenu;
 
         /**
          *  Signal handler for the output play button clicked
@@ -307,12 +286,6 @@ class LiveModeWindow : public GuiWindow,
         onUploadToHub(void)                                     throw ();
 
         /**
-         *  Signal handler for the clear list button clicked.
-         */
-        virtual void
-        onClearListButtonClicked(void)                          throw ();
-
-        /**
          *  Signal handler for the remove item button clicked.
          */
         virtual void
@@ -324,15 +297,6 @@ class LiveModeWindow : public GuiWindow,
         virtual void
         onTreeModelChanged(void)                                throw ();
 
-        /**
-         *  Event handler called when the the window gets hidden.
-         *
-         *  This overrides GuiWindow::on_hide(), and closes the Export Playlist
-         *  window, if it is still open.
-         */
-        virtual void
-        on_hide(void)                                           throw ();
-
 
     public:
         /**
@@ -342,12 +306,11 @@ class LiveModeWindow : public GuiWindow,
          *                          all the vital info.
          *  @param  bundle          the resource bundle holding the localized
          *                          resources for this window.
-         *  @param windowOpenerButton   the button which was pressed to open
-         *                              this window.
+         *  @param  gladeDir        the directory where the glade file is.
          */
         LiveModeWindow(Ptr<GLiveSupport>::Ref      gLiveSupport,
                        Ptr<ResourceBundle>::Ref    bundle,
-                       Gtk::ToggleButton *         windowOpenerButton)
+                       const Glib::ustring &       gladeDir)
                                                                 throw ();
 
         /**
@@ -400,7 +363,7 @@ class LiveModeWindow : public GuiWindow,
         void
         showCuePlayerStopped(void)                              throw ()
         {
-            cueAudioButtons->onStop();
+            cuePlayer->onStop();
         }
 
         /**
@@ -466,6 +429,15 @@ class LiveModeWindow : public GuiWindow,
         {
             return userPreferencesKey;
         }
+
+        /**
+         *  Hide the window.
+         *
+         *  This overrides BasicWindow::hide(), and closes the Export Playlist
+         *  and Schedule Playlist pop-up windows, if they are still open.
+         */
+        virtual void
+        hide(void)                                              throw ();
 };
 
 /* ================================================= external data structures */

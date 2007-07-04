@@ -72,6 +72,18 @@ ZebraTreeView :: ZebraTreeView(Glib::RefPtr<Gtk::TreeModel>  treeModel)
 
 
 /*------------------------------------------------------------------------------
+ *  Constructor.
+ *----------------------------------------------------------------------------*/
+ZebraTreeView :: ZebraTreeView(
+                        _GtkTreeView *                            baseClass,
+                        const Glib::RefPtr<Gnome::Glade::Xml> &   glade)
+                                                                throw ()
+          : Gtk::TreeView(baseClass)
+{
+}
+
+
+/*------------------------------------------------------------------------------
  *  Destructor.
  *----------------------------------------------------------------------------*/
 ZebraTreeView :: ~ZebraTreeView(void)                           throw ()

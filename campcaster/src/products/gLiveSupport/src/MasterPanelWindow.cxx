@@ -349,7 +349,7 @@ MasterPanelWindow :: updateLiveModeWindow(Ptr<Playable>::Ref    playable)
 
         liveModeWindow.reset(new LiveModeWindow(gLiveSupport,
                                                 bundle,
-                                                liveModeButton));
+                                                gladeDir));
         gLiveSupport->loadWindowContents(liveModeWindow);
     }
     
