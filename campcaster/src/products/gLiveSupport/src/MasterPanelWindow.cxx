@@ -481,7 +481,7 @@ MasterPanelWindow :: updateSearchWindow(void)                       throw ()
 
         searchWindow.reset(new SearchWindow(gLiveSupport,
                                             bundle,
-                                            searchButton));
+                                            gladeDir));
     }
     
     searchWindow->present();
@@ -699,7 +699,7 @@ MasterPanelWindow :: uploadToHub(Ptr<Playable>::Ref     playable)
 
         searchWindow.reset(new SearchWindow(gLiveSupport,
                                             bundle,
-                                            searchButton));
+                                            gladeDir));
     }
     
     searchWindow->uploadToHub(playable);

@@ -66,6 +66,7 @@ using namespace LiveSupport::Core;
 class Bar
 {
     private:
+
         /**
          *  A static member variable.
          */
@@ -76,7 +77,9 @@ class Bar
          */
         int                             barInt;
 
+
     public:
+
         /**
          *  Default constructor.
          */

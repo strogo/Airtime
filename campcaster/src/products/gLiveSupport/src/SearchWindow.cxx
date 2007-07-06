@@ -65,16 +65,6 @@ namespace {
 const Glib::ustring     gladeFileName = "SearchWindow.glade";
 
 /*------------------------------------------------------------------------------
- *  The 'search where' combo box key for local searches.
- *----------------------------------------------------------------------------*/
-const std::string       searchWhereLocalKey  = "searchWhereLocal";
-
-/*------------------------------------------------------------------------------
- *  The 'search where' combo box key for remote searches.
- *----------------------------------------------------------------------------*/
-const std::string       searchWhereRemoteKey = "searchWhereRemote";
-
-/*------------------------------------------------------------------------------
  *  The number of items which can be shown in the search results.
  *----------------------------------------------------------------------------*/
 const int               searchResultsSize = 25;
@@ -134,16 +124,10 @@ SearchWindow :: constructSearchWhereBox(void)                   throw ()
     searchWhereLabel->set_label(*getResourceUstring("searchWhereLabel"));
 
     glade->get_widget_derived("searchWhereEntry", searchWhereEntry);
-    Ptr<Glib::ustring>::Ref localKey(new Glib::ustring(
-                                                searchWhereLocalKey));
-    Ptr<Glib::ustring>::Ref remoteKey(new Glib::ustring(
-                                                searchWhereRemoteKey));
-    searchWhereEntry->appendPair(getResourceUstring(searchWhereLocalKey),
-                                 localKey);
-    searchWhereEntry->appendPair(getResourceUstring(searchWhereRemoteKey),
-                                 remoteKey);
+    searchWhereEntry->append_text(*getResourceUstring("searchWhereLocal"));
+    searchWhereEntry->append_text(*getResourceUstring("searchWhereRemote"));
     searchWhereEntry->set_active(0);
-    searchWhereEntry->signalSelectionChanged().connect(sigc::mem_fun(*this,
+    searchWhereEntry->signal_changed().connect(sigc::mem_fun(*this,
                                     &SearchWindow::onSearchWhereChanged));
 }    
 
@@ -156,14 +140,13 @@ SearchWindow :: constructSimpleSearchView(void)                 throw ()
 {
     glade->get_widget("simpleSearchEntry", simpleSearchEntry);
     simpleSearchEntry->signal_activate().connect(sigc::mem_fun(*this,
-                                            &SearchWindow::onSimpleSearch ));
+                                            &SearchWindow::onSimpleSearch));
     
     Gtk::Button *       simpleSearchButton;
     glade->get_widget("simpleSearchButton", simpleSearchButton);
     simpleSearchButton->set_label(*getResourceUstring("searchButtonLabel"));
-
-    searchButton->signal_clicked().connect(sigc::mem_fun(*this,
-                                            &SearchWindow::onSimpleSearch ));
+    simpleSearchButton->signal_clicked().connect(sigc::mem_fun(*this,
+                                            &SearchWindow::onSimpleSearch));
 }
 
 
@@ -769,7 +752,7 @@ SearchWindow :: onSchedulePlaylist(void)                        throw ()
                             gLiveSupport,
                             gLiveSupport->getBundle("schedulePlaylistWindow"),
                             playlist));
-            schedulePlaylistWindow->set_transient_for(*this);
+            schedulePlaylistWindow->set_transient_for(*mainWindow);
             Gtk::Main::run(*schedulePlaylistWindow);
         }
     }
@@ -801,7 +784,7 @@ SearchWindow :: onExportPlaylist(void)                          throw ()
                     std::cerr << e.what() << std::endl;
                     return;
                 }
-                exportPlaylistWindow->set_transient_for(*this);
+                exportPlaylistWindow->set_transient_for(*mainWindow);
                 Gtk::Main::run(*exportPlaylistWindow);
             }
         }
@@ -837,7 +820,7 @@ bool
 SearchWindow :: uploadToHub(Ptr<Playable>::Ref  playable)       throw ()
 {
     try {
-        searchInput->setActivePage(3);
+        searchInput->set_current_page(3);
         transportList->addUpload(playable);
         
     } catch (XmlRpcException &e) {
@@ -866,7 +849,7 @@ SearchWindow :: onDownloadFromHub(void)                         throw ()
         if (playable) {
             if (!gLiveSupport->existsPlayable(playable->getId())) {
                 try {
-                    searchInput->setActivePage(3);
+                    searchInput->set_current_page(3);
                     transportList->addDownload(playable);
                     
                 } catch (XmlRpcException &e) {
@@ -902,7 +885,7 @@ SearchWindow :: onDoubleClick(const Gtk::TreeModel::Path &    path,
  *  Event handler called when the the window gets hidden.
  *----------------------------------------------------------------------------*/
 void
-SearchWindow :: on_hide(void)                                   throw ()
+SearchWindow :: hide(void)                                      throw ()
 {
     if (exportPlaylistWindow) {
         exportPlaylistWindow->hide();
@@ -911,7 +894,7 @@ SearchWindow :: on_hide(void)                                   throw ()
         schedulePlaylistWindow->hide();
     }
     
-    GuiWindow::on_hide();
+    BasicWindow::hide();
 }
 
 
@@ -921,13 +904,20 @@ SearchWindow :: on_hide(void)                                   throw ()
 bool
 SearchWindow :: searchIsLocal(void)                             throw ()
 {
-    Ptr<const Glib::ustring>::Ref   searchWhere
-                                    = searchWhereEntry->getActiveKey();
+    int     searchWhere = searchWhereEntry->get_active_row_number();
     
-    if (*searchWhere == searchWhereLocalKey) {
-        return true;
-    } else {
-        return false;
+    switch (searchWhere) {
+        case 0: return true;
+                break;
+        
+        case 1: return false;
+                break;
+        
+        default:
+                std::cerr << "impossible value in SearchWindow::searchIsLocal()"
+                          << std::endl;
+                std::exit(1);
+                break;
     }
 }
 
@@ -939,13 +929,13 @@ void
 SearchWindow :: onSearchWhereChanged(void)                      throw ()
 {
     if (searchIsLocal()) {
-        searchInput->setPageSensitive(2, true);
+        searchInput->get_nth_page(2)->set_sensitive(true);
         searchResultsTreeView->set_model(localSearchResults);
     } else {
-        if (searchInput->getActivePage() == 2) {
-            searchInput->setActivePage(0);
+        if (searchInput->get_current_page() == 2) {
+            searchInput->set_current_page(0);
         }
-        searchInput->setPageSensitive(2, false);
+        searchInput->get_nth_page(2)->set_sensitive(false);
         searchResultsTreeView->set_model(remoteSearchResults);
     }
     
@@ -967,36 +957,31 @@ SearchWindow :: onTimer(void)                                   throw ()
 /*------------------------------------------------------------------------------
  *  Construct the right-click context menu for local audio clips.
  *----------------------------------------------------------------------------*/
-Gtk::Menu *
+Ptr<Gtk::Menu>::Ref
 SearchWindow :: constructAudioClipContextMenu(void)             throw ()
 {
-    Gtk::Menu *             contextMenu = Gtk::manage(new Gtk::Menu());
+    Ptr<Gtk::Menu>::Ref     contextMenu(new Gtk::Menu());
     Gtk::Menu::MenuList &   contextMenuList = contextMenu->items();
 
-    try {
-        contextMenuList.push_back(Gtk::Menu_Helpers::MenuElem(
-                                *getResourceUstring("addToLiveModeMenuItem"),
-                                sigc::mem_fun(*this,
-                                        &SearchWindow::onAddToLiveMode)));
-        contextMenuList.push_back(Gtk::Menu_Helpers::MenuElem(
-                                *getResourceUstring("addToPlaylistMenuItem"),
-                                sigc::mem_fun(*this,
-                                        &SearchWindow::onAddToPlaylist)));
-        contextMenuList.push_back(Gtk::Menu_Helpers::MenuElem(
-                                *getResourceUstring("addToScratchpadMenuItem"),
-                                sigc::mem_fun(*this,
-                                        &SearchWindow::onAddToScratchpad)));
-        contextMenuList.push_back(Gtk::Menu_Helpers::SeparatorElem());
-        contextMenuList.push_back(Gtk::Menu_Helpers::MenuElem(
-                                *getResourceUstring("uploadToHubMenuItem"),
-                                sigc::mem_fun(*this,
-                                        &SearchWindow::onUploadToHub)));
-    } catch (std::invalid_argument &e) {
-        std::cerr << e.what() << std::endl;
-        std::exit(1);
-    }
+    contextMenuList.push_back(Gtk::Menu_Helpers::MenuElem(
+                            *getResourceUstring("addToLiveModeMenuItem"),
+                            sigc::mem_fun(*this,
+                                    &SearchWindow::onAddToLiveMode)));
+    contextMenuList.push_back(Gtk::Menu_Helpers::MenuElem(
+                            *getResourceUstring("addToPlaylistMenuItem"),
+                            sigc::mem_fun(*this,
+                                    &SearchWindow::onAddToPlaylist)));
+    contextMenuList.push_back(Gtk::Menu_Helpers::MenuElem(
+                            *getResourceUstring("addToScratchpadMenuItem"),
+                            sigc::mem_fun(*this,
+                                    &SearchWindow::onAddToScratchpad)));
+    contextMenuList.push_back(Gtk::Menu_Helpers::SeparatorElem());
+    contextMenuList.push_back(Gtk::Menu_Helpers::MenuElem(
+                            *getResourceUstring("uploadToHubMenuItem"),
+                            sigc::mem_fun(*this,
+                                    &SearchWindow::onUploadToHub)));
 
-    contextMenu->accelerate(*this);
+    contextMenu->accelerate(*mainWindow);
     return contextMenu;
 }    
 
@@ -1004,49 +989,44 @@ SearchWindow :: constructAudioClipContextMenu(void)             throw ()
 /*------------------------------------------------------------------------------
  *  Construct the right-click context menu for local playlists.
  *----------------------------------------------------------------------------*/
-Gtk::Menu *
+Ptr<Gtk::Menu>::Ref
 SearchWindow :: constructPlaylistContextMenu(void)              throw ()
 {
-    Gtk::Menu *             contextMenu = Gtk::manage(new Gtk::Menu());
+    Ptr<Gtk::Menu>::Ref     contextMenu(new Gtk::Menu());
     Gtk::Menu::MenuList &   contextMenuList = contextMenu->items();
 
-    try {
-        contextMenuList.push_back(Gtk::Menu_Helpers::MenuElem(
-                                *getResourceUstring("addToLiveModeMenuItem"),
+    contextMenuList.push_back(Gtk::Menu_Helpers::MenuElem(
+                            *getResourceUstring("addToLiveModeMenuItem"),
+                            sigc::mem_fun(*this,
+                                    &SearchWindow::onAddToLiveMode)));
+    contextMenuList.push_back(Gtk::Menu_Helpers::MenuElem(
+                            *getResourceUstring("addToPlaylistMenuItem"),
+                            sigc::mem_fun(*this,
+                                    &SearchWindow::onAddToPlaylist)));
+    contextMenuList.push_back(Gtk::Menu_Helpers::MenuElem(
+                            *getResourceUstring("addToScratchpadMenuItem"),
+                            sigc::mem_fun(*this,
+                                    &SearchWindow::onAddToScratchpad)));
+    contextMenuList.push_back(Gtk::Menu_Helpers::SeparatorElem());
+    contextMenuList.push_back(Gtk::Menu_Helpers::MenuElem(
+                                *getResourceUstring("editPlaylistMenuItem"),
                                 sigc::mem_fun(*this,
-                                        &SearchWindow::onAddToLiveMode)));
-        contextMenuList.push_back(Gtk::Menu_Helpers::MenuElem(
-                                *getResourceUstring("addToPlaylistMenuItem"),
-                                sigc::mem_fun(*this,
-                                        &SearchWindow::onAddToPlaylist)));
-        contextMenuList.push_back(Gtk::Menu_Helpers::MenuElem(
-                                *getResourceUstring("addToScratchpadMenuItem"),
-                                sigc::mem_fun(*this,
-                                        &SearchWindow::onAddToScratchpad)));
-        contextMenuList.push_back(Gtk::Menu_Helpers::SeparatorElem());
-        contextMenuList.push_back(Gtk::Menu_Helpers::MenuElem(
-                                 *getResourceUstring("editPlaylistMenuItem"),
-                                  sigc::mem_fun(*this,
-                                        &SearchWindow::onEditPlaylist)));
-        contextMenuList.push_back(Gtk::Menu_Helpers::MenuElem(
-                                *getResourceUstring("schedulePlaylistMenuItem"),
-                                sigc::mem_fun(*this,
-                                        &SearchWindow::onSchedulePlaylist)));
-        contextMenuList.push_back(Gtk::Menu_Helpers::MenuElem(
-                                *getResourceUstring("exportPlaylistMenuItem"),
-                                sigc::mem_fun(*this,
-                                        &SearchWindow::onExportPlaylist)));
-        contextMenuList.push_back(Gtk::Menu_Helpers::SeparatorElem());
-        contextMenuList.push_back(Gtk::Menu_Helpers::MenuElem(
-                                *getResourceUstring("uploadToHubMenuItem"),
-                                sigc::mem_fun(*this,
-                                        &SearchWindow::onUploadToHub)));
-    } catch (std::invalid_argument &e) {
-        std::cerr << e.what() << std::endl;
-        std::exit(1);
-    }
+                                    &SearchWindow::onEditPlaylist)));
+    contextMenuList.push_back(Gtk::Menu_Helpers::MenuElem(
+                            *getResourceUstring("schedulePlaylistMenuItem"),
+                            sigc::mem_fun(*this,
+                                    &SearchWindow::onSchedulePlaylist)));
+    contextMenuList.push_back(Gtk::Menu_Helpers::MenuElem(
+                            *getResourceUstring("exportPlaylistMenuItem"),
+                            sigc::mem_fun(*this,
+                                    &SearchWindow::onExportPlaylist)));
+    contextMenuList.push_back(Gtk::Menu_Helpers::SeparatorElem());
+    contextMenuList.push_back(Gtk::Menu_Helpers::MenuElem(
+                            *getResourceUstring("uploadToHubMenuItem"),
+                            sigc::mem_fun(*this,
+                                    &SearchWindow::onUploadToHub)));
 
-    contextMenu->accelerate(*this);
+    contextMenu->accelerate(*mainWindow);
     return contextMenu;
 }    
 
@@ -1054,23 +1034,18 @@ SearchWindow :: constructPlaylistContextMenu(void)              throw ()
 /*------------------------------------------------------------------------------
  *  Construct the right-click context menu for remote audio clips & playlists.
  *----------------------------------------------------------------------------*/
-Gtk::Menu *
+Ptr<Gtk::Menu>::Ref
 SearchWindow :: constructRemoteContextMenu(void)                throw ()
 {
-    Gtk::Menu *             contextMenu = Gtk::manage(new Gtk::Menu());
+    Ptr<Gtk::Menu>::Ref     contextMenu(new Gtk::Menu());
     Gtk::Menu::MenuList &   contextMenuList = contextMenu->items();
 
-    try {
-        contextMenuList.push_back(Gtk::Menu_Helpers::MenuElem(
-                                *getResourceUstring("downloadFromHubMenuItem"),
-                                sigc::mem_fun(*this,
-                                        &SearchWindow::onDownloadFromHub)));
-    } catch (std::invalid_argument &e) {
-        std::cerr << e.what() << std::endl;
-        std::exit(1);
-    }
+    contextMenuList.push_back(Gtk::Menu_Helpers::MenuElem(
+                            *getResourceUstring("downloadFromHubMenuItem"),
+                            sigc::mem_fun(*this,
+                                    &SearchWindow::onDownloadFromHub)));
 
-    contextMenu->accelerate(*this);
+    contextMenu->accelerate(*mainWindow);
     return contextMenu;
 }    
 
@@ -1148,12 +1123,12 @@ SearchWindow :: updatePagingToolbar(void)                       throw ()
             std::cerr << e.what() << std::endl;
             std::exit(1);
         }
-        backwardButton->setDisabled(offset == 0);
-        forwardButton->setDisabled(offset + getSearchResultsSize() >= count);
+        backwardButton->set_sensitive(offset == 0);
+        forwardButton->set_sensitive(offset + getSearchResultsSize() >= count);
     } else {
         searchResultsCountLabel->set_text("");
-        backwardButton->setDisabled(true);
-        forwardButton->setDisabled(true);
+        backwardButton->set_sensitive(false);
+        forwardButton->set_sensitive(false);
     }        
 }
 

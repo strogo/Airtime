@@ -86,6 +86,8 @@ namespace Core {
  *  For a description of the metadataType XML element, see the documentation
  *  for the MetadataType class.
  *
+ *  See the Studio config files for a list of all metadata types.
+ *
  *  @author  $Author$
  *  @version $Revision$
  *  @see MetadataType
@@ -240,6 +242,17 @@ class MetadataTypeContainer : public Configurable,
          */
         Ptr<const MetadataType>::Ref
         getById3Tag(const Glib::ustring     id3Tag)
+                                                throw (std::invalid_argument);
+
+        /**
+         *  Return a MetadataType object, by index.
+         *
+         *  @param  index   the index of the item in the metadata container.
+         *  @return the MetadataType object at the supplied index.
+         *  @exception std::invalid_argument if the index is out of range.
+         */
+        Ptr<const MetadataType>::Ref
+        getByIndex(unsigned int     index) const
                                                 throw (std::invalid_argument);
 
         /**

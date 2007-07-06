@@ -70,6 +70,7 @@ using namespace Core;                   // FIXME: remove this
 class ComboBoxText : public Gtk::ComboBoxText
 {
     public:
+
         /**
          *  Constructor to be used with Glade::Xml::get_widget_derived().
          *
@@ -110,10 +111,6 @@ class ComboBoxText : public Gtk::ComboBoxText
             sigc::signal<void>   dummy;
             return dummy;
         }
-
-        ComboBoxText(Glib::RefPtr<Gdk::Pixbuf>   leftImage,
-                     Glib::RefPtr<Gdk::Pixbuf>   centerImage,
-                     Glib::RefPtr<Gdk::Pixbuf>   rightImage)        throw ();
 };
 
 

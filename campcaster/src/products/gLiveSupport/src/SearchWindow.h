@@ -593,15 +593,6 @@ class SearchWindow : public BasicWindow
         void
         onForwardButtonClicked(void)                            throw ();
 
-        /**
-         *  Event handler called when the the window gets hidden.
-         *
-         *  This overrides GuiWindow::on_hide(), and closes the Export Playlist
-         *  window, if it is still open.
-         */
-        virtual void
-        on_hide(void)                                           throw ();
-        
 
     public:
         /**
@@ -641,6 +632,15 @@ class SearchWindow : public BasicWindow
          */
         bool
         uploadToHub(Ptr<Playable>::Ref  playable)               throw ();
+
+        /**
+         *  Hide the window.
+         *
+         *  This overrides BasicWindow::hide(), and closes the Export Playlist
+         *  and Schedule Playlist windows, if they are still open.
+         */
+        virtual void
+        hide(void)                                              throw ();
 };
 
 /* ================================================= external data structures */

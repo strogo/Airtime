@@ -69,15 +69,15 @@ class MetadataTypeContainer;
  *  called metadataType. This may look like the following:
  *
  *  <pre><code>
- *  <metadataType dcName          = "dc:creator"
+ *  &lt;metadataType dcName          = "dc:creator"
  *                id3Tag          = "TPE2"
  *                localizationKey = "dc_creator"
- *                tab             = "main" >
- *      <constraint     type = "numericRange" >
- *          <value>1</value>
- *          <value>12</value>
- *      </constraint>
- *  </metadataType>
+ *                tab             = "main" &gt;
+ *      &lt;constraint     type = "numericRange" &gt;
+ *          &lt;value&gt;1&lt;/value&gt;
+ *          &lt;value&gt;12&lt;/value&gt;
+ *      &lt;/constraint&gt;
+ *  &lt;/metadataType&gt;
  *  </code></pre>
  *
  *  The tab attribute (if present) must be one of "main", "music" or "voice"
@@ -88,7 +88,9 @@ class MetadataTypeContainer;
  *
  *  The optional constraint sub-element can give restrictions on the acceptable
  *  values for this type of metadata.  See the MetadataConstraint class for
- *  more information, including the DTD of the "constraint" element.
+ *  more information, including the DTD of the &lt;constraint&gt; element.
+ *
+ *  See the Studio config files for a list of all metadata types.
  *
  *  The DTD for the expected XML element looks like the following:
  *

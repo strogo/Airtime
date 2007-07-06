@@ -41,6 +41,7 @@
 #endif
 
 #include <gtkmm.h>
+#include <libglademm.h>
 
 #include "LiveSupport/Core/Ptr.h"
 #include "LiveSupport/PlaylistExecutor/AudioPlayerEventListener.h"
@@ -70,11 +71,9 @@ using namespace LiveSupport::Widgets;
  *  @author  $Author$
  *  @version $Revision$
  */
-class CuePlayer : public Gtk::HBox,
-                  public PlaylistExecutor::AudioPlayerEventListener
+class CuePlayer : public PlaylistExecutor::AudioPlayerEventListener
 {
     private:
-    
         /**
          *  The possible states of the (cue) audio player.
          */
@@ -146,7 +145,6 @@ class CuePlayer : public Gtk::HBox,
 
     
     public:
-    
         /**
          *  Constructor with parent parameters.
          *
