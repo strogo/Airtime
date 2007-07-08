@@ -143,8 +143,8 @@ class AdvancedSearchItem : public LocalizedObject
         /**
          *  Constructor.
          *
-         *  @param isFirst        true if this is the first search condition
-         *                            (so it does not need a Close button)
+         *  @param index          the position of this item in the list of
+         *                        advanced search items.
          *  @param metadataTypes  container holding all known metadata types
          *  @param bundle         the resource bundle holding the localized
          *                        resources for this widget.
@@ -194,6 +194,17 @@ class AdvancedSearchItem : public LocalizedObject
         signalAddNew(void)                                      throw ()
         {
             return signalAddNewObject;
+        }
+
+        /**
+         *  Is the widget visible?
+         *
+         *  return true if visible, false if not.
+         */
+        bool
+        is_visible(void)                                        throw ()
+        {
+            return enclosingBox->is_visible();
         }
 
         /**

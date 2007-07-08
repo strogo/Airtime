@@ -92,7 +92,7 @@ AdvancedSearchEntry :: AdvancedSearchEntry(
                                                                 metadataTypes,
                                                                 getBundle(),
                                                                 glade));
-        children->push_back(searchItem);
+        children.push_back(searchItem);
     }
     
     children.at(0)->signalAddNew().connect(sigc::mem_fun(*this,

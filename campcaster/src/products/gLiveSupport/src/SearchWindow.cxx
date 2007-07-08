@@ -174,7 +174,7 @@ SearchWindow :: constructAdvancedSearchView(void)               throw ()
 void
 SearchWindow :: constructBrowseView(void)                       throw ()
 {
-    browseEntry.reset(new BrowseEntry(gLiveSupport, getBundle(), glade);    
+    browseEntry.reset(new BrowseEntry(gLiveSupport, getBundle(), glade));    
     browseEntry->signalSelectionChanged().connect(sigc::mem_fun(*this,
                                                 &SearchWindow::onBrowse));
 }

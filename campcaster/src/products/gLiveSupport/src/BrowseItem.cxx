@@ -59,48 +59,51 @@ using namespace LiveSupport::GLiveSupport;
 /*------------------------------------------------------------------------------
  *  Constructor.
  *----------------------------------------------------------------------------*/
-BrowseItem :: BrowseItem(
-        Ptr<LiveSupport::GLiveSupport::GLiveSupport>::Ref   gLiveSupport,
-        Ptr<ResourceBundle>::Ref                            bundle,
-        int                                                 defaultIndex)
+BrowseItem :: BrowseItem(int                                index,
+                         Ptr<GLiveSupport>::Ref             gLiveSupport,
+                         Ptr<ResourceBundle>::Ref           bundle,
+                         Glib::RefPtr<Gnome::Glade::Xml>    glade,
+                         int                                defaultIndex)
                                                                     throw ()
           : LocalizedObject(bundle),
             gLiveSupport(gLiveSupport)
 {
     parentCriteria.reset(new SearchCriteria);
     
-    Ptr<WidgetFactory>::Ref     wf = WidgetFactory::getInstance();
-
-    metadataEntry = Gtk::manage(wf->createMetadataComboBoxText(
-                                    gLiveSupport->getMetadataTypeContainer()));
+    glade->get_widget_derived(addIndex("browseMetadataEntry", index),
+                              metadataEntry);
+    metadataEntry->setContents(gLiveSupport->getMetadataTypeContainer());
     metadataEntry->set_active(defaultIndex);
     metadataEntry->signalSelectionChanged().connect(sigc::mem_fun(*this,
                                                         &BrowseItem::onShow ));
-    pack_start(*metadataEntry, Gtk::PACK_SHRINK, 5);
 
     treeModel = Gtk::ListStore::create(modelColumns);
     
-    metadataValues = Gtk::manage(wf->createTreeView(treeModel));
+    glade->get_widget_derived(addIndex("browseMetadataValues", index),
+                              metadataValues);
+    metadataValues->set_model(treeModel);
     metadataValues->appendColumn("", modelColumns.displayedColumn, 200);
-    metadataValues->set_size_request(230, 150);
-    metadataValues->set_headers_visible(false);
     metadataValues->signal_cursor_changed().connect(sigc::mem_fun(*this,
                                     &BrowseItem::emitSignalSelectionChanged ));
     
-    Gtk::ScrolledWindow * scrolledWindow = Gtk::manage(new Gtk::ScrolledWindow);
-    scrolledWindow->set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
-    scrolledWindow->add(*metadataValues);
-    pack_start(*scrolledWindow, Gtk::PACK_SHRINK, 5);
-
-    try {
-        allString = Glib::Markup::escape_text(
+    allString = Glib::Markup::escape_text(
                                     *getResourceUstring("allStringForBrowse"));
-    } catch (std::invalid_argument &e) {
-        std::cerr << e.what() << std::endl;
-        std::exit(1);
-    }
 
     onShow();
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Add the index to a string.
+ *----------------------------------------------------------------------------*/
+Glib::ustring
+BrowseItem :: addIndex(const Glib::ustring &    baseString,
+                       int                      index)              throw ()
+{
+    std::ostringstream      stream;
+    stream << baseString
+           << index;
+    return stream.str();
 }
 
 

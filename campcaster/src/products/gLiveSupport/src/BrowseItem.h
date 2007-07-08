@@ -42,8 +42,8 @@
 
 #include <vector>
 #include <utility>
-
 #include <gtkmm.h>
+#include <libglademm.h>
 
 #include "LiveSupport/Core/Ptr.h"
 #include "LiveSupport/Core/LocalizedObject.h"
@@ -73,17 +73,16 @@ using namespace LiveSupport::Widgets;
  *  A single browse input field.
  *
  *  It consists of a Widgets::ComboBoxText and a Widgets::ZebraTreeView
- *  (without header).  It stores a "parent search criteria", and shows all
+ *  (without headers).  It stores a "parent search criteria", and shows all
  *  possible metadata values of the type selected in the ComboBoxText which
- *  match this condition.  The parent search criteria should be conjunction
+ *  match this condition.  The parent search criteria should be the conjunction
  *  of all search conditions selected in BrowseItem objects to the left of
  *  this one.
  *
  *  @author  $Author$
  *  @version $Revision$
  */
-class BrowseItem : public Gtk::VBox,
-                   public LocalizedObject
+class BrowseItem : public LocalizedObject
 {
     private:
     
@@ -152,7 +151,7 @@ class BrowseItem : public Gtk::VBox,
         /**
          *  The GLiveSupport object, holding the state of the application.
          */
-        Ptr<LiveSupport::GLiveSupport::GLiveSupport>::Ref   gLiveSupport;
+        Ptr<GLiveSupport>::Ref          gLiveSupport;
          
         /**
          *  The criteria from the browse items to the left of this one.
@@ -162,16 +161,23 @@ class BrowseItem : public Gtk::VBox,
         /**
          *  Default constructor.
          */
-        BrowseItem(void)                               throw ();
+        BrowseItem(void)                                            throw ();
 
         /**
          *  Emit the "selection changed" signal.
          */
         void
-        emitSignalSelectionChanged(void)        throw ()
+        emitSignalSelectionChanged(void)                            throw ()
         {
             signalSelectionChanged().emit();
         }
+
+        /**
+         *  Add the index to a string.
+         */
+        Glib::ustring
+        addIndex(const Glib::ustring &      baseString,
+                 int                        index)                  throw ();
 
 
     protected:
@@ -187,22 +193,27 @@ class BrowseItem : public Gtk::VBox,
         /**
          *  Constructor with parent and localization parameter.
          *
+         *  @param index        the position of this item in the list of
+         *                      browse items.
          *  @param gLiveSupport the main program object
          *  @param bundle       the resource bundle for localization
+         *  @param glade        the Glade file which specifies the visual
+         *                      components for this class.
          *  @param defaultIndex the index of the metadata entry to display
          *                      initially
          */
-        BrowseItem(
-            Ptr<LiveSupport::GLiveSupport::GLiveSupport>::Ref   gLiveSupport,
-            Ptr<ResourceBundle>::Ref                            bundle,
-            int                                                 defaultIndex)
-                                                       throw ();
+        BrowseItem(int                              index,
+                   Ptr<GLiveSupport>::Ref           gLiveSupport,
+                   Ptr<ResourceBundle>::Ref         bundle,
+                   Glib::RefPtr<Gnome::Glade::Xml>  glade,
+                   int                              defaultIndex)
+                                                                    throw ();
 
         /**
          *  A virtual destructor.
          */
         virtual
-        ~BrowseItem(void)                              throw ()
+        ~BrowseItem(void)                                           throw ()
         {
         }
 
@@ -223,7 +234,7 @@ class BrowseItem : public Gtk::VBox,
          *  parent criteria), and set the selection to "all".
          */
         void
-        onShow(void)                                    throw ();
+        onShow(void)                                                throw ();
 
         /**
          *  The signal handler for refreshing the treeview of metadata values,
@@ -234,8 +245,8 @@ class BrowseItem : public Gtk::VBox,
          *                          are coming from.
          */
         void
-        onParentChangedShow(BrowseItem *    leftNeighbor)
-                                                        throw ()
+        onParentChangedShow(Ptr<BrowseItem>::Ref    leftNeighbor)
+                                                                    throw ()
         {
             parentCriteria = leftNeighbor->getSearchCriteria();
             onShow();
@@ -248,7 +259,7 @@ class BrowseItem : public Gtk::VBox,
          *  @return the signal object (a protected member of this class)
          */
         sigc::signal<void>
-        signalSelectionChanged(void)                        throw ()
+        signalSelectionChanged(void)                                throw ()
         {
             return signalSelectionChangedObject;
         }
