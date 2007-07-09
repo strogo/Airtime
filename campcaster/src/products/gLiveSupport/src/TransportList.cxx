@@ -98,7 +98,7 @@ TransportList :: TransportList(Ptr<GLiveSupport>::Ref           gLiveSupport,
 {
     // create the tree view
     treeModel = Gtk::ListStore::create(modelColumns);
-    glade->get_widget_derived("transportsTreeView", treeView);
+    glade->get_widget_derived("transportsTreeView1", treeView);
     treeView->set_model(treeModel);
 
     // Add the TreeView's view columns:
@@ -131,7 +131,7 @@ TransportList :: TransportList(Ptr<GLiveSupport>::Ref           gLiveSupport,
                                     &TransportList::onCancelTransport)));
     
     Gtk::Window *       mainWindow;
-    glade->get_widget("searchWindow", mainWindow);
+    glade->get_widget("searchWindow1", mainWindow);
     uploadMenu->accelerate(*mainWindow);
     downloadMenu->accelerate(*mainWindow);
 

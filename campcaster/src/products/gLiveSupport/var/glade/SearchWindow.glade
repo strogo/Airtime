@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.2.0 on Mon Jul  9 14:09:27 2007 by fgerlits@desktop-->
+<!--Generated with glade3 3.2.0 on Mon Jul  9 18:45:55 2007 by fgerlits@desktop-->
 <glade-interface>
-  <widget class="GtkWindow" id="searchWindow">
+  <widget class="GtkWindow" id="searchWindow1">
     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
     <property name="border_width">8</property>
     <child>
@@ -11,7 +11,7 @@
         <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
         <property name="spacing">8</property>
         <child>
-          <widget class="GtkVBox" id="searchEntryBox">
+          <widget class="GtkVBox" id="searchEntryBox1">
             <property name="width_request">766</property>
             <property name="height_request">231</property>
             <property name="visible">True</property>
@@ -23,7 +23,7 @@
                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                 <property name="spacing">3</property>
                 <child>
-                  <widget class="GtkLabel" id="searchWhereLabel">
+                  <widget class="GtkLabel" id="searchWhereLabel1">
                     <property name="visible">True</property>
                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                     <property name="label" translatable="yes">search or browse on:</property>
@@ -34,7 +34,7 @@
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkComboBox" id="searchWhereEntry">
+                  <widget class="GtkComboBox" id="searchWhereEntry1">
                     <property name="visible">True</property>
                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                   </widget>
@@ -60,7 +60,7 @@
                     <property name="can_focus">True</property>
                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                     <child>
-                      <widget class="GtkVBox" id="vbox4">
+                      <widget class="GtkVBox" id="vbox2">
                         <property name="visible">True</property>
                         <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                         <property name="border_width">8</property>
@@ -78,14 +78,14 @@
                                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                                 <property name="spacing">3</property>
                                 <child>
-                                  <widget class="GtkEntry" id="simpleSearchEntry">
+                                  <widget class="GtkEntry" id="simpleSearchEntry1">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                                   </widget>
                                 </child>
                                 <child>
-                                  <widget class="GtkButton" id="simpleSearchButton">
+                                  <widget class="GtkButton" id="simpleSearchButton1">
                                     <property name="width_request">100</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
@@ -114,7 +114,7 @@
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkLabel" id="simpleSearchTab">
+                      <widget class="GtkLabel" id="simpleSearchTab1">
                         <property name="visible">True</property>
                         <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                         <property name="label" translatable="yes">search</property>
@@ -134,7 +134,7 @@
                         <property name="hscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
                         <property name="vscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
                         <child>
-                          <widget class="GtkVBox" id="vbox2">
+                          <widget class="GtkVBox" id="vbox3">
                             <property name="visible">True</property>
                             <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                             <property name="border_width">8</property>
@@ -555,7 +555,7 @@
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkLabel" id="advancedSearchTab">
+                      <widget class="GtkLabel" id="advancedSearchTab1">
                         <property name="visible">True</property>
                         <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                         <property name="label" translatable="yes">advanced search</property>
@@ -568,13 +568,13 @@
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkHBox" id="hbox11">
+                      <widget class="GtkHBox" id="hbox6">
                         <property name="visible">True</property>
                         <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                         <property name="border_width">8</property>
                         <property name="spacing">8</property>
                         <child>
-                          <widget class="GtkVBox" id="vbox5">
+                          <widget class="GtkVBox" id="vbox4">
                             <property name="visible">True</property>
                             <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                             <child>
@@ -612,7 +612,7 @@
                           </widget>
                         </child>
                         <child>
-                          <widget class="GtkVBox" id="vbox6">
+                          <widget class="GtkVBox" id="vbox5">
                             <property name="visible">True</property>
                             <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                             <child>
@@ -653,7 +653,7 @@
                           </packing>
                         </child>
                         <child>
-                          <widget class="GtkVBox" id="vbox7">
+                          <widget class="GtkVBox" id="vbox6">
                             <property name="visible">True</property>
                             <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                             <child>
@@ -700,7 +700,7 @@
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkLabel" id="browseTab">
+                      <widget class="GtkLabel" id="browseTab1">
                         <property name="visible">True</property>
                         <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                         <property name="label" translatable="yes">browse</property>
@@ -713,7 +713,7 @@
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkTreeView" id="transportsTreeView">
+                      <widget class="GtkTreeView" id="transportsTreeView1">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
@@ -728,7 +728,7 @@
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkLabel" id="transportsTab">
+                      <widget class="GtkLabel" id="transportsTab1">
                         <property name="visible">True</property>
                         <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                         <property name="label" translatable="yes">transports</property>
@@ -753,18 +753,18 @@
           </packing>
         </child>
         <child>
-          <widget class="GtkVBox" id="searchResultsBox">
+          <widget class="GtkVBox" id="searchResultsBox1">
             <property name="width_request">766</property>
             <property name="height_request">343</property>
             <property name="visible">True</property>
             <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
             <property name="spacing">3</property>
             <child>
-              <widget class="GtkHBox" id="hbox12">
+              <widget class="GtkHBox" id="hbox7">
                 <property name="visible">True</property>
                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                 <child>
-                  <widget class="GtkLabel" id="searchResultsCountLabel">
+                  <widget class="GtkLabel" id="searchResultsCountLabel1">
                     <property name="visible">True</property>
                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                     <property name="label" translatable="yes">1 - 25 of 32 results</property>
@@ -776,7 +776,7 @@
                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                     <property name="layout_style">GTK_BUTTONBOX_START</property>
                     <child>
-                      <widget class="GtkButton" id="backwardButton">
+                      <widget class="GtkButton" id="backwardButton1">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
@@ -790,7 +790,7 @@
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkButton" id="forwardButton">
+                      <widget class="GtkButton" id="forwardButton1">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
@@ -824,7 +824,7 @@
                 <property name="hscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
                 <property name="vscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
                 <child>
-                  <widget class="GtkTreeView" id="searchResultsTreeView">
+                  <widget class="GtkTreeView" id="searchResultsTreeView1">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>

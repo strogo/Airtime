@@ -78,8 +78,8 @@ CuePlayer :: CuePlayer(Ptr<GLiveSupport>::Ref                   gLiveSupport,
             treeView(treeView),
             modelColumns(modelColumns)
 {
-    glade->get_widget("cuePlayButton", playButton);
-    glade->get_widget("cueStopButton", stopButton);
+    glade->get_widget("cuePlayButton1", playButton);
+    glade->get_widget("cueStopButton1", stopButton);
 
     playButton->signal_clicked().connect(sigc::mem_fun(*this,
                                         &CuePlayer::onPlayButtonClicked ));

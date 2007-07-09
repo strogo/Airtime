@@ -86,8 +86,8 @@ NowPlaying :: NowPlaying(Ptr<GLiveSupport>::Ref             gLiveSupport,
             glade(glade),
             gLiveSupport(gLiveSupport)
 {
-    glade->get_widget("playButton", playButton);
-    glade->get_widget("stopButton", stopButton);
+    glade->get_widget("playButton1", playButton);
+    glade->get_widget("stopButton1", stopButton);
 
     playButton->signal_clicked().connect(sigc::mem_fun(*this,
                                         &NowPlaying::onPlayButtonClicked ));
@@ -97,15 +97,15 @@ NowPlaying :: NowPlaying(Ptr<GLiveSupport>::Ref             gLiveSupport,
     isActive = false;
     isPaused = false;
 
-    glade->get_widget("titleLabel", titleLabel);
-    glade->get_widget("creatorLabel", creatorLabel);
-    glade->get_widget("elapsedTimeLabel", elapsedTimeLabel);
-    glade->get_widget("remainsTimeBox", remainsTimeBox);
-    glade->get_widget("remainsTimeLabel", remainsTimeLabel);
-    glade->get_widget("playlistLabel", playlistLabel);
+    glade->get_widget("titleLabel1", titleLabel);
+    glade->get_widget("creatorLabel1", creatorLabel);
+    glade->get_widget("elapsedTimeLabel1", elapsedTimeLabel);
+    glade->get_widget("remainsTimeBox1", remainsTimeBox);
+    glade->get_widget("remainsTimeLabel1", remainsTimeLabel);
+    glade->get_widget("playlistLabel1", playlistLabel);
 
-    glade->get_widget("elapsedTimeText", elapsedTimeText);
-    glade->get_widget("remainsTimeText", remainsTimeText);
+    glade->get_widget("elapsedTimeText1", elapsedTimeText);
+    glade->get_widget("remainsTimeText1", remainsTimeText);
     elapsedTimeText->set_text(*getResourceUstring("elapsedTimeLabel"));
     remainsTimeText->set_text(*getResourceUstring("remainingTimeLabel"));
     

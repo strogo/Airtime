@@ -103,11 +103,11 @@ MasterPanelWindow :: MasterPanelWindow (Ptr<GLiveSupport>::Ref    gLiveSupport,
     
     // load the station logo image
     Gtk::Image *        stationLogoImage;
-    glade->get_widget("stationLogoImage", stationLogoImage);
+    glade->get_widget("stationLogoImage1", stationLogoImage);
     stationLogoImage->set(gLiveSupport->getStationLogoPixbuf());
 
     // set up the time label
-    glade->get_widget("timeLabel", timeLabel);
+    glade->get_widget("timeLabel1", timeLabel);
     Pango::Attribute    fontDescriptionAttribute = 
                             Pango::Attribute::create_attr_font_desc(
                                 Pango::FontDescription(
@@ -119,7 +119,7 @@ MasterPanelWindow :: MasterPanelWindow (Ptr<GLiveSupport>::Ref    gLiveSupport,
     timeLabel->set_attributes(timeLabelAttributes);
 
     // register the signal handlers for the main window
-    glade->get_widget("masterPanelWindow", masterPanelWindow);
+    glade->get_widget("masterPanelWindow1", masterPanelWindow);
     masterPanelWindow->signal_key_press_event().connect(sigc::mem_fun(
                                         *this,
                                         &MasterPanelWindow::onKeyPressed));
@@ -129,24 +129,24 @@ MasterPanelWindow :: MasterPanelWindow (Ptr<GLiveSupport>::Ref    gLiveSupport,
 
     // create the Now Playing widget
     Gtk::Box *      nowPlayingBox;
-    glade->get_widget("nowPlayingWidget", nowPlayingBox);
+    glade->get_widget("nowPlayingWidget1", nowPlayingBox);
     nowPlayingWidget.reset(new NowPlaying(gLiveSupport,
                                           bundle,
                                           glade));
 
     // get a reference for the window-opener buttons
-    glade->get_widget("liveModeButton", liveModeButton);
-    glade->get_widget("uploadFileButton", uploadFileButton);
-    glade->get_widget("scratchpadButton", scratchpadButton);
-    glade->get_widget("playlistButton", playlistButton);
-    glade->get_widget("schedulerButton", schedulerButton);
-    glade->get_widget("searchButton", searchButton);
-    glade->get_widget("optionsButton", optionsButton);
+    glade->get_widget("liveModeButton1", liveModeButton);
+    glade->get_widget("uploadFileButton1", uploadFileButton);
+    glade->get_widget("scratchpadButton1", scratchpadButton);
+    glade->get_widget("playlistButton1", playlistButton);
+    glade->get_widget("schedulerButton1", schedulerButton);
+    glade->get_widget("searchButton1", searchButton);
+    glade->get_widget("optionsButton1", optionsButton);
 
     // get a reference for some other widgets
-    glade->get_widget("mainButtonBox", mainButtonBox);
-    glade->get_widget("userInfoLabel", userInfoLabel);
-    glade->get_widget("loginButton", loginButton);
+    glade->get_widget("mainButtonBox1", mainButtonBox);
+    glade->get_widget("userInfoLabel1", userInfoLabel);
+    glade->get_widget("loginButton1", loginButton);
 
     // bind events to the buttons
     liveModeButton->signal_clicked().connect(sigc::mem_fun(
@@ -209,9 +209,8 @@ MasterPanelWindow :: changeLanguage(Ptr<ResourceBundle>::Ref    bundle)
 {
     setBundle(bundle);
 
-    const Glib::ustring         windowName = masterPanelWindow->get_name();
     Glib::ustring               title = *getResourceUstring(
-                                                windowName.c_str(),
+                                                "masterPanelWindow",
                                                 "windowTitle");
     title += applicationTitleSuffix;
     masterPanelWindow->set_title(title);
@@ -666,7 +665,7 @@ MasterPanelWindow :: onKeyPressed(GdkEventKey *    event)           throw ()
 {
     if (event->type == GDK_KEY_PRESS) {
         KeyboardShortcut::Action    action = gLiveSupport->findAction(
-                                                masterPanelWindow->get_name(),
+                                                "masterPanelWindow",
                                                 Gdk::ModifierType(event->state),
                                                 event->keyval);
         switch (action) {
@@ -840,8 +839,8 @@ MasterPanelWindow :: onDeleteEvent(GdkEventAny *    event)          throw ()
 {
     Gtk::Dialog *       exitConfirmationDialog;
     Gtk::Label *        exitConfirmationDialogLabel;
-    glade->get_widget("exitConfirmationDialog", exitConfirmationDialog);
-    glade->get_widget("exitConfirmationDialogLabel",
+    glade->get_widget("exitConfirmationDialog1", exitConfirmationDialog);
+    glade->get_widget("exitConfirmationDialogLabel1",
                                                 exitConfirmationDialogLabel);
     Glib::ustring       message = "<span weight=\"bold\" ";
     message += " size=\"larger\">";

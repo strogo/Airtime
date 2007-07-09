@@ -85,10 +85,10 @@ LiveModeWindow :: LiveModeWindow (Ptr<GLiveSupport>::Ref    gLiveSupport,
 {
     glade = Gnome::Glade::Xml::create(gladeDir + gladeFileName);
 
-    glade->get_widget("liveModeWindow", mainWindow);
+    glade->get_widget("liveModeWindow1", mainWindow);
     setTitle(*getResourceUstring("windowTitle"));
     
-    glade->get_widget_derived("treeView", treeView);
+    glade->get_widget_derived("treeView1", treeView);
     treeModel = Gtk::ListStore::create(modelColumns);
     treeView->set_model(treeModel);
 
@@ -105,17 +105,17 @@ LiveModeWindow :: LiveModeWindow (Ptr<GLiveSupport>::Ref    gLiveSupport,
     treeView->signal_key_press_event().connect(sigc::mem_fun(*this,
                                         &LiveModeWindow::onKeyPressed));
 
-    glade->get_widget("cueLabel", cueLabel);
+    glade->get_widget("cueLabel1", cueLabel);
     cueLabel->set_label(*getResourceUstring("cuePlayerLabel"));
     cuePlayer.reset(new CuePlayer(gLiveSupport,
                                   treeView,
                                   modelColumns,
                                   glade));
 
-    glade->get_widget("autoPlayNext", autoPlayNext);
+    glade->get_widget("autoPlayNext1", autoPlayNext);
     autoPlayNext->set_label(*getResourceUstring("autoPlayNextLabel"));
     
-    glade->connect_clicked("outputPlayButton", sigc::mem_fun(*this,
+    glade->connect_clicked("outputPlayButton1", sigc::mem_fun(*this,
                                         &LiveModeWindow::onOutputPlay));
 
     audioClipContextMenu = constructAudioClipContextMenu();
@@ -340,7 +340,7 @@ LiveModeWindow :: onKeyPressed(GdkEventKey *    event)              throw ()
         
         if (iter) {
             KeyboardShortcut::Action    action = gLiveSupport->findAction(
-                                            mainWindow->get_name(),
+                                            "liveModeWindow",
                                             Gdk::ModifierType(event->state),
                                             event->keyval);
             switch (action) {

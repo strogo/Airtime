@@ -79,21 +79,21 @@ LoginWindow :: LoginWindow (Ptr<GLiveSupport>::Ref      gLiveSupport,
     glade = Gnome::Glade::Xml::create(gladeDir + gladeFileName);
 
     // localize everything
-    glade->get_widget("loginWindow", loginWindow);
+    glade->get_widget("loginWindow1", loginWindow);
     loginWindow->set_title(*getResourceUstring("windowTitle"));
 
     Gtk::Label *    userNameLabel;
     Gtk::Label *    passwordLabel;
     Gtk::Label *    languageLabel;
-    glade->get_widget("userNameLabel", userNameLabel);
-    glade->get_widget("passwordLabel", passwordLabel);
-    glade->get_widget("languageLabel", languageLabel);
+    glade->get_widget("userNameLabel1", userNameLabel);
+    glade->get_widget("passwordLabel1", passwordLabel);
+    glade->get_widget("languageLabel1", languageLabel);
     userNameLabel->set_text(*getResourceUstring("userNameLabel"));
     passwordLabel->set_text(*getResourceUstring("passwordLabel"));
     languageLabel->set_text(*getResourceUstring("languageLabel"));
 
     // fill up the language list with the list of available languages
-    glade->get_widget_derived("languageEntry", languageEntry);
+    glade->get_widget_derived("languageEntry1", languageEntry);
 
     Ptr<const GLiveSupport::LanguageMap>::Ref
                         languages = gLiveSupport->getSupportedLanguages();
@@ -105,17 +105,17 @@ LoginWindow :: LoginWindow (Ptr<GLiveSupport>::Ref      gLiveSupport,
     languageEntry->set_active(0);
 
     // connect signal handlers
-    glade->connect_clicked("okButton", sigc::mem_fun(*this,
+    glade->connect_clicked("okButton1", sigc::mem_fun(*this,
                                         &LoginWindow::onOkButtonClicked));
-    glade->connect_clicked("cancelButton", sigc::mem_fun(*this,
+    glade->connect_clicked("cancelButton1", sigc::mem_fun(*this,
                                         &LoginWindow::onCancelButtonClicked));
 
     // get a reference for the text entry fields
-    glade->get_widget("userNameEntry", userNameEntry);
-    glade->get_widget("passwordEntry", passwordEntry);
+    glade->get_widget("userNameEntry1", userNameEntry);
+    glade->get_widget("passwordEntry1", passwordEntry);
     
     // clear the status bar
-    glade->get_widget("statusBar", statusBar);
+    glade->get_widget("statusBar1", statusBar);
     statusBar->set_text("");
     
     // set the OK button as the default action

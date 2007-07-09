@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.2.0 on Thu Jun 21 15:06:37 2007 by fgerlits@desktop-->
+<!--Generated with glade3 3.2.0 on Mon Jul  9 18:44:26 2007 by fgerlits@desktop-->
 <glade-interface>
-  <widget class="GtkWindow" id="masterPanelWindow">
+  <widget class="GtkWindow" id="masterPanelWindow1">
     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
     <property name="border_width">8</property>
     <property name="title" translatable="yes">Campcaster Studio</property>
@@ -24,7 +24,7 @@
                 <property name="label_xalign">0</property>
                 <property name="shadow_type">GTK_SHADOW_IN</property>
                 <child>
-                  <widget class="GtkLabel" id="timeLabel">
+                  <widget class="GtkLabel" id="timeLabel1">
                     <property name="width_request">160</property>
                     <property name="visible">True</property>
                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
@@ -44,12 +44,12 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkHBox" id="nowPlayingWidget">
+              <widget class="GtkHBox" id="nowPlayingWidget1">
                 <property name="visible">True</property>
                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                 <property name="spacing">8</property>
                 <child>
-                  <widget class="GtkButton" id="playButton">
+                  <widget class="GtkButton" id="playButton1">
                     <property name="width_request">80</property>
                     <property name="visible">True</property>
                     <property name="sensitive">False</property>
@@ -66,7 +66,7 @@
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkButton" id="stopButton">
+                  <widget class="GtkButton" id="stopButton1">
                     <property name="width_request">80</property>
                     <property name="visible">True</property>
                     <property name="sensitive">False</property>
@@ -94,14 +94,14 @@
                         <property name="visible">True</property>
                         <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                         <child>
-                          <widget class="GtkLabel" id="titleLabel">
+                          <widget class="GtkLabel" id="titleLabel1">
                             <property name="visible">True</property>
                             <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                             <property name="label" translatable="yes">title</property>
                           </widget>
                         </child>
                         <child>
-                          <widget class="GtkLabel" id="creatorLabel">
+                          <widget class="GtkLabel" id="creatorLabel1">
                             <property name="visible">True</property>
                             <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                             <property name="label" translatable="yes">creator</property>
@@ -120,14 +120,14 @@
                                 <property name="visible">True</property>
                                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                                 <child>
-                                  <widget class="GtkLabel" id="elapsedTimeText">
+                                  <widget class="GtkLabel" id="elapsedTimeText1">
                                     <property name="visible">True</property>
                                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                                     <property name="label" translatable="yes">elapsed:</property>
                                   </widget>
                                 </child>
                                 <child>
-                                  <widget class="GtkLabel" id="elapsedTimeLabel">
+                                  <widget class="GtkLabel" id="elapsedTimeLabel1">
                                     <property name="visible">True</property>
                                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                                     <property name="label" translatable="yes">elapsed time</property>
@@ -143,7 +143,7 @@
                                 <property name="visible">True</property>
                                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                                 <child>
-                                  <widget class="GtkLabel" id="remainsTimeText">
+                                  <widget class="GtkLabel" id="remainsTimeText1">
                                     <property name="visible">True</property>
                                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                                     <property name="label" translatable="yes">remains:</property>
@@ -154,11 +154,11 @@
                                     <property name="visible">True</property>
                                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                                     <child>
-                                      <widget class="GtkEventBox" id="remainsTimeBox">
+                                      <widget class="GtkEventBox" id="remainsTimeBox1">
                                         <property name="visible">True</property>
                                         <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                                         <child>
-                                          <widget class="GtkLabel" id="remainsTimeLabel">
+                                          <widget class="GtkLabel" id="remainsTimeLabel1">
                                             <property name="visible">True</property>
                                             <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                                             <property name="label" translatable="yes">remaining time</property>
@@ -186,7 +186,7 @@
                           </packing>
                         </child>
                         <child>
-                          <widget class="GtkLabel" id="playlistLabel">
+                          <widget class="GtkLabel" id="playlistLabel1">
                             <property name="visible">True</property>
                             <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                             <property name="label" translatable="yes">playlist</property>
@@ -214,12 +214,13 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkImage" id="stationLogoImage">
+              <widget class="GtkImage" id="stationLogoImage1">
                 <property name="width_request">120</property>
                 <property name="height_request">104</property>
                 <property name="visible">True</property>
                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                 <property name="pixbuf">.</property>
+                <property name="stock">gtk-missing-image</property>
               </widget>
               <packing>
                 <property name="expand">False</property>
@@ -238,12 +239,12 @@
             <property name="visible">True</property>
             <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
             <child>
-              <widget class="GtkHButtonBox" id="mainButtonBox">
+              <widget class="GtkHButtonBox" id="mainButtonBox1">
                 <property name="visible">True</property>
                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                 <property name="spacing">3</property>
                 <child>
-                  <widget class="GtkToggleButton" id="liveModeButton">
+                  <widget class="GtkToggleButton" id="liveModeButton1">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -252,7 +253,7 @@
                   </widget>
                 </child>
                 <child>
-                  <widget class="GtkToggleButton" id="uploadFileButton">
+                  <widget class="GtkToggleButton" id="uploadFileButton1">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -264,7 +265,7 @@
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkToggleButton" id="scratchpadButton">
+                  <widget class="GtkToggleButton" id="scratchpadButton1">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -276,7 +277,7 @@
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkToggleButton" id="playlistButton">
+                  <widget class="GtkToggleButton" id="playlistButton1">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -288,7 +289,7 @@
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkToggleButton" id="schedulerButton">
+                  <widget class="GtkToggleButton" id="schedulerButton1">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -300,7 +301,7 @@
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkToggleButton" id="searchButton">
+                  <widget class="GtkToggleButton" id="searchButton1">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -312,7 +313,7 @@
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkToggleButton" id="optionsButton">
+                  <widget class="GtkToggleButton" id="optionsButton1">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -336,7 +337,7 @@
                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                 <property name="spacing">3</property>
                 <child>
-                  <widget class="GtkLabel" id="userInfoLabel">
+                  <widget class="GtkLabel" id="userInfoLabel1">
                     <property name="visible">True</property>
                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                     <property name="xalign">1</property>
@@ -346,7 +347,7 @@
                   </widget>
                 </child>
                 <child>
-                  <widget class="GtkButton" id="loginButton">
+                  <widget class="GtkButton" id="loginButton1">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -374,7 +375,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="GtkDialog" id="exitConfirmationDialog">
+  <widget class="GtkDialog" id="exitConfirmationDialog1">
     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
     <property name="border_width">8</property>
     <property name="resizable">False</property>
@@ -384,18 +385,18 @@
     <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
     <property name="has_separator">False</property>
     <child internal-child="vbox">
-      <widget class="GtkVBox" id="dialog-vbox3">
+      <widget class="GtkVBox" id="dialog-vbox2">
         <property name="visible">True</property>
         <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
         <property name="spacing">8</property>
         <child>
-          <widget class="GtkHBox" id="dialog-hbox3">
+          <widget class="GtkHBox" id="dialog-hbox1">
             <property name="visible">True</property>
             <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
             <property name="border_width">6</property>
             <property name="spacing">8</property>
             <child>
-              <widget class="GtkImage" id="dialog-image3">
+              <widget class="GtkImage" id="dialog-image1">
                 <property name="visible">True</property>
                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                 <property name="yalign">0</property>
@@ -408,7 +409,7 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkLabel" id="exitConfirmationDialogLabel">
+              <widget class="GtkLabel" id="exitConfirmationDialogLabel1">
                 <property name="visible">True</property>
                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                 <property name="yalign">0</property>
@@ -426,12 +427,12 @@
           </packing>
         </child>
         <child internal-child="action_area">
-          <widget class="GtkHButtonBox" id="dialog-action_area3">
+          <widget class="GtkHButtonBox" id="dialog-action_area2">
             <property name="visible">True</property>
             <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
             <property name="layout_style">GTK_BUTTONBOX_END</property>
             <child>
-              <widget class="GtkButton" id="dialog-button5">
+              <widget class="GtkButton" id="dialog-button1">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -442,7 +443,7 @@
               </widget>
             </child>
             <child>
-              <widget class="GtkButton" id="dialog-button6">
+              <widget class="GtkButton" id="dialog-button2">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>

@@ -21,15 +21,19 @@ Development Loan Fund</a>, under the GNU <a
 </ul>
 
 <h1>Scope</h1>
+
 This document describes the conventions used for the Glade window design files.<br>
 
+
 <h1>Introduction</h1>
+
 The following are spacing and other conventions observed in the Glade files
 <code>src/products/gLiveSupport/var/glade/*.glade</code>.  They are loosely
 based on the design documentation <code>styleguide.pdf</code>.
 
 
 <h1>Structural conventions</h1>
+
 <p>Each toplevel has its own file, named the same as the C++ class which
 controls it, with the extension <code>.glade</code>.  For example:
 <code>ScratchpadWindow.glade</code>, <code>LiveModeWindow.glade</code>.
@@ -48,11 +52,22 @@ GtkHBox or GtkVBox.</p>
 
 
 <h1>Naming conventions</h1>
+
 <p>Widgets which need to be referred to from the controlling class should
-have a camelCased name without numbers, with the function of the widget first
-and the kind of the widget second: e.g., <code>playButton</code>,
-<code>fileNameEntry</code>, <code>scratchpadTreeView</code>.  Such names
-must be unique in their own Glade file.</p>
+have a camelCased name followed by "1", with the function of the widget first
+and the kind of the widget second: e.g., <code>playButton1</code>,
+<code>fileNameEntry1</code>, <code>scratchpadTreeView1</code>.  Such names
+must be unique in their own Glade file.  If there is a group of
+widgets with same function, they should be numbered starting with 1,
+like this: <code>myGroupButton1</code>, <code>myGroupButton2</code>, 
+<code>myGroupButton3</code> etc.</p>
+
+<p><em>The reason for the "1" at the end of names, and for the unusual
+1-based numbering for groups of widgets is that this is how Glade does it.
+If you follow these guidelines, and copy or move part of the window using
+copy-paste, the widget names will stay correct.  If a widget had a name
+without a number, and you cut and then repasted it, its name would get an
+extra "1" at the end.</em></p>
 
 <p>Widgets which do not need to be referred can keep their Glade-assigned
 names like <code>treeview3</code>; these do not need to be unique.</p>

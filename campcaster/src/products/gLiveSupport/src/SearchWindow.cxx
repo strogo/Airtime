@@ -87,17 +87,17 @@ SearchWindow :: SearchWindow (Ptr<GLiveSupport>::Ref      gLiveSupport,
 {
     glade = Gnome::Glade::Xml::create(gladeDir + gladeFileName);
 
-    glade->get_widget("searchWindow", mainWindow);
+    glade->get_widget("searchWindow1", mainWindow);
     setTitle(*getResourceUstring("windowTitle"));
     
     Gtk::Label *    simpleSearchTab;
     Gtk::Label *    advancedSearchTab;
     Gtk::Label *    browseTab;
     Gtk::Label *    transportsTab;
-    glade->get_widget("simpleSearchTab", simpleSearchTab);
-    glade->get_widget("advancedSearchTab", advancedSearchTab);
-    glade->get_widget("browseTab", browseTab);
-    glade->get_widget("transportsTab", transportsTab);
+    glade->get_widget("simpleSearchTab1", simpleSearchTab);
+    glade->get_widget("advancedSearchTab1", advancedSearchTab);
+    glade->get_widget("browseTab1", browseTab);
+    glade->get_widget("transportsTab1", transportsTab);
     simpleSearchTab->set_label(*getResourceUstring("simpleSearchTab"));
     advancedSearchTab->set_label(*getResourceUstring("advancedSearchTab"));
     browseTab->set_label(*getResourceUstring("browseTab"));
@@ -129,10 +129,10 @@ void
 SearchWindow :: constructSearchWhereBox(void)                   throw ()
 {
     Gtk::Label *                searchWhereLabel;
-    glade->get_widget("searchWhereLabel", searchWhereLabel);
+    glade->get_widget("searchWhereLabel1", searchWhereLabel);
     searchWhereLabel->set_label(*getResourceUstring("searchWhereLabel"));
 
-    glade->get_widget_derived("searchWhereEntry", searchWhereEntry);
+    glade->get_widget_derived("searchWhereEntry1", searchWhereEntry);
     searchWhereEntry->append_text(*getResourceUstring("searchWhereLocal"));
     searchWhereEntry->append_text(*getResourceUstring("searchWhereRemote"));
     searchWhereEntry->set_active(0);
@@ -147,12 +147,12 @@ SearchWindow :: constructSearchWhereBox(void)                   throw ()
 void
 SearchWindow :: constructSimpleSearchView(void)                 throw ()
 {
-    glade->get_widget("simpleSearchEntry", simpleSearchEntry);
+    glade->get_widget("simpleSearchEntry1", simpleSearchEntry);
     simpleSearchEntry->signal_activate().connect(sigc::mem_fun(*this,
                                             &SearchWindow::onSimpleSearch));
     
     Gtk::Button *       simpleSearchButton;
-    glade->get_widget("simpleSearchButton", simpleSearchButton);
+    glade->get_widget("simpleSearchButton1", simpleSearchButton);
     simpleSearchButton->set_label(*getResourceUstring("searchButtonLabel"));
     simpleSearchButton->signal_clicked().connect(sigc::mem_fun(*this,
                                             &SearchWindow::onSimpleSearch));
@@ -211,7 +211,7 @@ SearchWindow :: constructSearchResultsView(void)                throw ()
     localSearchResults  = Gtk::ListStore::create(modelColumns);
     remoteSearchResults = Gtk::ListStore::create(modelColumns);
     
-    glade->get_widget_derived("searchResultsTreeView", searchResultsTreeView);
+    glade->get_widget_derived("searchResultsTreeView1", searchResultsTreeView);
     searchResultsTreeView->set_model(localSearchResults);
     searchResultsTreeView->connectModelSignals(localSearchResults);
     searchResultsTreeView->connectModelSignals(remoteSearchResults);
@@ -242,9 +242,9 @@ SearchWindow :: constructSearchResultsView(void)                throw ()
     playlistContextMenu     = constructPlaylistContextMenu();
     remoteContextMenu       = constructRemoteContextMenu();
     
-    glade->get_widget("searchResultsCountLabel", searchResultsCountLabel);
-    glade->get_widget("backwardButton", backwardButton);
-    glade->get_widget("forwardButton", forwardButton);
+    glade->get_widget("searchResultsCountLabel1", searchResultsCountLabel);
+    glade->get_widget("backwardButton1", backwardButton);
+    glade->get_widget("forwardButton1", forwardButton);
     backwardButton->signal_clicked().connect(sigc::mem_fun(*this,
                                     &SearchWindow::onBackwardButtonClicked));
     forwardButton->signal_clicked().connect(sigc::mem_fun(*this,
