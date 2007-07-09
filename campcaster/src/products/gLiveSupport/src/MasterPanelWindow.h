@@ -54,8 +54,9 @@
 #include "PlaylistWindow.h"
 #include "SchedulerWindow.h"
 #include "SearchWindow.h"
+/* DISABLED TEMPORARILY
 #include "OptionsWindow.h"
-
+*/
 
 namespace LiveSupport {
 namespace GLiveSupport {
@@ -231,8 +232,9 @@ class MasterPanelWindow : public LocalizedObject
         /**
          *  The one and only options window.
          */
+/* DISABLED TEMPORARILY
         Ptr<OptionsWindow>::Ref             optionsWindow;
-
+*/
         /**
          *  Function that updates timeLabel with the current time.
          *  This is called by GTK at regular intervals.
@@ -357,12 +359,14 @@ class MasterPanelWindow : public LocalizedObject
         virtual void
         onOptionsButtonClicked(void)                            throw ()
         {
+        /* DISABLED TEMPORARILY
             if (!optionsWindow ||
                     optionsWindow && !optionsWindow->is_visible()) {
                 updateOptionsWindow();
             } else {
                 optionsWindow->hide();
             }
+        */
         }
 
         /**

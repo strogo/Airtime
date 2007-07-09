@@ -102,7 +102,7 @@ BrowseItem :: addIndex(const Glib::ustring &    baseString,
 {
     std::ostringstream      stream;
     stream << baseString
-           << index;
+           << (index + 1);      // Glade indexes are 1-based (why?!)
     return stream.str();
 }
 

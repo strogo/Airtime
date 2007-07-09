@@ -87,7 +87,7 @@ SearchWindow :: SearchWindow (Ptr<GLiveSupport>::Ref      gLiveSupport,
 {
     glade = Gnome::Glade::Xml::create(gladeDir + gladeFileName);
 
-    glade->get_widget("liveModeWindow", mainWindow);
+    glade->get_widget("searchWindow", mainWindow);
     setTitle(*getResourceUstring("windowTitle"));
     
     Gtk::Label *    simpleSearchTab;
@@ -102,6 +102,15 @@ SearchWindow :: SearchWindow (Ptr<GLiveSupport>::Ref      gLiveSupport,
     advancedSearchTab->set_label(*getResourceUstring("advancedSearchTab"));
     browseTab->set_label(*getResourceUstring("browseTab"));
     transportsTab->set_label(*getResourceUstring("transportsTab"));
+
+    constructSearchWhereBox();
+    
+    constructSimpleSearchView();
+    constructAdvancedSearchView();
+    constructBrowseView();
+    constructTransportsView();
+    
+    constructSearchResultsView();
 }
 
 
@@ -161,7 +170,7 @@ SearchWindow :: constructAdvancedSearchView(void)               throw ()
                                             &SearchWindow::onAdvancedSearch ));
     
     Gtk::Button *   advancedSearchButton;
-    glade->get_widget("advancedSearchButton", advancedSearchButton);
+    glade->get_widget("advancedSearchButton1", advancedSearchButton);
     advancedSearchButton->set_label(*getResourceUstring("searchButtonLabel"));
     advancedSearchButton->signal_clicked().connect(sigc::mem_fun(*this,
                                             &SearchWindow::onAdvancedSearch));
@@ -233,9 +242,12 @@ SearchWindow :: constructSearchResultsView(void)                throw ()
     playlistContextMenu     = constructPlaylistContextMenu();
     remoteContextMenu       = constructRemoteContextMenu();
     
-    glade->connect_clicked("backwardButton", sigc::mem_fun(*this,
+    glade->get_widget("searchResultsCountLabel", searchResultsCountLabel);
+    glade->get_widget("backwardButton", backwardButton);
+    glade->get_widget("forwardButton", forwardButton);
+    backwardButton->signal_clicked().connect(sigc::mem_fun(*this,
                                     &SearchWindow::onBackwardButtonClicked));
-    glade->connect_clicked("forwardButton", sigc::mem_fun(*this,
+    forwardButton->signal_clicked().connect(sigc::mem_fun(*this,
                                     &SearchWindow::onForwardButtonClicked));
 }
 

@@ -81,11 +81,13 @@ AdvancedSearchItem :: AdvancedSearchItem(
     glade->get_widget(addIndex("advancedValueEntry", index), valueEntry);
     
     if (index == 0) {
-        glade->get_widget(addIndex("advancedPlusButton", index), plusButton);
+        glade->get_widget(addIndex("advancedPlusMinusButton", index),
+                                   plusButton);
         plusButton->signal_clicked().connect(sigc::mem_fun(*this, 
                                     &AdvancedSearchItem::onPlusButtonClicked));
     } else {
-        glade->get_widget(addIndex("advancedCloseButton", index), closeButton);
+        glade->get_widget(addIndex("advancedPlusMinusButton", index),
+                                   closeButton);
         closeButton->signal_clicked().connect(sigc::mem_fun(*this, 
                                     &AdvancedSearchItem::onCloseButtonClicked));
     }
@@ -101,7 +103,7 @@ AdvancedSearchItem :: addIndex(const Glib::ustring &  baseString,
 {
     std::ostringstream      stream;
     stream << baseString
-           << index;
+           << (index + 1);      // Glade indexes are 1-based (why?!)
     return stream.str();
 }
 

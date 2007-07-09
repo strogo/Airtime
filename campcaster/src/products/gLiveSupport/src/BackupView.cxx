@@ -144,7 +144,8 @@ BackupView :: constructCriteriaView(void)                           throw ()
 {
     Ptr<WidgetFactory>::Ref     wf = WidgetFactory::getInstance();
     
-    criteriaEntry = Gtk::manage(new AdvancedSearchEntry(gLiveSupport));
+    criteriaEntry = 0;
+//    criteriaEntry = Gtk::manage(new AdvancedSearchEntry(gLiveSupport));
     criteriaEntry->connectCallback(sigc::mem_fun(
                                     *this, &BackupView::onCreateBackup ));
 
@@ -164,7 +165,9 @@ BackupView :: constructCriteriaView(void)                           throw ()
     criteriaButtonBox->pack_start(*backupButton, Gtk::PACK_SHRINK, 5);
     
     ScrolledWindow *    criteriaWindow    = Gtk::manage(new ScrolledWindow);
+/* DISABLED TEMPORARILY
     criteriaWindow->add(*criteriaEntry);
+*/
     // NOTE: criteriaWindow->setShadowType() causes Gtk warnings here
     // TODO: find out why and fix it
     criteriaWindow->set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);

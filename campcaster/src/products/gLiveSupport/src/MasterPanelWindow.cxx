@@ -315,12 +315,14 @@ MasterPanelWindow :: onUpdateTime(int   dummy)                      throw ()
     }
     
     if (backupCounter == 0) {
+/* DISABLED TEMPORARILY
         if (optionsWindow) {
             BackupList *    backupList    = optionsWindow->getBackupList();
             if (backupList) {
                 backupList->updateSilently();
             }
         }
+*/
         
         if (searchWindow) {
             searchWindow->onTimer();
@@ -494,6 +496,7 @@ MasterPanelWindow :: updateSearchWindow(void)                       throw ()
 void
 MasterPanelWindow :: updateOptionsWindow(void)                      throw ()
 {
+/* DISABLED TEMPORARILY
     if (!optionsWindow.get()) {
         Ptr<ResourceBundle>::Ref    bundle = getBundle("optionsWindow");
 
@@ -507,6 +510,7 @@ MasterPanelWindow :: updateOptionsWindow(void)                      throw ()
     }
 
     optionsWindow->present();
+*/
 }
 
 
@@ -556,6 +560,7 @@ MasterPanelWindow :: showAnonymousUI(void)                          throw ()
         }
         searchWindow.reset();
     }
+/* DISABLED TEMPORARILY
     if (optionsWindow.get()) {
         ContentsStorable *  backupList = optionsWindow->getBackupList();
         if (backupList) {
@@ -566,6 +571,7 @@ MasterPanelWindow :: showAnonymousUI(void)                          throw ()
         }
         optionsWindow.reset();
     }
+*/
 }
 
 

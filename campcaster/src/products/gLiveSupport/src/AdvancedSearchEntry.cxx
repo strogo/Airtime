@@ -77,10 +77,10 @@ AdvancedSearchEntry :: AdvancedSearchEntry(
     metadataTypes = gLiveSupport->getMetadataTypeContainer();
     
     Gtk::Label *            fileTypeLabel;
-    glade->get_widget("advancedFileTypeLabel", fileTypeLabel);
+    glade->get_widget("advancedFileTypeLabel1", fileTypeLabel);
     fileTypeLabel->set_label(*getResourceUstring("fileTypeTextLabel"));
     
-    glade->get_widget("advancedfileTypeEntry", fileTypeEntry);
+    glade->get_widget_derived("advancedFileTypeEntry1", fileTypeEntry);
     fileTypeEntry->append_text(*getResourceUstring("allFileType"));
     fileTypeEntry->append_text(*getResourceUstring("audioClipFileType"));
     fileTypeEntry->append_text(*getResourceUstring("playlistFileType"));

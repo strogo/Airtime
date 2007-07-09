@@ -1747,11 +1747,13 @@ GLiveSupport :: displayAuthenticationServerMissingMessage(void)     throw ()
             return;
         }
 
+/* DISABLED TEMPORARILY
         Ptr<OptionsWindow>::Ref     optionsWindow(new OptionsWindow(
                                                             shared_from_this(),
                                                             bundle,
                                                             0));
         optionsWindow->run();
+*/
         
         if (optionsContainer->isTouched()) {
             optionsContainer->writeToFile();
