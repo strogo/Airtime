@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.2.0 on Mon Jul  9 18:44:37 2007 by fgerlits@desktop-->
+<!--Generated with glade3 3.2.0 on Wed Jul 11 14:26:41 2007 by fgerlits@desktop-->
 <glade-interface>
   <widget class="GtkDialog" id="optionsWindow1">
     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
@@ -1489,19 +1489,24 @@ and then do some other stuff</property>
                 <property name="hscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
                 <property name="vscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
                 <child>
-                  <widget class="GtkVBox" id="vbox13">
+                  <widget class="GtkViewport" id="viewport4">
                     <property name="visible">True</property>
                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                    <property name="border_width">8</property>
+                    <property name="resize_mode">GTK_RESIZE_QUEUE</property>
                     <child>
-                      <widget class="GtkHBox" id="hbox23">
+                      <widget class="GtkVBox" id="vbox13">
                         <property name="visible">True</property>
                         <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+                        <property name="border_width">8</property>
                         <child>
-                          <widget class="GtkLabel" id="aboutLabel1">
+                          <widget class="GtkHBox" id="hbox23">
                             <property name="visible">True</property>
                             <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                            <property name="label" translatable="yes">Credits:
+                            <child>
+                              <widget class="GtkLabel" id="aboutLabel1">
+                                <property name="visible">True</property>
+                                <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+                                <property name="label" translatable="yes">Credits:
 
 	XY
 	ZW
@@ -1510,10 +1515,12 @@ and then do some other stuff</property>
 Report bugs to:
 
 	someone@somewhere.com</property>
+                              </widget>
+                              <packing>
+                                <property name="padding">50</property>
+                              </packing>
+                            </child>
                           </widget>
-                          <packing>
-                            <property name="padding">50</property>
-                          </packing>
                         </child>
                       </widget>
                     </child>
