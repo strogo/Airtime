@@ -178,7 +178,7 @@ class ScratchpadWindow : public BasicWindow,
         /**
          *  The tree view, now only showing rows.
          */
-        Gtk::TreeView *                 treeView;
+        ZebraTreeView *                 treeView;
 
         /**
          *  The model row at the mouse pointer, set by onEntryClicked()

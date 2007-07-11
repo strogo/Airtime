@@ -154,6 +154,7 @@ SchedulerWindow :: constructScheduleView(void)                      throw ()
     entriesModel = Gtk::ListStore::create(*entryColumns);
     entriesView  = Gtk::manage(new Gtk::TreeView());
     entriesView->set_model(entriesModel);
+//    entriesView->connectModelSignals(entriesModel);
 
     // Add the TreeView's view columns:
     try {

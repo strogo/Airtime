@@ -100,6 +100,7 @@ TransportList :: TransportList(Ptr<GLiveSupport>::Ref           gLiveSupport,
     treeModel = Gtk::ListStore::create(modelColumns);
     glade->get_widget_derived("transportsTreeView1", treeView);
     treeView->set_model(treeModel);
+    treeView->connectModelSignals(treeModel);
 
     // Add the TreeView's view columns:
     treeView->appendColumn("",

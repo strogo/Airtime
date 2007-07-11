@@ -82,6 +82,7 @@ BrowseItem :: BrowseItem(int                                index,
     glade->get_widget_derived(addIndex("browseMetadataValues", index),
                               metadataValues);
     metadataValues->set_model(treeModel);
+    metadataValues->connectModelSignals(treeModel);
     metadataValues->appendColumn("", modelColumns.displayedColumn, 200);
     metadataValues->signal_cursor_changed().connect(sigc::mem_fun(*this,
                                     &BrowseItem::emitSignalSelectionChanged ));

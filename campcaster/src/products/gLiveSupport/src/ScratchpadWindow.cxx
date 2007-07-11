@@ -85,18 +85,19 @@ ScratchpadWindow :: ScratchpadWindow (
     setTitle(*getResourceUstring("windowTitle"));
 
     // create the tree view
-    glade->get_widget("treeView1", treeView);
+    glade->get_widget_derived("treeView1", treeView);
     treeView->get_selection()->set_mode(Gtk::SELECTION_MULTIPLE);
 
-    treeView->append_column("",
-                            modelColumns.typeColumn);
-    treeView->append_column(*getResourceUstring("creatorColumnLabel"),
-                            modelColumns.creatorColumn);
-    treeView->append_column(*getResourceUstring("titleColumnLabel"),
-                            modelColumns.titleColumn);
+    treeView->appendColumn("",
+                           modelColumns.typeColumn);
+    treeView->appendColumn(*getResourceUstring("creatorColumnLabel"),
+                           modelColumns.creatorColumn);
+    treeView->appendColumn(*getResourceUstring("titleColumnLabel"),
+                           modelColumns.titleColumn);
 
     treeModel = Gtk::ListStore::create(modelColumns);
     treeView->set_model(treeModel);
+    treeView->connectModelSignals(treeModel);
 
     // register the signal handlers for treeview
     treeView->signal_button_press_event().connect_notify(sigc::mem_fun(*this,

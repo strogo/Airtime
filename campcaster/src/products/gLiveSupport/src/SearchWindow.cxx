@@ -90,6 +90,8 @@ SearchWindow :: SearchWindow (Ptr<GLiveSupport>::Ref      gLiveSupport,
     glade->get_widget("searchWindow1", mainWindow);
     setTitle(*getResourceUstring("windowTitle"));
     
+    glade->get_widget("searchInputNoteBook1", searchInput);
+    
     Gtk::Label *    simpleSearchTab;
     Gtk::Label *    advancedSearchTab;
     Gtk::Label *    browseTab;
@@ -439,6 +441,8 @@ SearchWindow :: displaySearchResults(
         Ptr<time_duration>::Ref length = playable->getPlaylength();
         row[modelColumns.lengthColumn] = length ? 
                     *TimeConversion::timeDurationToHhMmSsString(length) : "";
+//int rowNumber = row[modelColumns.rowNumberColumn];
+//std::cerr << "added row " << rowNumber << " in SearchWindow" << std::endl;
     }
 }
 

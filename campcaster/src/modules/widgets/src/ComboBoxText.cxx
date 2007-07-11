@@ -68,14 +68,3 @@ ComboBoxText :: ~ComboBoxText(void)                            throw ()
 {
 }
 
-
-/*------------------------------------------------------------------------------
- *  Dummy constructor. FIXME: remove this.
- *----------------------------------------------------------------------------*/
-ComboBoxText :: ComboBoxText(Glib::RefPtr<Gdk::Pixbuf>   leftImage,
-                     Glib::RefPtr<Gdk::Pixbuf>   centerImage,
-                     Glib::RefPtr<Gdk::Pixbuf>   rightImage)        throw ()
-{
-}
-
-

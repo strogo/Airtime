@@ -91,6 +91,7 @@ LiveModeWindow :: LiveModeWindow (Ptr<GLiveSupport>::Ref    gLiveSupport,
     glade->get_widget_derived("treeView1", treeView);
     treeModel = Gtk::ListStore::create(modelColumns);
     treeView->set_model(treeModel);
+    treeView->connectModelSignals(treeModel);
 
     treeView->appendLineNumberColumn("", 2 /* offset */, 50);
     treeView->appendColumn("", modelColumns.infoColumn, 200);
