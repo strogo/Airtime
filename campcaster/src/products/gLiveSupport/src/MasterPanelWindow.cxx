@@ -373,7 +373,7 @@ MasterPanelWindow :: updateUploadFileWindow(void)                   throw ()
 
         uploadFileWindow.reset(new UploadFileWindow(gLiveSupport,
                                                     bundle,
-                                                    uploadFileButton));
+                                                    gladeDir));
     }
 
     uploadFileWindow->present();

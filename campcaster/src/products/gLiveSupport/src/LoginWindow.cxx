@@ -110,9 +110,12 @@ LoginWindow :: LoginWindow (Ptr<GLiveSupport>::Ref      gLiveSupport,
     glade->connect_clicked("cancelButton1", sigc::mem_fun(*this,
                                         &LoginWindow::onCancelButtonClicked));
 
-    // get a reference for the text entry fields
     glade->get_widget("userNameEntry1", userNameEntry);
+    userNameEntry->signal_activate().connect(sigc::mem_fun(*this,
+                                    &LoginWindow::onUserNameEntryActivated));
     glade->get_widget("passwordEntry1", passwordEntry);
+    passwordEntry->signal_activate().connect(sigc::mem_fun(*this,
+                                    &LoginWindow::onPasswordEntryActivated));
     
     // clear the status bar
     glade->get_widget("statusBar1", statusBar);
@@ -127,8 +130,28 @@ LoginWindow :: LoginWindow (Ptr<GLiveSupport>::Ref      gLiveSupport,
 /*------------------------------------------------------------------------------
  *  Destructor.
  *----------------------------------------------------------------------------*/
-LoginWindow :: ~LoginWindow (void)                        throw ()
+LoginWindow :: ~LoginWindow (void)                                  throw ()
 {
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Signal handler for the Enter key pressed in the user name entry.
+ *----------------------------------------------------------------------------*/
+void
+LoginWindow :: onUserNameEntryActivated (void)                      throw ()
+{
+    passwordEntry->grab_focus();
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Signal handler for the Enter key pressed in the password entry.
+ *----------------------------------------------------------------------------*/
+void
+LoginWindow :: onPasswordEntryActivated (void)                      throw ()
+{
+    onOkButtonClicked();
 }
 
 

@@ -92,18 +92,18 @@ SearchWindow :: SearchWindow (Ptr<GLiveSupport>::Ref      gLiveSupport,
     
     glade->get_widget("searchInputNoteBook1", searchInput);
     
-    Gtk::Label *    simpleSearchTab;
-    Gtk::Label *    advancedSearchTab;
-    Gtk::Label *    browseTab;
-    Gtk::Label *    transportsTab;
-    glade->get_widget("simpleSearchTab1", simpleSearchTab);
-    glade->get_widget("advancedSearchTab1", advancedSearchTab);
-    glade->get_widget("browseTab1", browseTab);
-    glade->get_widget("transportsTab1", transportsTab);
-    simpleSearchTab->set_label(*getResourceUstring("simpleSearchTab"));
-    advancedSearchTab->set_label(*getResourceUstring("advancedSearchTab"));
-    browseTab->set_label(*getResourceUstring("browseTab"));
-    transportsTab->set_label(*getResourceUstring("transportsTab"));
+    Gtk::Label *    simpleSearchTabLabel;
+    Gtk::Label *    advancedSearchTabLabel;
+    Gtk::Label *    browseTabLabel;
+    Gtk::Label *    transportsTabLabel;
+    glade->get_widget("simpleSearchTabLabel1", simpleSearchTabLabel);
+    glade->get_widget("advancedSearchTabLabel1", advancedSearchTabLabel);
+    glade->get_widget("browseTabLabel1", browseTabLabel);
+    glade->get_widget("transportsTabLabel1", transportsTabLabel);
+    simpleSearchTabLabel->set_label(*getResourceUstring("simpleSearchTab"));
+    advancedSearchTabLabel->set_label(*getResourceUstring("advancedSearchTab"));
+    browseTabLabel->set_label(*getResourceUstring("browseTab"));
+    transportsTabLabel->set_label(*getResourceUstring("transportsTab"));
 
     constructSearchWhereBox();
     

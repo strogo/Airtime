@@ -72,6 +72,7 @@ using namespace LiveSupport::Core;
 class LoginWindow : public LocalizedObject
 {
     private:
+
         /**
          *  The Glade object, containing the visual design.
          */
@@ -128,6 +129,18 @@ class LoginWindow : public LocalizedObject
         bool                        loggedIn;
 
         /**
+         *  Signal handler for the Enter key pressed in the user name entry.
+         */
+        virtual void
+        onUserNameEntryActivated(void)                      throw ();
+
+        /**
+         *  Signal handler for the Enter key pressed in the password entry.
+         */
+        virtual void
+        onPasswordEntryActivated(void)                      throw ();
+
+        /**
          *  Signal handler for the ok button clicked.
          */
         virtual void
@@ -151,6 +164,7 @@ class LoginWindow : public LocalizedObject
         }
 
     public:
+
         /**
          *  Constructor.
          *
