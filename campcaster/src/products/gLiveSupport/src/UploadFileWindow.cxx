@@ -109,12 +109,17 @@ UploadFileWindow :: UploadFileWindow (
     Ptr<MetadataTypeContainer>::Ref
                 metadataTypes = gLiveSupport->getMetadataTypeContainer();
 
+    mainCounter = 0;
+    musicCounter = 0;
+    voiceCounter = 0;
     MetadataTypeContainer::Vector::const_iterator   it;
     for (it = metadataTypes->begin(); it != metadataTypes->end(); ++it) {
         Ptr<const MetadataType>::Ref    metadata = *it;
-        
-        metadataKeys.push_back(metadata->getDcName());
-        metadataEntries.push_back(constructMetadataItem(metadata));
+        Gtk::Entry *    metadataEntry = constructMetadataItem(metadata);
+        if (metadataEntry) {
+            metadataKeys.push_back(metadata->getDcName());
+            metadataEntries.push_back(metadataEntry);
+        }
     }
 
     Gtk::Label *    lengthLabel;
@@ -124,6 +129,7 @@ UploadFileWindow :: UploadFileWindow (
     lengthValueLabel->set_label("00:00:00");
 
     glade->get_widget("statusBar1", statusBar);
+    statusBar->set_text("");
 
     glade->connect_clicked("uploadButton1", sigc::mem_fun(*this,
                                 &UploadFileWindow::onUploadButtonClicked));
@@ -144,10 +150,6 @@ UploadFileWindow :: constructMetadataItem(
 {
     Gtk::Entry *    entry = 0;
 
-    static int      mainCounter = 0;
-    static int      musicCounter = 0;
-    static int      voiceCounter = 0;
-    
     MetadataType::TabType   tab = metadata->getTab();
 
     switch (tab) {
@@ -219,17 +221,9 @@ UploadFileWindow :: itoa(int    number)                             throw ()
 void
 UploadFileWindow :: onBrowseButtonClicked(void)                     throw ()
 {
-    Ptr<Gtk::FileChooserDialog>::Ref    dialog;
-
-    try {
-        dialog.reset(new Gtk::FileChooserDialog(
-                        *getResourceUstring("fileChooserDialogTitle"),
-                        Gtk::FILE_CHOOSER_ACTION_OPEN));
-    } catch (std::invalid_argument &e) {
-        std::cerr << e.what() << std::endl;
-        std::exit(1);
-    }
-
+    Ptr<Gtk::FileChooserDialog>::Ref    dialog(new Gtk::FileChooserDialog(
+                                *getResourceUstring("fileChooserDialogTitle"),
+                                Gtk::FILE_CHOOSER_ACTION_OPEN));
     dialog->set_name("uploadFileChooserDialog");
     gLiveSupport->getWindowPosition(dialog);
 
@@ -258,11 +252,15 @@ UploadFileWindow :: onBrowseButtonClicked(void)                     throw ()
 void
 UploadFileWindow :: updateFileInfo(void)                        throw ()
 {
-    Ptr<Glib::ustring>::Ref fileName(new Glib::ustring(
-                                        fileNameEntry->get_text() ));
+    Glib::ustring       fileName = fileNameEntry->get_text();
+
+    // do not display bogus error msg for point-to-focus users
+    if (fileName == "") {
+        return;
+    }
 
     // see if the file exists, and is readable
-    std::ifstream   file(fileName->c_str());
+    std::ifstream   file(fileName.c_str());
     if (!file.good()) {
         file.close();
         statusBar->set_text(*getResourceUstring("couldNotOpenFileMsg"));
@@ -294,11 +292,11 @@ UploadFileWindow :: updateFileInfo(void)                        throw ()
  *  Read the playlength and metadata info from the binary audio file.
  *----------------------------------------------------------------------------*/
 void
-UploadFileWindow :: readAudioClipInfo(Ptr<const Glib::ustring>::Ref   fileName)
+UploadFileWindow :: readAudioClipInfo(const Glib::ustring &         fileName)
                                                                 throw ()
 {
     Ptr<std::string>::Ref   newUri(new std::string("file://"));
-    newUri->append(*fileName);
+    newUri->append(fileName);
     
     Ptr<time_duration>::Ref     playlength;
     try {
@@ -508,12 +506,12 @@ UploadFileWindow :: onCancelButtonClicked(void)                 throw ()
  *  Determine the length of an audio file
  *----------------------------------------------------------------------------*/
 Ptr<time_duration>::Ref
-UploadFileWindow :: readPlaylength(Ptr<const Glib::ustring>::Ref    fileName)
+UploadFileWindow :: readPlaylength(const Glib::ustring &        fileName)
                                                 throw (std::invalid_argument)
 {
     // TODO: use the appropriate TagLib::X::File subclass constructors,
     // once we find some way of determining the MIME type.
-    TagLib::FileRef             fileRef(fileName->c_str());
+    TagLib::FileRef             fileRef(fileName.c_str());
     if (fileRef.isNull()) {
         throw std::invalid_argument("unsupported file type");
     }
@@ -533,23 +531,23 @@ UploadFileWindow :: readPlaylength(Ptr<const Glib::ustring>::Ref    fileName)
  *  Determine the type of the given file.
  *----------------------------------------------------------------------------*/
 UploadFileWindow::FileType
-UploadFileWindow :: determineFileType(Ptr<const Glib::ustring>::Ref   fileName)
+UploadFileWindow :: determineFileType(const Glib::ustring &         fileName)
                                                                 throw ()
 {
-    unsigned int    dotPosition = fileName->rfind('.');
+    unsigned int    dotPosition = fileName.rfind('.');
     if (dotPosition == std::string::npos) {
         return invalidType;
     }
     
-    Glib::ustring   extension = fileName->substr(dotPosition).lowercase();
+    Glib::ustring   extension = fileName.substr(dotPosition).lowercase();
     if (extension == ".mp3" || extension == ".ogg") {
         return audioClipType;
         
     } else if (extension == ".tar") {
-        if (FileTools::existsInTarball(*fileName, "exportedPlaylist.lspl")) {
+        if (FileTools::existsInTarball(fileName, "exportedPlaylist.lspl")) {
             return playlistArchiveType;
         } else if (FileTools::existsInTarball(
-                                       *fileName, "meta-inf/storage.xml")) {
+                                       fileName, "meta-inf/storage.xml")) {
             return storageArchiveType;
         } else {
             return invalidType;

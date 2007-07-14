@@ -99,6 +99,21 @@ class UploadFileWindow : public BasicWindow
         std::vector<Gtk::Entry *>   metadataEntries;
 
         /**
+         *  A counter for the metadata entries in the Main tab.
+         */
+        int                         mainCounter;
+
+        /**
+         *  A counter for the metadata entries in the Music tab.
+         */
+        int                         musicCounter;
+
+        /**
+         *  A counter for the metadata entries in the Voice tab.
+         */
+        int                         voiceCounter;
+
+        /**
          *  The length value label.
          */
         Gtk::Label *                lengthValueLabel;
@@ -197,7 +212,7 @@ class UploadFileWindow : public BasicWindow
          *                      binary audio file.
          */
         void
-        readAudioClipInfo(Ptr<const Glib::ustring>::Ref fileName)
+        readAudioClipInfo(const Glib::ustring &     fileName)
                                                             throw ();
 
         /**
@@ -210,7 +225,7 @@ class UploadFileWindow : public BasicWindow
          *                                   format is not supported by TagLib
          */
         Ptr<time_duration>::Ref
-        readPlaylength(Ptr<const Glib::ustring>::Ref    fileName)
+        readPlaylength(const Glib::ustring &        fileName)
                                                 throw (std::invalid_argument);
 
         /**
@@ -242,7 +257,7 @@ class UploadFileWindow : public BasicWindow
          *  @return the type of the file.
          */
         FileType
-        determineFileType(Ptr<const Glib::ustring>::Ref   fileName)
+        determineFileType(const Glib::ustring &     fileName)
                                                             throw ();
 
         /**

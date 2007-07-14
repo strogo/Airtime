@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.2.0 on Mon Jul  9 18:43:53 2007 by fgerlits@desktop-->
+<!--Generated with glade3 3.2.0 on Sat Jul 14 17:47:42 2007 by fgerlits@desktop-->
 <glade-interface>
   <widget class="GtkWindow" id="liveModeWindow1">
     <property name="width_request">400</property>
@@ -18,8 +18,8 @@
             <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
             <child>
               <widget class="GtkButton" id="outputPlayButton1">
-                <property name="width_request">77</property>
-                <property name="height_request">63</property>
+                <property name="width_request">80</property>
+                <property name="height_request">80</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -49,8 +49,10 @@
                     <property name="visible">True</property>
                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                     <property name="spacing">3</property>
+                    <property name="homogeneous">True</property>
                     <child>
                       <widget class="GtkButton" id="cuePlayButton1">
+                        <property name="width_request">80</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
@@ -61,6 +63,7 @@
                     </child>
                     <child>
                       <widget class="GtkButton" id="cueStopButton1">
+                        <property name="width_request">80</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
@@ -74,6 +77,7 @@
                     </child>
                   </widget>
                   <packing>
+                    <property name="fill">False</property>
                     <property name="position">1</property>
                   </packing>
                 </child>
