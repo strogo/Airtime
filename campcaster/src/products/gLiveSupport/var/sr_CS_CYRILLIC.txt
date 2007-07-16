@@ -141,7 +141,8 @@ sr_CS_CYRILLIC:table
 
         playlistSavedMsg:string         { "Сачувана плеј листа {0}." }
         savePlaylistDialogMsg:string    { "Сачувати плејлисту?" }
-        
+        closeWithoutSavingButtonLabel:string
+                                        { "#Close without Saving#" }
         emptyTitleErrorMsg:string       { "Унесите наслов." }
     }
 

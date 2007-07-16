@@ -141,7 +141,8 @@ sr_CS:table
 
         playlistSavedMsg:string         { "Sačuvana plej lista {0}." }
         savePlaylistDialogMsg:string    { "Sačuvati plejlistu?" }
-        
+        closeWithoutSavingButtonLabel:string
+                                        { "#Close without Saving#" }
         emptyTitleErrorMsg:string       { "Unesite naslov." }
     }
 

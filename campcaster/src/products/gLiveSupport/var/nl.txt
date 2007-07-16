@@ -147,6 +147,8 @@ nl:table
 
         playlistSavedMsg:string         { "playlist {0} opgeslagen" }
         savePlaylistDialogMsg:string    { "Do you want to save the playlist?" }
+        closeWithoutSavingButtonLabel:string
+                                        { "#Close without Saving#" }
         emptyTitleErrorMsg:string       { "Please enter a title." }
     }
 

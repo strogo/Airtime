@@ -148,6 +148,8 @@ es:table
 
         playlistSavedMsg:string         { "lista de reproducción guardada {0}" }
         savePlaylistDialogMsg:string    { "Do you want to save the playlist?" }
+        closeWithoutSavingButtonLabel:string
+                                        { "#Close without Saving#" }
         emptyTitleErrorMsg:string       { "Please enter a title." }
     }
 

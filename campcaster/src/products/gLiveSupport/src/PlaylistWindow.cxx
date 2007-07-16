@@ -54,10 +54,10 @@ using namespace LiveSupport::GLiveSupport;
 
 namespace {
 
-/**
- *  The name of the window, used by the keyboard shortcuts (or by the .gtkrc).
- */
-const Glib::ustring     windowName = "playlistWindow";
+/*------------------------------------------------------------------------------
+ *  The name of the glade file.
+ *----------------------------------------------------------------------------*/
+const Glib::ustring     gladeFileName = "PlaylistWindow.glade";
 
 }
 
@@ -69,189 +69,110 @@ const Glib::ustring     windowName = "playlistWindow";
 /*------------------------------------------------------------------------------
  *  Constructor.
  *----------------------------------------------------------------------------*/
-PlaylistWindow :: PlaylistWindow (
-                                Ptr<GLiveSupport>::Ref      gLiveSupport,
-                                Ptr<ResourceBundle>::Ref    bundle,
-                                Gtk::ToggleButton *         windowOpenerButton)
+PlaylistWindow :: PlaylistWindow(Ptr<GLiveSupport>::Ref      gLiveSupport,
+                                 Ptr<ResourceBundle>::Ref    bundle,
+                                 const Glib::ustring &       gladeDir)
                                                                     throw ()
-          : GuiWindow(gLiveSupport,
-                      bundle,
-                      windowOpenerButton),
+          : BasicWindow(gLiveSupport, bundle),
             isPlaylistModified(false)
 {
-    Ptr<WidgetFactory>::Ref     wf = WidgetFactory::getInstance();
+    glade = Gnome::Glade::Xml::create(gladeDir + gladeFileName);
+
+    glade->get_widget("playlistWindow1", mainWindow);
+    setTitle(*getResourceUstring("windowTitle"));
+
+    // set up the file name entry
+    Gtk::Label *        nameLabel;
+    glade->get_widget("nameLabel1", nameLabel);
+    nameLabel->set_label(*getResourceUstring("nameLabel"));
+    glade->get_widget("nameEntry1", nameEntry);
+    nameEntry->signal_changed().connect(sigc::mem_fun(*this,
+                                        &PlaylistWindow::onTitleEdited));
+
+    // set up the entries tree view
+    entriesModel = Gtk::ListStore::create(modelColumns);
+    glade->get_widget_derived("entriesView1", entriesView);
+    entriesView->set_model(entriesModel);
+    entriesView->connectModelSignals(entriesModel);
     
-    try {
-        set_title(*getResourceUstring("windowTitle"));
-        nameLabel = Gtk::manage(new Gtk::Label(
-                                    *getResourceUstring("nameLabel")));
-        saveButton = Gtk::manage(wf->createButton(
-                                    *getResourceUstring("saveButtonLabel")));
-        closeButton = Gtk::manage(wf->createButton(
-                                    *getResourceUstring("closeButtonLabel")));
-    } catch (std::invalid_argument &e) {
-        std::cerr << e.what() << std::endl;
-        std::exit(1);
-    }
+    entriesView->appendColumn(*getResourceUstring("startColumnLabel"),
+                                modelColumns.startColumn,
+                                60);
+    entriesView->appendColumn(*getResourceUstring("titleColumnLabel"),
+                                modelColumns.titleColumn,
+                                200);
+    entriesView->appendEditableColumn(
+                                *getResourceUstring("fadeInColumnLabel"),
+                                modelColumns.fadeInColumn,
+                                fadeInColumnId,
+                                60);
+    entriesView->appendColumn(*getResourceUstring("lengthColumnLabel"),
+                                modelColumns.lengthColumn,
+                                60);
+    entriesView->appendEditableColumn(
+                                *getResourceUstring("fadeOutColumnLabel"),
+                                modelColumns.fadeOutColumn,
+                                fadeOutColumnId,
+                                60);
 
-    nameEntry             = Gtk::manage(wf->createEntryBin());
-    nameEntry->signal_changed().connect(sigc::mem_fun(
-                    *this, &PlaylistWindow::onTitleEdited ));
+    entriesView->signal_button_press_event().connect_notify(sigc::mem_fun(*this,
+                                        &PlaylistWindow::onEntryClicked));
+    entriesView->signalCellEdited().connect(sigc::mem_fun(*this,
+                                        &PlaylistWindow::onFadeInfoEdited ));
+    entriesView->signal_key_press_event().connect(sigc::mem_fun(*this,
+                                        &PlaylistWindow::onKeyPressed));
 
-    entriesScrolledWindow = Gtk::manage(new Gtk::ScrolledWindow());
-    entriesModel          = Gtk::ListStore::create(modelColumns);
-    entriesView           = Gtk::manage(wf->createTreeView(entriesModel));
-
-    // set up the entry scrolled window, with the entry treeview inside.
-    entriesScrolledWindow->add(*entriesView);
-    entriesScrolledWindow->set_policy(Gtk::POLICY_AUTOMATIC,
-                                      Gtk::POLICY_AUTOMATIC);
-
-    // Add the TreeView's view columns:
-    try {
-        entriesView->appendColumn(*getResourceUstring("startColumnLabel"),
-                                   modelColumns.startColumn,
-                                   60);
-        entriesView->appendColumn(*getResourceUstring("titleColumnLabel"),
-                                   modelColumns.titleColumn,
-                                   200);
-        entriesView->appendEditableColumn(
-                                  *getResourceUstring("fadeInColumnLabel"),
-                                   modelColumns.fadeInColumn,
-                                   fadeInColumnId,
-                                   60);
-        entriesView->appendColumn(*getResourceUstring("lengthColumnLabel"),
-                                   modelColumns.lengthColumn,
-                                   60);
-        entriesView->appendEditableColumn(
-                                  *getResourceUstring("fadeOutColumnLabel"),
-                                   modelColumns.fadeOutColumn,
-                                   fadeOutColumnId,
-                                   60);
-
-        statusBar = Gtk::manage(new Gtk::Label(""));
-    } catch (std::invalid_argument &e) {
-        std::cerr << e.what() << std::endl;
-        std::exit(1);
-    }
-
-    entriesView->signal_button_press_event().connect_notify(sigc::mem_fun(
-                    *this, &PlaylistWindow::onEntryClicked ));
-    entriesView->signalCellEdited().connect(sigc::mem_fun(
-                    *this, &PlaylistWindow::onFadeInfoEdited ));
-    entriesView->signal_key_press_event().connect(sigc::mem_fun(
-                    *this, &PlaylistWindow::onKeyPressed));
+    // set up the status bar
+    glade->get_widget("statusBar1", statusBar);
+    statusBar->set_label("");
 
     // create the right-click entry context menu
-    rightClickMenu = Gtk::manage(new Gtk::Menu());
-    Gtk::Menu::MenuList&    rightClickMenuList = rightClickMenu->items();
+    rightClickMenu.reset(new Gtk::Menu());
+    Gtk::Menu::MenuList &       rightClickMenuList = rightClickMenu->items();
 
-    try {
-        rightClickMenuList.push_back(Gtk::Menu_Helpers::MenuElem(
-                *getResourceUstring("upMenuItem"),
-                sigc::mem_fun(*this,
-                        &PlaylistWindow::onUpItem)));
-        rightClickMenuList.push_back(Gtk::Menu_Helpers::MenuElem(
-                *getResourceUstring("downMenuItem"),
-                sigc::mem_fun(*this,
-                        &PlaylistWindow::onDownItem)));
-        rightClickMenuList.push_back(Gtk::Menu_Helpers::MenuElem(
-                *getResourceUstring("removeMenuItem"),
-                sigc::mem_fun(*this,
-                        &PlaylistWindow::onRemoveItem)));
-    } catch (std::invalid_argument &e) {
-        std::cerr << e.what() << std::endl;
-        std::exit(1);
-    }
-    
-    // construct the "lock fades" check button
-    Ptr<Glib::ustring>::Ref     lockFadesCheckButtonLabel;
-    try {
-        lockFadesCheckButtonLabel = getResourceUstring(
-                                                "lockFadesCheckButtonLabel");
-    } catch (std::invalid_argument &e) {
-        std::cerr << e.what() << std::endl;
-        std::exit(1);
-    }
-    Gtk::CheckButton *  lockFadesCheckButton = Gtk::manage(new Gtk::CheckButton(
-                                                *lockFadesCheckButtonLabel ));
+    rightClickMenuList.push_back(Gtk::Menu_Helpers::MenuElem(
+            *getResourceUstring("upMenuItem"),
+            sigc::mem_fun(*this,
+                          &PlaylistWindow::onUpItem)));
+    rightClickMenuList.push_back(Gtk::Menu_Helpers::MenuElem(
+            *getResourceUstring("downMenuItem"),
+            sigc::mem_fun(*this,
+                          &PlaylistWindow::onDownItem)));
+    rightClickMenuList.push_back(Gtk::Menu_Helpers::MenuElem(
+            *getResourceUstring("removeMenuItem"),
+            sigc::mem_fun(*this,
+                          &PlaylistWindow::onRemoveItem)));
+
+    // set up the "lock fades" check button
+    Gtk::CheckButton *      lockFadesCheckButton;
+    glade->get_widget("lockFadesCheckButton1", lockFadesCheckButton);
+    lockFadesCheckButton->set_label(*getResourceUstring(
+                                                "lockFadesCheckButtonLabel"));
     lockFadesCheckButton->set_active(true);
     areFadesLocked = true;
-    lockFadesCheckButton->signal_toggled().connect(sigc::mem_fun(
-            *this, 
-            &PlaylistWindow::onLockFadesCheckButtonClicked ));
+    lockFadesCheckButton->signal_toggled().connect(sigc::mem_fun(*this, 
+                            &PlaylistWindow::onLockFadesCheckButtonClicked));
     
-    // construct the "total time" display
-    Gtk::Label *        lengthTextLabel = Gtk::manage(new Gtk::Label(
-                                        *getResourceUstring("lengthLabel") ));
-    lengthValueLabel = Gtk::manage(new Gtk::Label("00:00:00"));
-    Gtk::HBox *         lengthBox = Gtk::manage(new Gtk::HBox());
-    lengthBox->pack_start(*lengthTextLabel,     Gtk::PACK_SHRINK,  5);
-    lengthBox->pack_start(*lengthValueLabel,    Gtk::PACK_SHRINK,  5);
+    // set up the "total time" display
+    Gtk::Label *        lengthTextLabel;
+    glade->get_widget("lengthTextLabel1", lengthTextLabel);
+    lengthTextLabel->set_label(*getResourceUstring("lengthLabel"));
     
-    // set up the layout
-    Gtk::VBox *         mainBox = Gtk::manage(new Gtk::VBox);
+    glade->get_widget("lengthValueLabel1", lengthValueLabel);
+    lengthValueLabel->set_label("00:00:00");
     
-    Gtk::HBox *         nameBox = Gtk::manage(new Gtk::HBox);
-    nameBox->pack_start(*nameLabel, Gtk::PACK_SHRINK, 10);
-    Gtk::Alignment *    nameEntryAlignment = Gtk::manage(new Gtk::Alignment(
-                                        Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER,
-                                        0.7));  // take up 70% of available room
-    nameEntryAlignment->add(*nameEntry);
-    nameBox->pack_start(*nameEntryAlignment, Gtk::PACK_EXPAND_WIDGET, 5);
-    
-    Gtk::ButtonBox *    buttonBox = Gtk::manage(new Gtk::HButtonBox(
-                                                        Gtk::BUTTONBOX_END, 5));
-    buttonBox->pack_start(*saveButton);
-    buttonBox->pack_start(*closeButton);
-
-    Gtk::Alignment *    statusBarAlignment = Gtk::manage(new Gtk::Alignment(
-                                        Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER,
-                                        0.0));  // do not expand the label
-    statusBarAlignment->add(*statusBar);
-
-    mainBox->pack_start(*nameBox,               Gtk::PACK_SHRINK,           5);
-    mainBox->pack_start(*entriesScrolledWindow, Gtk::PACK_EXPAND_WIDGET,    5);
-    mainBox->pack_start(*lengthBox,             Gtk::PACK_SHRINK,           5);
-    mainBox->pack_start(*lockFadesCheckButton,  Gtk::PACK_SHRINK,           5);
-    mainBox->pack_start(*buttonBox,             Gtk::PACK_SHRINK,           0);
-    mainBox->pack_start(*statusBarAlignment,    Gtk::PACK_SHRINK,           5);
-
-    add(*mainBox);
-
-    // Register the signal handlers for the buttons
+    // register the signal handlers for the buttons
+    Gtk::Button *       closeButton;
+    glade->get_widget("saveButton1", saveButton);
+    glade->get_widget("closeButton1", closeButton);
     saveButton->signal_clicked().connect(sigc::mem_fun(*this,
-                &PlaylistWindow::onSaveButtonClicked));
+                            &PlaylistWindow::onSaveButtonClicked));
     closeButton->signal_clicked().connect(sigc::mem_fun(*this,
-                &PlaylistWindow::onBottomCloseButtonClicked));
+                            &PlaylistWindow::onBottomCloseButtonClicked));
 
-    // show
-    set_name(windowName);
-    set_default_size(480, 350);
-    set_modal(false);
-    property_window_position().set_value(Gtk::WIN_POS_NONE);
-    saveButton->set_sensitive(false);
-    
-    show_all_children();
-    
-    // set up the dialog windows
-    Ptr<Glib::ustring>::Ref     confirmationMessage;
-    try {
-        confirmationMessage.reset(new Glib::ustring(
-                                *getResourceUstring("savePlaylistDialogMsg") ));
-    } catch (std::invalid_argument &e) {
-        std::cerr << e.what() << std::endl;
-        std::exit(1);
-    }
-
-    dialogWindow.reset(new DialogWindow(confirmationMessage,
-                                        DialogWindow::cancelButton |
-                                        DialogWindow::noButton |
-                                        DialogWindow::yesButton,
-                                        gLiveSupport->getBundle() ));
-
-    gLiveSupport->signalEditedPlaylistModified().connect(sigc::mem_fun(
-            *this, &PlaylistWindow::onPlaylistModified ));
+    // get notified when the playlist is modified outside of the window
+    gLiveSupport->signalEditedPlaylistModified().connect(sigc::mem_fun(*this,
+                            &PlaylistWindow::onPlaylistModified ));
 }
 
 
@@ -268,7 +189,7 @@ PlaylistWindow :: ~PlaylistWindow (void)
  *  Save the edited playlist.
  *----------------------------------------------------------------------------*/
 bool
-PlaylistWindow :: savePlaylist(bool reopen)         throw ()
+PlaylistWindow :: savePlaylist(bool reopen)                         throw ()
 {
     try {
         Ptr<Playlist>::Ref              playlist
@@ -308,7 +229,7 @@ PlaylistWindow :: savePlaylist(bool reopen)         throw ()
  *  Signal handler for the save button getting clicked.
  *----------------------------------------------------------------------------*/
 void
-PlaylistWindow :: onSaveButtonClicked(void)         throw ()
+PlaylistWindow :: onSaveButtonClicked(void)                         throw ()
 {
     savePlaylist(true);
 }
@@ -318,15 +239,15 @@ PlaylistWindow :: onSaveButtonClicked(void)         throw ()
  *  Cancel the edited playlist, after asking for confirmation.
  *----------------------------------------------------------------------------*/
 bool
-PlaylistWindow :: cancelPlaylist(void)        throw ()
+PlaylistWindow :: cancelPlaylist(void)                              throw ()
 {
     if (gLiveSupport->getEditedPlaylist()) {
         if (!isPlaylistModified) {
             gLiveSupport->cancelEditedPlaylist();
         } else {
-            DialogWindow::ButtonType    result = dialogWindow->run();
+            Gtk::ResponseType       result = runConfirmationDialog();
             switch (result) {
-                case DialogWindow::noButton:
+                case Gtk::RESPONSE_NO:
                                 try {
                                     gLiveSupport->cancelEditedPlaylist();
                                 } catch (XmlRpcException &e) {
@@ -336,22 +257,51 @@ PlaylistWindow :: cancelPlaylist(void)        throw ()
                                 setPlaylistModified(false);
                                 break;
 
-                case DialogWindow::yesButton:
+                case Gtk::RESPONSE_YES:
                                 if (!savePlaylist(false)) {
                                     return false;
                                 }
                                 break;
 
-                case DialogWindow::cancelButton:
+                case Gtk::RESPONSE_CANCEL:
                                 return false;
 
-                default :       return false;
+                default :
+                                return false;
                                         // can happen if window is closed
             }                           //   with Alt-F4 -- treated as cancel
         }
     }
     
     return true;
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Run the confirmation window.
+ *----------------------------------------------------------------------------*/
+Gtk::ResponseType
+PlaylistWindow :: runConfirmationDialog(void)                       throw ()
+{
+    Gtk::Dialog *       cancelConfirmationDialog;
+    Gtk::Label *        cancelConfirmationDialogLabel;
+    Gtk::Button *       noButton;
+    glade->get_widget("cancelConfirmationDialog1", cancelConfirmationDialog);
+    glade->get_widget("cancelConfirmationDialogLabel1",
+                                                cancelConfirmationDialogLabel);
+    glade->get_widget("noButton1", noButton);
+    
+    Glib::ustring       message = "<span weight=\"bold\" ";
+    message += " size=\"larger\">";
+    message += *getResourceUstring("savePlaylistDialogMsg");
+    message += "</span>";
+    cancelConfirmationDialogLabel->set_label(message);
+    noButton->set_label(*getResourceUstring("closeWithoutSavingButtonLabel"));
+
+    Gtk::ResponseType   response = Gtk::ResponseType(
+                                            cancelConfirmationDialog->run());
+    cancelConfirmationDialog->hide();
+    return response;
 }
 
 
@@ -365,7 +315,6 @@ PlaylistWindow :: closeWindow(void)                 throw ()
     nameEntry->set_text("");
     entriesModel->clear();
     setPlaylistModified(false);
-    gLiveSupport->putWindowPosition(shared_from_this());
     hide();
 }
 
@@ -796,7 +745,7 @@ PlaylistWindow :: onKeyPressed(GdkEventKey *    event)
 {
     if (event->type == GDK_KEY_PRESS) {
         KeyboardShortcut::Action    action = gLiveSupport->findAction(
-                                                windowName,
+                                                "playlistWindow",
                                                 Gdk::ModifierType(event->state),
                                                 event->keyval);
         switch (action) {

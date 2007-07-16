@@ -78,6 +78,7 @@ class ScratchpadWindow : public BasicWindow,
                          public ContentsStorable
 {
     private:
+
         /**
          *  The user preferences key.
          */
@@ -127,6 +128,7 @@ class ScratchpadWindow : public BasicWindow,
 
 
     protected:
+
         /**
          *  The columns model needed by Gtk::TreeView.
          *  Lists one clip per row.
@@ -286,6 +288,7 @@ class ScratchpadWindow : public BasicWindow,
 
 
     public:
+
         /**
          *  Constructor.
          *

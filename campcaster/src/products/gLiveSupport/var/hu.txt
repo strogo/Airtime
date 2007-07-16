@@ -146,6 +146,8 @@ hu:table
 
         playlistSavedMessage:string     { "a {0} műsor elmentve" }
         savePlaylistDialogMsg:string    { "El szeretné menteni a műsort?" }
+        closeWithoutSavingButtonLabel:string
+                                        { "Bezárás mentés nélkül" }
         emptyTitleErrorMsg:string       { "Kérem, adjon meg egy címet!" }
     }
 

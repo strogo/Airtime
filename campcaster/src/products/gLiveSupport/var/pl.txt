@@ -147,6 +147,8 @@ pl:table
 
         playlistSavedMsg:string         { "Zapisano listę utworów ''{0}''." }
         savePlaylistDialogMsg:string    { "Czy chcesz zapisać listę utworów?" }
+        closeWithoutSavingButtonLabel:string
+                                        { "#Close without Saving#" }
         emptyTitleErrorMsg:string       { "Proszę wprowadzić tytuł." }
     }
 

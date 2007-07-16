@@ -426,7 +426,7 @@ MasterPanelWindow :: updatePlaylistWindow(void)                     throw ()
 
         playlistWindow.reset(new PlaylistWindow(gLiveSupport,
                                                 bundle,
-                                                playlistButton));
+                                                gladeDir));
     }
     
     playlistWindow->showContents();

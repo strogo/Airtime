@@ -148,6 +148,8 @@ root:table
 
         playlistSavedMsg:string         { "Saved playlist ''{0}''." }
         savePlaylistDialogMsg:string    { "Do you want to save the playlist?" }
+        closeWithoutSavingButtonLabel:string
+                                        { "Close without Saving" }
         emptyTitleErrorMsg:string       { "Please enter a title." }
     }
 
