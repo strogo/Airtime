@@ -449,7 +449,8 @@ MasterPanelWindow :: updateSchedulerWindow(
         try {
             schedulerWindow.reset(new SchedulerWindow(gLiveSupport,
                                                       bundle,
-                                                      schedulerButton));
+                                                      schedulerButton,
+                                                      gladeDir));
         } catch (XmlRpcException &e) {
             std::cerr << e.what() << std::endl;
             return;
@@ -837,20 +838,8 @@ MasterPanelWindow :: updateUserInfo(Ptr<const Glib::ustring>::Ref   loginName)
 bool
 MasterPanelWindow :: onDeleteEvent(GdkEventAny *    event)          throw ()
 {
-    Gtk::Dialog *       exitConfirmationDialog;
-    Gtk::Label *        exitConfirmationDialogLabel;
-    glade->get_widget("exitConfirmationDialog1", exitConfirmationDialog);
-    glade->get_widget("exitConfirmationDialogLabel1",
-                                                exitConfirmationDialogLabel);
-    Glib::ustring       message = "<span weight=\"bold\" ";
-    message += " size=\"larger\">";
-    message += *getResourceUstring("sureToExitMsg");
-    message += "</span>";
-    exitConfirmationDialogLabel->set_label(message);
-
-    int     response = exitConfirmationDialog->run();
+    Gtk::ResponseType       response = runConfirmationDialog();
     if (response != Gtk::RESPONSE_YES) {
-        exitConfirmationDialog->hide();
         return true;
     }
 
@@ -865,4 +854,27 @@ MasterPanelWindow :: onDeleteEvent(GdkEventAny *    event)          throw ()
     return false;
 }
 
+
+/*------------------------------------------------------------------------------
+ *  Run the confirmation window.
+ *----------------------------------------------------------------------------*/
+Gtk::ResponseType
+MasterPanelWindow :: runConfirmationDialog(void)                    throw ()
+{
+    Gtk::Dialog *       confirmationDialog;
+    Gtk::Label *        confirmationDialogLabel;
+    glade->get_widget("confirmationDialog1", confirmationDialog);
+    glade->get_widget("confirmationDialogLabel1", confirmationDialogLabel);
+    
+    Glib::ustring       message = "<span weight=\"bold\" ";
+    message += " size=\"larger\">";
+    message += *getResourceUstring("sureToExitMsg");
+    message += "</span>";
+    confirmationDialogLabel->set_label(message);
+
+    Gtk::ResponseType   response = Gtk::ResponseType(
+                                            confirmationDialog->run());
+    confirmationDialog->hide();
+    return response;
+}
 

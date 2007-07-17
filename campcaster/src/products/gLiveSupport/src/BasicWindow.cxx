@@ -62,11 +62,36 @@ const Glib::ustring     applicationTitle = "Campcaster";
  *  Constructor.
  *----------------------------------------------------------------------------*/
 BasicWindow :: BasicWindow (Ptr<GLiveSupport>::Ref      gLiveSupport,
-                        Ptr<ResourceBundle>::Ref    bundle)
+                            Ptr<ResourceBundle>::Ref    bundle)
                                                                     throw ()
           : LocalizedObject(bundle),
             gLiveSupport(gLiveSupport)
 {
+    // FIXME: remove this constructor, and only use the other one
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Constructor.
+ *----------------------------------------------------------------------------*/
+BasicWindow :: BasicWindow (Ptr<GLiveSupport>::Ref      gLiveSupport,
+                            Ptr<ResourceBundle>::Ref    bundle,
+                            Gtk::ToggleButton *         windowOpenerButton)
+                                                                    throw ()
+          : LocalizedObject(bundle),
+            gLiveSupport(gLiveSupport)
+{
+    // FIXME: handle the window opener button
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Signal handler for the close button getting clicked.
+ *----------------------------------------------------------------------------*/
+void
+BasicWindow :: onCloseButtonClicked (void)                          throw ()
+{
+    hide();
 }
 
 

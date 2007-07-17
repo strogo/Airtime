@@ -69,6 +69,7 @@ using namespace LiveSupport::Core;
 class BasicWindow : public LocalizedObject
 {
     protected:
+
         /**
          *  The Glade object, containing the visual design.
          */
@@ -84,7 +85,15 @@ class BasicWindow : public LocalizedObject
          */
         Gtk::Window *                       mainWindow;
 
+        /**
+         *  Signal handler for the close button getting clicked.
+         */
+        virtual void
+        onCloseButtonClicked(void)                                  throw ();
+
+
     public:
+
         /**
          *  Constructor.
          *
@@ -94,6 +103,20 @@ class BasicWindow : public LocalizedObject
          */
         BasicWindow(Ptr<GLiveSupport>::Ref        gLiveSupport,
                     Ptr<ResourceBundle>::Ref      bundle)
+                                                                    throw ();
+
+        /**
+         *  Constructor.
+         *
+         *  @param  gLiveSupport    the GLiveSupport application object.
+         *  @param  bundle          the resource bundle holding the localized
+         *                          resources for this window.
+         *  @param windowOpenerButton   the button which was pressed to open
+         *                              this window.
+         */
+        BasicWindow(Ptr<GLiveSupport>::Ref        gLiveSupport,
+                    Ptr<ResourceBundle>::Ref      bundle,
+                    Gtk::ToggleButton *           windowOpenerButton)
                                                                     throw ();
 
         /**

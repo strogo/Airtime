@@ -158,10 +158,10 @@ sr_CS_CYRILLIC:table
         endColumnLabel:string       { "крај" }
         deleteMenuItem:string       { "Обриши" }
 
-        stopCurrentlyPlayingText:string
-                                    { "Тренутно се налази у распореду емитовања" }
-        stopCurrentlyPlayingButtonLabel:string      { "Стоп" }
-        stopCurrentlyPlayingDialogMsg:string        { "Да ли сте сигурни?" }
+        stopCurrentlyPlayingButtonLabel:string  { "Стоп" }
+        stopCurrentlyPlayingText:string         { "тренутно се налази у "
+                                                  "распореду емитовања" }
+        stopCurrentlyPlayingDialogMsg:string    { "Да ли сте сигурни?" }
 
         closeButtonLabel:string     { "Затвори" }
 

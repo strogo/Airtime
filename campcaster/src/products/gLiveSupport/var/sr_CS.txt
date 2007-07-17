@@ -158,10 +158,10 @@ sr_CS:table
         endColumnLabel:string       { "kraj" }
         deleteMenuItem:string       { "Obriši" }
 
-        stopCurrentlyPlayingText:string
-                                    { "Trenutno se nalazi u rasporedu emitovanja" }
-        stopCurrentlyPlayingButtonLabel:string      { "Stop" }
-        stopCurrentlyPlayingDialogMsg:string        { "Da li ste sigurni?" }
+        stopCurrentlyPlayingButtonLabel:string  { "Stop" }
+        stopCurrentlyPlayingText:string         { "trenutno se nalazi u "
+                                                  "rasporedu emitovanja." }
+        stopCurrentlyPlayingDialogMsg:string    { "Da li ste sigurni?" }
 
         closeButtonLabel:string     { "Zatvori" }
 

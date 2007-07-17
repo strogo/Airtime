@@ -163,10 +163,10 @@ hu:table
         endColumnLabel:string       { "vég" }
         deleteMenuItem:string       { "_töröl" }
 
-        stopCurrentlyPlayingText:string
-                                    { "Currently playing in scheduler:" }
-        stopCurrentlyPlayingButtonLabel:string      { "Stop" }
-        stopCurrentlyPlayingDialogMsg:string        { "Are you sure?" }
+        stopCurrentlyPlayingButtonLabel:string  { "Stop" }
+        stopCurrentlyPlayingText:string         { "what is currently playing "
+                                                  "in the scheduler." }
+        stopCurrentlyPlayingDialogMsg:string    { "Are you sure?" }
 
         closeButtonLabel:string     { "bezár" }
     }

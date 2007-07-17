@@ -266,10 +266,9 @@ PlaylistWindow :: cancelPlaylist(void)                              throw ()
                 case Gtk::RESPONSE_CANCEL:
                                 return false;
 
-                default :
-                                return false;
-                                        // can happen if window is closed
-            }                           //   with Alt-F4 -- treated as cancel
+                default :                       // can happen if the window
+                                return false;   // is closed with Alt-F4
+            }                                   // -- treated as cancel
         }
     }
     
@@ -283,24 +282,23 @@ PlaylistWindow :: cancelPlaylist(void)                              throw ()
 Gtk::ResponseType
 PlaylistWindow :: runConfirmationDialog(void)                       throw ()
 {
-    Gtk::Dialog *       cancelConfirmationDialog;
-    Gtk::Label *        cancelConfirmationDialogLabel;
+    Gtk::Dialog *       confirmationDialog;
+    Gtk::Label *        confirmationDialogLabel;
     Gtk::Button *       noButton;
-    glade->get_widget("cancelConfirmationDialog1", cancelConfirmationDialog);
-    glade->get_widget("cancelConfirmationDialogLabel1",
-                                                cancelConfirmationDialogLabel);
+    glade->get_widget("confirmationDialog1", confirmationDialog);
+    glade->get_widget("confirmationDialogLabel1", confirmationDialogLabel);
     glade->get_widget("noButton1", noButton);
     
     Glib::ustring       message = "<span weight=\"bold\" ";
     message += " size=\"larger\">";
     message += *getResourceUstring("savePlaylistDialogMsg");
     message += "</span>";
-    cancelConfirmationDialogLabel->set_label(message);
+    confirmationDialogLabel->set_label(message);
     noButton->set_label(*getResourceUstring("closeWithoutSavingButtonLabel"));
 
     Gtk::ResponseType   response = Gtk::ResponseType(
-                                            cancelConfirmationDialog->run());
-    cancelConfirmationDialog->hide();
+                                            confirmationDialog->run());
+    confirmationDialog->hide();
     return response;
 }
 

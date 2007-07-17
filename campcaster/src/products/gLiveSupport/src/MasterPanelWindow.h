@@ -128,6 +128,7 @@ class MasterPanelWindow : public LocalizedObject
 
 
     protected:
+
         /**
          *  The main window.
          */
@@ -399,9 +400,18 @@ class MasterPanelWindow : public LocalizedObject
          */
         bool
         onDeleteEvent(GdkEventAny *    event)                   throw ();
+        
+        /**
+         *  Run the confirmation dialog.
+         *
+         *  @return the response ID returned by the dialog.
+         */
+        Gtk::ResponseType
+        runConfirmationDialog(void)                                 throw ();
 
 
     public:
+
         /**
          *  Constructor.
          *
