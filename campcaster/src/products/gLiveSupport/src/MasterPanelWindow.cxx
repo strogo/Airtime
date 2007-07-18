@@ -350,11 +350,13 @@ MasterPanelWindow :: updateLiveModeWindow(Ptr<Playable>::Ref    playable)
 
         liveModeWindow.reset(new LiveModeWindow(gLiveSupport,
                                                 bundle,
+                                                liveModeButton,
                                                 gladeDir));
         gLiveSupport->loadWindowContents(liveModeWindow);
     }
     
-    liveModeWindow->present();
+    liveModeWindow->show();
+    liveModeWindow->getWindow()->present();
     
     if (playable) {
         liveModeWindow->addItem(playable);
@@ -376,7 +378,8 @@ MasterPanelWindow :: updateUploadFileWindow(void)                   throw ()
                                                     gladeDir));
     }
 
-    uploadFileWindow->present();
+    uploadFileWindow->show();
+    uploadFileWindow->getWindow()->present();
 }
 
 
@@ -411,7 +414,8 @@ MasterPanelWindow :: updateScratchpadWindow(Ptr<Playable>::Ref  playable)
         scratchpadWindow->addItem(playable);
     }
     
-    scratchpadWindow->present();
+    scratchpadWindow->show();
+    scratchpadWindow->getWindow()->present();
 }
 
 
@@ -431,7 +435,8 @@ MasterPanelWindow :: updatePlaylistWindow(void)                     throw ()
     
     playlistWindow->showContents();
     
-    playlistWindow->present();
+    playlistWindow->show();
+    playlistWindow->getWindow()->present();
 }
 
 
@@ -468,7 +473,8 @@ MasterPanelWindow :: updateSchedulerWindow(
         return;
     }
 
-    schedulerWindow->present();
+    schedulerWindow->show();
+    schedulerWindow->getWindow()->present();
 }
 
 
@@ -486,7 +492,8 @@ MasterPanelWindow :: updateSearchWindow(void)                       throw ()
                                             gladeDir));
     }
     
-    searchWindow->present();
+    searchWindow->show();
+    searchWindow->getWindow()->present();
 }
 
 
@@ -509,7 +516,8 @@ MasterPanelWindow :: updateOptionsWindow(void)                      throw ()
         }
     }
 
-    optionsWindow->present();
+    optionsWindow->show();
+    optionsWindow->getWindow()->present();
 */
 }
 
@@ -524,38 +532,38 @@ MasterPanelWindow :: showAnonymousUI(void)                          throw ()
     
     if (liveModeWindow.get()) {
         gLiveSupport->storeWindowContents(liveModeWindow);
-        if (liveModeWindow->is_visible()) {
+        if (liveModeWindow->getWindow()->is_visible()) {
             liveModeWindow->hide();
         }
         // the Live Mode window is not destroyed at logout, unlike the others
     }
     if (uploadFileWindow.get()) {
-        if (uploadFileWindow->is_visible()) {
+        if (uploadFileWindow->getWindow()->is_visible()) {
             uploadFileWindow->hide();
         }
         uploadFileWindow.reset();
     }
     if (scratchpadWindow.get()) {
         gLiveSupport->storeWindowContents(scratchpadWindow);
-        if (scratchpadWindow->is_visible()) {
+        if (scratchpadWindow->getWindow()->is_visible()) {
             scratchpadWindow->hide();
         }
         scratchpadWindow.reset();
     }
     if (playlistWindow.get()) {
-        if (playlistWindow->is_visible()) {
+        if (playlistWindow->getWindow()->is_visible()) {
             playlistWindow->hide();
         }
         playlistWindow.reset();
     }
     if (schedulerWindow.get()) {
-        if (schedulerWindow->is_visible()) {
+        if (schedulerWindow->getWindow()->is_visible()) {
             schedulerWindow->hide();
         }
         schedulerWindow.reset();
     }
     if (searchWindow.get()) {
-        if (searchWindow->is_visible()) {
+        if (searchWindow->getWindow()->is_visible()) {
             searchWindow->hide();
         }
         searchWindow.reset();
@@ -566,7 +574,7 @@ MasterPanelWindow :: showAnonymousUI(void)                          throw ()
         if (backupList) {
             gLiveSupport->storeWindowContents(backupList);
         }
-        if (optionsWindow->is_visible()) {
+        if (optionsWindow->getWindow()->is_visible()) {
             optionsWindow->hide();
         }
         optionsWindow.reset();
@@ -610,7 +618,8 @@ MasterPanelWindow :: showLoggedInUI(void)                           throw ()
     if (liveModeWindow) {
         liveModeWindow->updateStrings();
         if (liveModeWindow->isNotEmpty()) {
-            liveModeWindow->present();
+            liveModeWindow->show();
+            liveModeWindow->getWindow()->present();
         }
     }
 }
@@ -710,7 +719,8 @@ MasterPanelWindow :: uploadToHub(Ptr<Playable>::Ref     playable)
     
     searchWindow->uploadToHub(playable);
     
-    searchWindow->present();
+    searchWindow->show();
+    searchWindow->getWindow()->present();
 }
 
 
@@ -721,7 +731,7 @@ void
 MasterPanelWindow :: setSchedulerAvailable(bool  status)            throw ()
 {
     if (status == false) {
-        if (schedulerWindow && schedulerWindow->is_visible()) {
+        if (schedulerWindow && schedulerWindow->getWindow()->is_visible()) {
             schedulerWindow->hide();
         }
     }
@@ -843,6 +853,7 @@ MasterPanelWindow :: onDeleteEvent(GdkEventAny *    event)          throw ()
         return true;
     }
 
+    gLiveSupport->logout();
     gLiveSupport->stopOutputAudio();
 
     Ptr<OptionsContainer>::Ref  optionsContainer

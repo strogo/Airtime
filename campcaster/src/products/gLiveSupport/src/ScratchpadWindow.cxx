@@ -82,7 +82,7 @@ ScratchpadWindow :: ScratchpadWindow (
     glade = Gnome::Glade::Xml::create(gladeDir + gladeFileName);
 
     glade->get_widget("scratchpadWindow1", mainWindow);
-    setTitle(*getResourceUstring("windowTitle"));
+    setTitle(getResourceUstring("windowTitle"));
 
     // create the tree view
     glade->get_widget_derived("treeView1", treeView);

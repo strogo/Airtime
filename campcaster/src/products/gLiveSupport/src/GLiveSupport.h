@@ -59,6 +59,7 @@
 #include "KeyboardShortcutList.h"
 #include "TaskbarIcons.h"
 #include "ContentsStorable.h"
+#include "BasicWindow.h"
 
 
 namespace LiveSupport {
@@ -397,6 +398,15 @@ class GLiveSupport : public LocalizedConfigurable,
          */
         void
         writeToSerial(Ptr<const Glib::ustring>::Ref     message)    throw ();
+
+        /**
+         *  Replace spaces with underscore characters.
+         *
+         *  @param  string the original string, eg: "one two three".
+         *  @return the new string, eg: "one_two_three".
+         */
+        Glib::ustring
+        replaceSpaces(Ptr<const Glib::ustring>::Ref     string)     throw ();
 
 
     protected:
@@ -1138,6 +1148,8 @@ class GLiveSupport : public LocalizedConfigurable,
         /**
          *  Save the position and size of the window.
          *
+         *  TODO: remove this function, and only use its overloaded pair.
+         *
          *  The coordinates of the window's North-West corner and the
          *  size of the window are read, and stored in a variable of the
          *  GLiveSupport object, indexed by the window's get_name().
@@ -1151,6 +1163,8 @@ class GLiveSupport : public LocalizedConfigurable,
         /**
          *  Apply saved position and size data to the window.
          *
+         *  TODO: remove this function, and only use its overloaded pair.
+         *
          *  If position and size data were previously saved for a window
          *  with the same get_name(), then these data are read and applied to
          *  the window, restoring its position and size.
@@ -1160,6 +1174,32 @@ class GLiveSupport : public LocalizedConfigurable,
          */
         void
         getWindowPosition(Ptr<Gtk::Window>::Ref    window)         throw ();
+
+        /**
+         *  Save the position and size of the window.
+         *
+         *  The coordinates of the window's North-West corner and the
+         *  size of the window are read, and stored in a variable of the
+         *  GLiveSupport object, indexed by the window's get_name().
+         *
+         *  @param  window   the window to save the position and size of.
+         *  @see    getWindowPosition()
+         */
+        void
+        putWindowPosition(const BasicWindow *   window)             throw ();
+        
+        /**
+         *  Apply saved position and size data to the window.
+         *
+         *  If position and size data were previously saved for a window
+         *  with the same get_name(), then these data are read and applied to
+         *  the window, restoring its position and size.
+         *
+         *  @param  window   the window to apply the position and size info to.
+         *  @see    putWindowPosition()
+         */
+        void
+        getWindowPosition(BasicWindow *         window)             throw ();
 
         /**
          *  Store the saved window positions.

@@ -97,6 +97,7 @@ using namespace LiveSupport::Widgets;
 class OptionsWindow : public GuiWindow
 {
     private:
+
         /**
          *  The notepad holding the different sections.
          */
@@ -278,6 +279,7 @@ class OptionsWindow : public GuiWindow
 
 
     protected:
+
         /**
          *  Event handler for the Cancel button.
          */
@@ -435,6 +437,7 @@ class OptionsWindow : public GuiWindow
 
 
     public:
+
         /**
          *  Constructor.
          *

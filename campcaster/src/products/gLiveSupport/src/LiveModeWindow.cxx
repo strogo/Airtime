@@ -78,16 +78,15 @@ const Glib::ustring     userPreferencesKeyName = "liveModeContents";
  *----------------------------------------------------------------------------*/
 LiveModeWindow :: LiveModeWindow (Ptr<GLiveSupport>::Ref    gLiveSupport,
                                   Ptr<ResourceBundle>::Ref  bundle,
+                                  Gtk::ToggleButton *       windowOpenerButton,
                                   const Glib::ustring &     gladeDir)
                                                                     throw ()
-          : BasicWindow(gLiveSupport, bundle),
+          : BasicWindow(gLiveSupport,
+                        bundle,
+                        windowOpenerButton,
+                        gladeDir + gladeFileName),
             isDeleting(false)
 {
-    glade = Gnome::Glade::Xml::create(gladeDir + gladeFileName);
-
-    glade->get_widget("liveModeWindow1", mainWindow);
-    setTitle(*getResourceUstring("windowTitle"));
-    
     glade->get_widget_derived("treeView1", treeView);
     treeModel = Gtk::ListStore::create(modelColumns);
     treeView->set_model(treeModel);
@@ -626,7 +625,7 @@ LiveModeWindow :: updateStrings(void)                               throw ()
 {
     setBundle(gLiveSupport->getBundle("liveModeWindow"));
     
-    setTitle(*getResourceUstring("windowTitle"));
+    setTitle(getResourceUstring("windowTitle"));
     cueLabel->set_label(*getResourceUstring("cuePlayerLabel"));
 }
 

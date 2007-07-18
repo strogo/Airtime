@@ -1518,6 +1518,60 @@ GLiveSupport :: getWindowPosition(Ptr<Gtk::Window>::Ref         window)
 
 
 /*------------------------------------------------------------------------------
+ *  Save the position and size of the window.
+ *----------------------------------------------------------------------------*/
+void
+LiveSupport :: GLiveSupport ::
+GLiveSupport :: putWindowPosition(const BasicWindow *       window)
+                                                                    throw ()
+{
+    WindowPositionType  pos;
+    window->getWindow()->get_position(pos.x, pos.y);
+    window->getWindow()->get_size(pos.width, pos.height);
+
+    windowPositions[replaceSpaces(window->getTitle())] = pos;
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Apply saved position and size data to the window.
+ *----------------------------------------------------------------------------*/
+void
+LiveSupport :: GLiveSupport ::
+GLiveSupport :: getWindowPosition(BasicWindow *     window)
+                                                                    throw ()
+{
+    WindowPositionsListType::const_iterator it = windowPositions.find(
+                                        replaceSpaces(window->getTitle()));
+    if (it != windowPositions.end()) {
+        WindowPositionType  pos = it->second;
+        window->getWindow()->move(pos.x, pos.y);
+        window->getWindow()->resize(pos.width, pos.height);
+    }
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Replace spaces with underscore characters.
+ *----------------------------------------------------------------------------*/
+Glib::ustring
+LiveSupport :: GLiveSupport ::
+GLiveSupport :: replaceSpaces(Ptr<const Glib::ustring>::Ref     string)
+                                                                    throw ()
+{
+    Glib::ustring   copy = *string;
+
+    for (unsigned int i = 0; i < copy.size(); ++i) {
+        if (copy[i] == ' ') {
+            copy.replace(i, 1, 1, '_');
+        }
+    }
+
+    return copy;
+}
+        
+
+/*------------------------------------------------------------------------------
  *  Store the saved window positions.
  *----------------------------------------------------------------------------*/
 void

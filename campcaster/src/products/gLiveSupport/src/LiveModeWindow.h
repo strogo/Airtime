@@ -79,6 +79,7 @@ class LiveModeWindow : public BasicWindow,
                        public ContentsStorable
 {
     private:
+
         /**
          *  The Playable item at the top of the window.
          */
@@ -299,6 +300,7 @@ class LiveModeWindow : public BasicWindow,
 
 
     public:
+
         /**
          *  Constructor.
          *
@@ -306,10 +308,13 @@ class LiveModeWindow : public BasicWindow,
          *                          all the vital info.
          *  @param  bundle          the resource bundle holding the localized
          *                          resources for this window.
+         *  @param  windowOpenerButton  the button which was pressed to open
+         *                              this window.
          *  @param  gladeDir        the directory where the glade file is.
          */
         LiveModeWindow(Ptr<GLiveSupport>::Ref      gLiveSupport,
                        Ptr<ResourceBundle>::Ref    bundle,
+                       Gtk::ToggleButton *         windowOpenerButton,
                        const Glib::ustring &       gladeDir)
                                                                 throw ();
 

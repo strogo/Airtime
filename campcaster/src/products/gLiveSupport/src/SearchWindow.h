@@ -80,6 +80,7 @@ using namespace LiveSupport::Widgets;
 class SearchWindow : public BasicWindow
 {
     private:
+
         /**
          *  The criteria for the last local search.
          */
@@ -401,6 +402,7 @@ class SearchWindow : public BasicWindow
 
 
     protected:
+
         /**
          *  The columns model needed by Gtk::TreeView.
          *  Lists one clip per row.
@@ -595,6 +597,7 @@ class SearchWindow : public BasicWindow
 
 
     public:
+
         /**
          *  Constructor.
          *

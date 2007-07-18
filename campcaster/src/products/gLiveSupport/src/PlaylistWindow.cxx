@@ -79,7 +79,7 @@ PlaylistWindow :: PlaylistWindow(Ptr<GLiveSupport>::Ref      gLiveSupport,
     glade = Gnome::Glade::Xml::create(gladeDir + gladeFileName);
 
     glade->get_widget("playlistWindow1", mainWindow);
-    setTitle(*getResourceUstring("windowTitle"));
+    setTitle(getResourceUstring("windowTitle"));
 
     // set up the file name entry
     Gtk::Label *        nameLabel;

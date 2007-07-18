@@ -45,12 +45,13 @@
 #include <libglademm.h>
 
 #include "LiveSupport/Core/LocalizedObject.h"
-#include "GLiveSupport.h"
 
 namespace LiveSupport {
 namespace GLiveSupport {
 
 using namespace LiveSupport::Core;
+
+class GLiveSupport;
 
 /* ================================================================ constants */
 
@@ -68,12 +69,27 @@ using namespace LiveSupport::Core;
  */
 class BasicWindow : public LocalizedObject
 {
-    protected:
+    private:
 
         /**
-         *  The Glade object, containing the visual design.
+         *  The title of the window.
          */
-        Glib::RefPtr<Gnome::Glade::Xml>     glade;
+        Ptr<const Glib::ustring>::Ref       windowTitle;
+
+        /**
+         *  Stuff to do before showing the window.
+         */
+        void
+        preShow(void)                                               throw ();
+
+        /**
+         *  Stuff to do before hiding the window.
+         */
+        void
+        preHide(void)                                               throw ();
+
+
+    protected:
 
         /**
          *  The GLiveSupport object, holding the state of the application.
@@ -81,15 +97,25 @@ class BasicWindow : public LocalizedObject
         Ptr<GLiveSupport>::Ref              gLiveSupport;
 
         /**
+         *  The button which was used to open this window.
+         */
+        Gtk::ToggleButton *                 windowOpenerButton;
+
+        /**
          *  The window itself.
          */
         Gtk::Window *                       mainWindow;
 
         /**
+         *  The Glade object, containing the visual design.
+         */
+        Glib::RefPtr<Gnome::Glade::Xml>     glade;
+
+        /**
          *  Signal handler for the close button getting clicked.
          */
-        virtual void
-        onCloseButtonClicked(void)                                  throw ();
+        virtual bool
+        onDeleteEvent(GdkEventAny *     event)                      throw ();
 
 
     public:
@@ -117,6 +143,22 @@ class BasicWindow : public LocalizedObject
         BasicWindow(Ptr<GLiveSupport>::Ref        gLiveSupport,
                     Ptr<ResourceBundle>::Ref      bundle,
                     Gtk::ToggleButton *           windowOpenerButton)
+                                                                    throw ();
+
+        /**
+         *  Constructor.
+         *
+         *  @param  gLiveSupport    the GLiveSupport application object.
+         *  @param  bundle          the resource bundle holding the localized
+         *                          resources for this window.
+         *  @param  windowOpenerButton  the button which was pressed to open
+         *                              this window.
+         *  @param  gladeFileName   the Glade file for this window.
+         */
+        BasicWindow(Ptr<GLiveSupport>::Ref        gLiveSupport,
+                    Ptr<ResourceBundle>::Ref      bundle,
+                    Gtk::ToggleButton *           windowOpenerButton,
+                    const Glib::ustring &         gladeFileName)
                                                                     throw ();
 
         /**
@@ -148,44 +190,36 @@ class BasicWindow : public LocalizedObject
          *  @param  title   the title of the window.
          */
         virtual void
-        setTitle(const Glib::ustring &     title)                   throw ();
+        setTitle(Ptr<const Glib::ustring>::Ref  title)              throw ();
 
         /**
-         *  Wrapper for Gtk::Window::is_visible().
+         *  A replacement for Gtk::Window::get_name().
+         *
+         *  @return the (localized) title of the window.
          */
-        virtual bool
-        is_visible(void)                                            throw ()
+        virtual Ptr<const Glib::ustring>::Ref
+        getTitle(void) const                                        throw ()
         {
-            return mainWindow->is_visible();
+            return windowTitle;
         }
 
         /**
-         *  Wrapper for Gtk::Window::present().
+         *  Get the underlying Gtk::Window.
          */
-        virtual void
-        present(void)                                               throw ()
+        virtual Gtk::Window *
+        getWindow(void)                                             throw ()
         {
-            mainWindow->present();
+            return mainWindow;
         }
 
         /**
-         *  Wrapper for Gtk::Main::run(Gtk::Window &).
+         *  Get the underlying Gtk::Window.
          */
-        virtual void
-        run(void)                                                   throw ()
+        virtual const Gtk::Window *
+        getWindow(void) const                                       throw ()
         {
-            Gtk::Main::run(*mainWindow);
+            return mainWindow;
         }
-
-        /**
-         *  Wrapper for Gtk::Window::set_transient_for().
-         */
-        virtual void
-        set_transient_for(Gtk::Window &     parent)                 throw ()
-        {
-            mainWindow->set_transient_for(parent);
-        }
-
 };
 
 /* ================================================= external data structures */

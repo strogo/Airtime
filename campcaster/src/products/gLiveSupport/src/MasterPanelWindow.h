@@ -271,7 +271,8 @@ class MasterPanelWindow : public LocalizedObject
         onUploadFileButtonClicked(void)                     throw ()
         {
             if (!uploadFileWindow ||
-                    uploadFileWindow && !uploadFileWindow->is_visible()) {
+                    uploadFileWindow && !uploadFileWindow->getWindow()
+                                                         ->is_visible()) {
                 updateUploadFileWindow();
             } else {
                 uploadFileWindow->hide();
@@ -286,7 +287,8 @@ class MasterPanelWindow : public LocalizedObject
         onLiveModeButtonClicked(void)                       throw ()
         {
             if (!liveModeWindow ||
-                    liveModeWindow && !liveModeWindow->is_visible()) {
+                    liveModeWindow && !liveModeWindow->getWindow()
+                                                     ->is_visible()) {
                 updateLiveModeWindow();
             } else {
                 liveModeWindow->hide();
@@ -301,7 +303,8 @@ class MasterPanelWindow : public LocalizedObject
         onScratchpadButtonClicked(void)                     throw ()
         {
             if (!scratchpadWindow ||
-                    scratchpadWindow && !scratchpadWindow->is_visible()) {
+                    scratchpadWindow && !scratchpadWindow->getWindow()
+                                                         ->is_visible()) {
                 updateScratchpadWindow();
             } else {
                 scratchpadWindow->hide();
@@ -316,7 +319,8 @@ class MasterPanelWindow : public LocalizedObject
         onPlaylistButtonClicked(void)                       throw ()
         {
             if (!playlistWindow ||
-                    playlistWindow && !playlistWindow->is_visible()) {
+                    playlistWindow && !playlistWindow->getWindow()
+                                                     ->is_visible()) {
                 updatePlaylistWindow();
             } else {
                 playlistWindow->hide();
@@ -331,7 +335,8 @@ class MasterPanelWindow : public LocalizedObject
         onSchedulerButtonClicked(void)                      throw ()
         {
             if (!schedulerWindow ||
-                    schedulerWindow && !schedulerWindow->is_visible()) {
+                    schedulerWindow && !schedulerWindow->getWindow()
+                                                       ->is_visible()) {
                 updateSchedulerWindow();
             } else {
                 schedulerWindow->hide();
@@ -346,7 +351,8 @@ class MasterPanelWindow : public LocalizedObject
         onSearchButtonClicked(void)                             throw ()
         {
             if (!searchWindow ||
-                    searchWindow && !searchWindow->is_visible()) {
+                    searchWindow && !searchWindow->getWindow()
+                                                 ->is_visible()) {
                 updateSearchWindow();
             } else {
                 searchWindow->hide();
@@ -362,7 +368,8 @@ class MasterPanelWindow : public LocalizedObject
         {
         /* DISABLED TEMPORARILY
             if (!optionsWindow ||
-                    optionsWindow && !optionsWindow->is_visible()) {
+                    optionsWindow && !optionsWindow->getWindow()
+                                                   ->is_visible()) {
                 updateOptionsWindow();
             } else {
                 optionsWindow->hide();

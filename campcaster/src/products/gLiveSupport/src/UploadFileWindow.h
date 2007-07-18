@@ -279,6 +279,7 @@ class UploadFileWindow : public BasicWindow
 
 
     protected:
+
         /**
          *  Function to catch the event of the choose file button being
          *  pressed.

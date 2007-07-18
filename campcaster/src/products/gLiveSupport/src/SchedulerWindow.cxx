@@ -81,7 +81,7 @@ SchedulerWindow :: SchedulerWindow (
     glade = Gnome::Glade::Xml::create(gladeDir + gladeFileName);
 
     glade->get_widget("schedulerWindow1", mainWindow);
-    setTitle(*getResourceUstring("windowTitle"));
+    setTitle(getResourceUstring("windowTitle"));
 
     constructScheduleView();
     constructStatusView();
@@ -94,7 +94,7 @@ SchedulerWindow :: SchedulerWindow (
     statusTabLabel->set_label(*getResourceUstring("statusTab"));
     
     glade->connect_clicked("closeButton1", sigc::mem_fun(*this,
-                                    &SchedulerWindow::onCloseButtonClicked));
+                                                    &SchedulerWindow::hide));
     
     showContents();
 }

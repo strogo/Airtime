@@ -83,7 +83,7 @@ UploadFileWindow :: UploadFileWindow (
     glade = Gnome::Glade::Xml::create(gladeDir + gladeFileName);
 
     glade->get_widget("uploadFileWindow1", mainWindow);
-    setTitle(*getResourceUstring("windowTitle"));
+    setTitle(getResourceUstring("windowTitle"));
     
     Gtk::Label *    fileNameLabel;
     glade->get_widget("fileNameLabel1", fileNameLabel);

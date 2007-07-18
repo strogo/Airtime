@@ -88,7 +88,7 @@ SearchWindow :: SearchWindow (Ptr<GLiveSupport>::Ref      gLiveSupport,
     glade = Gnome::Glade::Xml::create(gladeDir + gladeFileName);
 
     glade->get_widget("searchWindow1", mainWindow);
-    setTitle(*getResourceUstring("windowTitle"));
+    setTitle(getResourceUstring("windowTitle"));
     
     glade->get_widget("searchInputNoteBook1", searchInput);
     

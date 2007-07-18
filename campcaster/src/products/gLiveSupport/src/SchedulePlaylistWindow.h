@@ -91,7 +91,6 @@ using namespace LiveSupport::Core;
  */
 class SchedulePlaylistWindow : public GuiWindow
 {
-
     protected:
 
         /**
@@ -162,6 +161,7 @@ class SchedulePlaylistWindow : public GuiWindow
 
 
     public:
+
         /**
          *  Constructor.
          *
