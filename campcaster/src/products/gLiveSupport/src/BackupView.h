@@ -40,14 +40,13 @@
 #include "configure.h"
 #endif
 
-#include <gtkmm/box.h>
+#include <gtkmm.h>
+#include <libglademm.h>
 #include <boost/date_time/posix_time/posix_time.hpp>
 
 #include "LiveSupport/Core/Ptr.h"
 #include "LiveSupport/Core/LocalizedObject.h"
 #include "LiveSupport/Core/TimeConversion.h"
-#include "LiveSupport/Widgets/Button.h"
-#include "LiveSupport/Widgets/ScrolledWindow.h"
 #include "LiveSupport/Widgets/DateTimeChooserWindow.h"
 #include "AdvancedSearchEntry.h"
 #include "BackupList.h"
@@ -93,20 +92,21 @@ class BackupView : public Gtk::VBox,
                    public LocalizedObject
 {
     private:
+
         /**
          *  The text entry field for entering the title of the backup.
          */
-        EntryBin *                  backupTitleEntry;
+        Gtk::Entry *                backupTitleEntry;
         
         /**
          *  The "modified since" time for the backup.
          */
-        Ptr<const ptime>::Ref      mtime;
+        Ptr<const ptime>::Ref       mtime;
         
         /**
          *  The entry field holding the "modified since" time for the backup.
          */
-        EntryBin *                  mtimeEntry;
+        Gtk::Entry *                mtimeEntry;
         
         /**
          *  The window for entering the "modified since" time.
@@ -116,19 +116,19 @@ class BackupView : public Gtk::VBox,
         /**
          *  The object for entering the backup criteria.
          */
-        AdvancedSearchEntry *       criteriaEntry;
+        Ptr<AdvancedSearchEntry>::Ref       criteriaEntry;
         
         /**
          *  The list of pending backups.
          */
-        BackupList *                backupList;
+        Ptr<BackupList>::Ref                backupList;
         
         /**
          *  Construct the box for entering the backup criteria.
          *
          *  @return the constructed box, already Gtk::manage()'ed.
          */
-        Gtk::Box *
+        void
         constructCriteriaView(void)                                 throw ();
     
         /**
@@ -136,7 +136,7 @@ class BackupView : public Gtk::VBox,
          *
          *  @return the constructed box, already Gtk::manage()'ed.
          */
-        Gtk::Box *
+        void
         constructBackupListView(void)                               throw ();
         
         /**
@@ -161,6 +161,11 @@ class BackupView : public Gtk::VBox,
          */
         Ptr<GLiveSupport>::Ref      gLiveSupport;
         
+        /**
+         *  The Glade object, which specifies the visual components.
+         */
+        Glib::RefPtr<Gnome::Glade::Xml>      glade;
+
         /**
          *  Event handler for the time chooser button being clicked.
          */
@@ -198,11 +203,11 @@ class BackupView : public Gtk::VBox,
          *
          *  @param  gLiveSupport    the gLiveSupport object, containing
          *                          all the vital info.
-         *  @param  bundle          the resource bundle holding the localized
-         *                          resources for this window.
+         *  @param glade            the Glade file which specifies the visual
+         *                          components for this class.
          */
-        BackupView(Ptr<GLiveSupport>::Ref     gLiveSupport,
-                   Ptr<ResourceBundle>::Ref   bundle)
+        BackupView(Ptr<GLiveSupport>::Ref               gLiveSupport,
+                   Glib::RefPtr<Gnome::Glade::Xml>      glade)
                                                                     throw ();
 
         /**
@@ -216,7 +221,7 @@ class BackupView : public Gtk::VBox,
         /**
          *  Return the BackupList object shown by the widget.
          */
-        BackupList *
+        Ptr<BackupList>::Ref
         getBackupList(void)                                         throw ()
         {
             return backupList;

@@ -100,10 +100,10 @@ class AdvancedSearchEntry : public LocalizedObject
         /**
          *  Constructor.
          *
-         *  @param gLiveSupport the GLiveSupport object, containing
-         *                      all the vital info.
-         *  @param glade        the Glade file which specifies the visual
-         *                      components for this class.
+         *  @param  gLiveSupport    the GLiveSupport object, containing
+         *                          all the vital info.
+         *  @param  glade           the Glade file which specifies the visual
+         *                          components for this class.
          */
         AdvancedSearchEntry(Ptr<GLiveSupport>::Ref            gLiveSupport,
                             Glib::RefPtr<Gnome::Glade::Xml>   glade)

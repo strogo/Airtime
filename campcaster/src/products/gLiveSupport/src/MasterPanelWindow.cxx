@@ -313,14 +313,12 @@ MasterPanelWindow :: onUpdateTime(int   dummy)                      throw ()
     }
     
     if (backupCounter == 0) {
-/* DISABLED TEMPORARILY
         if (optionsWindow) {
-            BackupList *    backupList    = optionsWindow->getBackupList();
+            Ptr<BackupList>::Ref    backupList = optionsWindow->getBackupList();
             if (backupList) {
                 backupList->updateSilently();
             }
         }
-*/
         
         if (searchWindow) {
             searchWindow->onTimer();
@@ -506,22 +504,21 @@ MasterPanelWindow :: updateSearchWindow(void)                       throw ()
 void
 MasterPanelWindow :: updateOptionsWindow(void)                      throw ()
 {
-/* DISABLED TEMPORARILY
     if (!optionsWindow.get()) {
         Ptr<ResourceBundle>::Ref    bundle = getBundle("optionsWindow");
 
         optionsWindow.reset(new OptionsWindow(gLiveSupport,
                                               bundle,
-                                              optionsButton));
-        ContentsStorable *  backupList = optionsWindow->getBackupList();
+                                              optionsButton,
+                                              gladeDir));
+        Ptr<BackupList>::Ref    backupList = optionsWindow->getBackupList();    
         if (backupList) {
-            gLiveSupport->loadWindowContents(backupList);
+            gLiveSupport->loadWindowContents(backupList.get());
         }
     }
 
     optionsWindow->show();
     optionsWindow->getWindow()->present();
-*/
 }
 
 
@@ -571,18 +568,16 @@ MasterPanelWindow :: showAnonymousUI(void)                          throw ()
         }
         searchWindow.reset();
     }
-/* DISABLED TEMPORARILY
     if (optionsWindow.get()) {
-        ContentsStorable *  backupList = optionsWindow->getBackupList();
+        Ptr<BackupList>::Ref    backupList = optionsWindow->getBackupList();
         if (backupList) {
-            gLiveSupport->storeWindowContents(backupList);
+            gLiveSupport->storeWindowContents(backupList.get());
         }
         if (optionsWindow->getWindow()->is_visible()) {
             optionsWindow->hide();
         }
         optionsWindow.reset();
     }
-*/
 }
 
 

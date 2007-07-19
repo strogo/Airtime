@@ -40,12 +40,11 @@
 #include "configure.h"
 #endif
 
-#include <gtkmm/box.h>
-#include <gtkmm/checkbutton.h>
+#include <gtkmm.h>
+#include <libglademm.h>
 
 #include "LiveSupport/Core/Ptr.h"
 #include "LiveSupport/Core/LocalizedObject.h"
-#include "LiveSupport/Widgets/EntryBin.h"
 #include "GLiveSupport.h"
 
 
@@ -70,39 +69,48 @@ using namespace LiveSupport::GLiveSupport;
  *  @author  $Author$
  *  @version $Revision$
  */
-class RdsEntry : public Gtk::HBox, 
-                 public LocalizedObject
+class RdsEntry : public LocalizedObject
 {
     private:
+
         /**
          *  The RDS type of the object (PS, PI, RT, etc).
          */
         Ptr<const Glib::ustring>::Ref   type;
         
         /**
-         *  The saved state of the checkbox.
+         *  The saved state of the check button.
          */
-        bool                            checkBoxSaved;
+        bool                            checkButtonSaved;
         
         /**
-         *  The saved contents of the entry bin.
+         *  The saved contents of the entry.
          */
-        Ptr<const Glib::ustring>::Ref   entryBinSaved;
+        Ptr<const Glib::ustring>::Ref   entrySaved;
+
+        /**
+         *  Add the index to a string.
+         */
+        Glib::ustring
+        addIndex(const Glib::ustring &  baseString,
+                 int                    index)                      throw ();
 
 
     protected:
+
         /**
          *  The enable/disable checkbox.
          */
-        Gtk::CheckButton *          checkBox;
+        Gtk::CheckButton *          checkButton;
 
         /**
          *  The entry field.
          */
-        EntryBin *                  entryBin;
+        Gtk::Entry *                entry;
 
 
     public:
+
         /**
          *  Constructor.
          *  The type parameter is a string of 2 or 3 upper-case characters,
@@ -110,12 +118,18 @@ class RdsEntry : public Gtk::HBox,
          *
          *  @param  bundle      the resource bundle holding the localized
          *                      resources for this window.
+         *  @param  glade       the Glade file which specifies the visual
+         *                      components for this class.
+         *  @param  index       the position of this item in the list of
+         *                      RDS entries.
          *  @param  type        the type of RDS data (PS, PI, RT, etc).
          *  @param  width       the width of the entry, in characters.
          */
-        RdsEntry(Ptr<ResourceBundle>::Ref   bundle,
-                 const Glib::ustring &      type,
-                 int                        width)                  throw ();
+        RdsEntry(Ptr<ResourceBundle>::Ref           bundle,
+                 Glib::RefPtr<Gnome::Glade::Xml>    glade,
+                 int                                index,
+                 const Glib::ustring &              type,
+                 int                                width)          throw ();
 
         /**
          *  A virtual destructor.

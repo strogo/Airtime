@@ -39,8 +39,6 @@
 #include "ScratchpadWindow.h"
 
 
-using namespace Glib;
-
 using namespace LiveSupport::Core;
 using namespace LiveSupport::Widgets;
 using namespace LiveSupport::GLiveSupport;
