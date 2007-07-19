@@ -75,16 +75,15 @@ const Glib::ustring     gladeFileName = "UploadFileWindow.glade";
 UploadFileWindow :: UploadFileWindow (
                                 Ptr<GLiveSupport>::Ref      gLiveSupport,
                                 Ptr<ResourceBundle>::Ref    bundle,
+                                Gtk::ToggleButton *         windowOpenerButton,
                                 const Glib::ustring &       gladeDir)
                                                                     throw ()
-          : BasicWindow(gLiveSupport, bundle),
+          : BasicWindow(gLiveSupport,
+                        bundle,
+                        windowOpenerButton,
+                        gladeDir + gladeFileName),
             fileType(invalidType)
 {
-    glade = Gnome::Glade::Xml::create(gladeDir + gladeFileName);
-
-    glade->get_widget("uploadFileWindow1", mainWindow);
-    setTitle(getResourceUstring("windowTitle"));
-    
     Gtk::Label *    fileNameLabel;
     glade->get_widget("fileNameLabel1", fileNameLabel);
     glade->get_widget("fileNameEntry1", fileNameEntry);

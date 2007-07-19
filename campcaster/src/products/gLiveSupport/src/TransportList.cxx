@@ -132,7 +132,7 @@ TransportList :: TransportList(Ptr<GLiveSupport>::Ref           gLiveSupport,
                                     &TransportList::onCancelTransport)));
     
     Gtk::Window *       mainWindow;
-    glade->get_widget("searchWindow1", mainWindow);
+    glade->get_widget("mainWindow1", mainWindow);
     uploadMenu->accelerate(*mainWindow);
     downloadMenu->accelerate(*mainWindow);
 

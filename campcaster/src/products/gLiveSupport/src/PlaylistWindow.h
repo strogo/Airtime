@@ -390,6 +390,7 @@ class PlaylistWindow : public BasicWindow
 
 
     public:
+
         /**
          *  Constructor.
          *
@@ -397,10 +398,13 @@ class PlaylistWindow : public BasicWindow
          *                          all the vital info.
          *  @param  bundle          the resource bundle holding the localized
          *                          resources for this window.
+         *  @param  windowOpenerButton  the button which was pressed to open
+         *                              this window.
          *  @param  gladeDir        the directory where the glade file is.
          */
         PlaylistWindow(Ptr<GLiveSupport>::Ref       gLiveSupport,
                        Ptr<ResourceBundle>::Ref     bundle,
+                       Gtk::ToggleButton *          windowOpenerButton,
                        const Glib::ustring &        gladeDir)
                                                                 throw ();
 

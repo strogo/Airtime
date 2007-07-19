@@ -75,15 +75,14 @@ const Glib::ustring     userPreferencesKeyName = "scratchpadContents";
 ScratchpadWindow :: ScratchpadWindow (
                         Ptr<GLiveSupport>::Ref      gLiveSupport,
                         Ptr<ResourceBundle>::Ref    bundle,
+                        Gtk::ToggleButton *         windowOpenerButton,
                         const Glib::ustring &       gladeDir)
                                                                     throw ()
-          : BasicWindow(gLiveSupport, bundle)
+          : BasicWindow(gLiveSupport,
+                        bundle,
+                        windowOpenerButton,
+                        gladeDir + gladeFileName)
 {
-    glade = Gnome::Glade::Xml::create(gladeDir + gladeFileName);
-
-    glade->get_widget("scratchpadWindow1", mainWindow);
-    setTitle(getResourceUstring("windowTitle"));
-
     // create the tree view
     glade->get_widget_derived("treeView1", treeView);
     treeView->get_selection()->set_mode(Gtk::SELECTION_MULTIPLE);

@@ -79,7 +79,7 @@ LoginWindow :: LoginWindow (Ptr<GLiveSupport>::Ref      gLiveSupport,
     glade = Gnome::Glade::Xml::create(gladeDir + gladeFileName);
 
     // localize everything
-    glade->get_widget("loginWindow1", loginWindow);
+    glade->get_widget("mainWindow1", loginWindow);
     loginWindow->set_title(*getResourceUstring("windowTitle"));
 
     Gtk::Label *    userNameLabel;

@@ -119,7 +119,7 @@ MasterPanelWindow :: MasterPanelWindow (Ptr<GLiveSupport>::Ref    gLiveSupport,
     timeLabel->set_attributes(timeLabelAttributes);
 
     // register the signal handlers for the main window
-    glade->get_widget("masterPanelWindow1", masterPanelWindow);
+    glade->get_widget("mainWindow1", masterPanelWindow);
     masterPanelWindow->signal_key_press_event().connect(sigc::mem_fun(
                                         *this,
                                         &MasterPanelWindow::onKeyPressed));
@@ -252,9 +252,8 @@ MasterPanelWindow :: changeLanguage(Ptr<ResourceBundle>::Ref    bundle)
 void
 MasterPanelWindow :: setTimer(void)                                 throw ()
 {
-    sigc::slot<bool>    slot = sigc::bind(sigc::mem_fun(
-                                                *this,
-                                                &MasterPanelWindow::onUpdateTime),
+    sigc::slot<bool>    slot = sigc::bind(sigc::mem_fun(*this,
+                                            &MasterPanelWindow::onUpdateTime),
                                           0);
 
     // set the timer to activate every 1/somethingth of a second
@@ -375,6 +374,7 @@ MasterPanelWindow :: updateUploadFileWindow(void)                   throw ()
 
         uploadFileWindow.reset(new UploadFileWindow(gLiveSupport,
                                                     bundle,
+                                                    uploadFileButton,
                                                     gladeDir));
     }
 
@@ -395,6 +395,7 @@ MasterPanelWindow :: createScratchpadWindow(void)
 
         scratchpadWindow.reset(new ScratchpadWindow(gLiveSupport,
                                                     bundle,
+                                                    scratchpadButton,
                                                     gladeDir));
         gLiveSupport->loadWindowContents(scratchpadWindow);
     }
@@ -430,6 +431,7 @@ MasterPanelWindow :: updatePlaylistWindow(void)                     throw ()
 
         playlistWindow.reset(new PlaylistWindow(gLiveSupport,
                                                 bundle,
+                                                playlistButton,
                                                 gladeDir));
     }
     
@@ -489,6 +491,7 @@ MasterPanelWindow :: updateSearchWindow(void)                       throw ()
 
         searchWindow.reset(new SearchWindow(gLiveSupport,
                                             bundle,
+                                            searchButton,
                                             gladeDir));
     }
     
@@ -714,6 +717,7 @@ MasterPanelWindow :: uploadToHub(Ptr<Playable>::Ref     playable)
 
         searchWindow.reset(new SearchWindow(gLiveSupport,
                                             bundle,
+                                            searchButton,
                                             gladeDir));
     }
     

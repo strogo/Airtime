@@ -81,15 +81,14 @@ const int               searchResultsSize = 25;
  *----------------------------------------------------------------------------*/
 SearchWindow :: SearchWindow (Ptr<GLiveSupport>::Ref      gLiveSupport,
                               Ptr<ResourceBundle>::Ref    bundle,
+                              Gtk::ToggleButton *         windowOpenerButton,
                               const Glib::ustring &       gladeDir)
-                                                                throw ()
-          : BasicWindow(gLiveSupport, bundle)
+                                                                    throw ()
+          : BasicWindow(gLiveSupport,
+                        bundle,
+                        windowOpenerButton,
+                        gladeDir + gladeFileName)
 {
-    glade = Gnome::Glade::Xml::create(gladeDir + gladeFileName);
-
-    glade->get_widget("searchWindow1", mainWindow);
-    setTitle(getResourceUstring("windowTitle"));
-    
     glade->get_widget("searchInputNoteBook1", searchInput);
     
     Gtk::Label *    simpleSearchTabLabel;

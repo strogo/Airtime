@@ -76,13 +76,9 @@ SchedulerWindow :: SchedulerWindow (
                                                     throw (XmlRpcException)
           : BasicWindow(gLiveSupport,
                         bundle, 
-                        windowOpenerButton)
+                        windowOpenerButton,
+                        gladeDir + gladeFileName)
 {
-    glade = Gnome::Glade::Xml::create(gladeDir + gladeFileName);
-
-    glade->get_widget("schedulerWindow1", mainWindow);
-    setTitle(getResourceUstring("windowTitle"));
-
     constructScheduleView();
     constructStatusView();
     

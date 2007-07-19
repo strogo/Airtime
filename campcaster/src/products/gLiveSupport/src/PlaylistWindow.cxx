@@ -71,16 +71,15 @@ const Glib::ustring     gladeFileName = "PlaylistWindow.glade";
  *----------------------------------------------------------------------------*/
 PlaylistWindow :: PlaylistWindow(Ptr<GLiveSupport>::Ref      gLiveSupport,
                                  Ptr<ResourceBundle>::Ref    bundle,
+                                 Gtk::ToggleButton *         windowOpenerButton,
                                  const Glib::ustring &       gladeDir)
                                                                     throw ()
-          : BasicWindow(gLiveSupport, bundle),
+          : BasicWindow(gLiveSupport,
+                        bundle,
+                        windowOpenerButton,
+                        gladeDir + gladeFileName),
             isPlaylistModified(false)
 {
-    glade = Gnome::Glade::Xml::create(gladeDir + gladeFileName);
-
-    glade->get_widget("playlistWindow1", mainWindow);
-    setTitle(getResourceUstring("windowTitle"));
-
     // set up the file name entry
     Gtk::Label *        nameLabel;
     glade->get_widget("nameLabel1", nameLabel);
