@@ -332,7 +332,7 @@ hu:table
         deleteButtonLabel:string    { "#Delete#" }
         saveButtonLabel:string      { "#Save#" }
 
-        backupTitleLabel:string     { "#Title#" }
+        backupTitleLabel:string     { "#Title:#" }
         defaultBackupTitle:string   { "#new backup#" }
 
         fileChooserDialogTitle:string   { "#Save File#" }

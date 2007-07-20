@@ -80,6 +80,10 @@ ZebraTreeView :: ZebraTreeView(
                                                                 throw ()
           : Gtk::TreeView(baseClass)
 {
+    this->signal_row_expanded().connect(sigc::mem_fun(*this,
+                                            &ZebraTreeView::onRowExpanded));
+    this->signal_row_collapsed().connect(sigc::mem_fun(*this,
+                                            &ZebraTreeView::onRowCollapsed));
 }
 
 

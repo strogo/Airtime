@@ -418,7 +418,7 @@ OptionsWindow :: constructKeyBindingsSection(void)                  throw ()
     
     // add instructions
     Gtk::Label *    instructionsLabel;
-    glade->get_widget("keyBindingsIntstructionsLabel1", instructionsLabel);
+    glade->get_widget("keyBindingsInstructionsLabel1", instructionsLabel);
     instructionsLabel->set_label(*getResourceUstring(
                                             "keyBindingsInstructionsText"));
 }
@@ -543,13 +543,15 @@ OptionsWindow :: constructServersSection(void)                      throw ()
 void
 OptionsWindow :: constructSchedulerSection(void)                    throw ()
 {
-    Gtk::Label *    statusLabel;
-    Button *        startButton;
-    Button *        stopButton;
-    glade->get_widget("schedulerStatusLabel1", statusLabel);
+    Gtk::Label *    schedulerTextLabel;
+    Gtk::Button *   startButton;
+    Gtk::Button *   stopButton;
+    glade->get_widget("schedulerTextLabel1", schedulerTextLabel);
+    glade->get_widget("schedulerStatusLabel1", schedulerStatusLabel);
     glade->get_widget("schedulerStartButton1", startButton);
     glade->get_widget("schedulerStopButton1", stopButton);
-    statusLabel->set_label(*getResourceUstring("schedulerStatusText"));
+    schedulerTextLabel->set_label(*getResourceUstring("schedulerStatusText"));
+    updateSchedulerStatus();    // sets the schedulerStatusLabel
     startButton->set_label(*getResourceUstring("schedulerStartButtonLabel"));
     stopButton->set_label(*getResourceUstring("schedulerStopButtonLabel"));
 
@@ -557,8 +559,6 @@ OptionsWindow :: constructSchedulerSection(void)                    throw ()
                             &OptionsWindow::onSchedulerStartButtonClicked));
     stopButton->signal_clicked().connect(sigc::mem_fun(*this,
                             &OptionsWindow::onSchedulerStopButtonClicked));
-    
-    updateSchedulerStatus();
 }
 
 

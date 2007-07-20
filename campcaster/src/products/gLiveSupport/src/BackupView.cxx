@@ -117,7 +117,7 @@ BackupView :: constructCriteriaView(void)                           throw ()
     criteriaEntry->connectCallback(sigc::mem_fun(*this,
                                             &BackupView::onCreateBackup));
 
-    Button *    backupButton;
+    Gtk::Button *       backupButton;
     glade->get_widget("backupButton1", backupButton);
     backupButton->set_label(*getResourceUstring("backupButtonLabel"));
     backupButton->signal_clicked().connect(sigc::mem_fun(*this,

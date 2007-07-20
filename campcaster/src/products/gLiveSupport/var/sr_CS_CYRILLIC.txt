@@ -327,7 +327,7 @@ sr_CS_CYRILLIC:table
         deleteButtonLabel:string    { "Избриши" }
         saveButtonLabel:string      { "Сачувај" }
 
-        backupTitleLabel:string     { "Бекап" }
+        backupTitleLabel:string     { "Бекап:" }
         defaultBackupTitle:string   { "нови бекап" }
 
         fileChooserDialogTitle:string   { "Сачувај фајл" }

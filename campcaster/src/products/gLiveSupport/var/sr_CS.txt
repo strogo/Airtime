@@ -327,7 +327,7 @@ sr_CS:table
         deleteButtonLabel:string    { "Izbriši" }
         saveButtonLabel:string      { "Sačuvaj" }
 
-        backupTitleLabel:string     { "Bekap" }
+        backupTitleLabel:string     { "Bekap:" }
         defaultBackupTitle:string   { "novi bekap" }
 
         fileChooserDialogTitle:string   { "Sačuvaj fajl" }
