@@ -98,6 +98,11 @@ class MasterPanelWindow : public LocalizedObject
     private:
 
         /**
+         *  The directory where the Glade files are.
+         */
+        Glib::ustring                       gladeDir;
+
+        /**
          *  The Glade object, containing the visual design.
          */
         Glib::RefPtr<Gnome::Glade::Xml>     glade;
@@ -417,12 +422,14 @@ class MasterPanelWindow : public LocalizedObject
         /**
          *  Constructor.
          *
-         *  @param gLiveSupport the gLiveSupport object, handling the
-         *         logic of the application
-         *  @param bundle the resource bundle holding localized resources
+         *  @param  gLiveSupport    the gLiveSupport object, handling the
+         *                          logic of the application.
+         *  @param  bundle      the resource bundle holding localized resources.
+         *  @param  gladeDir    the directory where the Glade files are.
          */
         MasterPanelWindow(Ptr<GLiveSupport>::Ref     gLiveSupport,
-                          Ptr<ResourceBundle>::Ref   bundle)
+                          Ptr<ResourceBundle>::Ref   bundle,
+                          const Glib::ustring &      gladeDir)
                                                                 throw ();
 
         /**

@@ -123,6 +123,7 @@ class GLiveSupport : public LocalizedConfigurable,
                      public AudioPlayerEventListener
 {
     public:
+
         /**
          *  A type for the map of supported languages.
          *  This is an STL map, containing const Glib::ustring as keys, which
@@ -148,8 +149,9 @@ class GLiveSupport : public LocalizedConfigurable,
 
 
     private:
+
         /**
-         *  The name of the configuration XML elmenent used by Playlist.
+         *  The name of the configuration XML elmenent used by this class.
          */
         static const std::string                    configElementNameStr;
 
@@ -162,6 +164,11 @@ class GLiveSupport : public LocalizedConfigurable,
          *  The storage client used by the application.
          */
         Ptr<StorageClientInterface>::Ref            storage;
+
+        /**
+         *  The directory where the Glade files are.
+         */
+        Glib::ustring                               gladeDir;
 
         /**
          *  The widget factory, containing our own widgets.
@@ -410,6 +417,7 @@ class GLiveSupport : public LocalizedConfigurable,
 
 
     protected:
+
         /**
          *  A signal object to notify people that the edited playlist changed.
          */
@@ -417,6 +425,7 @@ class GLiveSupport : public LocalizedConfigurable,
 
 
     public:
+
         /**
          *  Constructor.
          */

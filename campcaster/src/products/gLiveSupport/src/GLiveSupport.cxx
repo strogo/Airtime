@@ -121,6 +121,11 @@ const std::string   localeAttrName = "locale";
 const std::string   nameAttrName = "name";
 
 /*------------------------------------------------------------------------------
+ *  The name of the config element for the directory where the Glade files are
+ *----------------------------------------------------------------------------*/
+const std::string   gladeDirConfigElementName = "gladeDirectory";
+
+/*------------------------------------------------------------------------------
  *  The name of the config element for the scheduler daemon start command
  *----------------------------------------------------------------------------*/
 const std::string   schedulerDaemonCommandsElementName
@@ -191,6 +196,7 @@ const std::string   serialPortConfigElementName = "serialPort";
  *  The default serial device
  *----------------------------------------------------------------------------*/
 const std::string   serialPortDefaultDevice = "/dev/ttyS0";
+
 }
 
 /* ===============================================  local function prototypes */
@@ -252,6 +258,16 @@ GLiveSupport :: configure(const xmlpp::Element    & element)
     stcf->configure(*dynamic_cast<const xmlpp::Element*>(nodes.front()));
 
     storage = stcf->getStorageClient();
+
+    // configure the directory where the Glade files are
+    nodes = element.get_children(gladeDirConfigElementName);
+    if (nodes.size() < 1) {
+        throw std::invalid_argument("no gladeDirectory element");
+    }
+    const xmlpp::Element*  gladeDirElement 
+                           = dynamic_cast<const xmlpp::Element*>(nodes.front());
+    gladeDir = gladeDirElement->get_attribute("path")
+                              ->get_value();
 
     // configure the WidgetFactory
     nodes = element.get_children(WidgetFactory::getConfigElementName());
@@ -537,7 +553,9 @@ void
 LiveSupport :: GLiveSupport ::
 GLiveSupport :: show(void)                              throw ()
 {
-    masterPanel.reset(new MasterPanelWindow(shared_from_this(), getBundle()));
+    masterPanel.reset(new MasterPanelWindow(shared_from_this(),
+                                            getBundle(),
+                                            gladeDir));
 
     masterPanel->getWindow()->set_icon_list(taskbarIcons->getIconList());
     masterPanel->getWindow()->set_default_icon_list(

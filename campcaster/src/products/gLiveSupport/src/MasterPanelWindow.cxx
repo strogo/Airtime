@@ -56,11 +56,6 @@ using namespace LiveSupport::GLiveSupport;
 namespace {
 
 /**
- *  The location of the glade file.
- */
-const Glib::ustring     gladeDir = "./var/glade/";
-
-/**
  *  The name of the glade file.
  */
 const Glib::ustring     gladeFileName   = "MasterPanelWindow.glade";
@@ -93,10 +88,12 @@ const int               asyncUpdateFrequency = 10;
  *  Constructor.
  *----------------------------------------------------------------------------*/
 MasterPanelWindow :: MasterPanelWindow (Ptr<GLiveSupport>::Ref    gLiveSupport,
-                                        Ptr<ResourceBundle>::Ref  bundle)
+                                        Ptr<ResourceBundle>::Ref  bundle,
+                                        const Glib::ustring &     gladeDir)
                                                                     throw ()
                         : LocalizedObject(bundle),
                           gLiveSupport(gLiveSupport),
+                          gladeDir(gladeDir),
                           userIsLoggedIn(false)                          
 {
     glade = Gnome::Glade::Xml::create(gladeDir + gladeFileName);
