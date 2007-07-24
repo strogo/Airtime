@@ -95,20 +95,6 @@ AdvancedSearchItem :: AdvancedSearchItem(
 
 
 /*------------------------------------------------------------------------------
- *  Add the index to a string.
- *----------------------------------------------------------------------------*/
-Glib::ustring
-AdvancedSearchItem :: addIndex(const Glib::ustring &  baseString,
-                               int                    index)        throw ()
-{
-    std::ostringstream      stream;
-    stream << baseString
-           << (index + 1);      // Glade indexes are 1-based (why?!)
-    return stream.str();
-}
-
-
-/*------------------------------------------------------------------------------
  *  Return the current state of the search fields.
  *----------------------------------------------------------------------------*/
 Ptr<SearchCriteria::SearchConditionType>::Ref

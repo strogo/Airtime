@@ -33,18 +33,18 @@
 #include "configure.h"
 #endif
 
-
-#include "RdsEntry.h"
+#include "LiveSupport/Core/NumericTools.h"
+#include "NumericToolsTest.h"
 
 
 using namespace LiveSupport::Core;
-using namespace LiveSupport::Widgets;
-using namespace LiveSupport::GLiveSupport;
 
 /* ===================================================  local data structures */
 
 
 /* ================================================  local constants & macros */
+
+CPPUNIT_TEST_SUITE_REGISTRATION(NumericToolsTest);
 
 
 /* ===============================================  local function prototypes */
@@ -53,72 +53,49 @@ using namespace LiveSupport::GLiveSupport;
 /* =============================================================  module code */
 
 /*------------------------------------------------------------------------------
- *  Constructor.
- *----------------------------------------------------------------------------*/
-RdsEntry :: RdsEntry(Ptr<ResourceBundle>::Ref           bundle,
-                     Glib::RefPtr<Gnome::Glade::Xml>    glade,
-                     int                                index,
-                     const Glib::ustring &              type,
-                     int                                width)
-                                                                    throw ()
-          : LocalizedObject(bundle)
-{
-    this->type.reset(new const Glib::ustring(type));
-    
-    glade->get_widget(addIndex("rdsCheckButton", index), checkButton);
-    checkButton->set_label(*getResourceUstring(type + "rdsLabel"));
-
-    glade->get_widget(addIndex("rdsEntry", index), entry);
-    entry->set_width_chars(width);
-}
-
-
-/*------------------------------------------------------------------------------
- *  Set the state of the widget.
+ *  Set up the test environment
  *----------------------------------------------------------------------------*/
 void
-RdsEntry :: setOptions(bool                           enabled,
-                       Ptr<const Glib::ustring>::Ref  value)        throw ()
+NumericToolsTest :: setUp(void)                                     throw ()
 {
-    checkButton->set_active(enabled);
-    entry->set_text(*value);
-    
-    checkButtonSaved = enabled;
-    entrySaved = value;
 }
 
 
 /*------------------------------------------------------------------------------
- *  Save the changes made by the user.
- *----------------------------------------------------------------------------*/
-bool
-RdsEntry :: saveChanges(Ptr<GLiveSupport>::Ref      gLiveSupport)   throw ()
-{
-    bool            checkButtonNow = checkButton->get_active();
-    Ptr<const Glib::ustring>::Ref
-                    entryNow(new const Glib::ustring(entry->get_text()));
-    
-    if (!entrySaved || checkButtonNow != checkButtonSaved
-                    || *entryNow != *entrySaved) {
-        Ptr<OptionsContainer>::Ref      optionsContainer =
-                                        gLiveSupport->getOptionsContainer();
-        optionsContainer->setRdsOptions(type, entryNow, checkButtonNow);
-        checkButtonSaved = checkButtonNow;
-        entrySaved = entryNow;
-        return true;
-    } else {
-        return false;
-    }
-}
-
-
-/*------------------------------------------------------------------------------
- *  Clear the entries of the widget.
+ *  Clean up the test environment
  *----------------------------------------------------------------------------*/
 void
-RdsEntry :: reset(void)                                             throw ()
+NumericToolsTest :: tearDown(void)                                  throw ()
 {
-    Ptr<const Glib::ustring>::Ref   empty(new const Glib::ustring(""));
-    setOptions(false, empty);
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Test the itoa() function.
+ *----------------------------------------------------------------------------*/
+void
+NumericToolsTest :: itoaTest(void)
+                                                throw (CPPUNIT_NS::Exception)
+{
+    int             i = 3142874;
+    Glib::ustring   a = NumericTools::itoa(i);
+    CPPUNIT_ASSERT(a == "3142874");
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Test the addIndex() function.
+ *----------------------------------------------------------------------------*/
+void
+NumericToolsTest :: addIndexTest(void)
+                                                throw (CPPUNIT_NS::Exception)
+{
+    Glib::ustring       base = "itemLabel";
+    int                 index = 123;
+    Glib::ustring       result = NumericTools::addIndex(base, index);
+    CPPUNIT_ASSERT(result == "itemLabel124");
+
+    Glib::ustring       second = NumericTools::addIndex("second", 0);
+    CPPUNIT_ASSERT(second == "second1");
 }
 

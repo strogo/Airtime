@@ -45,10 +45,12 @@
 #include <gtkmm.h>
 #include <libglademm.h>
 
+#include "BasicWindow.h"
+#include "LiveSupport/Core/NumericTools.h"
+
 #include "LiveSupport/Core/Ptr.h"
 #include "LiveSupport/Core/LocalizedObject.h"
 #include "LiveSupport/Widgets/PlayableTreeModelColumnRecord.h"
-#include "BasicWindow.h"
 #include "AdvancedSearchEntry.h"
 #include "BrowseEntry.h"
 #include "GLiveSupport.h"
@@ -77,7 +79,8 @@ using namespace LiveSupport::Widgets;
  *  @author $Author$
  *  @version $Revision$
  */
-class SearchWindow : public BasicWindow
+class SearchWindow : public  BasicWindow,
+                     private NumericTools
 {
     private:
 
@@ -390,15 +393,6 @@ class SearchWindow : public BasicWindow
         void
         displayRemoteSearchError(const XmlRpcException &    error)
                                                                 throw ();
-
-        /**
-         *  Convert an integer to a string.
-         *
-         *  @param  number      the number to be converted.
-         *  @return the string value of the number (in base 10).
-         */
-        static Glib::ustring
-        itoa(int    number)                                     throw ();
 
 
     protected:

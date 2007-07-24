@@ -95,20 +95,6 @@ BrowseItem :: BrowseItem(int                                index,
 
 
 /*------------------------------------------------------------------------------
- *  Add the index to a string.
- *----------------------------------------------------------------------------*/
-Glib::ustring
-BrowseItem :: addIndex(const Glib::ustring &    baseString,
-                       int                      index)              throw ()
-{
-    std::ostringstream      stream;
-    stream << baseString
-           << (index + 1);      // Glade indexes are 1-based (why?!)
-    return stream.str();
-}
-
-
-/*------------------------------------------------------------------------------
  *  Return the search criteria selected by the user.
  *----------------------------------------------------------------------------*/
 Ptr<SearchCriteria>::Ref

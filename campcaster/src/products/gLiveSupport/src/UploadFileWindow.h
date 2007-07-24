@@ -43,11 +43,13 @@
 #include <gtkmm.h>
 #include <libglademm.h>
 
+#include "BasicWindow.h"
+#include "LiveSupport/Core/NumericTools.h"
+
 #include "LiveSupport/Core/Ptr.h"
 #include "LiveSupport/Core/LocalizedObject.h"
 #include "LiveSupport/Widgets/ComboBoxText.h"
 #include "RestoreBackupWindow.h"
-#include "BasicWindow.h"
 #include "GLiveSupport.h"
 
 namespace LiveSupport {
@@ -73,7 +75,8 @@ using namespace LiveSupport::Widgets;
  *  @author $Author$
  *  @version $Revision$
  */
-class UploadFileWindow : public BasicWindow
+class UploadFileWindow : public  BasicWindow,
+                         private NumericTools
 {
     private:
 
@@ -188,15 +191,6 @@ class UploadFileWindow : public BasicWindow
                               const Glib::ustring &             tabName,
                               int                               index)
                                                             throw ();
-
-        /**
-         *  Convert an integer to a string.
-         *
-         *  @param  number      the number to be converted.
-         *  @return the string value of the number (in base 10).
-         */
-        static Glib::ustring
-        itoa(int    number)                                 throw ();
 
         /**
          *  Update the information for the file to upload, based on the

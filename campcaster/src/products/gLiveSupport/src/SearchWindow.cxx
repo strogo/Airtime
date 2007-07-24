@@ -1147,16 +1147,3 @@ SearchWindow :: updatePagingToolbar(void)                       throw ()
     }        
 }
 
-
-/*------------------------------------------------------------------------------
- *  Convert an integer to a string.
- *----------------------------------------------------------------------------*/
-Glib::ustring
-SearchWindow :: itoa(int    number)                             throw ()
-{
-    std::ostringstream  stream;
-    stream << number;
-    Glib::ustring       string = stream.str();
-    return string;
-}
-

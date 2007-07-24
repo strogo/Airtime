@@ -47,6 +47,7 @@
 
 #include "LiveSupport/Core/Ptr.h"
 #include "LiveSupport/Core/LocalizedObject.h"
+#include "LiveSupport/Core/NumericTools.h"
 #include "LiveSupport/Core/SearchCriteria.h"
 #include "LiveSupport/Widgets/ComboBoxText.h"
 #include "LiveSupport/Widgets/ZebraTreeView.h"
@@ -82,7 +83,8 @@ using namespace LiveSupport::Widgets;
  *  @author  $Author$
  *  @version $Revision$
  */
-class BrowseItem : public LocalizedObject
+class BrowseItem : public  LocalizedObject,
+                   private NumericTools
 {
     private:
     
@@ -171,13 +173,6 @@ class BrowseItem : public LocalizedObject
         {
             signalSelectionChanged().emit();
         }
-
-        /**
-         *  Add the index to a string.
-         */
-        Glib::ustring
-        addIndex(const Glib::ustring &      baseString,
-                 int                        index)                  throw ();
 
 
     protected:

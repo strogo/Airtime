@@ -202,19 +202,6 @@ UploadFileWindow :: constructMetadataItem(
 
 
 /*------------------------------------------------------------------------------
- *  Convert an integer to a string.
- *----------------------------------------------------------------------------*/
-Glib::ustring
-UploadFileWindow :: itoa(int    number)                             throw ()
-{
-    std::ostringstream  stream;
-    stream << number;
-    Glib::ustring       string = stream.str();
-    return string;
-}
-
-
-/*------------------------------------------------------------------------------
  *  The event when the choose file button has been clicked.
  *----------------------------------------------------------------------------*/
 void

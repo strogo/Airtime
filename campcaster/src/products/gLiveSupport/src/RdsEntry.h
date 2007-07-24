@@ -45,6 +45,7 @@
 
 #include "LiveSupport/Core/Ptr.h"
 #include "LiveSupport/Core/LocalizedObject.h"
+#include "LiveSupport/Core/NumericTools.h"
 #include "GLiveSupport.h"
 
 
@@ -69,7 +70,8 @@ using namespace LiveSupport::GLiveSupport;
  *  @author  $Author$
  *  @version $Revision$
  */
-class RdsEntry : public LocalizedObject
+class RdsEntry : public  LocalizedObject,
+                 private NumericTools
 {
     private:
 
@@ -87,13 +89,6 @@ class RdsEntry : public LocalizedObject
          *  The saved contents of the entry.
          */
         Ptr<const Glib::ustring>::Ref   entrySaved;
-
-        /**
-         *  Add the index to a string.
-         */
-        Glib::ustring
-        addIndex(const Glib::ustring &  baseString,
-                 int                    index)                      throw ();
 
 
     protected:

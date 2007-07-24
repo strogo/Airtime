@@ -47,6 +47,7 @@
 
 #include "LiveSupport/Core/Ptr.h"
 #include "LiveSupport/Core/LocalizedObject.h"
+#include "LiveSupport/Core/NumericTools.h"
 #include "LiveSupport/Core/MetadataTypeContainer.h"
 #include "LiveSupport/Core/SearchCriteria.h"
 #include "LiveSupport/Widgets/MetadataComboBoxText.h"
@@ -73,7 +74,8 @@ using namespace LiveSupport::Widgets;
  *  @author  $Author$
  *  @version $Revision$
  */
-class AdvancedSearchItem : public LocalizedObject
+class AdvancedSearchItem : public  LocalizedObject,
+                           private NumericTools
 {
     private:
 
@@ -129,13 +131,6 @@ class AdvancedSearchItem : public LocalizedObject
         {
             hide();
         }
-
-        /**
-         *  Add the index to a string.
-         */
-        Glib::ustring
-        addIndex(const Glib::ustring &  baseString,
-                 int                    index)                  throw ();
 
 
     public:
