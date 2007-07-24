@@ -126,6 +126,11 @@ const std::string   nameAttrName = "name";
 const std::string   gladeDirConfigElementName = "gladeDirectory";
 
 /*------------------------------------------------------------------------------
+ *  The name of the glade file.
+ *----------------------------------------------------------------------------*/
+const std::string   gladeFileName = "GLiveSupport.glade";
+
+/*------------------------------------------------------------------------------
  *  The name of the config element for the scheduler daemon start command
  *----------------------------------------------------------------------------*/
 const std::string   schedulerDaemonCommandsElementName
@@ -268,6 +273,7 @@ GLiveSupport :: configure(const xmlpp::Element    & element)
                            = dynamic_cast<const xmlpp::Element*>(nodes.front());
     gladeDir = gladeDirElement->get_attribute("path")
                               ->get_value();
+    glade = Gnome::Glade::Xml::create(gladeDir + gladeFileName);
 
     // configure the WidgetFactory
     nodes = element.get_children(WidgetFactory::getConfigElementName());
@@ -490,7 +496,7 @@ GLiveSupport :: checkConfiguration(void)                    throw ()
         Ptr<UnicodeString>::Ref uLanguage = ustringToUnicodeString(language);
         Ptr<Glib::ustring>::Ref msg = formatMessage(localeNotAvailableKey,
                                                     (*it).first);
-        displayMessageWindow(msg);
+        displayMessageWindow(*msg);
 
         changeLocale("");
         return false;
@@ -512,7 +518,7 @@ GLiveSupport :: checkConfiguration(void)                    throw ()
         storageAvailable = true;
     } catch (XmlRpcException &e) {
         storageAvailable = false;
-        displayMessageWindow(getResourceUstring(storageNotReachableKey));
+        displayMessageWindow(*getResourceUstring(storageNotReachableKey));
     }
 
     // no need to check the widget factory
@@ -520,7 +526,7 @@ GLiveSupport :: checkConfiguration(void)                    throw ()
     // check the scheduler client
     checkSchedulerClient();
     if (!isSchedulerAvailable()) {
-        displayMessageWindow(getResourceUstring(schedulerNotReachableKey));
+        displayMessageWindow(*getResourceUstring(schedulerNotReachableKey));
     }
 
     // TODO: check the audio player?
@@ -532,17 +538,62 @@ GLiveSupport :: checkConfiguration(void)                    throw ()
 /*------------------------------------------------------------------------------
  *  Display a message window.
  *----------------------------------------------------------------------------*/
-void
+inline void
 LiveSupport :: GLiveSupport ::
-GLiveSupport :: displayMessageWindow(Ptr<const Glib::ustring>::Ref    message)
+GLiveSupport :: displayMessageWindow(const Glib::ustring &      message)
                                                                     throw ()
 {
-    std::cerr << "gLiveSupport: " << *message << std::endl;
+    runOkDialog(message);
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Run a dialog window with No and Yes buttons.
+ *----------------------------------------------------------------------------*/
+inline Gtk::ResponseType
+LiveSupport :: GLiveSupport ::
+GLiveSupport :: runNoYesDialog(const Glib::ustring &    message)
+                                                                    throw ()
+{
+    return runDialog("noYesDialog", message);
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Run a dialog window with just an OK button.
+ *----------------------------------------------------------------------------*/
+inline Gtk::ResponseType
+LiveSupport :: GLiveSupport ::
+GLiveSupport :: runOkDialog(const Glib::ustring &       message)
+                                                                    throw ()
+{
+    return runDialog("okDialog", message);
+}
+
+
+/*------------------------------------------------------------------------------
+ *  Run a dialog window.
+ *----------------------------------------------------------------------------*/
+Gtk::ResponseType
+LiveSupport :: GLiveSupport ::
+GLiveSupport :: runDialog(const Glib::ustring &         dialogName,
+                          const Glib::ustring &         message)
+                                                                    throw ()
+{
+    Gtk::Dialog *       dialog;
+    Gtk::Label *        dialogLabel;
+    glade->get_widget(dialogName + "1", dialog);
+    glade->get_widget(dialogName + "Label1", dialogLabel);
     
-    Ptr<DialogWindow>::Ref  window(widgetFactory->createDialogWindow(
-                                                                message,
-                                                                getBundle()));
-    window->run();
+    Glib::ustring       formattedMessage = "<span weight=\"bold\" ";
+    formattedMessage += " size=\"larger\">";
+    formattedMessage += message;
+    formattedMessage += "</span>";
+    dialogLabel->set_label(formattedMessage);
+
+    Gtk::ResponseType   response = Gtk::ResponseType(dialog->run());
+    dialog->hide();
+    return response;
 }
 
 
@@ -1248,21 +1299,21 @@ GLiveSupport :: playOutputAudio(Ptr<Playable>::Ref playable)
                                     = getResourceUstring("audioErrorMsg");
         eMsg->append("\n");
         eMsg->append(e.what());
-        displayMessageWindow(eMsg);
+        displayMessageWindow(*eMsg);
         throw std::runtime_error(e.what());
     } catch (std::invalid_argument &e) {
         Ptr<Glib::ustring>::Ref     eMsg 
                                     = getResourceUstring("audioErrorMsg");
         eMsg->append("\n");
         eMsg->append(e.what());
-        displayMessageWindow(eMsg);
+        displayMessageWindow(*eMsg);
         throw std::runtime_error(e.what());
     } catch (std::runtime_error &e) {
         Ptr<Glib::ustring>::Ref     eMsg 
                                     = getResourceUstring("audioErrorMsg");
         eMsg->append("\n");
         eMsg->append(e.what());
-        displayMessageWindow(eMsg);
+        displayMessageWindow(*eMsg);
         throw std::runtime_error(e.what());
     }
 
@@ -1332,7 +1383,7 @@ GLiveSupport :: onStop(Ptr<const Glib::ustring>::Ref      errorMessage)
     }
     
     if (errorMessage) {
-        displayMessageWindow(errorMessage);
+        displayMessageWindow(*errorMessage);
     }
 }
 
@@ -1378,21 +1429,21 @@ GLiveSupport :: playCueAudio(Ptr<Playable>::Ref playable)
                                     = getResourceUstring("audioErrorMsg");
         eMsg->append("\n");
         eMsg->append(e.what());
-        displayMessageWindow(eMsg);
+        displayMessageWindow(*eMsg);
         throw std::runtime_error(e.what());
     } catch (std::invalid_argument &e) {
         Ptr<Glib::ustring>::Ref     eMsg 
                                     = getResourceUstring("audioErrorMsg");
         eMsg->append("\n");
         eMsg->append(e.what());
-        displayMessageWindow(eMsg);
+        displayMessageWindow(*eMsg);
         throw std::runtime_error(e.what());
     } catch (std::runtime_error &e) {
         Ptr<Glib::ustring>::Ref     eMsg 
                                     = getResourceUstring("audioErrorMsg");
         eMsg->append("\n");
         eMsg->append(e.what());
-        displayMessageWindow(eMsg);
+        displayMessageWindow(*eMsg);
         throw std::runtime_error(e.what());
     }
     
@@ -1794,42 +1845,23 @@ void
 LiveSupport :: GLiveSupport ::
 GLiveSupport :: displayAuthenticationServerMissingMessage(void)     throw ()
 {
-    Ptr<Glib::ustring>::Ref     message;
-    try {
-        message = getResourceUstring("authenticationNotReachableMsg");
-    } catch (std::invalid_argument &e) {
-        std::cerr << e.what() << std::endl;
-        std::exit(1);
-    }
-    
     // "authentication not available -- would you like to edit the options?"
-    Ptr<DialogWindow>::Ref      question(widgetFactory->createDialogWindow(
-                                                message,
-                                                getBundle(),
-                                                DialogWindow::noButton
-                                                | DialogWindow::yesButton ));
-    DialogWindow::ButtonType    answer = question->run();
+    Gtk::ResponseType   answer = runNoYesDialog(*getResourceUstring(
+                                            "authenticationNotReachableMsg"));
     
-    if (answer == DialogWindow::yesButton) {
-        Ptr<ResourceBundle>::Ref    bundle;
-        try {
-            bundle  = getBundle("optionsWindow");
-        } catch (std::invalid_argument &e) {
-            std::cerr << e.what() << std::endl;
-            return;
-        }
-
+    if (answer == Gtk::RESPONSE_YES) {
 /* DISABLED TEMPORARILY
         Ptr<OptionsWindow>::Ref     optionsWindow(new OptionsWindow(
-                                                            shared_from_this(),
-                                                            bundle,
-                                                            0));
+                                                    shared_from_this(),
+                                                    getBundle("optionsWindow"),
+                                                    0,
+                                                    gladeDir));
         optionsWindow->run();
-*/
         
         if (optionsContainer->isTouched()) {
             optionsContainer->writeToFile();
         }
+*/
     }
 }
 

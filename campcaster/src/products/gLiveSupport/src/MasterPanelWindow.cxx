@@ -844,7 +844,8 @@ MasterPanelWindow :: updateUserInfo(Ptr<const Glib::ustring>::Ref   loginName)
 bool
 MasterPanelWindow :: onDeleteEvent(GdkEventAny *    event)          throw ()
 {
-    Gtk::ResponseType       response = runConfirmationDialog();
+    Gtk::ResponseType   response = gLiveSupport->runNoYesDialog(
+                                        *getResourceUstring("sureToExitMsg"));
     if (response != Gtk::RESPONSE_YES) {
         return true;
     }
@@ -859,29 +860,5 @@ MasterPanelWindow :: onDeleteEvent(GdkEventAny *    event)          throw ()
     }
 
     return false;
-}
-
-
-/*------------------------------------------------------------------------------
- *  Run the confirmation window.
- *----------------------------------------------------------------------------*/
-Gtk::ResponseType
-MasterPanelWindow :: runConfirmationDialog(void)                    throw ()
-{
-    Gtk::Dialog *       confirmationDialog;
-    Gtk::Label *        confirmationDialogLabel;
-    glade->get_widget("confirmationDialog1", confirmationDialog);
-    glade->get_widget("confirmationDialogLabel1", confirmationDialogLabel);
-    
-    Glib::ustring       message = "<span weight=\"bold\" ";
-    message += " size=\"larger\">";
-    message += *getResourceUstring("sureToExitMsg");
-    message += "</span>";
-    confirmationDialogLabel->set_label(message);
-
-    Gtk::ResponseType   response = Gtk::ResponseType(
-                                            confirmationDialog->run());
-    confirmationDialog->hide();
-    return response;
 }
 

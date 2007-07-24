@@ -181,7 +181,7 @@ ExportPlaylistWindow :: onSaveButtonClicked(void)                   throw ()
         Ptr<Glib::ustring>::Ref errorMsg = getResourceUstring(
                                                     "createExportErrorMsg");
         errorMsg->append(e.what());
-        gLiveSupport->displayMessageWindow(errorMsg);
+        gLiveSupport->displayMessageWindow(*errorMsg);
         return;
     }
     
@@ -220,7 +220,7 @@ ExportPlaylistWindow :: onSaveButtonClicked(void)                   throw ()
         } catch (std::runtime_error &e) {
             Ptr<Glib::ustring>::Ref errorMsg = getResourceUstring(
                                                     "saveExportErrorMsg");
-            gLiveSupport->displayMessageWindow(errorMsg);
+            gLiveSupport->displayMessageWindow(*errorMsg);
         }
     }
     
@@ -247,7 +247,7 @@ ExportPlaylistWindow :: resetToken(void)                            throw ()
         Ptr<Glib::ustring>::Ref         errorMsg = getResourceUstring(
                                                     "createExportErrorMsg");
         errorMsg->append(e.what());
-        gLiveSupport->displayMessageWindow(errorMsg);
+        gLiveSupport->displayMessageWindow(*errorMsg);
     }
 }
 

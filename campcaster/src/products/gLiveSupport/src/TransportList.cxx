@@ -475,7 +475,7 @@ TransportList :: onCancelTransport(void)                            throw ()
         removeSelected();
 
     } catch (XmlRpcException &e) {
-        gLiveSupport->displayMessageWindow(formatMessage(
+        gLiveSupport->displayMessageWindow(*formatMessage(
                                                 "cannotCancelTransportMsg",
                                                 e.what() ));
     }    

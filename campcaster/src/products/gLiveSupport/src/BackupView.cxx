@@ -182,7 +182,7 @@ BackupView :: onCreateBackup(void)                                  throw ()
         Ptr<Glib::ustring>::Ref     errorMsg
                                     = getResourceUstring("backupErrorMsg");
         errorMsg->append(e.what());
-        gLiveSupport->displayMessageWindow(errorMsg);
+        gLiveSupport->displayMessageWindow(*errorMsg);
     }
 }
 
@@ -200,7 +200,7 @@ BackupView :: onDeleteButtonClicked(void)                           throw ()
         Ptr<Glib::ustring>::Ref     errorMsg
                                     = getResourceUstring("backupErrorMsg");
         errorMsg->append(e.what());
-        gLiveSupport->displayMessageWindow(errorMsg);
+        gLiveSupport->displayMessageWindow(*errorMsg);
     }
 }
 
@@ -219,7 +219,7 @@ BackupView :: onSaveButtonClicked(void)                             throw ()
         Ptr<Glib::ustring>::Ref     errorMsg
                                     = getResourceUstring("backupErrorMsg");
         errorMsg->append(e.what());
-        gLiveSupport->displayMessageWindow(errorMsg);
+        gLiveSupport->displayMessageWindow(*errorMsg);
     }
     
     if (!url) {

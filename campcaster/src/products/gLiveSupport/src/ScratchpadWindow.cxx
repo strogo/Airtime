@@ -277,7 +277,7 @@ ScratchpadWindow :: onEditPlaylist(void)                            throw ()
     try {
         gLiveSupport->openPlaylistForEditing(playable->getId());
     } catch (XmlRpcException &e) {
-        gLiveSupport->displayMessageWindow(getResourceUstring(
+        gLiveSupport->displayMessageWindow(*getResourceUstring(
                                                     "cannotEditPlaylistMsg" ));
     }
 }

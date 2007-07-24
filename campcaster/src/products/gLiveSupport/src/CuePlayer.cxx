@@ -209,7 +209,7 @@ CuePlayer :: onStop(Ptr<const Glib::ustring>::Ref  errorMessage)    throw ()
     setAudioState(waitingState);
     
     if (errorMessage) {
-        gLiveSupport->displayMessageWindow(errorMessage);
+        gLiveSupport->displayMessageWindow(*errorMessage);
     }
 }
 

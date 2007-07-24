@@ -147,16 +147,8 @@ OptionsWindow :: onApplyButtonClicked(void)                         throw ()
     saveChangesInRds();                             // no need to restart
 
     if (changed) {
-        try {
-            Ptr<Glib::ustring>::Ref
-                    restartMessage(new Glib::ustring(
-                                *getResourceUstring("needToRestartMsg") ));
-            gLiveSupport->displayMessageWindow(restartMessage);
-        } catch (std::invalid_argument &e) {
-            // TODO: signal error
-            std::cerr << e.what() << std::endl;
-            std::exit(1);
-        }
+        gLiveSupport->displayMessageWindow(*getResourceUstring(
+                                                    "needToRestartMsg"));
     }
 }
 
@@ -192,7 +184,7 @@ OptionsWindow :: saveChangesInStringEntryFields(void)               throw ()
                             errorMessage(new Glib::ustring(
                                         *getResourceUstring("errorMsg") ));
                     errorMessage->append(e.what());
-                    gLiveSupport->displayMessageWindow(errorMessage);
+                    gLiveSupport->displayMessageWindow(*errorMessage);
                 } catch (std::invalid_argument &e) {
                     std::cerr << e.what() << std::endl;
                     std::exit(1);
@@ -252,7 +244,7 @@ OptionsWindow :: saveChangesInKeyBindings(void)                     throw ()
                                 errorMessage(new Glib::ustring(
                                             *getResourceUstring("errorMsg") ));
                         errorMessage->append(e.what());
-                        gLiveSupport->displayMessageWindow(errorMessage);
+                        gLiveSupport->displayMessageWindow(*errorMessage);
                     } catch (std::invalid_argument &e) {
                         std::cerr << e.what() << std::endl;
                         std::exit(1);

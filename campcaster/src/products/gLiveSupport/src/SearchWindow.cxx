@@ -528,8 +528,8 @@ SearchWindow :: remoteSearchClose(void)
             
         } else if (state == AsyncState::failedState) {
             remoteSearchToken.reset();
-            gLiveSupport->displayMessageWindow(formatMessage("longErrorMsg",
-                                                             *errorMessage ));
+            gLiveSupport->displayMessageWindow(*formatMessage("longErrorMsg",
+                                                              *errorMessage ));
             displayMessage("shortErrorMsg", remoteSearchResults);
         }
     }
@@ -561,8 +561,8 @@ SearchWindow :: displayError(const XmlRpcException &        error,
                              Glib::RefPtr<Gtk::ListStore>   treeModel)
                                                                 throw ()
 {
-    gLiveSupport->displayMessageWindow(formatMessage("longErrorMsg",
-                                                     error.what() ));
+    gLiveSupport->displayMessageWindow(*formatMessage("longErrorMsg",
+                                                      error.what() ));
     displayMessage("shortErrorMsg", treeModel);
 }
 
@@ -658,7 +658,7 @@ SearchWindow :: onAddToScratchpad(void)                         throw ()
                 Ptr<Glib::ustring>::Ref     errorMessage(new Glib::ustring(
                             "error in SearchWindow::onAddToScratchpad(): "));
                 errorMessage->append(e.what());
-                gLiveSupport->displayMessageWindow(errorMessage);
+                gLiveSupport->displayMessageWindow(*errorMessage);
             }
         }
     }
@@ -685,7 +685,7 @@ SearchWindow :: onAddToPlaylist(void)                           throw ()
                 Ptr<Glib::ustring>::Ref     errorMessage(new Glib::ustring(
                             "error in SearchWindow::onAddToPlaylist(): "));
                 errorMessage->append(e.what());
-                gLiveSupport->displayMessageWindow(errorMessage);
+                gLiveSupport->displayMessageWindow(*errorMessage);
         }
     }
 }
@@ -713,7 +713,7 @@ SearchWindow :: onAddToLiveMode(void)                           throw ()
                 Ptr<Glib::ustring>::Ref     errorMessage(new Glib::ustring(
                             "error in SearchWindow::onAddToLiveMode(): "));
                 errorMessage->append(e.what());
-                gLiveSupport->displayMessageWindow(errorMessage);
+                gLiveSupport->displayMessageWindow(*errorMessage);
             }
         }
     }
@@ -739,8 +739,8 @@ SearchWindow :: onEditPlaylist(void)                            throw ()
             try {
                 gLiveSupport->openPlaylistForEditing(playlist->getId());
             } catch (XmlRpcException &e) {
-                gLiveSupport->displayMessageWindow(getResourceUstring(
-                                                    "cannotEditPlaylistMsg" ));
+                gLiveSupport->displayMessageWindow(*getResourceUstring(
+                                                   "cannotEditPlaylistMsg" ));
             }
         }
     }
@@ -839,8 +839,8 @@ SearchWindow :: uploadToHub(Ptr<Playable>::Ref  playable)       throw ()
         transportList->addUpload(playable);
         
     } catch (XmlRpcException &e) {
-        gLiveSupport->displayMessageWindow(formatMessage("uploadToHubErrorMsg",
-                                                         e.what() ));
+        gLiveSupport->displayMessageWindow(*formatMessage("uploadToHubErrorMsg",
+                                                          e.what() ));
         return false;
     }
     
@@ -868,7 +868,7 @@ SearchWindow :: onDownloadFromHub(void)                         throw ()
                     transportList->addDownload(playable);
                     
                 } catch (XmlRpcException &e) {
-                    gLiveSupport->displayMessageWindow(formatMessage(
+                    gLiveSupport->displayMessageWindow(*formatMessage(
                                         "downloadFromHubErrorMsg", e.what() ));
                     return;
                 }

@@ -342,8 +342,7 @@ SchedulerWindow :: onStopCurrentlyPlayingButtonClicked(void)        throw ()
         scheduler->stopCurrentlyPlaying(sessionId);
         
     } catch (XmlRpcException &e) {
-        Ptr<Glib::ustring>::Ref     errorMessage(new Glib::ustring(e.what()));
-        gLiveSupport->displayMessageWindow(errorMessage);
+        gLiveSupport->displayMessageWindow(e.what());
     }
     
     showContents();

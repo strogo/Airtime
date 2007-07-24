@@ -171,6 +171,12 @@ class GLiveSupport : public LocalizedConfigurable,
         Glib::ustring                               gladeDir;
 
         /**
+         *  The Glade object, containing the visual design.
+         *  For this class, it only contains some pop-up windows.
+         */
+        Glib::RefPtr<Gnome::Glade::Xml>             glade;
+
+        /**
          *  The widget factory, containing our own widgets.
          */
         Ptr<WidgetFactory>::Ref                     widgetFactory;
@@ -415,6 +421,18 @@ class GLiveSupport : public LocalizedConfigurable,
         Glib::ustring
         replaceSpaces(Ptr<const Glib::ustring>::Ref     string)     throw ();
 
+        /**
+         *  Run a dialog window.
+         *
+         *  @param  dialogName  the type of the dialog; can be "noYesDialog"
+         *                      or "okDialog".
+         *  @param  message     the text to be displayed by the dialog.
+         *  @return the response ID returned by the dialog.
+         */
+        Gtk::ResponseType
+        runDialog(const Glib::ustring &     dialogName,
+                  const Glib::ustring &     message)                throw ();
+
 
     protected:
 
@@ -505,8 +523,26 @@ class GLiveSupport : public LocalizedConfigurable,
          *  @param message the message to display
          */
         void
-        displayMessageWindow(Ptr<const Glib::ustring>::Ref    message)
+        displayMessageWindow(const Glib::ustring &      message)
                                                                 throw ();
+
+        /**
+         *  Run a dialog window with No and Yes buttons.
+         *
+         *  @param  message the text to be displayed by the dialog.
+         *  @return the response ID returned by the dialog.
+         */
+        Gtk::ResponseType
+        runNoYesDialog(const Glib::ustring &    message)            throw ();
+
+        /**
+         *  Run a dialog window with just an OK button.
+         *
+         *  @param  message the text to be displayed by the dialog.
+         *  @return the response ID returned by the dialog.
+         */
+        Gtk::ResponseType
+        runOkDialog(const Glib::ustring &    message)               throw ();
 
         /**
          *  Show the main window, and run the application.
