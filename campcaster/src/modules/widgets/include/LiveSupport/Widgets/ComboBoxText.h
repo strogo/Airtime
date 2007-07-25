@@ -86,31 +86,6 @@ class ComboBoxText : public Gtk::ComboBoxText
          */
         virtual
         ~ComboBoxText(void)                                         throw ();
-
-        /**
-         *  Some dummy methods, to make the old classes compile.
-         *  FIXME: remove these when the libglade rewrite is finished.
-         */
-        void
-        appendPair(Ptr<const Glib::ustring>::Ref  text,
-                   Ptr<const Glib::ustring>::Ref  key)
-                                                                    throw ()
-        {
-        }
-
-        Ptr<const Glib::ustring>::Ref
-        getActiveKey(void)                          throw (std::logic_error)
-        {
-            Ptr<const Glib::ustring>::Ref   nullPointer;
-            return nullPointer;
-        }
-
-        sigc::signal<void>
-        signalSelectionChanged(void)                                throw ()
-        {
-            sigc::signal<void>   dummy;
-            return dummy;
-        }
 };
 
 

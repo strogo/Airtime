@@ -135,12 +135,12 @@ class BrowseEntry : public LocalizedObject
          *  The signal raised when either the combo box or the tree view
          *  selection has changed.
          *
-         *  @return the signalSelectionChanged() of the last browse item
+         *  @return the signalChanged() of the last browse item
          */
         sigc::signal<void>
-        signalSelectionChanged(void)                        throw ()
+        signalChanged(void)                                     throw ()
         {
-            return browseItemThree->signalSelectionChanged();
+            return browseItemThree->signalChanged();
         }
 };
 

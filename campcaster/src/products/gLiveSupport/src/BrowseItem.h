@@ -169,9 +169,9 @@ class BrowseItem : public  LocalizedObject,
          *  Emit the "selection changed" signal.
          */
         void
-        emitSignalSelectionChanged(void)                            throw ()
+        emitSignalChanged(void)                                     throw ()
         {
-            signalSelectionChanged().emit();
+            signalChanged().emit();
         }
 
 
@@ -180,7 +180,7 @@ class BrowseItem : public  LocalizedObject,
         /**
          *  A signal object to notify people that the selection has changed.
          */
-        sigc::signal<void>              signalSelectionChangedObject;
+        sigc::signal<void>              signalChangedObject;
 
 
     public:
@@ -254,9 +254,9 @@ class BrowseItem : public  LocalizedObject,
          *  @return the signal object (a protected member of this class)
          */
         sigc::signal<void>
-        signalSelectionChanged(void)                                throw ()
+        signalChanged(void)                                         throw ()
         {
-            return signalSelectionChangedObject;
+            return signalChangedObject;
         }
 };
 

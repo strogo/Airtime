@@ -74,7 +74,7 @@ BrowseItem :: BrowseItem(int                                index,
                               metadataEntry);
     metadataEntry->setContents(gLiveSupport->getMetadataTypeContainer());
     metadataEntry->set_active(defaultIndex);
-    metadataEntry->signalSelectionChanged().connect(sigc::mem_fun(*this,
+    metadataEntry->signal_changed().connect(sigc::mem_fun(*this,
                                                         &BrowseItem::onShow ));
 
     treeModel = Gtk::ListStore::create(modelColumns);
@@ -85,7 +85,7 @@ BrowseItem :: BrowseItem(int                                index,
     metadataValues->connectModelSignals(treeModel);
     metadataValues->appendColumn("", modelColumns.displayedColumn, 200);
     metadataValues->signal_cursor_changed().connect(sigc::mem_fun(*this,
-                                    &BrowseItem::emitSignalSelectionChanged ));
+                                    &BrowseItem::emitSignalChanged ));
     
     allString = Glib::Markup::escape_text(
                                     *getResourceUstring("allStringForBrowse"));
@@ -164,6 +164,6 @@ BrowseItem :: onShow(void)                                          throw ()
                                                                     *valuesIt);
     }
     
-    emitSignalSelectionChanged();
+    emitSignalChanged();
 }
 

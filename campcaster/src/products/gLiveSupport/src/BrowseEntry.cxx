@@ -79,11 +79,11 @@ BrowseEntry :: BrowseEntry(Ptr<GLiveSupport>::Ref           gLiveSupport,
                                          2 /* Album */));
     // TODO: change hard-coded indices to stuff read from config
 
-    browseItemOne->signalSelectionChanged().connect(
+    browseItemOne->signalChanged().connect(
         sigc::bind<Ptr<BrowseItem>::Ref>(
             sigc::mem_fun(*browseItemTwo, &BrowseItem::onParentChangedShow),
             browseItemOne ));
-    browseItemTwo->signalSelectionChanged().connect(
+    browseItemTwo->signalChanged().connect(
         sigc::bind<Ptr<BrowseItem>::Ref>(
             sigc::mem_fun(*browseItemThree, &BrowseItem::onParentChangedShow),
             browseItemTwo ));
