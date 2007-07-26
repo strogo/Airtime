@@ -451,16 +451,14 @@ ScratchpadWindow :: onKeyPressed(GdkEventKey *    event)            throw ()
         switch (action) {
             case KeyboardShortcut::moveItemUp :
                                     if (isSelectionSingle()) {
-// FIXME: temporarily removed
-//                                        treeView->onUpMenuOption();
+                                        treeView->onUpMenuOption();
                                         return true;
                                     }
                                     break;
 
             case KeyboardShortcut::moveItemDown :
                                     if (isSelectionSingle()) {
-// FIXME: temporarily removed
-//                                        treeView->onDownMenuOption();
+                                        treeView->onDownMenuOption();
                                         return true;
                                     }
                                     break;

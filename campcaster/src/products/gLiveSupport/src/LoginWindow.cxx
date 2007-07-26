@@ -121,8 +121,9 @@ LoginWindow :: LoginWindow (Ptr<GLiveSupport>::Ref      gLiveSupport,
     glade->get_widget("statusBar1", statusBar);
     statusBar->set_text("");
     
-    // set the OK button as the default action
-    // FIXME: does not work for some reason
+    // set the OK button as the default action, when the user presses Enter;
+    // this does not work when one of the entry fields have focus,
+    // so we need to connect the 'activate' signals explicitly above
     loginWindow->set_default_response(Gtk::RESPONSE_OK);
 }
 

@@ -63,33 +63,6 @@ const Glib::ustring     applicationTitle = "Campcaster";
  *  Constructor.
  *----------------------------------------------------------------------------*/
 BasicWindow :: BasicWindow (Ptr<GLiveSupport>::Ref      gLiveSupport,
-                            Ptr<ResourceBundle>::Ref    bundle)
-                                                                    throw ()
-          : LocalizedObject(bundle),
-            gLiveSupport(gLiveSupport)
-{
-    // FIXME: remove this constructor, and only use the other one
-}
-
-
-/*------------------------------------------------------------------------------
- *  Constructor.
- *----------------------------------------------------------------------------*/
-BasicWindow :: BasicWindow (Ptr<GLiveSupport>::Ref      gLiveSupport,
-                            Ptr<ResourceBundle>::Ref    bundle,
-                            Gtk::ToggleButton *         windowOpenerButton)
-                                                                    throw ()
-          : LocalizedObject(bundle),
-            gLiveSupport(gLiveSupport)
-{
-    // FIXME: remove this constructor, and only use the other one
-}
-
-
-/*------------------------------------------------------------------------------
- *  Constructor.
- *----------------------------------------------------------------------------*/
-BasicWindow :: BasicWindow (Ptr<GLiveSupport>::Ref      gLiveSupport,
                             Ptr<ResourceBundle>::Ref    bundle,
                             Gtk::ToggleButton *         windowOpenerButton,
                             const Glib::ustring &       gladeFileName)
@@ -126,6 +99,9 @@ void
 BasicWindow :: preShow (void)                                       throw ()
 {
     gLiveSupport->getWindowPosition(this);
+    if (windowOpenerButton) {
+        windowOpenerButton->set_active(true);
+    }
 }
 
 

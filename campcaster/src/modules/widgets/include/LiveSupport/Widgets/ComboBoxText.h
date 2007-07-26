@@ -43,13 +43,8 @@
 #include <gtkmm/comboboxtext.h>
 #include <libglademm.h>
 
-#include "LiveSupport/Core/Ptr.h"       // FIXME: remove this
-#include <gdkmm.h>                      // FIXME: remove this
-
 namespace LiveSupport {
 namespace Widgets {
-
-using namespace Core;                   // FIXME: remove this
 
 /* ================================================================ constants */
 

@@ -440,8 +440,6 @@ SearchWindow :: displaySearchResults(
         Ptr<time_duration>::Ref length = playable->getPlaylength();
         row[modelColumns.lengthColumn] = length ? 
                     *TimeConversion::timeDurationToHhMmSsString(length) : "";
-//int rowNumber = row[modelColumns.rowNumberColumn];
-//std::cerr << "added row " << rowNumber << " in SearchWindow" << std::endl;
     }
 }
 
