@@ -132,7 +132,11 @@ void
 BackupView :: constructBackupListView(void)                         throw ()
 {
     backupList.reset(new BackupList(gLiveSupport, getBundle(), glade));
-    // TODO: connect callbacks FIXME: what callbacks?
+    
+    glade->connect_clicked("backupDeleteButton1", sigc::mem_fun(*this,
+                                        &BackupView::onDeleteButtonClicked));
+    glade->connect_clicked("backupSaveButton1", sigc::mem_fun(*this,
+                                        &BackupView::onSaveButtonClicked));
 }
 
 

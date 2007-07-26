@@ -88,8 +88,7 @@ using namespace boost::posix_time;
  *  @author $Author: fgerlits $
  *  @version $Revision$
  */
-class BackupView : public Gtk::VBox,
-                   public LocalizedObject
+class BackupView : public LocalizedObject
 {
     private:
 
@@ -156,6 +155,7 @@ class BackupView : public Gtk::VBox,
 
     
     protected:
+
         /**
          *  The GLiveSupport object, holding the state of the application.
          */
@@ -198,6 +198,7 @@ class BackupView : public Gtk::VBox,
 
 
     public:
+
         /**
          *  Constructor.
          *

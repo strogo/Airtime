@@ -456,18 +456,10 @@ UploadFileWindow :: uploadStorageArchive(void)                  throw ()
     Ptr<const Glib::ustring>::Ref   path(new const Glib::ustring(
                                                 fileNameEntry->get_text() ));
     
-    Ptr<ResourceBundle>::Ref        restoreBackupBundle;
-    try {
-        restoreBackupBundle = gLiveSupport->getBundle("restoreBackupWindow");
-    } catch (std::invalid_argument &e) {
-        std::cerr << e.what() << std::endl;
-        std::exit(1);
-    }
-    
     Ptr<RestoreBackupWindow>::Ref   restoreBackupWindow(
                                                 new RestoreBackupWindow(
                                                         gLiveSupport,
-                                                        restoreBackupBundle,
+                                                        glade,
                                                         path));
     restoreBackupWindow->show();
     restoreBackupWindowList.push_back(restoreBackupWindow);
