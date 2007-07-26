@@ -120,6 +120,9 @@ NowPlaying :: NowPlaying(Ptr<GLiveSupport>::Ref             gLiveSupport,
 void
 NowPlaying :: setPlayable(Ptr<Playable>::Ref  playable)             throw ()
 {
+    playableMutex.lock();
+    // BEGIN synchronized block
+
     if (playable) {
         if (!isActive || isPaused) {
             playButton->set_label(pauseStockImageName);
@@ -150,6 +153,9 @@ NowPlaying :: setPlayable(Ptr<Playable>::Ref  playable)             throw ()
         this->playable.reset();
         this->currentInnerPlayable.reset();
     }
+    
+    // END synchronized block
+    playableMutex.unlock();
 }
 
 
@@ -232,6 +238,11 @@ NowPlaying :: onUpdateTime(void)                                    throw ()
     }
     setRemainsTimeColor(remainsTimeState);
 
+    if (!playableMutex.trylock()) {     // if the 'playable' variable is being
+        return;                         // written to, then just give up for now
+    }
+    // BEGIN synchronized block
+    
     Ptr<Playable>::Ref          innerPlayable   = playable;
     Ptr<time_duration>::Ref     innerElapsed    = elapsed;
     Ptr<time_duration>::Ref     innerRemains    = remains;
@@ -284,6 +295,9 @@ NowPlaying :: onUpdateTime(void)                                    throw ()
                                                         innerRemains ));
 
     currentInnerPlayable = innerPlayable;
+    
+    // END synchronized block
+    playableMutex.unlock();
 }
 
 

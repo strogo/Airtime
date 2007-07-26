@@ -45,6 +45,7 @@
 
 #include "LiveSupport/Core/Ptr.h"
 #include "LiveSupport/Core/LocalizedObject.h"
+#include "LiveSupport/Core/Mutex.h"
 
 #include "GLiveSupport.h"
 
@@ -170,7 +171,13 @@ class NowPlaying : public LocalizedObject
          *  The GLiveSupport object, holding the state of the application.
          */
         Ptr<GLiveSupport>::Ref  gLiveSupport;
-         
+
+        /**
+         *  A mutex to make the writing, and some reading of the
+         *  'playable' variable atomic.
+         */
+        Mutex                   playableMutex;
+
         /**
          *  Default constructor.
          */
