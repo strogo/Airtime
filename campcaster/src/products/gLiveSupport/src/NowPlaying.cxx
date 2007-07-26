@@ -238,11 +238,15 @@ NowPlaying :: onUpdateTime(void)                                    throw ()
     }
     setRemainsTimeColor(remainsTimeState);
 
-    if (!playableMutex.trylock()) {     // if the 'playable' variable is being
+    if (!playableMutex.tryLock()) {     // if the 'playable' variable is being
         return;                         // written to, then just give up for now
     }
     // BEGIN synchronized block
     
+    if (!playable) {
+        playableMutex.unlock();
+        return;
+    }
     Ptr<Playable>::Ref          innerPlayable   = playable;
     Ptr<time_duration>::Ref     innerElapsed    = elapsed;
     Ptr<time_duration>::Ref     innerRemains    = remains;

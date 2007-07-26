@@ -173,7 +173,7 @@ class NowPlaying : public LocalizedObject
         Ptr<GLiveSupport>::Ref  gLiveSupport;
 
         /**
-         *  A mutex to make the writing, and some reading of the
+         *  A mutex to make the writing, and some reading, of the
          *  'playable' variable atomic.
          */
         Mutex                   playableMutex;
