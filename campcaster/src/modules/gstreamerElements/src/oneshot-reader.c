@@ -209,7 +209,7 @@ get_property(GObject      * object,
 static GstFlowReturn
 livesupport_one_shot_reader_sink_pad_chain (GstPad *pad, GstBuffer *buffer)
 {
-    printf("livesupport_one_shot_reader_sink_pad_chain()\n");
+    //printf("livesupport_one_shot_reader_sink_pad_chain()\n");
 
     LivesupportOneShotReader *this;
     GstAdapter *adapter;
