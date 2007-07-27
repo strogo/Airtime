@@ -133,6 +133,8 @@ livesupport_seek_pack_init(LivesupportSeekPack    * seekPack,
                            gint64                   startTime,
                            gint64                   endTime)
 {
+    printf("BEGIN: SEEK_PACK_INIT()\n");
+
     gchar           str[256];
     unsigned int    len      = strlen(seekPack->name) + 64;
     gchar         * name     = g_malloc(len);
@@ -197,6 +199,8 @@ livesupport_seek_pack_init(LivesupportSeekPack    * seekPack,
                           seekPack->decoderScale,
                           NULL);
     gst_element_link(seekPack->decoderScale, seekPack->switcher);
+
+    printf("BEGIN: SEEK_PACK_INIT()\n");
 }
 
 
