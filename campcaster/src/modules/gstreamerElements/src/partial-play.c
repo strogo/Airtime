@@ -303,6 +303,8 @@ livesupport_partial_play_change_state(GstElement * element, GstStateChange trans
 static void
 livesupport_partial_play_base_init(LivesupportPartialPlayClass    * klass)
 {
+    printf("BEGIN: PARTIAL_PLAY_BASE_INIT()\n");
+
     static GstElementDetails plugin_details = {
         "PartialPlay",
         "Audio/PartialPlay",
@@ -314,6 +316,8 @@ livesupport_partial_play_base_init(LivesupportPartialPlayClass    * klass)
     gst_element_class_add_pad_template(element_class,
 	                                gst_static_pad_template_get(&src_factory));
     gst_element_class_set_details(element_class, &plugin_details);
+
+    printf("END: PARTIAL_PLAY_BASE_INIT()\n");
 }
 
 
@@ -384,6 +388,8 @@ seek_pack_eos_signal_handler(GstElement     * element,
 static void
 livesupport_partial_play_init(LivesupportPartialPlay  * pplay)
 {
+    printf("BEGIN: PARTIAL_PLAY_INIT()\n");
+
     GstPad * ghostPad;
 
     pplay->caps = gst_caps_new_simple("audio/x-raw-int",
@@ -413,6 +419,8 @@ livesupport_partial_play_init(LivesupportPartialPlay  * pplay)
     pplay->silenceDuration = 0LL;
     pplay->playFrom        = 0LL;
     pplay->playTo          = 0LL;
+
+    printf("END: PARTIAL_PLAY_INIT()\n");
 }
 
 
