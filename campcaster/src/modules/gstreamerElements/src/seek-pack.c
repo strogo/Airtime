@@ -135,6 +135,10 @@ livesupport_seek_pack_init(LivesupportSeekPack    * seekPack,
 {
     printf("BEGIN: SEEK_PACK_INIT()\n");
 
+    printf("Name of source element:\n");
+    printf(gst_element_get_name(source));
+    printf("\n");
+
     gchar           str[256];
     unsigned int    len      = strlen(seekPack->name) + 64;
     gchar         * name     = g_malloc(len);
