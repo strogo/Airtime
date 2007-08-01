@@ -180,6 +180,7 @@ livesupport_seek_pack_init(LivesupportSeekPack    * seekPack,
         gst_element_link(seekPack->source, seekPack->decoder);
         livesupport_seek_pack_seek(seekPack);
     } else {
+        printf("WARNING: Could not instantiate decoder element.\n");
         /* just fake the content with silence,
          * if it could not be auto-plugged */
         seekPack->decoder = gst_element_factory_make("audiotestsrc", "decoder");
