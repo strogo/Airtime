@@ -81,6 +81,11 @@ class LiveModeWindow : public BasicWindow,
     private:
 
         /**
+         *  The directory where the Glade files are.
+         */
+        Glib::ustring                       gladeDir;
+
+        /**
          *  The Playable item at the top of the window.
          */
         Ptr<Playable>::Ref                  savedTopPlayable;

@@ -85,6 +85,11 @@ class SearchWindow : public  BasicWindow,
     private:
 
         /**
+         *  The directory where the Glade files are.
+         */
+        Glib::ustring               gladeDir;
+
+        /**
          *  The criteria for the last local search.
          */
         Ptr<SearchCriteria>::Ref    localSearchCriteria;

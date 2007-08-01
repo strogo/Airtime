@@ -85,6 +85,7 @@ LiveModeWindow :: LiveModeWindow (Ptr<GLiveSupport>::Ref    gLiveSupport,
                         bundle,
                         windowOpenerButton,
                         gladeDir + gladeFileName),
+            gladeDir(gladeDir),
             isDeleting(false)
 {
     glade->get_widget_derived("treeView1", treeView);
@@ -431,10 +432,10 @@ LiveModeWindow :: onExportPlaylist(void)                            throw ()
         if (playlist) {
             exportPlaylistWindow.reset(new ExportPlaylistWindow(
                                 gLiveSupport,
-                                gLiveSupport->getBundle("exportPlaylistWindow"),
+                                gladeDir,
                                 playlist));
-            exportPlaylistWindow->set_transient_for(*mainWindow);
-            Gtk::Main::run(*exportPlaylistWindow);
+            exportPlaylistWindow->getWindow()->set_transient_for(*mainWindow);
+            Gtk::Main::run(*exportPlaylistWindow->getWindow());
         }
     }
 }
@@ -699,7 +700,7 @@ void
 LiveModeWindow :: hide(void)                                        throw ()
 {
     if (exportPlaylistWindow) {
-        exportPlaylistWindow->hide();
+        exportPlaylistWindow->getWindow()->hide();
     }
     if (schedulePlaylistWindow) {
         schedulePlaylistWindow->hide();

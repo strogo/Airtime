@@ -87,7 +87,8 @@ SearchWindow :: SearchWindow (Ptr<GLiveSupport>::Ref      gLiveSupport,
           : BasicWindow(gLiveSupport,
                         bundle,
                         windowOpenerButton,
-                        gladeDir + gladeFileName)
+                        gladeDir + gladeFileName),
+            gladeDir(gladeDir)
 {
     glade->get_widget("searchInputNoteBook1", searchInput);
     
@@ -791,14 +792,14 @@ SearchWindow :: onExportPlaylist(void)                          throw ()
                 try {
                     exportPlaylistWindow.reset(new ExportPlaylistWindow(
                                 gLiveSupport,
-                                gLiveSupport->getBundle("exportPlaylistWindow"),
+                                gladeDir,
                                 playlist));
                 } catch (std::invalid_argument &e) {
                     std::cerr << e.what() << std::endl;
                     return;
                 }
-                exportPlaylistWindow->set_transient_for(*mainWindow);
-                Gtk::Main::run(*exportPlaylistWindow);
+                exportPlaylistWindow->getWindow()->set_transient_for(*mainWindow);
+                Gtk::Main::run(*exportPlaylistWindow->getWindow());
             }
         }
     }
@@ -901,7 +902,7 @@ void
 SearchWindow :: hide(void)                                      throw ()
 {
     if (exportPlaylistWindow) {
-        exportPlaylistWindow->hide();
+        exportPlaylistWindow->getWindow()->hide();
     }
     if (schedulePlaylistWindow) {
         schedulePlaylistWindow->hide();

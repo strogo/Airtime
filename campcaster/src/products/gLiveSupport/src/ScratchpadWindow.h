@@ -80,6 +80,11 @@ class ScratchpadWindow : public BasicWindow,
     private:
 
         /**
+         *  The directory where the Glade files are.
+         */
+        Glib::ustring                       gladeDir;
+
+        /**
          *  The user preferences key.
          */
         Ptr<const Glib::ustring>::Ref       userPreferencesKey;
