@@ -38,7 +38,6 @@
 #include <glibmm.h>
 
 #include "LiveSupport/Core/TimeConversion.h"
-#include "LiveSupport/Widgets/WidgetFactory.h"
 
 #include "LiveModeWindow.h"
 
@@ -46,7 +45,6 @@
 using namespace Glib;
 
 using namespace LiveSupport::Core;
-using namespace LiveSupport::Widgets;
 using namespace LiveSupport::GLiveSupport;
 
 /* ===================================================  local data structures */

@@ -36,6 +36,8 @@
 #include <iostream>
 #include <stdexcept>
 
+#include "LiveSupport/Widgets/WidgetFactory.h"
+
 #include "ScratchpadWindow.h"
 
 

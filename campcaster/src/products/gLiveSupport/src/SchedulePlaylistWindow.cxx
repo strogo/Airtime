@@ -36,6 +36,8 @@
 #include <boost/date_time/gregorian/gregorian.hpp>
 #include "boost/date_time/posix_time/posix_time.hpp"
 
+#include "LiveSupport/Core/TimeConversion.h"
+
 #include "SchedulePlaylistWindow.h"
 
 
@@ -100,6 +102,11 @@ SchedulePlaylistWindow :: SchedulePlaylistWindow (
     glade->get_widget("hourSpinButton1", hourEntry);
     glade->get_widget("minuteSpinButton1", minuteEntry);
     glade->get_widget("secondSpinButton1", secondEntry);
+    Ptr<boost::posix_time::ptime>::Ref      now = TimeConversion::now();
+    boost::posix_time::time_duration        time = now->time_of_day();
+    hourEntry->set_value(time.hours());
+    minuteEntry->set_value(time.minutes() + 1);
+    secondEntry->set_value(0);
 
     Gtk::Button *       scheduleButton;
     glade->get_widget("scheduleButton1", scheduleButton);

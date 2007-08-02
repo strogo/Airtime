@@ -54,6 +54,7 @@ namespace LiveSupport {
 namespace GLiveSupport {
 
 using namespace LiveSupport::Core;
+using namespace LiveSupport::Widgets;
 
 /* ================================================================ constants */
 
@@ -101,7 +102,7 @@ class LoginWindow : public LocalizedObject
         /**
          *  The drop-down list to select the desired language.
          */
-        Widgets::ComboBoxText * languageEntry;
+        ComboBoxText *          languageEntry;
 
         /**
          *  The status bar.

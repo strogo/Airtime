@@ -48,6 +48,7 @@
 #include "LiveSupport/Core/LocalizedObject.h"
 #include "LiveSupport/Core/MetadataTypeContainer.h"
 #include "LiveSupport/Core/SearchCriteria.h"
+#include "LiveSupport/Widgets/ComboBoxText.h"
 #include "AdvancedSearchItem.h"
 #include "GLiveSupport.h"
 
@@ -55,6 +56,7 @@ namespace LiveSupport {
 namespace GLiveSupport {
 
 using namespace LiveSupport::Core;
+using namespace LiveSupport::Widgets;
     
 /* ================================================================ constants */
 

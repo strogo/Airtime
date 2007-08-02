@@ -151,7 +151,7 @@ class BrowseEntry : public LocalizedObject
 /* ====================================================== function prototypes */
 
 
-} // namespace Widgets
+} // namespace GLiveSupport
 } // namespace LiveSupport
 
 #endif // BrowseEntry_h

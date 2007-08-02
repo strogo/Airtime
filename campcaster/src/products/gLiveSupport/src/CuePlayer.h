@@ -102,7 +102,7 @@ class CuePlayer : public PlaylistExecutor::AudioPlayerEventListener
         /**
          *  The Gtk::TreeView of the parent.
          */
-        Gtk::TreeView *       treeView;
+        Gtk::TreeView *             treeView;
          
         /**
          *  The Gtk::TreeModelColumnRecord of the parent.

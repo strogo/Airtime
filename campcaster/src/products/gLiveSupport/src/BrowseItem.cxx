@@ -36,13 +36,10 @@
 #include <iostream>
 #include <glibmm.h>
 
-#include "LiveSupport/Widgets/WidgetFactory.h"
-
 #include "BrowseItem.h"
 
 
 using namespace LiveSupport::Core;
-using namespace LiveSupport::Widgets;
 using namespace LiveSupport::GLiveSupport;
 
 /* ===================================================  local data structures */

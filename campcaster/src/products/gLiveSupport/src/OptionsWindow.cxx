@@ -33,12 +33,10 @@
 #include "configure.h"
 #endif
 
-
 #include "OptionsWindow.h"
 
 
 using namespace LiveSupport::Core;
-using namespace LiveSupport::Widgets;
 using namespace LiveSupport::GLiveSupport;
 
 /* ===================================================  local data structures */
