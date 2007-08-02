@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.2.0 on Mon Jul 23 18:23:26 2007 by fgerlits@fgerlits-laptop-->
+<!--Generated with glade3 3.2.0 on Thu Aug  2 17:52:16 2007 by fgerlits@desktop-->
 <glade-interface>
   <widget class="GtkDialog" id="mainWindow1">
     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
@@ -55,7 +55,7 @@
                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                     <property name="spacing">3</property>
                     <child>
-                      <widget class="GtkLabel" id="hoursLabel1">
+                      <widget class="GtkLabel" id="hourLabel1">
                         <property name="visible">True</property>
                         <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                         <property name="label" translatable="yes">hours:</property>
@@ -66,7 +66,7 @@
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkSpinButton" id="hoursSpinbutton1">
+                      <widget class="GtkSpinButton" id="hourSpinButton1">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
@@ -90,7 +90,7 @@
                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                     <property name="spacing">3</property>
                     <child>
-                      <widget class="GtkLabel" id="minutesLabel1">
+                      <widget class="GtkLabel" id="minuteLabel1">
                         <property name="visible">True</property>
                         <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                         <property name="label" translatable="yes">minutes:</property>
@@ -101,7 +101,7 @@
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkSpinButton" id="minutesSpinbutton2">
+                      <widget class="GtkSpinButton" id="minuteSpinButton1">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
@@ -126,7 +126,7 @@
                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                     <property name="spacing">3</property>
                     <child>
-                      <widget class="GtkLabel" id="secondsLabel1">
+                      <widget class="GtkLabel" id="secondLabel1">
                         <property name="visible">True</property>
                         <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                         <property name="label" translatable="yes">seconds:</property>
@@ -137,7 +137,7 @@
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkSpinButton" id="secondsSpinbutton3">
+                      <widget class="GtkSpinButton" id="secondSpinButton1">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>

@@ -409,10 +409,10 @@ LiveModeWindow :: onSchedulePlaylist(void)                          throw ()
         if (playlist) {
             schedulePlaylistWindow.reset(new SchedulePlaylistWindow(
                             gLiveSupport,
-                            gLiveSupport->getBundle("schedulePlaylistWindow"),
+                            gladeDir,
                             playlist));
-            schedulePlaylistWindow->set_transient_for(*mainWindow);
-            Gtk::Main::run(*schedulePlaylistWindow);
+            schedulePlaylistWindow->getWindow()->set_transient_for(*mainWindow);
+            Gtk::Main::run(*schedulePlaylistWindow->getWindow());
         }
     }
 }
@@ -703,7 +703,7 @@ LiveModeWindow :: hide(void)                                        throw ()
         exportPlaylistWindow->getWindow()->hide();
     }
     if (schedulePlaylistWindow) {
-        schedulePlaylistWindow->hide();
+        schedulePlaylistWindow->getWindow()->hide();
     }
         
     BasicWindow::hide();

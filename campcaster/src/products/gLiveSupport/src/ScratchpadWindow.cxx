@@ -294,7 +294,6 @@ ScratchpadWindow :: onSchedulePlaylist(void)                        throw ()
     Ptr<Playable>::Ref  playable = currentRow[modelColumns.playableColumn];
     Ptr<UniqueId>::Ref  uid      = playable->getId();
     
-    Ptr<ResourceBundle>::Ref    bundle;
     Ptr<Playlist>::Ref          playlist;
     
     try {
@@ -303,8 +302,6 @@ ScratchpadWindow :: onSchedulePlaylist(void)                        throw ()
         }
 
         playlist    = gLiveSupport->getPlaylist(uid);
-
-        bundle      = gLiveSupport->getBundle("schedulePlaylistWindow");
 
     } catch (std::invalid_argument &e) {
         std::cerr << e.what() << std::endl;
@@ -316,10 +313,10 @@ ScratchpadWindow :: onSchedulePlaylist(void)                        throw ()
     }
     
     schedulePlaylistWindow.reset(new SchedulePlaylistWindow(gLiveSupport,
-                                                            bundle,
+                                                            gladeDir,
                                                             playlist));
 
-    Gtk::Main::run(*schedulePlaylistWindow);
+    Gtk::Main::run(*schedulePlaylistWindow->getWindow());
 }
 
 
@@ -628,7 +625,7 @@ ScratchpadWindow :: hide(void)                                      throw ()
         exportPlaylistWindow->getWindow()->hide();
     }
     if (schedulePlaylistWindow) {
-        schedulePlaylistWindow->hide();
+        schedulePlaylistWindow->getWindow()->hide();
     }
         
     BasicWindow::hide();

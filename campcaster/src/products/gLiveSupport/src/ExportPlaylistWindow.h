@@ -44,6 +44,7 @@
 #include <libglademm.h>
 
 #include "LiveSupport/Core/Playlist.h"
+#include "LiveSupport/Core/LocalizedObject.h"
 #include "ExportFormatRadioButtons.h"
 #include "GLiveSupport.h"
 
@@ -52,7 +53,6 @@ namespace LiveSupport {
 namespace GLiveSupport {
 
 using namespace LiveSupport::Core;
-using namespace LiveSupport::Widgets;
 
 /* ================================================================ constants */
 
@@ -143,8 +143,7 @@ class ExportPlaylistWindow : public LocalizedObject
          *
          *  @param  gLiveSupport    the gLiveSupport object, containing
          *                          all the vital info.
-         *  @param  glade           the Glade object, which contains the
-         *                          visual design.
+         *  @param  gladeDir        the directory where the Glade files are.
          *  @param  playlist        the playlist to be exported.
          */
         ExportPlaylistWindow(Ptr<GLiveSupport>::Ref             gLiveSupport,
