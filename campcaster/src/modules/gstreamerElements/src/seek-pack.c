@@ -170,6 +170,9 @@ livesupport_seek_pack_init(LivesupportSeekPack    * seekPack,
     seekPack->decoder    = gst_element_factory_make("mad", "mp3decoder");
     //seekPack->decoder = ls_gst_autoplug_plug_source(seekPack->source, name, seekPack->caps);
 
+    GstElement* filesrc = gst_element_factory_make("filesrc", "file-source");
+    g_object_set(filesrc, "location", "/home/campcaster/music/trains.mp3", NULL);
+
     /* TODO: only add scale element if needed */
     g_snprintf(name, len, "%s_seekPackDecoderScale", seekPack->name);
     seekPack->decoderScale = gst_element_factory_make("audioresample", name);
@@ -190,6 +193,7 @@ livesupport_seek_pack_init(LivesupportSeekPack    * seekPack,
 
     /* put all inside the bin, and link up a ghost pad to switch's src pad */
     gst_bin_add_many(GST_BIN(seekPack->bin),
+                     filesrc,
                      seekPack->silence,
                      seekPack->source,
                      seekPack->decoder,
@@ -198,11 +202,15 @@ livesupport_seek_pack_init(LivesupportSeekPack    * seekPack,
                      NULL);
 
     /* link up the elements */
+    printf("Linking elements.\n");
+
     gst_element_link(seekPack->silence, seekPack->switcher);
-    gst_element_link_many(seekPack->source,
+
+    gst_element_link_many(/*source*/ filesrc,
                           seekPack->decoder,
                           seekPack->decoderScale,
                           NULL);
+
     gst_element_link(seekPack->decoderScale, seekPack->switcher);
 
     printf("BEGIN: SEEK_PACK_INIT()\n");
