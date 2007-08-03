@@ -259,6 +259,9 @@ livesupport_partial_play_change_state(GstElement * element, GstStateChange trans
                 }
                 /* TODO: check for NULL returns here */
                 pplay->source = gst_element_factory_make("filesrc", "source");
+                printf("File location: ");
+                printf(pplay->location);
+                printf("\n");
                 g_object_set(G_OBJECT(pplay->source),
                              "location",
                              pplay->location,
