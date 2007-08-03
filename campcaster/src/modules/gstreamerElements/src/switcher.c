@@ -481,6 +481,7 @@ request_new_pad(GstElement        * element,
     pad = gst_pad_new_from_template(template, name);
     gst_pad_set_getcaps_function(pad, livesupport_switcher_get_caps);
 
+    gst_pad_set_active(pad, TRUE);
     gst_element_add_pad(element, pad);
     /* TODO: catch the pad remove event, and remove the pad from this
      *       list as well */
