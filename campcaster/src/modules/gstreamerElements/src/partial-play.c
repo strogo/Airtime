@@ -262,10 +262,7 @@ livesupport_partial_play_change_state(GstElement * element, GstStateChange trans
                 printf("File location: ");
                 printf(pplay->location);
                 printf("\n");
-                g_object_set(G_OBJECT(pplay->source),
-                             "location",
-                             pplay->location,
-                             NULL);
+                g_object_set(G_OBJECT(pplay->source), "location", pplay->location, NULL);
 
                 livesupport_seek_pack_init(pplay->seekPack,
                                            pplay->source,
