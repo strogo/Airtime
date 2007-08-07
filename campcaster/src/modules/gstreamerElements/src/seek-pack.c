@@ -209,7 +209,7 @@ livesupport_seek_pack_init(LivesupportSeekPack    * seekPack,
 
     gst_element_link(seekPack->decoderScale, seekPack->switcher);
 
-    printf("BEGIN: SEEK_PACK_INIT()\n");
+    printf("END: SEEK_PACK_INIT()\n");
 }
 
 
