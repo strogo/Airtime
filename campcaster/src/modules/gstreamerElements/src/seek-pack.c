@@ -190,7 +190,6 @@ livesupport_seek_pack_init(LivesupportSeekPack    * seekPack,
 
     /* put all inside the bin, and link up a ghost pad to switch's src pad */
     gst_bin_add_many(GST_BIN(seekPack->bin),
-                     source,
                      seekPack->silence,
                      seekPack->source,
                      seekPack->decoder,
