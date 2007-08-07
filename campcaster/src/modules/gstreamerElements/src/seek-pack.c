@@ -202,12 +202,11 @@ livesupport_seek_pack_init(LivesupportSeekPack    * seekPack,
 
     gst_element_link(seekPack->silence, seekPack->switcher);
 
-    gst_element_link_many(source,
+    gst_element_link_many(seekPack->source,
                           seekPack->decoder,
                           seekPack->decoderScale,
+                          seekPack->switcher,
                           NULL);
-
-    gst_element_link(seekPack->decoderScale, seekPack->switcher);
 
     printf("END: SEEK_PACK_INIT()\n");
 }
