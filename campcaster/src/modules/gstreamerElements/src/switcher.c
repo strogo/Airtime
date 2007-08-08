@@ -715,6 +715,8 @@ config, peerPad);
 static void
 switch_to_next_source(LivesupportSwitcher     * switcher)
 {
+    printf("BEGIN: switch_to_next_source\n");
+
     LivesupportSwitcherSourceConfig   * oldConfig;
     LivesupportSwitcherSourceConfig   * newConfig;
 
@@ -773,6 +775,8 @@ switch_to_next_source(LivesupportSwitcher     * switcher)
         switcher->eos = TRUE;
         gst_pad_push_event(switcher->srcpad, gst_event_new_eos());
     }
+
+    printf("END: switch_to_next_source\n");
 }
 
 
@@ -783,6 +787,8 @@ static GstFlowReturn
 livesupport_switcher_chain(GstPad     * pad,
                            GstBuffer  * buf)
 {
+    printf("BEGIN: livesupport_switcher_chain\n");
+
     LivesupportSwitcher               * switcher;
     LivesupportSwitcherSourceConfig   * config = NULL;
 
@@ -914,6 +920,8 @@ livesupport_switcher_chain(GstPad     * pad,
     gst_pad_push(switcher->srcpad, buf);
 
     return GST_FLOW_OK;
+
+    printf("END: livesupport_switcher_chain\n");
 }
 
 
@@ -923,6 +931,8 @@ livesupport_switcher_chain(GstPad     * pad,
 static void
 update_source_config(LivesupportSwitcher   * switcher)
 {
+    printf("BEGIN: livesupport_source_config\n");
+
     gchar    ** tokens;
     gchar     * token;
     guint       i = 0;
@@ -981,6 +991,8 @@ update_source_config(LivesupportSwitcher   * switcher)
     }
 
     g_strfreev(tokens);
+    
+    printf("END: livesupport_source_config\n");
 }
 
 
