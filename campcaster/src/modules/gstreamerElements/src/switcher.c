@@ -345,6 +345,8 @@ livesupport_switcher_base_init(LivesupportSwitcherClass   * klass)
 static void
 livesupport_switcher_class_init(LivesupportSwitcherClass  * klass)
 {
+    printf("BEGIN: livesupport_switcher_class_init\n");
+
     GObjectClass      * gobject_class;
     GstElementClass   * element_class;
 
@@ -375,6 +377,7 @@ livesupport_switcher_class_init(LivesupportSwitcherClass  * klass)
 
     element_class->request_new_pad = request_new_pad;
     element_class->change_state    = livesupport_switcher_change_state;
+    printf("END: livesupport_switcher_class_init\n");
 }
 
 
@@ -533,6 +536,7 @@ event_handler(GstPad      * pad,
 static void
 livesupport_switcher_init(LivesupportSwitcher * switcher)
 {
+    printf("BEGIN: livesupport_switcher_init\n");
     GstElementClass   * klass = GST_ELEMENT_GET_CLASS(switcher);
 
     switcher->srcpad = gst_pad_new_from_template (
@@ -556,6 +560,8 @@ livesupport_switcher_init(LivesupportSwitcher * switcher)
     switcher->eos              = FALSE;
     switcher->sourceConfig     = 0;
     switcher->sourceConfigList = NULL;
+
+    printf("END: livesupport_switcher_init\n");
 }
 
 
