@@ -43,6 +43,15 @@ Index: etc/debian/control
  Standards-Version: 3.6.1
  
  Package: campcaster-libs
+@@ -90,7 +90,7 @@
+ Package: campcaster-station
+ Architecture: any
+ Depends: ${shlibs:Depends},
+-         campcaster-libs (= ${dpkg:Version}),
++         campcaster-libs (= ${binary:Version}),
+          sed,
+          pwgen,
+          unixodbc (>= 2.2),
 @@ -112,14 +112,14 @@
           libcurl3,
           libboost-date-time1.33.1,
@@ -61,6 +70,17 @@ Index: etc/debian/control
  Description: A radio program automation and support tool.
   Campcaster is the first free and open radio management software that 
   provides live studio broadcast capabilities as well as remote automation
+@@ -140,8 +140,8 @@
+ Package: campcaster-studio
+ Architecture: any
+ Depends: ${shlibs:Depends},
+-         campcaster-libs (= ${dpkg:Version}),
+-         campcaster-station (= ${dpkg:Version}),
++         campcaster-libs (= ${binary:Version}),
++         campcaster-station (= ${binary:Version}),
+          sed,
+          unixodbc (>= 2.2),
+          odbc-postgresql,
 @@ -161,7 +161,7 @@
           libcurl3 (>= 7.12.3),
           libboost-date-time1.33.1,
@@ -111,3 +131,41 @@ Index: etc/xmlrpc-doxygen.config
  
  # The OUTPUT_DIRECTORY tag is used to specify the (relative or absolute) 
  # base path where the generated documentation will be put. 
+Index: etc/feisty-1.2.1.patch
+===================================================================
+--- etc/feisty-1.2.1.patch	(revision 3230)
++++ etc/feisty-1.2.1.patch	(working copy)
+@@ -43,6 +43,15 @@
+  Standards-Version: 3.6.1
+  
+  Package: campcaster-libs
++@@ -90,7 +90,7 @@
++ Package: campcaster-station
++ Architecture: any
++ Depends: ${shlibs:Depends},
++-         campcaster-libs (= ${dpkg:Version}),
+++         campcaster-libs (= ${binary:Version}),
++          sed,
++          pwgen,
++          unixodbc (>= 2.2),
+ @@ -112,14 +112,14 @@
+           libcurl3,
+           libboost-date-time1.33.1,
+@@ -61,6 +70,17 @@
+  Description: A radio program automation and support tool.
+   Campcaster is the first free and open radio management software that 
+   provides live studio broadcast capabilities as well as remote automation
++@@ -140,8 +140,8 @@
++ Package: campcaster-studio
++ Architecture: any
++ Depends: ${shlibs:Depends},
++-         campcaster-libs (= ${dpkg:Version}),
++-         campcaster-station (= ${dpkg:Version}),
+++         campcaster-libs (= ${binary:Version}),
+++         campcaster-station (= ${binary:Version}),
++          sed,
++          unixodbc (>= 2.2),
++          odbc-postgresql,
+ @@ -161,7 +161,7 @@
+           libcurl3 (>= 7.12.3),
+           libboost-date-time1.33.1,
