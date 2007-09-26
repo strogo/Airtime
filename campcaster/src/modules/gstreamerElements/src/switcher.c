@@ -661,7 +661,10 @@ livesupport_switcher_change_state(GstElement      * element,
                         }
                     }
                 }
+                else
+                    g_printerr("FIXME: no config list available.\n");
             }
+
 
             /* lock all elements linked to our sinks, so that we
              * control their states directly */
