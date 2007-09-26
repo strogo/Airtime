@@ -642,23 +642,17 @@ livesupport_switcher_change_state(GstElement      * element,
             /* if there s no current config yet, select the first one */
             if (switcher->currentConfig == NULL) {
 
-g_printerr("size of config list: %d\n",
-           g_list_length(switcher->sourceConfigList));
+                g_printerr("size of config list: %d\n", g_list_length(switcher->sourceConfigList));
 
-                switcher->currentConfig =
-                                    g_list_first(switcher->sourceConfigList);
+                switcher->currentConfig = g_list_first(switcher->sourceConfigList);
                 if (switcher->currentConfig) {
-                    config = (LivesupportSwitcherSourceConfig*)
-                                                switcher->currentConfig->data;
+                    config = (LivesupportSwitcherSourceConfig*) switcher->currentConfig->data;
 
-g_printerr("currentConfig: %p, config: %p\n",
-           switcher->currentConfig, config);
+                    g_printerr("currentConfig: %p, config: %p\n", switcher->currentConfig, config);
 
                     switcher->switchTime = config->duration;
                     if (!config->sinkPad) {
-                        if (!(config->sinkPad = g_list_nth_data(
-                                                        switcher->sinkpadList,
-                                                        config->sourceId))) {
+                        if (!(config->sinkPad = g_list_nth_data( switcher->sinkpadList, config->sourceId))) {
                             GST_ELEMENT_ERROR(GST_ELEMENT(switcher),
                                          RESOURCE,
                                          NOT_FOUND,
@@ -682,8 +676,7 @@ g_printerr("currentConfig: %p, config: %p\n",
                     peerPad = gst_ghost_pad_get_target((GstGhostPad*) peerPad);
                 }
 
-g_printerr("config: %p, sinkPad: %p\n",
-config, peerPad);
+                g_printerr("config: %p, sinkPad: %p\n", config, peerPad);
 
                 /* unblock the pad for the current config, block the rest */
                 if (config && config->sinkPad == sinkPad) {
