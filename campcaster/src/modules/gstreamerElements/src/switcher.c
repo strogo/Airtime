@@ -813,8 +813,7 @@ livesupport_switcher_chain(GstPad     * pad,
                                                 switcher->currentConfig->data;
         switcher->switchTime = config->duration;
         if (!config->sinkPad) {
-            if (!(config->sinkPad = g_list_nth_data(switcher->sinkpadList,
-                                                    config->sourceId))) {
+            if (!(config->sinkPad = g_list_nth_data(switcher->sinkpadList, config->sourceId))) {
                 GST_ELEMENT_ERROR(GST_ELEMENT(switcher),
                                   RESOURCE,
                                   NOT_FOUND,
@@ -828,8 +827,7 @@ livesupport_switcher_chain(GstPad     * pad,
         }
         gst_pad_set_blocked_async(peerPad, FALSE, block_callback, 0);
     } else {
-        config = (LivesupportSwitcherSourceConfig*)
-                                                switcher->currentConfig->data;
+        config = (LivesupportSwitcherSourceConfig*) switcher->currentConfig->data;
     }
 
 
