@@ -1,0 +1,6 @@
+<area shape="rect" href="$classTagLib_1_1FLAC_1_1File.html" title="An implementation of TagLib::File with FLAC specific methods." alt="" coords="5,84,136,111">
+<area shape="rect" href="$classTagLib_1_1MPC_1_1File.html" title="An implementation of TagLib::File with MPC specific methods." alt="" coords="160,84,288,111">
+<area shape="rect" href="$classTagLib_1_1MPEG_1_1File.html" title="An MPEG file class with some useful methods specific to MPEG." alt="" coords="312,84,448,111">
+<area shape="rect" href="$classTagLib_1_1Ogg_1_1File.html" title="An implementation of TagLib::File with some helpers for Ogg based formats." alt="" coords="472,84,595,111">
+<area shape="rect" href="$classTagLib_1_1Ogg_1_1FLAC_1_1File.html" title="An implementation of TagLib::File with Ogg/FLAC specific methods." alt="" coords="355,161,520,188">
+<area shape="rect" href="$classTagLib_1_1Ogg_1_1Vorbis_1_1File.html" title="An implementation of Ogg::File with Vorbis specific methods." alt="" coords="544,161,712,188">

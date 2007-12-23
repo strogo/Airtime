@@ -1,0 +1,11 @@
+prefix=/home/nebojsa/src/campcaster/usr
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include/gstreamer-0.10
+
+Name: GStreamer networking library
+Description: Network-enabled GStreamer plug-ins and clocking
+Requires: gstreamer-0.10
+Version: 0.10.15
+Libs: -L${libdir} -lgstnet-0.10
+Cflags: -I${includedir}

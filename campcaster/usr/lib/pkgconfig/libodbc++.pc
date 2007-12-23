@@ -1,0 +1,11 @@
+prefix=/home/nebojsa/src/campcaster/usr
+exec_prefix=/home/nebojsa/src/campcaster/usr
+libdir=/home/nebojsa/src/campcaster/usr/lib
+includedir=/home/nebojsa/src/campcaster/usr/include
+
+Name: libodbc++
+Description: An ODBC class library that emulates the JDBC interface
+Version: 0.2.3-20050404
+Requires:
+Libs: -L${libdir} -lodbc++-mt
+Cflags: -I${includedir}

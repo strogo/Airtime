@@ -1,0 +1,23 @@
+[Breakpoint 0]
+Enabled=true
+File=src/TestRunner.cxx
+Line=226
+Temporary=false
+
+[General]
+DebuggerCmdStr=
+DriverName=GDB
+FileVersion=1
+OptionsSelected=
+ProgramArgs=
+TTYLevel=7
+WorkingDirectory=
+
+[Memory]
+ColumnWidths=80,0
+NumExprs=0
+
+[Watches]
+Expr0=m_document
+Expr1=m_bodyChildren
+Expr2=m_parChildren
