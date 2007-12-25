@@ -1,7 +1,0 @@
-<area shape="rect" href="$classTagLib_1_1ID3v2_1_1AttachedPictureFrame.html" title="An ID3v2 attached picture frame implementation." alt="" coords="221,5,480,32">
-<area shape="rect" href="$classTagLib_1_1ID3v2_1_1CommentsFrame.html" title="An implementation of ID3v2 comments." alt="" coords="236,56,465,83">
-<area shape="rect" href="$classTagLib_1_1ID3v2_1_1RelativeVolumeFrame.html" title="An ID3v2 relative volume adjustment frame implementation." alt="" coords="223,107,479,133">
-<area shape="rect" href="$classTagLib_1_1ID3v2_1_1TextIdentificationFrame.html" title="An ID3v2 text identification frame implementation." alt="" coords="219,157,483,184">
-<area shape="rect" href="$classTagLib_1_1ID3v2_1_1UniqueFileIdentifierFrame.html" title="An implementation of ID3v2 unique identifier frames." alt="" coords="212,208,489,235">
-<area shape="rect" href="$classTagLib_1_1ID3v2_1_1UnknownFrame.html" title="A frame type unknown to TagLib." alt="" coords="243,259,459,285">
-<area shape="rect" href="$classTagLib_1_1ID3v2_1_1UserTextIdentificationFrame.html" title="An ID3v2 custom text identification frame implementationx." alt="" coords="540,157,833,184">

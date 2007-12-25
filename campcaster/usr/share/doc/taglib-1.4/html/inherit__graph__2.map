@@ -1,5 +1,0 @@
-<area shape="rect" href="$classTagLib_1_1AudioProperties.html" title="A simple, abstract interface to common audio properties." alt="" coords="5,81,176,108">
-<area shape="rect" href="$classTagLib_1_1FLAC_1_1Properties.html" title="An implementation of audio property reading for FLAC." alt="" coords="243,5,421,32">
-<area shape="rect" href="$classTagLib_1_1MPC_1_1Properties.html" title="An implementation of audio property reading for MPC." alt="" coords="245,56,419,83">
-<area shape="rect" href="$classTagLib_1_1MPEG_1_1Properties.html" title="An implementation of audio property reading for MP3." alt="" coords="240,107,424,133">
-<area shape="rect" href="$classTagLib_1_1Ogg_1_1Vorbis_1_1Properties.html" title="An implementation of audio property reading for Ogg Vorbis." alt="" coords="224,157,440,184">
