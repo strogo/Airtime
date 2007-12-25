@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<smil xmlns="http://www.w3.org/2001/SMIL20/Language">
+  <body>
+    <par>
+      <audio src="file:///home/nebojsa/src/campcaster/src/modules/storageServer/var/access/412ab46823258557.ogg" begin="0.000s"/>
+      <audio src="file:///home/nebojsa/src/campcaster/src/modules/storageServer/var/access/59594bae6c1e7de4.ogg" begin="2.280s"/>
+      <audio src="file:///home/nebojsa/src/campcaster/src/modules/storageServer/var/access/0260f6bae02bad7f.ogg" begin="4.482s"/>
+      <audio src="file:///home/nebojsa/src/campcaster/src/modules/storageServer/var/access/0c0e1d620e7f5c97.ogg" begin="4.608s"/>
+      <audio src="file:///home/nebojsa/src/campcaster/src/modules/storageServer/var/access/105cda99c6cb15ad.ogg" begin="8.343s"/>
+    </par>
+  </body>
+</smil>
