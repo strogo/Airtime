@@ -21,9 +21,9 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  
  
-    Author   : $Author: fgerlits $
-    Version  : $Revision: 3207 $
-    Location : $URL: svn://code.campware.org/campcaster/trunk/campcaster/src/products/gLiveSupport/src/CuePlayer.h $
+    Author   : $Author$
+    Version  : $Revision$
+    Location : $URL$
 
 ------------------------------------------------------------------------------*/
 #ifndef CuePlayer_h
@@ -66,8 +66,8 @@ using namespace LiveSupport::Widgets;
  *  A box displaying a play/pause and a stop button, which control the cue
  *  (preview) audio player.
  *
- *  @author  $Author: fgerlits $
- *  @version $Revision: 3207 $
+ *  @author  $Author$
+ *  @version $Revision$
  */
 class CuePlayer : public GuiComponent,
                   public PlaylistExecutor::AudioPlayerEventListener

@@ -21,9 +21,9 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  
  
-    Author   : $Author: fgerlits $
-    Version  : $Revision: 3185 $
-    Location : $URL: svn://code.campware.org/campcaster/trunk/campcaster/src/modules/widgets/include/LiveSupport/Widgets/ComboBoxText.h $
+    Author   : $Author$
+    Version  : $Revision$
+    Location : $URL$
 
 ------------------------------------------------------------------------------*/
 #ifndef LiveSupport_Widgets_ComboBoxText_h
@@ -59,8 +59,8 @@ namespace Widgets {
  *  This just adds another constructor to its parent class, so that it can
  *  be used with Libglade.
  *
- *  @author  $Author: fgerlits $
- *  @version $Revision: 3185 $
+ *  @author  $Author$
+ *  @version $Revision$
  */
 class ComboBoxText : public Gtk::ComboBoxText
 {

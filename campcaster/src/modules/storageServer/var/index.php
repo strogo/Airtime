@@ -1,7 +1,7 @@
 <?php
 /**
- * @author $Author: paul $
- * @version $Revision: 2323 $
+ * @author $Author$
+ * @version $Revision$
  */
 header ("location: html/");
 exit;

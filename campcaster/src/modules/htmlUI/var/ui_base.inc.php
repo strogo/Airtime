@@ -111,7 +111,7 @@ function _getNumArr($start, $end, $step=1)
  * HTML User Interface module
  * @package Campcaster
  * @subpackage htmlUI
- * @version $Revision: 2895 $
+ * @version $Revision$
  */
 class uiBase
 {

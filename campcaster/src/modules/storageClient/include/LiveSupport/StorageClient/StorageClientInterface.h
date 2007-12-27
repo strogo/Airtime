@@ -21,9 +21,9 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  
  
-    Author   : $Author: fgerlits $
-    Version  : $Revision: 2404 $
-    Location : $URL: svn://code.campware.org/campcaster/trunk/campcaster/src/modules/storageClient/include/LiveSupport/StorageClient/StorageClientInterface.h $
+    Author   : $Author$
+    Version  : $Revision$
+    Location : $URL$
 
 ------------------------------------------------------------------------------*/
 #ifndef LiveSupport_Storage_StorageClientInterface_h
@@ -66,8 +66,8 @@ using namespace Core;
 /**
  *  An interface for storage clients.
  *
- *  @author  $Author: fgerlits $
- *  @version $Revision: 2404 $
+ *  @author  $Author$
+ *  @version $Revision$
  */
 class StorageClientInterface
 {

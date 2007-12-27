@@ -21,9 +21,9 @@
 #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 #
-#   Author   : $Author: paul $
-#   Version  : $Revision: 2976 $
-#   Location : $URL: svn://code.campware.org/campcaster/trunk/campcaster/src/modules/storageAdmin/bin/campcaster-import $
+#   Author   : $Author$
+#   Version  : $Revision$
+#   Location : $URL$
 #-------------------------------------------------------------------------------
 #-------------------------------------------------------------------------------
 #  This script imports audio files to the Campcaster storageServer.

@@ -22,7 +22,7 @@
  
  
     Author   : $Author: fgerlits $
-    Version  : $Revision: 2329 $
+    Version  : $Revision$
     Location : $URL: svn+ssh://fgerlits@code.campware.org/home/svn/repo/livesupport/branches/scheduler_export/livesupport/src/products/scheduler/src/RestoreBackupMethod.h $
 
 ------------------------------------------------------------------------------*/
@@ -80,7 +80,7 @@ namespace Scheduler {
  *  </ul>
  *
  *  @author  $Author: fgerlits $
- *  @version $Revision: 2329 $
+ *  @version $Revision$
  */
 class RestoreBackupMethod : public XmlRpc::XmlRpcServerMethod
 {

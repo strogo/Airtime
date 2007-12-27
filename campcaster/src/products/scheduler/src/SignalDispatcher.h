@@ -21,9 +21,9 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  
  
-    Author   : $Author: fgerlits $
-    Version  : $Revision: 2329 $
-    Location : $URL: svn://code.campware.org/campcaster/trunk/campcaster/src/products/scheduler/src/SignalDispatcher.h $
+    Author   : $Author$
+    Version  : $Revision$
+    Location : $URL$
 
 ------------------------------------------------------------------------------*/
 #ifndef SignalDispatcher_h
@@ -67,8 +67,8 @@ namespace Scheduler {
  *  A class to dispatch signals.
  *  See http://www.cs.wustl.edu/~schmidt/signal-patterns.html for details.
  *
- *  @author  $Author: fgerlits $
- *  @version $Revision: 2329 $
+ *  @author  $Author$
+ *  @version $Revision$
  */
 class SignalDispatcher
 {

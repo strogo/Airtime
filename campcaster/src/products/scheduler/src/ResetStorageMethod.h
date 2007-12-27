@@ -21,9 +21,9 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  
  
-    Author   : $Author: fgerlits $
-    Version  : $Revision: 2329 $
-    Location : $URL: svn://code.campware.org/campcaster/trunk/campcaster/src/products/scheduler/src/ResetStorageMethod.h $
+    Author   : $Author$
+    Version  : $Revision$
+    Location : $URL$
 
 ------------------------------------------------------------------------------*/
 #ifndef ResetStorageMethod_h
@@ -74,8 +74,8 @@ using namespace LiveSupport::Core;
  *     <li>3001 - storage client reported an error </li>
  *  </ul>
  *
- *  @author  $Author: fgerlits $
- *  @version $Revision: 2329 $
+ *  @author  $Author$
+ *  @version $Revision$
  */
 class ResetStorageMethod : public XmlRpc::XmlRpcServerMethod
 {

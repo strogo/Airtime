@@ -22,7 +22,7 @@
  
  
     Author   : $Author: fgerlits $
-    Version  : $Revision: 2329 $
+    Version  : $Revision$
     Location : $URL: svn+ssh://fgerlits@code.campware.org/home/svn/repo/livesupport/trunk/livesupport/src/modules/core/include/LiveSupport/Core/FileTools.h $
 
 ------------------------------------------------------------------------------*/
@@ -63,7 +63,7 @@ using namespace LiveSupport::Core;
  *  A collection of tools for handling files and URLs.
  *
  *  @author  $Author: fgerlits $
- *  @version $Revision: 2329 $
+ *  @version $Revision$
  */
 class FileTools
 {

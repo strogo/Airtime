@@ -1,6 +1,6 @@
 #!/usr/bin/php
-#   Author   : $Author: paul $
-#   Version  : $Revision: 2462 $
+#   Author   : $Author$
+#   Version  : $Revision$
 #-------------------------------------------------------------------------------
 #-------------------------------------------------------------------------------
 #  This script configures php for the htmlUI

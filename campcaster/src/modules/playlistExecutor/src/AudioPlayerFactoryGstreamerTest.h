@@ -21,9 +21,9 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  
  
-    Author   : $Author: fgerlits $
-    Version  : $Revision: 2329 $
-    Location : $URL: svn://code.campware.org/campcaster/branches/gstreamer-0.10/campcaster/src/modules/playlistExecutor/src/AudioPlayerFactoryGstreamerTest.h $
+    Author   : $Author$
+    Version  : $Revision$
+    Location : $URL$
 
 ------------------------------------------------------------------------------*/
 #ifndef AudioPlayerFactoryGstreamerTest_h
@@ -59,14 +59,14 @@ namespace PlaylistExecutor {
 /**
  *  Unit test for the AudioPlayerFactory class.
  *
- *  @author  $Author: fgerlits $
- *  @version $Revision: 2329 $
+ *  @author  $Author$
+ *  @version $Revision$
  *  @see AudioPlayerFactory
  */
 class AudioPlayerFactoryGstreamerTest : public CPPUNIT_NS::TestFixture
 {
     CPPUNIT_TEST_SUITE(AudioPlayerFactoryGstreamerTest);
-//    CPPUNIT_TEST(firstTest);
+    CPPUNIT_TEST(firstTest);
     CPPUNIT_TEST(simplePlayTest);
     CPPUNIT_TEST_SUITE_END();
 

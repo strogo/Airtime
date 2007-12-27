@@ -21,9 +21,9 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  
  
-    Author   : $Author: fgerlits $
-    Version  : $Revision: 3207 $
-    Location : $URL: svn://code.campware.org/campcaster/trunk/campcaster/src/products/gLiveSupport/src/GuiObject.h $
+    Author   : $Author$
+    Version  : $Revision$
+    Location : $URL$
 
 ------------------------------------------------------------------------------*/
 #ifndef GuiObject_h
@@ -64,8 +64,8 @@ class GLiveSupport;
 /**
  *  The common ancestor of all windows and sub-windows in the GUI.
  *
- *  @author $Author: fgerlits $
- *  @version $Revision: 3207 $
+ *  @author $Author$
+ *  @version $Revision$
  */
 class GuiObject : public LocalizedObject
 {

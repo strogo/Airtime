@@ -72,9 +72,9 @@ documentation and/or software.
 
   ------------------------------------------------------------------------------
 
-    Author   : $Author: fgerlits $
-    Version  : $Revision: 2329 $
-    Location : $URL: svn://code.campware.org/campcaster/trunk/campcaster/src/modules/core/include/LiveSupport/Core/Md5.h $
+    Author   : $Author$
+    Version  : $Revision$
+    Location : $URL$
 
 ------------------------------------------------------------------------------*/
 #ifndef LiveSupport_Core_Md5_h
@@ -129,8 +129,8 @@ namespace Core {
  *  on the basis of the original C code by RSA Data Security, Inc.  See the
  *  header of the source file for further information.
  *
- *  @author  $Author: fgerlits $
- *  @version $Revision: 2329 $
+ *  @author  $Author$
+ *  @version $Revision$
  */
 class Md5
 {

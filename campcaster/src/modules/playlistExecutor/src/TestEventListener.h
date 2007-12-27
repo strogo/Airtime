@@ -21,9 +21,9 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  
  
-    Author   : $Author: fgerlits $
-    Version  : $Revision: 3018 $
-    Location : $URL: svn://code.campware.org/campcaster/branches/gstreamer-0.10/campcaster/src/modules/playlistExecutor/src/TestEventListener.h $
+    Author   : $Author$
+    Version  : $Revision$
+    Location : $URL$
 
 ------------------------------------------------------------------------------*/
 #ifndef TestEventListener_h
@@ -61,8 +61,8 @@ using namespace LiveSupport::Core;
 /**
  *  A simple event listener, used for testing.
  *
- *  @author  $Author: fgerlits $
- *  @version $Revision: 3018 $
+ *  @author  $Author$
+ *  @version $Revision$
  */
 class TestEventListener : public AudioPlayerEventListener
 {

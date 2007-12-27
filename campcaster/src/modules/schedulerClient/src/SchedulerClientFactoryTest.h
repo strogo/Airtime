@@ -21,9 +21,9 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  
  
-    Author   : $Author: fgerlits $
-    Version  : $Revision: 2329 $
-    Location : $URL: svn://code.campware.org/campcaster/trunk/campcaster/src/modules/schedulerClient/src/SchedulerClientFactoryTest.h $
+    Author   : $Author$
+    Version  : $Revision$
+    Location : $URL$
 
 ------------------------------------------------------------------------------*/
 #ifndef SchedulerClientFactoryTest_h
@@ -61,8 +61,8 @@ using namespace LiveSupport::Core;
 /**
  *  Unit test for the SchedulerClientFactoryTest class.
  *
- *  @author  $Author: fgerlits $
- *  @version $Revision: 2329 $
+ *  @author  $Author$
+ *  @version $Revision$
  *  @see SchedulerClientFactoryTest
  */
 class SchedulerClientFactoryTest : public BaseTestMethod

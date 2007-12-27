@@ -1,7 +1,7 @@
 #!/bin/bash
 
-#   Author   : $Author: fgerlits $
-#   Version  : $Revision: 2674 $
+#   Author   : $Author$
+#   Version  : $Revision$
 #-------------------------------------------------------------------------------
 
 #DEBUG=yes

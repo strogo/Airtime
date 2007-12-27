@@ -21,9 +21,9 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  
  
-    Author   : $Author: fgerlits $
-    Version  : $Revision: 2329 $
-    Location : $URL: svn://code.campware.org/campcaster/trunk/campcaster/src/modules/widgets/include/LiveSupport/Widgets/Colors.h $
+    Author   : $Author$
+    Version  : $Revision$
+    Location : $URL$
 
 ------------------------------------------------------------------------------*/
 #ifndef LiveSupport_Widgets_Colors_h
@@ -64,8 +64,8 @@ namespace Widgets {
  *  The definitions of the colors can be found in doc/gui/styleguide.pdf;
  *  the last two colors were taken from doc/gui/designs/livemode.gif.
  *
- *  @author  $Author: fgerlits $
- *  @version $Revision: 2329 $
+ *  @author  $Author$
+ *  @version $Revision$
  */
 class Colors
 {

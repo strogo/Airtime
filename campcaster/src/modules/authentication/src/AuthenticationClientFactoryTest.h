@@ -21,9 +21,9 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  
  
-    Author   : $Author: fgerlits $
-    Version  : $Revision: 2329 $
-    Location : $URL: svn://code.campware.org/campcaster/trunk/campcaster/src/modules/authentication/src/AuthenticationClientFactoryTest.h $
+    Author   : $Author$
+    Version  : $Revision$
+    Location : $URL$
 
 ------------------------------------------------------------------------------*/
 #ifndef AuthenticationClientFactoryTest_h
@@ -62,8 +62,8 @@ using namespace LiveSupport::Core;
 /**
  *  Unit test for the AuthenticationClientFactory class.
  *
- *  @author  $Author: fgerlits $
- *  @version $Revision: 2329 $
+ *  @author  $Author$
+ *  @version $Revision$
  *  @see AuthenticationClientFactory
  */
 class AuthenticationClientFactoryTest : public BaseTestMethod

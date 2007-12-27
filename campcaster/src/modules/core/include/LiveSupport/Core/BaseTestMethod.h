@@ -21,9 +21,9 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  
  
-    Author   : $Author: fgerlits $
-    Version  : $Revision: 2334 $
-    Location : $URL: svn://code.campware.org/campcaster/trunk/campcaster/src/modules/core/include/LiveSupport/Core/BaseTestMethod.h $
+    Author   : $Author$
+    Version  : $Revision$
+    Location : $URL$
 
 ------------------------------------------------------------------------------*/
 #ifndef LiveSupport_Core_BaseTestMethod_h
@@ -63,8 +63,8 @@ namespace Core {
  *  This class gives helpers to access the configuration files
  *  from various locations (~/.campcaster, ./etc)
  *
- *  @author  $Author: fgerlits $
- *  @version $Revision: 2334 $
+ *  @author  $Author$
+ *  @version $Revision$
  */
 class BaseTestMethod : public CPPUNIT_NS::TestFixture
 {

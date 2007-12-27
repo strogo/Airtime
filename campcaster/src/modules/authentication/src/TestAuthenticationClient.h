@@ -21,9 +21,9 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  
  
-    Author   : $Author: fgerlits $
-    Version  : $Revision: 2329 $
-    Location : $URL: svn://code.campware.org/campcaster/trunk/campcaster/src/modules/authentication/src/TestAuthenticationClient.h $
+    Author   : $Author$
+    Version  : $Revision$
+    Location : $URL$
 
 ------------------------------------------------------------------------------*/
 #ifndef TestAuthenticationClient_h
@@ -94,8 +94,8 @@ using namespace LiveSupport::Core;
  *  &lt;!ATTLIST user password   CDATA      #REQUIRED &gt;
  *  </code></pre>
  *
- *  @author  $Author: fgerlits $
- *  @version $Revision: 2329 $
+ *  @author  $Author$
+ *  @version $Revision$
  */
 class TestAuthenticationClient :
                     virtual public Configurable,

@@ -4,7 +4,7 @@
  * @author Paul Baranowski <paul@paulbaranowski.org>
  * @package Campcaster
  * @subpackage htmlUI
- * @version $Revision: 2668 $
+ * @version $Revision$
  * @copyright 2006 MDLF, Inc.
  * @license http://www.gnu.org/licenses/gpl.txt
  * @link http://www.campware.org

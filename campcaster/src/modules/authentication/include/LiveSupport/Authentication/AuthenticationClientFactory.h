@@ -21,9 +21,9 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  
  
-    Author   : $Author: fgerlits $
-    Version  : $Revision: 2329 $
-    Location : $URL: svn://code.campware.org/campcaster/trunk/campcaster/src/modules/authentication/include/LiveSupport/Authentication/AuthenticationClientFactory.h $
+    Author   : $Author$
+    Version  : $Revision$
+    Location : $URL$
 
 ------------------------------------------------------------------------------*/
 #ifndef LiveSupport_Authentication_AuthenticationClientFactory_h
@@ -92,8 +92,8 @@ using namespace LiveSupport::Core;
  *                                         webAuthentication) &gt;
  *  </code></pre>
  *
- *  @author  $Author: fgerlits $
- *  @version $Revision: 2329 $
+ *  @author  $Author$
+ *  @version $Revision$
  *  @see TestAuthenticationClient
  *  @see WebAuthenticationClient
  */

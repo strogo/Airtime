@@ -20,9 +20,9 @@ dnl along with Campcaster; if not, write to the Free Software
 dnl Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 dnl
 dnl
-dnl Author   : $Author: fgerlits $
-dnl Version  : $Revision: 2329 $
-dnl Location : $URL: svn://code.campware.org/campcaster/trunk/campcaster/src/tools/xmlrpc++/xmlrpc++-20040713/etc/configure.ac $
+dnl Author   : $Author$
+dnl Version  : $Revision$
+dnl Location : $URL$
 dnl-----------------------------------------------------------------------------
 
 dnl-----------------------------------------------------------------------------
@@ -35,7 +35,7 @@ dnl-----------------------------------------------------------------------------
 AC_INIT(xmlrpc++, 20040713, bugs@campware.org)
 AC_PREREQ(2.59)
 AC_COPYRIGHT([Copyright (c) 2004 Media Development Loan Fund under the GNU GPL])
-AC_REVISION($Revision: 2329 $)
+AC_REVISION($Revision$)
 
 AC_CONFIG_SRCDIR(../src/xmlrpc++-20040713.tar.gz)
 

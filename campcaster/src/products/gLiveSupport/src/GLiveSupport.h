@@ -21,9 +21,9 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  
  
-    Author   : $Author: fgerlits $
-    Version  : $Revision: 3260 $
-    Location : $URL: svn://code.campware.org/campcaster/trunk/campcaster/src/products/gLiveSupport/src/GLiveSupport.h $
+    Author   : $Author$
+    Version  : $Revision$
+    Location : $URL$
 
 ------------------------------------------------------------------------------*/
 #ifndef GLiveSupport_h
@@ -111,8 +111,8 @@ class MasterPanelWindow;
  *  AudioPlayerFactory; and stationLogo, which is just a path to the
  *  station logo image file.
  *
- *  @author $Author: fgerlits $
- *  @version $Revision: 3260 $
+ *  @author $Author$
+ *  @version $Revision$
  *  @see LocalizedObject#getBundle(const xmlpp::Element &)
  *  @see AuthenticationClientFactory
  *  @see StorageClientFactory

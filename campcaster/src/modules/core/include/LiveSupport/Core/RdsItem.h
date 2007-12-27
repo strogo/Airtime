@@ -21,9 +21,9 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  
  
-    Author   : $Author: fgerlits $
-    Version  : $Revision: 3185 $
-    Location : $URL: svn://code.campware.org/campcaster/trunk/campcaster/src/modules/core/include/LiveSupport/Core/RdsItem.h $
+    Author   : $Author$
+    Version  : $Revision$
+    Location : $URL$
 
 ------------------------------------------------------------------------------*/
 #ifndef LiveSupport_Core_RdsItem_h
@@ -88,8 +88,8 @@ using namespace LiveSupport::Core;
  *  </code></pre>
  *
  *
- *  @author  $Author: fgerlits $
- *  @version $Revision: 3185 $
+ *  @author  $Author$
+ *  @version $Revision$
  *  @see RdsItemContainer
  */
 class RdsItem : public Configurable

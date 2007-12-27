@@ -10,7 +10,7 @@ define('ALIBERR_NOTEXISTS', 31);
  *
  * @author Tomas Hlava <th@red2head.com>
  * @author Paul Baranowski <paul@paulbaranowski.org>
- * @version $Revision: 2934 $
+ * @version $Revision$
  * @package Campcaster
  * @subpackage Alib
  * @copyright 2006 MDLF, Inc.

@@ -22,7 +22,7 @@
  
  
     Author   : $Author: fgerlits $
-    Version  : $Revision: 2329 $
+    Version  : $Revision$
     Location : $URL: svn+ssh://fgerlits@code.campware.org/home/svn/repo/livesupport/trunk/livesupport/src/modules/core/src/FileTools.cxx $
 
 ------------------------------------------------------------------------------*/

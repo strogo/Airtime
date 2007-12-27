@@ -20,9 +20,9 @@ dnl along with Campcaster; if not, write to the Free Software
 dnl Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 dnl
 dnl
-dnl Author   : $Author: fgerlits $
-dnl Version  : $Revision: 3269 $
-dnl Location : $URL: svn://code.campware.org/campcaster/trunk/campcaster/etc/configure.ac $
+dnl Author   : $Author$
+dnl Version  : $Revision$
+dnl Location : $URL$
 dnl-----------------------------------------------------------------------------
 
 dnl-----------------------------------------------------------------------------
@@ -35,7 +35,7 @@ dnl-----------------------------------------------------------------------------
 AC_INIT(Campcaster, 1.3.0, bugs@campware.org)
 AC_PREREQ(2.59)
 AC_COPYRIGHT([Copyright (c) 2004 Media Development Loan Fund under the GNU GPL])
-AC_REVISION($Revision: 3269 $)
+AC_REVISION($Revision$)
 
 AC_CONFIG_SRCDIR(../src/products/scheduler/src/main.cxx)
 
@@ -339,6 +339,10 @@ dnl set up the storage client module
 AC_CONFIG_COMMANDS([../src/modules/storageClient/tmp/configure],
                    [../src/modules/storageClient/bin/autogen.sh])
 
+dnl set up the gstreamer elements module
+AC_CONFIG_COMMANDS([../src/modules/gstreamerElements/tmp/configure],
+                   [../src/modules/gstreamerElements/bin/autogen.sh])
+
 dnl set up the playlist executor module
 AC_CONFIG_COMMANDS([../src/modules/playlistExecutor/tmp/configure],
                    [../src/modules/playlistExecutor/bin/autogen.sh])
@@ -372,7 +376,7 @@ AC_MSG_NOTICE(
 by Campcaster:
 
     cppunit 1.10.2          ${COMPILE_CPPUNIT}
-    gstreamer 0.10.15       yes
+    gstreamer 0.8.12        yes
     libodbc++ 0.2.3         yes
     taglib 1.4              yes
     xmlrpc++ 2004-07-13     yes

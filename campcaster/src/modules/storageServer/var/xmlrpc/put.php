@@ -24,8 +24,8 @@
  *  </ul>
  *
  *  @see XR_LocStor
- * @author   : $Author: paul $
- * @version  : $Revision: 2837 $
+ * @author   : $Author$
+ * @version  : $Revision$
  * @package Campcaster
  * @subpackage storageServer
  */

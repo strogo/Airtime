@@ -21,9 +21,9 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  
  
-    Author   : $Author: fgerlits $
-    Version  : $Revision: 3207 $
-    Location : $URL: svn://code.campware.org/campcaster/trunk/campcaster/src/products/gLiveSupport/src/AdvancedSearchEntry.h $
+    Author   : $Author$
+    Version  : $Revision$
+    Location : $URL$
 
 ------------------------------------------------------------------------------*/
 #ifndef AdvancedSearchEntry_h
@@ -69,8 +69,8 @@ using namespace LiveSupport::Widgets;
 /**
  *  A sub-window with one or more search input fields in it.
  *
- *  @author  $Author: fgerlits $
- *  @version $Revision: 3207 $
+ *  @author  $Author$
+ *  @version $Revision$
  */
 class AdvancedSearchEntry : public GuiComponent
 {

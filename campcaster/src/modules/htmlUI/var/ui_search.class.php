@@ -2,7 +2,7 @@
 /**
  * @package Campcaster
  * @subpackage htmlUI
- * @version $Revision: 3095 $
+ * @version $Revision$
  */
 class uiSearch
 {

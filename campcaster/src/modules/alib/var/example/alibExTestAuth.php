@@ -1,7 +1,7 @@
 <?php
 /**
- * @author $Author: paul $
- * @version $Revision: 2774 $
+ * @author $Author$
+ * @version $Revision$
  */
 $login = Alib::GetSessLogin($_REQUEST['alibsid']);
 if(!isset($login)||$login==''){

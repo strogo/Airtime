@@ -21,9 +21,9 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  
  
-    Author   : $Author: fgerlits $
-    Version  : $Revision: 3018 $
-    Location : $URL: svn://code.campware.org/campcaster/branches/gstreamer-0.10/campcaster/src/modules/playlistExecutor/src/GstreamerPlayer.h $
+    Author   : $Author$
+    Version  : $Revision$
+    Location : $URL$
 
 ------------------------------------------------------------------------------*/
 #ifndef GstreamerPlayer_h
@@ -50,7 +50,6 @@
 
 #include "LiveSupport/Core/Playlist.h"
 
-#include "GstreamerPlayContext.h"
 
 namespace LiveSupport {
 namespace PlaylistExecutor {
@@ -87,12 +86,13 @@ using namespace LiveSupport::Core;
  *  <!ATTLIST gstreamerPlayer   audioDevice  CDATA   #IMPLIED  >
  *  </code></pre>
  *
- *  @author  $Author: fgerlits $
- *  @version $Revision: 3018 $
+ *  @author  $Author$
+ *  @version $Revision$
  */
 class GstreamerPlayer : virtual public Configurable,
                         virtual public AudioPlayerInterface
 {
+    friend class Preloader;
 
     private:
         /**
@@ -103,9 +103,37 @@ class GstreamerPlayer : virtual public Configurable,
         /**
          *  The pipeline inside the player
          */
-        GstreamerPlayContext *m_playContext;
-        SmilHandler *m_smilHandler;
+        GstElement            * m_pipeline;
 
+        /**
+         *  The file source element.
+         */
+        GstElement            * m_filesrc;
+
+        /**
+         *  The decoder element.
+         */
+        GstElement            * m_decoder;
+
+        /**
+         *  The audioconvert element.
+         */
+        GstElement            * m_audioconvert;
+
+        /**
+         *  The audioscale element.
+         */
+        GstElement            * m_audioscale;
+
+        /**
+         *  The desired capabilities of the audio sink.
+         */
+        GstCaps               * m_sinkCaps;
+
+        /**
+         *  The audio sink
+         */
+        GstElement            * m_audiosink;
 
         /**
          *  The URL to play.
@@ -116,7 +144,6 @@ class GstreamerPlayer : virtual public Configurable,
          *  Flag to indicate if this object has been initialized.
          */
         bool                    m_initialized;
-        bool                    m_open;
 
         /**
          *  The audio device to play on.
@@ -138,11 +165,26 @@ class GstreamerPlayer : virtual public Configurable,
          */
         std::string             m_preloadUrl;
 
-public:
         /**
-         *  Flag that indicates that the pipeline has reached End-Of-Stream.  
+         *  The filesrc element created by the preloader.
          */
-        gboolean                m_eos;
+        GstElement            * m_preloadFilesrc;
+
+        /**
+         *  The decoder element created by the preloader
+         */
+        GstElement            * m_preloadDecoder;
+
+        /**
+         *  The thread that runs the preloader instance.
+         */
+        Ptr<Thread>::Ref        m_preloadThread;
+
+        /**
+         *  Flag that indicates that the preloader should abort.  
+         */
+
+        gboolean                m_stopPreloader;
 
         /**
          *  The type for the vector of listeners.
@@ -158,7 +200,6 @@ public:
          */
         ListenerVector          m_listeners;
 
-
         /**
          *  Handler to recieve errors from gstreamer.
          *
@@ -168,19 +209,40 @@ public:
          *  @param debug debug info
          *  @param self pointer to the associated GsreamerPlayer object.
          */
-/*        static void
+        static void
         errorHandler(GstElement   * pipeline,
                      GstElement   * source,
                      GError       * error,
                      gchar        * debug,
                      gpointer       self)                           throw ();
-*/
+
+        /**
+         *  An end-of-stream event handler, that will notify our pipeline,
+         *  that it's all over.
+         *
+         *  @param element the element emitting the eos signal
+         *  @param self a pointer to the associated GstreamerPlayer object.
+         */
+        static void
+        eosEventHandler(GstElement    * element,
+                        gpointer        self)
+                                                                    throw ();
+        /**
+         *  A newpad event handler, that will link the decoder after 
+         *  decodebin's autoplugging.
+         *
+         *  @param element the element emitting the eos signal
+         *  @param self a pointer to the associated GstreamerPlayer object.
+         */
+        static void
+        newpadEventHandler(GstElement*, GstPad*, gboolean, gpointer self)  throw();
+
 
         /**
          *  Send the onStop event to all attached listeners.
          */
         static gboolean
-        fireOnStopEvent(gpointer self)                            throw ();
+        fireOnStopEvent(gpointer self)                           throw ();
 
 
     public:
@@ -189,10 +251,11 @@ public:
          */
         GstreamerPlayer(void)                           throw ()
         {
-            m_playContext    = 0;
-            m_open        = false;
+            m_pipeline    = 0;
+            m_filesrc     = 0;
+            m_decoder     = 0;
+            m_audiosink   = 0;
             m_initialized = false;
-            m_smilHandler = NULL;
         }
 
         /**
@@ -315,15 +378,6 @@ public:
         isOpen(void)                                    throw ();
 
         /**
-         *  Plays next audio from current smil sequence
-         *  
-         *
-         *  @return true if next smil is available, false otherwise.
-         */
-        virtual bool
-        playNextSmil(void)                                    throw ();
-
-        /**
          *  Close an audio source that was opened.
          *
          *  @see #open
@@ -412,6 +466,39 @@ public:
 
 };
 
+
+
+/**
+ *  A class for preloading GStreamer SMIL decoder instances.
+ *
+ *  Preloading initializes the decoder element in a helper thread, so
+ *  that most of the initialization overhead is eleminated when playback
+ *  is started.
+ *
+ *  @author  $Author$
+ *  @version $Revision$
+ */
+class Preloader : public RunnableInterface
+{
+    public:
+        Preloader(GstreamerPlayer*, const std::string)      throw();
+        ~Preloader()                                        throw();
+
+        void run()                                          throw();
+        void signal(int)                                    throw();
+        void stop()                                         throw();
+
+    private:
+        /**
+         *  Pointer to GstreamerPlayer class instance.
+         */
+        GstreamerPlayer* m_player;
+
+        /**
+         *  The URL of the file to be preloaded.
+         */
+        std::string      m_fileUrl;
+};
 
 
 /* ================================================= external data structures */

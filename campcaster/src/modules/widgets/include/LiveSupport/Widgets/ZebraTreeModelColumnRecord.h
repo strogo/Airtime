@@ -21,9 +21,9 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  
  
-    Author   : $Author: fgerlits $
-    Version  : $Revision: 2329 $
-    Location : $URL: svn://code.campware.org/campcaster/trunk/campcaster/src/modules/widgets/include/LiveSupport/Widgets/ZebraTreeModelColumnRecord.h $
+    Author   : $Author$
+    Version  : $Revision$
+    Location : $URL$
 
 ------------------------------------------------------------------------------*/
 #ifndef LiveSupport_Widgets_ZebraTreeModelColumnRecord_h
@@ -56,8 +56,8 @@ namespace Widgets {
 /**
  *  A basic column record class for tree models with colorable rows.
  *
- *  @author  $Author: fgerlits $
- *  @version $Revision: 2329 $
+ *  @author  $Author$
+ *  @version $Revision$
  */
 class ZebraTreeModelColumnRecord : public Gtk::TreeModelColumnRecord
 {

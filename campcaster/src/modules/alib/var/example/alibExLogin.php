@@ -1,7 +1,7 @@
 <?php
 /**
- * @author $Author: paul $
- * @version  $Revision: 2774 $
+ * @author $Author$
+ * @version  $Revision$
  */
 require_once "alib_h.php";
 

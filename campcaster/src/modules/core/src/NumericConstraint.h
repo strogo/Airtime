@@ -21,9 +21,9 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  
  
-    Author   : $Author: fgerlits $
-    Version  : $Revision: 3185 $
-    Location : $URL: svn://code.campware.org/campcaster/trunk/campcaster/src/modules/core/src/NumericConstraint.h $
+    Author   : $Author$
+    Version  : $Revision$
+    Location : $URL$
 
 ------------------------------------------------------------------------------*/
 #ifndef LiveSupport_Core_NumericConstraint_h
@@ -75,8 +75,8 @@ namespace Core {
  *  <!ATTLIST constraint    type    "numeric"   #FIXED  >
  *  </code></pre>
  *
- *  @author  $Author: fgerlits $
- *  @version $Revision: 3185 $
+ *  @author  $Author$
+ *  @version $Revision$
  *  @see NumericConstraintContainer
  */
 class NumericConstraint : public MetadataConstraint

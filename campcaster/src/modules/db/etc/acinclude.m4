@@ -20,9 +20,9 @@ dnl along with Campcaster; if not, write to the Free Software
 dnl Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 dnl
 dnl
-dnl Author   : $Author: fgerlits $
-dnl Version  : $Revision: 2329 $
-dnl Location : $URL: svn://code.campware.org/campcaster/trunk/campcaster/src/modules/db/etc/acinclude.m4 $
+dnl Author   : $Author$
+dnl Version  : $Revision$
+dnl Location : $URL$
 dnl-----------------------------------------------------------------------------
 
 dnl-----------------------------------------------------------------------------

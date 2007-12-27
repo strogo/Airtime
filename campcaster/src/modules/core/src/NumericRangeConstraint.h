@@ -21,9 +21,9 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  
  
-    Author   : $Author: fgerlits $
-    Version  : $Revision: 3185 $
-    Location : $URL: svn://code.campware.org/campcaster/trunk/campcaster/src/modules/core/src/NumericRangeConstraint.h $
+    Author   : $Author$
+    Version  : $Revision$
+    Location : $URL$
 
 ------------------------------------------------------------------------------*/
 #ifndef LiveSupport_Core_NumericRangeConstraint_h
@@ -82,8 +82,8 @@ namespace Core {
  *  <!ELEMENT value                 (#PCDATA)               >
  *  </code></pre>
  *
- *  @author  $Author: fgerlits $
- *  @version $Revision: 3185 $
+ *  @author  $Author$
+ *  @version $Revision$
  *  @see NumericRangeConstraintContainer
  */
 class NumericRangeConstraint : public MetadataConstraint

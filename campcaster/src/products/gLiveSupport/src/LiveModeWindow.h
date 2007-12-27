@@ -21,9 +21,9 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  
  
-    Author   : $Author: fgerlits $
-    Version  : $Revision: 3257 $
-    Location : $URL: svn://code.campware.org/campcaster/trunk/campcaster/src/products/gLiveSupport/src/LiveModeWindow.h $
+    Author   : $Author$
+    Version  : $Revision$
+    Location : $URL$
 
 ------------------------------------------------------------------------------*/
 #ifndef LiveModeWindow_h
@@ -73,8 +73,8 @@ using namespace LiveSupport::Widgets;
  *  The LiveMode window, showing recent and relevant audio clips and
  *  playlists.
  *
- *  @author $Author: fgerlits $
- *  @version $Revision: 3257 $
+ *  @author $Author$
+ *  @version $Revision$
  */
 class LiveModeWindow : public GuiWindow,
                        public ContentsStorable,
@@ -167,8 +167,8 @@ class LiveModeWindow : public GuiWindow,
          *  The columns model needed by Gtk::TreeView.
          *  Lists one clip per row.
          *
-         *  @author $Author: fgerlits $
-         *  @version $Revision: 3257 $
+         *  @author $Author$
+         *  @version $Revision$
          */
         class ModelColumns : public PlayableTreeModelColumnRecord
         {

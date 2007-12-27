@@ -8,7 +8,7 @@ require_once("M2tree.php");
  *
  * @author Tomas Hlava <th@red2head.com>
  * @author Paul Baranowski <paul@paulbaranowski.org>
- * @version $Revision: 2912 $
+ * @version $Revision$
  * @package Campcaster
  * @subpackage Alib
  * @copyright 2006 MDLF, Inc.

@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Paul Baranowski <paul@paulbaranowski.org>
- * @version $Revision: 2906 $
+ * @version $Revision$
  * @package Campcaster
  * @subpackage StorageServer
  * @copyright 2006 MDLF, Inc.

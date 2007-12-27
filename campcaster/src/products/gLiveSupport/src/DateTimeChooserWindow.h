@@ -21,9 +21,9 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  
  
-    Author   : $Author: fgerlits $
-    Version  : $Revision: 3208 $
-    Location : $URL: svn://code.campware.org/campcaster/trunk/campcaster/src/products/gLiveSupport/src/DateTimeChooserWindow.h $
+    Author   : $Author$
+    Version  : $Revision$
+    Location : $URL$
 
 ------------------------------------------------------------------------------*/
 #ifndef DateTimeChooserWindow_h
@@ -70,8 +70,8 @@ using namespace LiveSupport::Core;
  *  run(); it is the responsibility of the caller to delete it (or it can be
  *  reused a few times first).
  *
- *  @author $Author: fgerlits $
- *  @version $Revision: 3208 $
+ *  @author $Author$
+ *  @version $Revision$
  */
 class DateTimeChooserWindow : public GuiWindow
 {

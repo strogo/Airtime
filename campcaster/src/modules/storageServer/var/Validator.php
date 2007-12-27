@@ -25,7 +25,7 @@ define('VAL_PREDXML', 121);
  *
  * @author Tomas Hlava <th@red2head.com>
  * @author Paul Baranowski <paul@paulbaranowski.org>
- * @version $Revision: 2895 $
+ * @version $Revision$
  * @package Campcaster
  * @subpackage StorageServer
  * @copyright 2006 MDLF, Inc.

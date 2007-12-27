@@ -21,9 +21,9 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  
  
-    Author   : $Author: fgerlits $
-    Version  : $Revision: 2329 $
-    Location : $URL: svn://code.campware.org/campcaster/trunk/campcaster/src/products/scheduler/src/CreateBackupOpenMethod.h $
+    Author   : $Author$
+    Version  : $Revision$
+    Location : $URL$
 
 ------------------------------------------------------------------------------*/
 #ifndef CreateBackupOpenMethod_h
@@ -104,8 +104,8 @@ using namespace LiveSupport::Core;
  *     <li>4020 - missing session ID argument </li>
  *  </ul>
  *
- *  @author  $Author: fgerlits $
- *  @version $Revision: 2329 $
+ *  @author  $Author$
+ *  @version $Revision$
  */
 class CreateBackupOpenMethod : public XmlRpc::XmlRpcServerMethod
 {

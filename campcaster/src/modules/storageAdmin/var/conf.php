@@ -1,7 +1,7 @@
 <?php
 /**
- * @author $Author: paul $
- * @version $Revision: 2855 $
+ * @author $Author$
+ * @version $Revision$
  */
 
 $STORAGE_SERVER_PATH = dirname(__FILE__)."/../../storageServer";

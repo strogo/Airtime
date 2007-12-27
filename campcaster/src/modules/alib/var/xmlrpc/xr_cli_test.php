@@ -1,7 +1,7 @@
 <?php
 /**
- * @author $Author: paul $
- * @version $Revision: 2333 $
+ * @author $Author$
+ * @version $Revision$
  */
 include("xmlrpc.inc");
 

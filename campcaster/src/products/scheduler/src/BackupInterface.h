@@ -21,9 +21,9 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 
-    Author   : $Author: paul $
-    Version  : $Revision: 2833 $
-    Location : $URL: svn://code.campware.org/campcaster/trunk/campcaster/src/products/scheduler/src/BackupInterface.h $
+    Author   : $Author$
+    Version  : $Revision$
+    Location : $URL$
 
 ------------------------------------------------------------------------------*/
 #ifndef BackupInterface_h
@@ -74,8 +74,8 @@ using namespace LiveSupport::StorageClient;
  *  The xxxxMethod classes are registered in the SchedulerDaemon
  *  object, which calls them when an XML-RPC request is received.
  *
- *  @author  $Author: paul $
- *  @version $Revision: 2833 $
+ *  @author  $Author$
+ *  @version $Revision$
  */
 class BackupInterface
 {

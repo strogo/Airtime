@@ -21,9 +21,9 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  
  
-    Author   : $Author: fgerlits $
-    Version  : $Revision: 3205 $
-    Location : $URL: svn://code.campware.org/campcaster/trunk/campcaster/src/products/gLiveSupport/src/LoginWindow.h $
+    Author   : $Author$
+    Version  : $Revision$
+    Location : $URL$
 
 ------------------------------------------------------------------------------*/
 #ifndef LoginWindow_h
@@ -62,8 +62,8 @@ using namespace LiveSupport::Widgets;
 /**
  *  A window, handling user login.
  *
- *  @author $Author: fgerlits $
- *  @version $Revision: 3205 $
+ *  @author $Author$
+ *  @version $Revision$
  */
 class LoginWindow : public GuiWindow
 {

@@ -21,9 +21,9 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  
  
-    Author   : $Author: fgerlits $
-    Version  : $Revision: 3191 $
-    Location : $URL: svn://code.campware.org/campcaster/trunk/campcaster/src/modules/widgets/include/LiveSupport/Widgets/ZebraTreeView.h $
+    Author   : $Author$
+    Version  : $Revision$
+    Location : $URL$
 
 ------------------------------------------------------------------------------*/
 #ifndef LiveSupport_Widgets_ZebraTreeView_h
@@ -90,8 +90,8 @@ using namespace LiveSupport::Core;
  *  2) added to a TreeViewColumn using a constructor or pack_start() etc;
  *  3) connected with a TreeModelColumn using TreeViewColumn::set_renderer().
  *
- *  @author  $Author: fgerlits $
- *  @version $Revision: 3191 $
+ *  @author  $Author$
+ *  @version $Revision$
  */
 class ZebraTreeView : public Gtk::TreeView
 {

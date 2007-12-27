@@ -20,9 +20,9 @@ dnl along with Campcaster; if not, write to the Free Software
 dnl Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 dnl
 dnl
-dnl Author   : $Author: fgerlits $
-dnl Version  : $Revision: 3090 $
-dnl Location : $URL: svn://code.campware.org/campcaster/trunk/campcaster/src/modules/playlistExecutor/etc/configure.ac $
+dnl Author   : $Author$
+dnl Version  : $Revision$
+dnl Location : $URL$
 dnl-----------------------------------------------------------------------------
 
 dnl-----------------------------------------------------------------------------
@@ -35,7 +35,7 @@ dnl-----------------------------------------------------------------------------
 AC_INIT(PlaylistExecutor, 0.0, bugs@campware.org)
 AC_PREREQ(2.59)
 AC_COPYRIGHT([Copyright (c) 2004 Media Development Loan Fund under the GNU GPL])
-AC_REVISION($Revision: 3090 $)
+AC_REVISION($Revision$)
 
 AC_CONFIG_SRCDIR(../src/AudioPlayerFactory.cxx)
 
@@ -95,7 +95,7 @@ PKG_CHECK_MODULES(LIBXMLPP,[libxml++-2.6 >= 2.8.1])
 AC_SUBST(LIBXMLPP_CFLAGS)
 AC_SUBST(LIBXMLPP_LIBS)
 
-PKG_CHECK_MODULES(GSTREAMER,[gstreamer-0.10 >= 0.10])
+PKG_CHECK_MODULES(GSTREAMER,[gstreamer-0.8 >= 0.8])
 AC_SUBST(GSTREAMER_CFLAGS)
 AC_SUBST(GSTREAMER_LIBS)
 

@@ -21,9 +21,9 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  
  
-    Author   : $Author: mark $
-    Version  : $Revision: 2577 $
-    Location : $URL: svn://code.campware.org/campcaster/trunk/campcaster/src/modules/playlistExecutor/include/LiveSupport/PlaylistExecutor/AudioPlayerInterface.h $
+    Author   : $Author$
+    Version  : $Revision$
+    Location : $URL$
 
 ------------------------------------------------------------------------------*/
 #ifndef LiveSupport_PlaylistExecutor_AudioPlayerInterface_h
@@ -68,8 +68,8 @@ using namespace LiveSupport::Core;
 /**
  *  A generic interface for playing audio files.
  *
- *  @author  $Author: mark $
- *  @version $Revision: 2577 $
+ *  @author  $Author$
+ *  @version $Revision$
  */
 class AudioPlayerInterface
 {

@@ -21,9 +21,9 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  
  
-    Author   : $Author: fgerlits $
-    Version  : $Revision: 3208 $
-    Location : $URL: svn://code.campware.org/campcaster/trunk/campcaster/src/products/gLiveSupport/src/UploadFileWindow.h $
+    Author   : $Author$
+    Version  : $Revision$
+    Location : $URL$
 
 ------------------------------------------------------------------------------*/
 #ifndef UploadFileWindow_h
@@ -69,8 +69,8 @@ using namespace LiveSupport::Widgets;
  *  It allows one to select a file from the file system, add metadata,
  *  and upload it to the storage server.
  *
- *  @author $Author: fgerlits $
- *  @version $Revision: 3208 $
+ *  @author $Author$
+ *  @version $Revision$
  */
 class UploadFileWindow : public  GuiWindow,
                          private NumericTools

@@ -25,7 +25,7 @@ require_once("Transport.php");
  *
  * @author Tomas Hlava <th@red2head.com>
  * @author Paul Baranowski <paul@paulbaranowski.org>
- * @version $Revision: 3095 $
+ * @version $Revision$
  * @package Campcaster
  * @subpackage StorageServer
  * @copyright 2006 MDLF, Inc.
@@ -1807,7 +1807,7 @@ class BasicStor {
         }
         if (is_null($parid)) {
             return PEAR::raiseError("BasicStor::_getHomeDirId: ".
-                "homedir not found ($subjid) ($login)", GBERR_NOTF);
+                "homedir not found ($subjid)", GBERR_NOTF);
         }
         return $parid;
     }

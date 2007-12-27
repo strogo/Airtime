@@ -1,7 +1,7 @@
 <?php
 /**
- * @author $Author: paul $
- * @version $Revision: 2938 $
+ * @author $Author$
+ * @version $Revision$
  * @package Campcaster
  * @subpackage ArchiveServer
  * @copyright 2006 MDLF, Inc.
@@ -16,7 +16,7 @@ require_once "../Archive.php";
  *
  * @author Tomas Hlava <th@red2head.com>
  * @author Paul Baranowski <paul@paulbaranowski.org>
- * @version $Revision: 2938 $
+ * @version $Revision$
  * @package Campcaster
  * @subpackage ArchiveServer
  * @copyright 2006 MDLF, Inc.

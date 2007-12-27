@@ -2,7 +2,7 @@
 /**
  * @package Campcaster
  * @subpackage htmlUI
- * @version $Revision: 2986 $
+ * @version $Revision$
  */
 class uiBrowse
 {

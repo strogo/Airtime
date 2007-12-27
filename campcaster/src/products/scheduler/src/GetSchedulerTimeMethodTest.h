@@ -21,9 +21,9 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  
  
-    Author   : $Author: fgerlits $
-    Version  : $Revision: 2329 $
-    Location : $URL: svn://code.campware.org/campcaster/trunk/campcaster/src/products/scheduler/src/GetSchedulerTimeMethodTest.h $
+    Author   : $Author$
+    Version  : $Revision$
+    Location : $URL$
 
 ------------------------------------------------------------------------------*/
 #ifndef GetSchedulerTimeMethodTest_h
@@ -60,8 +60,8 @@ using namespace LiveSupport::Core;
 /**
  *  Unit test to test the getSchedulerTime XML-RPC call.
  *
- *  @author  $Author: fgerlits $
- *  @version $Revision: 2329 $
+ *  @author  $Author$
+ *  @version $Revision$
  *  @see SchedulerDaemon
  */
 class GetSchedulerTimeMethodTest : public CPPUNIT_NS::TestFixture

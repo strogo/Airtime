@@ -22,8 +22,8 @@
  *      <li> 404    -  File not found</li>
  *      <li> 500    -  Application error</li>
  *  </ul>
- * @author $Author: fgerlits $
- * @version $Revision: 3095 $
+ * @author $Author$
+ * @version $Revision$
  *
  */
 

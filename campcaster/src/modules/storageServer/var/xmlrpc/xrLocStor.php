@@ -1,7 +1,7 @@
 <?php
 /**
- * @author $Author: fgerlits $
- * @version $Revision: 3095 $
+ * @author $Author$
+ * @version $Revision$
  */
 
 /* ====================================================== specific PHP config */

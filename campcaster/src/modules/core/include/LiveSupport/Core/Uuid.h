@@ -44,9 +44,9 @@
 ** this software for any purpose.
 
  
-    Author   : $Author: fgerlits $
-    Version  : $Revision: 2329 $
-    Location : $URL: svn://code.campware.org/campcaster/trunk/campcaster/src/modules/core/include/LiveSupport/Core/Uuid.h $
+    Author   : $Author$
+    Version  : $Revision$
+    Location : $URL$
 
 ------------------------------------------------------------------------------*/
 #ifndef LiveSupport_Core_Uuid_h
@@ -89,8 +89,8 @@ namespace Core {
  *  This implementation is based on the Leach UUID/GUID draft:
  *  http://www.opengroup.org/dce/info/draft-leach-uuids-guids-01.txt
  *
- *  @author  $Author: fgerlits $
- *  @version $Revision: 2329 $
+ *  @author  $Author$
+ *  @version $Revision$
  *  @see http://www.opengroup.org/dce/info/draft-leach-uuids-guids-01.txt
  */
 class Uuid

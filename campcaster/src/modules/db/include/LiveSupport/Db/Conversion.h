@@ -21,9 +21,9 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  
  
-    Author   : $Author: fgerlits $
-    Version  : $Revision: 3185 $
-    Location : $URL: svn://code.campware.org/campcaster/trunk/campcaster/src/modules/db/include/LiveSupport/Db/Conversion.h $
+    Author   : $Author$
+    Version  : $Revision$
+    Location : $URL$
 
 ------------------------------------------------------------------------------*/
 #ifndef LiveSupport_Db_Conversion_h
@@ -67,8 +67,8 @@ using namespace LiveSupport::Core;
  *  A helper object holding static conversion functions, that are
  *  helpful when accessing databases.
  *
- *  @author  $Author: fgerlits $
- *  @version $Revision: 3185 $
+ *  @author  $Author$
+ *  @version $Revision$
  */
 class Conversion
 {

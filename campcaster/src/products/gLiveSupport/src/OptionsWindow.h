@@ -21,9 +21,9 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  
  
-    Author   : $Author: fgerlits $
-    Version  : $Revision: 3204 $
-    Location : $URL: svn://code.campware.org/campcaster/trunk/campcaster/src/products/gLiveSupport/src/OptionsWindow.h $
+    Author   : $Author$
+    Version  : $Revision$
+    Location : $URL$
 
 ------------------------------------------------------------------------------*/
 #ifndef OptionsWindow_h
@@ -80,8 +80,8 @@ using namespace LiveSupport::Widgets;
  *  +------------(Apply)-(Cancel)-(OK)--+
  *  </code></pre>
  *
- *  @author $Author: fgerlits $
- *  @version $Revision: 3204 $
+ *  @author $Author$
+ *  @version $Revision$
  */
 class OptionsWindow : public GuiWindow
 {
@@ -317,8 +317,8 @@ class OptionsWindow : public GuiWindow
         /**
          *  The columns model containing the data for the Key bindings section.
          *
-         *  @author $Author: fgerlits $
-         *  @version $Revision: 3204 $
+         *  @author $Author$
+         *  @version $Revision$
          */
         class ModelColumns : public ZebraTreeModelColumnRecord
         {

@@ -21,9 +21,9 @@
 #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 #
-#   Author   : $Author: fgerlits $
-#   Version  : $Revision: 2674 $
-#   Location : $URL: svn://code.campware.org/campcaster/trunk/campcaster/src/tools/taglib/taglib-1.4/bin/prepare.sh $
+#   Author   : $Author$
+#   Version  : $Revision$
+#   Location : $URL$
 #-------------------------------------------------------------------------------                                                                                
 #-------------------------------------------------------------------------------
 # Run this script to prepare taglib 1.3.1 to be configured and compiled.

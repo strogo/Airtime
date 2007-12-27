@@ -21,9 +21,9 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  
  
-    Author   : $Author: fgerlits $
-    Version  : $Revision: 2442 $
-    Location : $URL: svn://code.campware.org/campcaster/trunk/campcaster/src/modules/core/include/LiveSupport/Core/TimeConversion.h $
+    Author   : $Author$
+    Version  : $Revision$
+    Location : $URL$
 
 ------------------------------------------------------------------------------*/
 #ifndef LiveSupport_Core_TimeConversion_h
@@ -74,8 +74,8 @@ using namespace LiveSupport;
  *  converting stuff manually
  *  (see http://boost.org/doc/html/date_time/posix_time.html).
  *
- *  @author  $Author: fgerlits $
- *  @version $Revision: 2442 $
+ *  @author  $Author$
+ *  @version $Revision$
  */
 class TimeConversion
 {

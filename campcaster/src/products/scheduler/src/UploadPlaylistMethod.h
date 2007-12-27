@@ -21,9 +21,9 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  
  
-    Author   : $Author: fgerlits $
-    Version  : $Revision: 2645 $
-    Location : $URL: svn://code.campware.org/campcaster/trunk/campcaster/src/products/scheduler/src/UploadPlaylistMethod.h $
+    Author   : $Author$
+    Version  : $Revision$
+    Location : $URL$
 
 ------------------------------------------------------------------------------*/
 #ifndef UploadPlaylistMethod_h
@@ -106,8 +106,8 @@ using namespace LiveSupport::Core;
  *     <li>1420 - missing session ID argument </li>
  *  </ul>
  *
- *  @author  $Author: fgerlits $
- *  @version $Revision: 2645 $
+ *  @author  $Author$
+ *  @version $Revision$
  */
 class UploadPlaylistMethod : public XmlRpc::XmlRpcServerMethod
 {

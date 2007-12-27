@@ -21,9 +21,9 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  
  
-    Author   : $Author: fgerlits $
-    Version  : $Revision: 2329 $
-    Location : $URL: svn://code.campware.org/campcaster/trunk/campcaster/src/products/scheduler/src/CreateBackupCloseMethod.h $
+    Author   : $Author$
+    Version  : $Revision$
+    Location : $URL$
 
 ------------------------------------------------------------------------------*/
 #ifndef CreateBackupCloseMethod_h
@@ -82,8 +82,8 @@ using namespace LiveSupport::Core;
  *     <li>4210 - error reported by the scheduler daemon </li>
  *  </ul>
  *
- *  @author  $Author: fgerlits $
- *  @version $Revision: 2329 $
+ *  @author  $Author$
+ *  @version $Revision$
  */
 class CreateBackupCloseMethod : public XmlRpc::XmlRpcServerMethod
 {

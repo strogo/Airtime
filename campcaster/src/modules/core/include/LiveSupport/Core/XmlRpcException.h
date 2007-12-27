@@ -21,9 +21,9 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  
  
-    Author   : $Author: fgerlits $
-    Version  : $Revision: 2872 $
-    Location : $URL: svn://code.campware.org/campcaster/trunk/campcaster/src/modules/core/include/LiveSupport/Core/XmlRpcException.h $
+    Author   : $Author$
+    Version  : $Revision$
+    Location : $URL$
 
 ------------------------------------------------------------------------------*/
 #ifndef LiveSupport_Core_XmlRpcException_h
@@ -59,8 +59,8 @@ namespace Core {
 /**
  *  Common parent of exception classes for XML-RPC related problems.
  *
- *  @author  $Author: fgerlits $
- *  @version $Revision: 2872 $
+ *  @author  $Author$
+ *  @version $Revision$
  */
 class XmlRpcException : public std::exception
 {

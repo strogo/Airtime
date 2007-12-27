@@ -21,9 +21,9 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  
  
-    Author   : $Author: fgerlits $
-    Version  : $Revision: 2329 $
-    Location : $URL: svn://code.campware.org/campcaster/branches/gstreamer-0.10/campcaster/src/modules/playlistExecutor/src/AudioPlayerFactoryGstreamerTest.cxx $
+    Author   : $Author$
+    Version  : $Revision$
+    Location : $URL$
 
 ------------------------------------------------------------------------------*/
 
@@ -39,7 +39,7 @@
 #error "Need unistd.h"
 #endif
 
-#include <glib.h>
+
 #include <string>
 #include <iostream>
 
@@ -149,28 +149,18 @@ AudioPlayerFactoryGstreamerTest :: simplePlayTest(void)
     Ptr<AudioPlayerInterface>::Ref      audioPlayer;
     Ptr<time_duration>::Ref             sleepT;
 
-
-    GMainLoop *loop=g_main_loop_new(NULL, FALSE);
-
     audioPlayerFactory = AudioPlayerFactory::getInstance();
     audioPlayer        = audioPlayerFactory->getAudioPlayer();
 
-//    CPPUNIT_ASSERT_NO_THROW(
-        audioPlayer->open("file:///home/nebojsa/testFiles/simple.smil");
-//    );
-//    CPPUNIT_ASSERT(!audioPlayer->isPlaying());
-//    CPPUNIT_ASSERT_NO_THROW(
+    CPPUNIT_ASSERT_NO_THROW(
+        audioPlayer->open("file:var/test.mp3");
+    );
+    CPPUNIT_ASSERT(!audioPlayer->isPlaying());
+    CPPUNIT_ASSERT_NO_THROW(
         audioPlayer->start();
+    );
+    CPPUNIT_ASSERT(audioPlayer->isPlaying());
     
-
-    g_main_loop_run(loop);
-
-
-//    );
-//    CPPUNIT_ASSERT(
-        audioPlayer->isPlaying();
-//    );
-/*    
     sleepT.reset(new time_duration(seconds(5)));
     TimeConversion::sleep(sleepT);
     CPPUNIT_ASSERT_NO_THROW(
@@ -197,6 +187,6 @@ AudioPlayerFactoryGstreamerTest :: simplePlayTest(void)
         TimeConversion::sleep(sleepT);
     }
     CPPUNIT_ASSERT(!audioPlayer->isPlaying());
-*/    audioPlayer->close();
+    audioPlayer->close();
 }
 

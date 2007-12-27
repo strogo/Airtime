@@ -21,9 +21,9 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 
-    Author   : $Author: paul $
-    Version  : $Revision: 2833 $
-    Location : $URL: svn://code.campware.org/campcaster/trunk/campcaster/src/products/scheduler/src/BackupFactory.h $
+    Author   : $Author$
+    Version  : $Revision$
+    Location : $URL$
 
 ------------------------------------------------------------------------------*/
 #ifndef BackupFactory_h
@@ -83,8 +83,8 @@ using namespace LiveSupport::Core;
  *  For details on the &lt;postgresqlBackup&gt; element, see the
  *  PostgresqlBackup documentation.
  *
- *  @author  $Author: paul $
- *  @version $Revision: 2833 $
+ *  @author  $Author$
+ *  @version $Revision$
  *  @see PostgresqlBackup
  */
 class BackupFactory : virtual public Configurable

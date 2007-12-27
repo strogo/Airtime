@@ -21,9 +21,9 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  
  
-    Author   : $Author: fgerlits $
-    Version  : $Revision: 3207 $
-    Location : $URL: svn://code.campware.org/campcaster/trunk/campcaster/src/products/gLiveSupport/src/BrowseItem.h $
+    Author   : $Author$
+    Version  : $Revision$
+    Location : $URL$
 
 ------------------------------------------------------------------------------*/
 #ifndef BrowseItem_h
@@ -78,8 +78,8 @@ using namespace LiveSupport::Widgets;
  *  of all search conditions selected in BrowseItem objects to the left of
  *  this one.
  *
- *  @author  $Author: fgerlits $
- *  @version $Revision: 3207 $
+ *  @author  $Author$
+ *  @version $Revision$
  */
 class BrowseItem : public  GuiComponent,
                    private NumericTools
@@ -107,8 +107,8 @@ class BrowseItem : public  GuiComponent,
          *  The columns model needed by Gtk::TreeView.
          *  Lists one clip per row.
          *
-         *  @author $Author: fgerlits $
-         *  @version $Revision: 3207 $
+         *  @author $Author$
+         *  @version $Revision$
          */
         class ModelColumns : public ZebraTreeModelColumnRecord
         {

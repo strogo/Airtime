@@ -1,7 +1,7 @@
 <?php
 /**
- * @author $Author: paul $
- * @version $Revision: 2855 $
+ * @author $Author$
+ * @version $Revision$
  */
 header("Content-type: text/plain");
 require_once('conf.php');

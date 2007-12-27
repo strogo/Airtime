@@ -21,9 +21,9 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  
  
-    Author   : $Author: fgerlits $
-    Version  : $Revision: 3018 $
-    Location : $URL: svn://code.campware.org/campcaster/branches/gstreamer-0.10/campcaster/src/modules/playlistExecutor/src/GstreamerPlayerTest.h $
+    Author   : $Author$
+    Version  : $Revision$
+    Location : $URL$
 
 ------------------------------------------------------------------------------*/
 #ifndef GstreamerPlayerTest_h
@@ -57,14 +57,14 @@ namespace PlaylistExecutor {
 /**
  *  Unit test for the GstreamerPlayer class.
  *
- *  @author  $Author: fgerlits $
- *  @version $Revision: 3018 $
+ *  @author  $Author$
+ *  @version $Revision$
  *  @see GstreamerPlayer
  */
 class GstreamerPlayerTest : public CPPUNIT_NS::TestFixture,
                             public AudioPlayerEventListener
 {
-/*    CPPUNIT_TEST_SUITE(GstreamerPlayerTest);
+    CPPUNIT_TEST_SUITE(GstreamerPlayerTest);
     CPPUNIT_TEST(firstTest);
     CPPUNIT_TEST(simplePlayTest);
     CPPUNIT_TEST(getPositionTest);
@@ -80,7 +80,7 @@ class GstreamerPlayerTest : public CPPUNIT_NS::TestFixture,
     CPPUNIT_TEST(pauseResumeTest);
     CPPUNIT_TEST(openSoundcardTwiceTest);
     CPPUNIT_TEST_SUITE_END();
-*/
+
     private:
 
         /**

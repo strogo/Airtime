@@ -22,7 +22,7 @@
  
  
     Author   : $Author: fgerlits $
-    Version  : $Revision: 3017 $
+    Version  : $Revision$
     Location : $URL: svn+ssh://fgerlits@code.campware.org/home/svn/repo/livesupport/trunk/livesupport/src/products/scheduler/src/StopCurrentlyPlayingMethod.h $
 
 ------------------------------------------------------------------------------*/
@@ -89,7 +89,7 @@ using namespace LiveSupport::Core;
  *  </ul>
  *
  *  @author  $Author: fgerlits $
- *  @version $Revision: 3017 $
+ *  @version $Revision$
  */
 class StopCurrentlyPlayingMethod : public XmlRpc::XmlRpcServerMethod
 {

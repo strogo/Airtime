@@ -1,7 +1,7 @@
 <?php
 /**
- * @author $Author: paul $
- * @version $Revision: 2335 $
+ * @author $Author$
+ * @version $Revision$
  */
 
 header ("location: ../index.php");

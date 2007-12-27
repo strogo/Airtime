@@ -21,9 +21,9 @@
 #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 #
-#   Author   : $Author: tomash $
-#   Version  : $Revision: 2327 $
-#   Location : $URL: svn://code.campware.org/campcaster/trunk/campcaster/src/modules/storageAdmin/bin/dumpDbSchema.sh $
+#   Author   : $Author$
+#   Version  : $Revision$
+#   Location : $URL$
 #-------------------------------------------------------------------------------                                                                                
 #-------------------------------------------------------------------------------
 #  This script dumps the schema of the Campcaster database.

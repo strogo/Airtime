@@ -2,7 +2,7 @@
 /**
  * @package Campcaster
  * @subpackage htmlUI
- * @version $Revision: 2950 $
+ * @version $Revision$
  */
 class uiSubjects
 {

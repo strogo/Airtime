@@ -21,9 +21,9 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  
  
-    Author   : $Author: fgerlits $
-    Version  : $Revision: 2329 $
-    Location : $URL: svn://code.campware.org/campcaster/trunk/campcaster/src/modules/core/include/LiveSupport/Core/XmlRpcMethodResponseException.h $
+    Author   : $Author$
+    Version  : $Revision$
+    Location : $URL$
 
 ------------------------------------------------------------------------------*/
 #ifndef LiveSupport_Core_XmlRpcMethodResponseException_h
@@ -58,8 +58,8 @@ namespace Core {
  *  Exception signaling an XML-RPC problem: the XML-RPC method call completed
  *  normally, but the response received has incorrect syntax.
  *
- *  @author  $Author: fgerlits $
- *  @version $Revision: 2329 $
+ *  @author  $Author$
+ *  @version $Revision$
  */
 class XmlRpcMethodResponseException : public XmlRpcException
 {

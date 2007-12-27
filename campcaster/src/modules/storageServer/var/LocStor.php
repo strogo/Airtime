@@ -8,7 +8,7 @@ require_once("BasicStor.php");
  *
  * @author Tomas Hlava <th@red2head.com>
  * @author Paul Baranowski <paul@paulbaranowski.org>
- * @version $Revision: 3095 $
+ * @version $Revision$
  * @package Campcaster
  * @subpackage StorageServer
  * @copyright 2006 MDLF, Inc.
