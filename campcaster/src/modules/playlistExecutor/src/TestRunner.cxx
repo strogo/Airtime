@@ -59,6 +59,8 @@
 
 #include "LiveSupport/Core/Ptr.h"
 
+#include "GstreamerPlayContext.h"
+#include "SmilHandler.h"
 
 using namespace LiveSupport::Core;
 
@@ -139,14 +141,129 @@ processArguments(int argc, char *argv[]);
 
 /* =============================================================  module code */
 
+
 /*------------------------------------------------------------------------------
  *  Run all tests
  *----------------------------------------------------------------------------*/
+
+
+
+static GMainLoop *loop;
+static GstElement *play=NULL;
+
+
+static GstreamerPlayContext *pContext=NULL;
+static GstreamerPlayContext *pContextNext=NULL;
+
+static int cnt=0;
+
+static gboolean
+my_bus_callback (GstBus     *bus,
+         GstMessage *message,
+         gpointer    data)
+{
+  g_print ("Got %s message\n", GST_MESSAGE_TYPE_NAME (message));
+
+  switch (GST_MESSAGE_TYPE (message)) {
+    case GST_MESSAGE_ERROR: {
+      GError *err;
+      gchar *debug;
+
+      gst_message_parse_error (message, &err, &debug);
+      g_print ("Error: %s\n", err->message);
+      g_error_free (err);
+      g_free (debug);
+
+      g_main_loop_quit (loop);
+      break;
+    }
+    case GST_MESSAGE_EOS:
+      if(cnt<5){
+          char tmp[255]={0};
+          sprintf(tmp, "file:///home/nebojsa/testFiles/%d.ogg", cnt+1);//use when file name needed
+            if(pContext){
+                pContext->closeContext();
+                delete pContext;
+            }
+
+/*            if(pContextNext){
+                pContext=pContextNext;
+                pContextNext=new GstreamerPlayContext(tmp);
+            }
+*/
+
+            pContext=new GstreamerPlayContext();
+//            pContext->setAudioDevice("default");
+            pContext->openSource(tmp);
+
+
+
+            if(pContext){
+                pContext->playContext();
+            }
+
+          cnt++;
+      }else{
+          g_main_loop_quit (loop);
+      }
+      break;
+    default:
+      break;
+  }
+
+   //we want to be notified again the next time there is a message
+   //on the bus, so returning TRUE (FALSE means we want to stop watching
+   //for messages on the bus and our callback should not be called again)
+  return TRUE;
+}
+
+
 int
 main(   int     argc,
         char  * argv[] )                                throw ()
 {
-    // initialize the gst parameters
+//    sleep(10);//hook for debugging, allows time to attach kdbg
+
+/*
+    //quick test for smil parser
+    SmilHandler smil;
+    smil.openSmilFile("file:///home/nebojsa/src/campcaster/src/modules/playlistExecutor/var/sequentialSmil.smil");
+    AudioDescription *audDesc;
+    while(audDesc = smil.getNext()){
+        delete audDesc;
+    }
+    return 0;
+*/
+/*
+    //quick test for play context
+  gst_init (NULL, NULL);
+  loop = g_main_loop_new (NULL, FALSE);
+
+    pContext=new GstreamerPlayContext();
+    pContext->setParentData((gpointer)pContext);
+//    pContext->setAudioDevice("default");
+//    pContext->openSource("/usr/share/sounds/kubuntu-login.ogg");
+//    pContext->openSource("/home/nebojsa/testFiles/simpleSmil.smil");
+    pContext->openSource("file:///usr/share/sounds/kubuntu-login.ogg");
+
+//    pContext->openSource("http://www.sicksiteradio.com/contents/radio_shows/sicksiteradio57.mp3");
+
+//    pContext->openSource("/home/nebojsa/testFiles/3n.mp3");
+//    pContextNext=new GstreamerPlayContext("file:///home/nebojsa/testFiles/1.ogg");
+//    cnt++;
+    pContext->playContext();
+
+
+    g_main_loop_run (loop);
+
+    if(pContext){
+        pContext->closeContext();
+        delete pContext;
+    }
+
+  return 0;    // initialize the gst parameters
+*/
+
     gst_init(&argc, &argv);
 
     if (!processArguments(argc, argv)) {
@@ -186,6 +303,7 @@ main(   int     argc,
     xmlOutFile.close();
 
     return result.wasSuccessful() ? 0 : 1;
+
 }
 
 
