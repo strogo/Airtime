@@ -133,10 +133,16 @@ public:
         const bool oss = deviceName.find("/dev") == 0;
 
         m_sink = gst_bin_new ("audiobin");
+        if(m_sink == NULL){
+            return false;
+        }
         GstElement *conv = gst_element_factory_make ("audioconvert", "aconv");
         audiopad = gst_element_get_pad (conv, "sink");
 
         GstElement *sink = (oss ? gst_element_factory_make("osssink", NULL) : gst_element_factory_make("alsasink", NULL));
+        if(sink == NULL){
+            return false;
+        }
         g_object_set(G_OBJECT(sink), "device", deviceName.c_str(), NULL);
 
         gst_bin_add_many (GST_BIN (m_sink), conv, sink, NULL);
@@ -158,14 +164,41 @@ public:
             closeContext();
         }
         m_source = gst_element_make_from_uri (GST_URI_SRC, fileUri, NULL);
-//         m_source = gst_element_factory_make ("filesrc", NULL);
-//         g_object_set (G_OBJECT (m_source), "location", fileUri, NULL);
+        if(m_source == NULL){
+            return false;
+        }
 
         if(m_sink == NULL){
             setAudioDevice("default");
         }
-        prepareDecodebin();
-        preparePipeline();
+        if(m_sink==NULL){
+            std::cerr << "openSource: Failed to create sink!" << std::endl;
+            gst_object_unref (m_source);
+            m_source = NULL;
+            return false;
+        }
+        if(!prepareDecodebin()){
+            std::cerr << "openSource: Failed to create decodebin!" << std::endl;
+            if(m_sink){
+                gst_object_unref (m_sink);
+                m_sink = NULL;
+            }
+            gst_object_unref (m_source);
+            m_source = NULL;
+            return false;
+        }
+        if(!preparePipeline()){
+            std::cerr << "openSource: Failed to create pipeline!" << std::endl;
+            if(m_sink){
+                gst_object_unref (m_sink);
+                m_sink = NULL;
+            }
+            gst_object_unref (m_decoder);
+            m_decoder = NULL;
+            gst_object_unref (m_source);
+            m_source = NULL;
+            return false;
+        }
         return true;
     }
     /*------------------------------------------------------------------------------
@@ -224,6 +257,9 @@ private:
             return false;//pipeline can only be created once per instance
         }
         m_pipeline = gst_pipeline_new ("pipeline");
+        if(m_pipeline==NULL){
+            return false;
+        }
 
         GstBus *bus = gst_pipeline_get_bus (GST_PIPELINE (m_pipeline));
         gst_bus_add_watch (bus, my_bus_callback, m_data);

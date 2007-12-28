@@ -124,16 +124,6 @@ class GstreamerPlayer : virtual public Configurable,
         std::string             m_audioDevice;
 
         /**
-         *  Contains runtime error messages from GStreamer.
-         */
-        Ptr<const Glib::ustring>::Ref       m_errorMessage;
-
-        /**
-         *  Flag that indicates that a GStreamer error had previously occured.
-         */
-        bool                    m_errorWasRaised;
-
-        /**
          *  The URL of the preloaded file. Empty if nothing is preloaded.
          */
         std::string             m_preloadUrl;
@@ -143,6 +133,16 @@ public:
          *  Flag that indicates that the pipeline has reached End-Of-Stream.  
          */
         gboolean                m_eos;
+
+        /**
+         *  Contains runtime error messages from GStreamer.
+         */
+        Ptr<const Glib::ustring>::Ref       m_errorMessage;
+
+        /**
+         *  Flag that indicates that a GStreamer error had previously occured.
+         */
+        bool                    m_errorWasRaised;
 
         /**
          *  The type for the vector of listeners.
@@ -158,23 +158,6 @@ public:
          */
         ListenerVector          m_listeners;
 
-
-        /**
-         *  Handler to recieve errors from gstreamer.
-         *
-         *  @param pipeline the pipeline generating the error
-         *  @param source the source of the error
-         *  @param error the error itself
-         *  @param debug debug info
-         *  @param self pointer to the associated GsreamerPlayer object.
-         */
-/*        static void
-        errorHandler(GstElement   * pipeline,
-                     GstElement   * source,
-                     GError       * error,
-                     gchar        * debug,
-                     gpointer       self)                           throw ();
-*/
 
         /**
          *  Send the onStop event to all attached listeners.
