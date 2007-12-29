@@ -269,6 +269,7 @@ private:
         gst_bin_add_many (GST_BIN (m_pipeline), m_source, m_decoder, NULL);
         gst_element_link (m_source, m_decoder);
         gst_bin_add (GST_BIN (m_pipeline), m_sink);
+        return true;
     }
     /*------------------------------------------------------------------------------
     *  Prepare decode bin.
@@ -279,6 +280,7 @@ private:
         }
         m_decoder = gst_element_factory_make ("decodebin", NULL);
         g_signal_connect (m_decoder, "new-decoded-pad", G_CALLBACK (cb_newpad), this);
+        return true;
     }
     /*------------------------------------------------------------------------------
     *  New pad signal callback.
