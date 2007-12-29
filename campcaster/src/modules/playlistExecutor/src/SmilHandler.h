@@ -79,11 +79,11 @@ public:
         m_begin(0.0),
         m_end(0.0)
     {
-        std::cout << "AnimationDescription created!" << std::endl;
+//        std::cout << "AnimationDescription created!" << std::endl;
     }
     ~AnimationDescription()
     {
-        std::cout << "AnimationDescription destroyed!" << std::endl;
+//        std::cout << "AnimationDescription destroyed!" << std::endl;
     }
     double m_from;
     double m_to;
@@ -102,11 +102,11 @@ public:
         m_clipBegin(0),
         m_clipEnd(0)
     {
-        std::cout << "AudioDescription created!" << std::endl;
+//        std::cout << "AudioDescription created!" << std::endl;
     }
     ~AudioDescription()
     {
-        std::cout << "AudioDescription destroyed!" << std::endl;
+//        std::cout << "AudioDescription destroyed!" << std::endl;
     }
     
     void release()
