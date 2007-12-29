@@ -155,6 +155,9 @@ static GstElement *play=NULL;
 static GstreamerPlayContext *pContext=NULL;
 static GstreamerPlayContext *pContextNext=NULL;
 
+static SmilHandler *smil = NULL;
+
+
 static int cnt=0;
 
 static gboolean
@@ -178,7 +181,8 @@ my_bus_callback (GstBus     *bus,
       break;
     }
     case GST_MESSAGE_EOS:
-      if(cnt<5){
+      if(cnt<0){
+//      if(cnt<5){
           char tmp[255]={0};
           sprintf(tmp, "file:///home/nebojsa/testFiles/%d.ogg", cnt+1);//use when file name needed
             if(pContext){
@@ -203,6 +207,20 @@ my_bus_callback (GstBus     *bus,
             }
 
           cnt++;
+      }else if(smil != NULL){
+            AudioDescription *audioDescription = smil->getNext();
+            if(audioDescription == NULL){//no more audio entries to play
+                delete smil;
+                smil = NULL;
+                if(pContext){
+                    pContext->closeContext();
+                    delete pContext;
+                }
+                g_main_loop_quit (loop);
+                break;
+            }
+            pContext->openSource(audioDescription);
+            pContext->playContext();
       }else{
           g_main_loop_quit (loop);
       }
@@ -224,16 +242,25 @@ main(   int     argc,
 {
 //    sleep(10);//hook for debugging, allows time to attach kdbg
 
-/*
+
+    //quick smil playback test
+    gst_init (NULL, NULL);
+    loop = g_main_loop_new (NULL, FALSE);
     //quick test for smil parser
-    SmilHandler smil;
-    smil.openSmilFile("file:///home/nebojsa/src/campcaster/src/modules/playlistExecutor/var/sequentialSmil.smil");
-    AudioDescription *audDesc;
-    while(audDesc = smil.getNext()){
-        delete audDesc;
-    }
+    smil = new SmilHandler();
+    smil->openSmilFile("file:///home/nebojsa/src/campcaster/src/modules/playlistExecutor/var/animatedSmil.smil");
+    
+    pContext=new GstreamerPlayContext();
+    pContext->setParentData((gpointer)pContext);
+    
+    AudioDescription *audDesc = smil->getNext();
+    pContext->openSource(audDesc);
+    pContext->playContext();
+    
+    g_main_loop_run (loop);
+
     return 0;
-*/
+
 /*
     //quick test for play context
   gst_init (NULL, NULL);
@@ -243,8 +270,8 @@ main(   int     argc,
     pContext->setParentData((gpointer)pContext);
 //    pContext->setAudioDevice("default");
 //    pContext->openSource("/usr/share/sounds/kubuntu-login.ogg");
-//    pContext->openSource("/home/nebojsa/testFiles/simpleSmil.smil");
-    pContext->openSource("file:///usr/share/sounds/kubuntu-login.ogg");
+    pContext->openSource("file:///home/nebojsa/src/campcaster/src/modules/playlistExecutor/var/animatedSmil.smil");
+//    pContext->openSource("file:///usr/share/sounds/kubuntu-login.ogg");
 
 //    pContext->openSource("http://www.sicksiteradio.com/contents/radio_shows/sicksiteradio57.mp3");
 
@@ -263,7 +290,7 @@ main(   int     argc,
 
   return 0;    // initialize the gst parameters
 */
-
+/*
     gst_init(&argc, &argv);
 
     if (!processArguments(argc, argv)) {
@@ -303,7 +330,7 @@ main(   int     argc,
     xmlOutFile.close();
 
     return result.wasSuccessful() ? 0 : 1;
-
+*/
 }
 
 
