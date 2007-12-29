@@ -99,6 +99,7 @@ public:
             gst_object_unref(GST_OBJECT(m_pipeline));
             m_pipeline = NULL;
             if(m_audioDescription != NULL){
+                m_audioDescription->release();
                 delete m_audioDescription;
                 m_audioDescription = NULL;
             }

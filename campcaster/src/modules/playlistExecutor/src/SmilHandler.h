@@ -45,10 +45,10 @@
 #error need string.h
 #endif
 
-
-
 #include <libxml/parser.h>
 #include <libxml/tree.h>
+
+#include <list>
 
 #define NSEC_PER_SEC        1000000000LL
 #define SEC_PER_MIN         60
@@ -78,8 +78,13 @@ public:
         m_to(0.0),
         m_begin(0.0),
         m_end(0.0)
-    {}
-    ~AnimationDescription(){}
+    {
+        std::cout << "AnimationDescription created!" << std::endl;
+    }
+    ~AnimationDescription()
+    {
+        std::cout << "AnimationDescription destroyed!" << std::endl;
+    }
     double m_from;
     double m_to;
     double m_begin;
@@ -96,18 +101,30 @@ public:
         m_begin(0),
         m_clipBegin(0),
         m_clipEnd(0)
-//        m_animation(NULL)
     {
-
+        std::cout << "AudioDescription created!" << std::endl;
     }
-    ~AudioDescription(){
+    ~AudioDescription()
+    {
+        std::cout << "AudioDescription destroyed!" << std::endl;
+    }
+    
+    void release()
+    {
+        std::vector<AnimationDescription*>::iterator    it  = m_animations.begin();
+        std::vector<AnimationDescription*>::iterator    end = m_animations.end();
+        while (it != end) {
+            delete (*it);
+            m_animations.erase(it);
+            ++it;
+        }
     }
 
     gchar *m_src;
     gint64 m_begin;
     gint64 m_clipBegin;
     gint64 m_clipEnd;
-//    AnimationDescription *m_animation[];
+    std::vector<AnimationDescription*> m_animations;
 };
 
 
@@ -307,16 +324,12 @@ private:
         audioDescription->m_begin = su_smil_clock_value_to_nanosec(begin);
         audioDescription->m_clipBegin = su_smil_clock_value_to_nanosec(clipBegin);
         audioDescription->m_clipEnd = su_smil_clock_value_to_nanosec(clipEnd);
-//        audioDescription.m_animation[];
         // now handle the possible animate elements inside this audio element
         for (node = audio->children; node; node = node->next) {
             if (node->type == XML_ELEMENT_NODE) {
                 if (!strcmp((const char*)node->name, "animate")) {
                     AnimationDescription *anim = getNextAnimate(audioDescription->m_begin, node);
-                    //TODO: insert description into audio struct
-                    if(anim != NULL){
-                        delete anim;
-                    }
+                    audioDescription->m_animations.push_back(anim);
                 } else {
                     GST_WARNING("unsupported SMIL element %s found inside a audio", node->name);
                 }
