@@ -153,8 +153,6 @@ GstreamerPlayer :: initialize(void)                 throw (std::exception)
 
     m_eos = false;
     
-    m_playContext->setAudioDevice(m_audioDevice);
-
     // set up other variables
     m_initialized = true;
 }
@@ -270,7 +268,7 @@ GstreamerPlayer :: open(const std::string   fileUri)
     m_errorMessage.reset();
     m_errorWasRaised = false;
 
-
+    m_playContext->setAudioDevice(m_audioDevice);
     if (fileUri.find(std::string(".smil")) != std::string::npos) {
         m_smilHandler = new SmilHandler();
         m_smilHandler->openSmilFile(fileUri.c_str());

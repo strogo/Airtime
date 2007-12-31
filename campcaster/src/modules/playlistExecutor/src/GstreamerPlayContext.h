@@ -76,6 +76,7 @@ class GstreamerPlayContext
     GstElement *m_sink;
     gpointer m_data;
     AudioDescription *m_audioDescription;
+    std::string m_audioDevice;
 
 public:
 
@@ -86,6 +87,7 @@ public:
         m_sink = NULL;
         m_data = NULL;
         m_audioDescription = NULL;
+        m_audioDevice = "default";
     }
 
     ~GstreamerPlayContext(){
@@ -103,6 +105,10 @@ public:
                 delete m_audioDescription;
                 m_audioDescription = NULL;
             }
+        }
+        if(m_sink != NULL){
+            gst_object_unref(GST_OBJECT(m_sink));
+            m_sink=NULL;
         }
     }
 
@@ -124,32 +130,8 @@ public:
     /*------------------------------------------------------------------------------
     *  Set the audio device.
     *----------------------------------------------------------------------------*/
-    bool setAudioDevice(const std::string &deviceName) throw() {
-        if(m_sink!=NULL){
-            return false;//sink can only be created once per instance
-        }
-
-        GstPad *audiopad;
-
-        const bool oss = deviceName.find("/dev") == 0;
-
-        m_sink = gst_bin_new ("audiobin");
-        if(m_sink == NULL){
-            return false;
-        }
-        GstElement *conv = gst_element_factory_make ("audioconvert", "aconv");
-        audiopad = gst_element_get_pad (conv, "sink");
-
-        GstElement *sink = (oss ? gst_element_factory_make("osssink", NULL) : gst_element_factory_make("alsasink", NULL));
-        if(sink == NULL){
-            return false;
-        }
-        g_object_set(G_OBJECT(sink), "device", deviceName.c_str(), NULL);
-
-        gst_bin_add_many (GST_BIN (m_sink), conv, sink, NULL);
-        gst_element_link (conv, sink);
-        gst_element_add_pad (m_sink, gst_ghost_pad_new ("sink", audiopad));
-        gst_object_unref (audiopad);
+    void setAudioDevice(const std::string &deviceName) {
+        m_audioDevice = deviceName;
     }
     /*------------------------------------------------------------------------------
     *  Set the audio device.
@@ -161,16 +143,13 @@ public:
     *  Opens source element for the file name given.
     *----------------------------------------------------------------------------*/
     bool openSource(const gchar *fileUri) throw() {
-        if(m_sink!=NULL || m_pipeline != NULL){
-            closeContext();
-        }
         m_source = gst_element_make_from_uri (GST_URI_SRC, fileUri, NULL);
         if(m_source == NULL){
             return false;
         }
 
         if(m_sink == NULL){
-            setAudioDevice("default");
+            prepareAudioDevice();
         }
         if(m_sink==NULL){
             std::cerr << "openSource: Failed to create sink!" << std::endl;
@@ -251,6 +230,39 @@ public:
 private:
 
     /*------------------------------------------------------------------------------
+    *  Prepare audio device from the name provided previously.
+    *----------------------------------------------------------------------------*/
+    bool prepareAudioDevice() throw() {
+        if(m_sink != NULL){
+            gst_object_unref(GST_OBJECT(m_sink));
+            m_sink=NULL;
+        }
+
+        GstPad *audiopad;
+
+        const bool oss = m_audioDevice.find("/dev") == 0;
+
+        m_sink = gst_bin_new ("audiobin");
+        if(m_sink == NULL){
+            return false;
+        }
+        GstElement *conv = gst_element_factory_make ("audioconvert", "aconv");
+        audiopad = gst_element_get_pad (conv, "sink");
+
+        GstElement *sink = (oss ? gst_element_factory_make("osssink", NULL) : gst_element_factory_make("alsasink", NULL));
+        if(sink == NULL){
+            return false;
+        }
+        g_object_set(G_OBJECT(sink), "device", m_audioDevice.c_str(), NULL);
+
+        gst_bin_add_many (GST_BIN (m_sink), conv, sink, NULL);
+        gst_element_link (conv, sink);
+        gst_element_add_pad (m_sink, gst_ghost_pad_new ("sink", audiopad));
+        gst_object_unref (audiopad);
+        return true;
+    }
+
+    /*------------------------------------------------------------------------------
     *  Prepare empty pipeline.
     *----------------------------------------------------------------------------*/
     bool preparePipeline(){
@@ -265,6 +277,11 @@ private:
         GstBus *bus = gst_pipeline_get_bus (GST_PIPELINE (m_pipeline));
         gst_bus_add_watch (bus, my_bus_callback, m_data);
         gst_object_unref (bus);
+        if(m_audioDescription != NULL){
+            if(m_audioDescription->m_animations.size() != 0){
+            //TODO: create animation element here...
+            }
+        }
         //link up all elements in the pipeline
         gst_bin_add_many (GST_BIN (m_pipeline), m_source, m_decoder, NULL);
         gst_element_link (m_source, m_decoder);
