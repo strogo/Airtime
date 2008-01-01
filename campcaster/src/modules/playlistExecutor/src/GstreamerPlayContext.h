@@ -41,6 +41,9 @@
 #endif
 
 #include <gst/gst.h>
+#include <gst/controller/gstcontroller.h>
+#include <gst/controller/gstinterpolationcontrolsource.h>
+
 #include "SmilHandler.h"
 
 /*------------------------------------------------------------------------------
@@ -74,6 +77,9 @@ class GstreamerPlayContext
     GstElement *m_source;
     GstElement *m_decoder;
     GstElement *m_sink;
+    GstController *m_ctrl;
+    GstElement *m_volume;
+    GstInterpolationControlSource *m_ics;
     gpointer m_data;
     AudioDescription *m_audioDescription;
     std::string m_audioDevice;
@@ -85,6 +91,9 @@ public:
         m_source = NULL;
         m_decoder = NULL;
         m_sink = NULL;
+        m_ctrl = NULL;
+        m_volume = NULL;
+        m_ics = NULL;
         m_data = NULL;
         m_audioDescription = NULL;
         m_audioDevice = "default";
@@ -94,21 +103,32 @@ public:
     }
 
     void closeContext(){
+        if(m_ics != NULL){
+            gst_object_unref(GST_OBJECT(m_ics));
+            m_ics = NULL;
+        }
+        if(m_ctrl != NULL){
+            gst_object_unref(GST_OBJECT(m_ctrl));
+            m_ctrl = NULL;
+        }
         if(m_pipeline != NULL){
             gst_element_set_state (m_pipeline, GST_STATE_NULL);
             gst_bin_remove (GST_BIN (m_pipeline), m_sink);
             m_sink=NULL;
             gst_object_unref(GST_OBJECT(m_pipeline));
+            m_source = NULL;
+            m_decoder = NULL;
+            m_volume = NULL;
             m_pipeline = NULL;
-            if(m_audioDescription != NULL){
-                m_audioDescription->release();
-                delete m_audioDescription;
-                m_audioDescription = NULL;
-            }
         }
         if(m_sink != NULL){
             gst_object_unref(GST_OBJECT(m_sink));
             m_sink=NULL;
+        }
+        if(m_audioDescription != NULL){
+            m_audioDescription->release();
+            delete m_audioDescription;
+            m_audioDescription = NULL;
         }
     }
 
@@ -273,19 +293,21 @@ private:
         if(m_pipeline==NULL){
             return false;
         }
+        
+        m_volume = gst_element_factory_make("volume", NULL);
+        g_object_set(G_OBJECT(m_volume), "volume", 0.5, NULL);
 
         GstBus *bus = gst_pipeline_get_bus (GST_PIPELINE (m_pipeline));
         gst_bus_add_watch (bus, my_bus_callback, m_data);
         gst_object_unref (bus);
-        if(m_audioDescription != NULL){
-            if(m_audioDescription->m_animations.size() != 0){
-            //TODO: create animation element here...
-            }
-        }
+        
         //link up all elements in the pipeline
-        gst_bin_add_many (GST_BIN (m_pipeline), m_source, m_decoder, NULL);
+        gst_bin_add_many (GST_BIN (m_pipeline), m_source, m_decoder, m_volume, NULL);
         gst_element_link (m_source, m_decoder);
+        gst_element_link (m_decoder, m_volume);
         gst_bin_add (GST_BIN (m_pipeline), m_sink);
+        //lastly prepare animations if desired
+        prepareAnimations();
         return true;
     }
     /*------------------------------------------------------------------------------
@@ -297,6 +319,36 @@ private:
         }
         m_decoder = gst_element_factory_make ("decodebin", NULL);
         g_signal_connect (m_decoder, "new-decoded-pad", G_CALLBACK (cb_newpad), this);
+        return true;
+    }
+    /*------------------------------------------------------------------------------
+    *  Prepare animations bin.
+    *----------------------------------------------------------------------------*/
+    bool prepareAnimations(){
+        if(m_audioDescription->m_animations.size() > 0){
+            if (!(m_ctrl = gst_controller_new (G_OBJECT (m_volume), "volume", NULL))) {
+                std::cout << "prepareAnimations: element not controllable!" << std::endl;
+                return false;
+            }
+            GValue vol = { 0, };
+            m_ics = gst_interpolation_control_source_new ();
+            gst_controller_set_control_source (m_ctrl, "volume", GST_CONTROL_SOURCE (m_ics));
+            // Set interpolation mode
+            gst_interpolation_control_source_set_interpolation_mode (m_ics, GST_INTERPOLATE_CUBIC);//GST_INTERPOLATE_LINEAR);
+            // set control values, first fade in
+            g_value_init (&vol, G_TYPE_DOUBLE);
+            g_value_set_double (&vol, 0.0);
+            gst_interpolation_control_source_set (m_ics, m_audioDescription->m_animations[0]->m_begin, &vol);
+            g_value_set_double (&vol, 1.0);
+            gst_interpolation_control_source_set (m_ics, m_audioDescription->m_animations[0]->m_end, &vol);
+            if(m_audioDescription->m_animations.size() > 1){
+                //set fade out, between fadein and fadeout we have a hold period
+                g_value_set_double (&vol, 1.0);
+                gst_interpolation_control_source_set (m_ics, m_audioDescription->m_animations[0]->m_begin, &vol);
+                g_value_set_double (&vol, 0.0);
+                gst_interpolation_control_source_set (m_ics, m_audioDescription->m_animations[0]->m_end, &vol);
+            }
+        }
         return true;
     }
     /*------------------------------------------------------------------------------

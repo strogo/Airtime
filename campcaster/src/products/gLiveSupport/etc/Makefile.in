@@ -183,6 +183,9 @@ LIBGLADEMM_LIBS=@LIBGLADEMM_LIBS@
 GSTREAMER_CFLAGS=@GSTREAMER_CFLAGS@
 GSTREAMER_LIBS=@GSTREAMER_LIBS@
 
+GSTCONTROLLER_CFLAGS=@GSTCONTROLLER_CFLAGS@
+GSTCONTROLLER_LIBS=@GSTCONTROLLER_LIBS@
+
 ICU_CFLAGS=@ICU_CFLAGS@
 ICU_CXXFLAGS=@ICU_CXXFLAGS@
 ICU_LIBS=@ICU_LIBS@
@@ -216,6 +219,7 @@ CXXFLAGS = @CXXFLAGS@ @DEFS@ @COVERAGE_CXXFLAGS@ -pthread \
                              ${GTKMM_CFLAGS} \
                              ${LIBGLADEMM_CFLAGS} \
 							 ${GSTREAMER_CFLAGS} \
+							 ${GSTCONTROLLER_CFLAGS} \
                              -I${USR_INCLUDE_DIR} \
                              -I${CORE_INCLUDE_DIR} \
                              -I${AUTHENTICATION_INCLUDE_DIR} \
@@ -232,6 +236,7 @@ LDFLAGS  = @LDFLAGS@ -pthread \
                      ${GTKMM_LIBS} \
                      ${LIBGLADEMM_LIBS} \
 					 ${GSTREAMER_LIBS} \
+					 ${GSTCONTROLLER_LIBS} \
                      ${TAGLIB_LIBS} \
                      -L${USR_LIB_DIR} \
                      -L${CORE_LIB_DIR} \

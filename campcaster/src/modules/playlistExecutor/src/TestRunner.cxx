@@ -48,6 +48,9 @@
 #include <fstream>
 
 #include <gst/gst.h>
+#include <gst/controller/gstcontroller.h>
+#include <gst/controller/gstinterpolationcontrolsource.h>
+
 
 #include <cppunit/BriefTestProgressListener.h>
 #include <cppunit/CompilerOutputter.h>
@@ -208,14 +211,12 @@ my_bus_callback (GstBus     *bus,
 
           cnt++;
       }else if(smil != NULL){
+            pContext->closeContext();
             AudioDescription *audioDescription = smil->getNext();
             if(audioDescription == NULL){//no more audio entries to play
                 delete smil;
                 smil = NULL;
-                if(pContext){
-                    pContext->closeContext();
-                    delete pContext;
-                }
+                delete pContext;
                 g_main_loop_quit (loop);
                 break;
             }
@@ -241,7 +242,150 @@ main(   int     argc,
         char  * argv[] )                                throw ()
 {
 //    sleep(10);//hook for debugging, allows time to attach kdbg
+  
+/*
+  gint res = 1;
+  GstElement *src, *sink;
+  GstElement *bin;
+  GstController *ctrl;
+  GstInterpolationControlSource *csource1;//, *csource2;
+  GstClock *clock;
+  GstClockID clock_id;
+  GstClockReturn wait_ret;
+  GValue vol = { 0, };
 
+  gst_init (&argc, &argv);
+  gst_controller_init (&argc, &argv);
+
+  // build pipeline 
+  bin = gst_pipeline_new ("pipeline");
+  clock = gst_pipeline_get_clock (GST_PIPELINE (bin));
+  src = gst_element_factory_make ("audiotestsrc", "gen_audio");
+//  src = gst_element_make_from_uri (GST_URI_SRC, "file:///usr/share/sounds/kubuntu-login.ogg", NULL);
+  sink = gst_element_factory_make ("alsasink", "play_audio");
+  gst_bin_add_many (GST_BIN (bin), src, sink, NULL);
+  if (!gst_element_link (src, sink)) {
+    GST_WARNING ("can't link elements");
+    goto Error;
+  }
+
+  // square wave
+  //   g_object_set (G_OBJECT(src), "wave", 1, NULL);
+
+  // add a controller to the source 
+//  if (!(ctrl = gst_controller_new (G_OBJECT (src), "freq", "volume", NULL))) {
+  if (!(ctrl = gst_controller_new (G_OBJECT (src), "volume", NULL))) {
+    GST_WARNING ("can't control source element");
+    goto Error;
+  }
+
+  csource1 = gst_interpolation_control_source_new ();
+//  csource2 = gst_interpolation_control_source_new ();
+
+  gst_controller_set_control_source (ctrl, "volume", GST_CONTROL_SOURCE (csource1));
+//  gst_controller_set_control_source (ctrl, "freq", GST_CONTROL_SOURCE (csource2));
+
+  // Set interpolation mode 
+
+  gst_interpolation_control_source_set_interpolation_mode (csource1, GST_INTERPOLATE_LINEAR);
+//  gst_interpolation_control_source_set_interpolation_mode (csource2, GST_INTERPOLATE_LINEAR);
+
+  // set control values 
+  g_value_init (&vol, G_TYPE_DOUBLE);
+
+  g_value_set_double (&vol, 0.0);
+  gst_interpolation_control_source_set (csource1, 0 * GST_SECOND, &vol);
+  g_value_set_double (&vol, 1.0);
+  gst_interpolation_control_source_set (csource1, 1 * GST_SECOND, &vol);
+
+  g_value_set_double (&vol, 1.0);
+  gst_interpolation_control_source_set (csource1, 2 * GST_SECOND, &vol);
+  g_value_set_double (&vol, 0.0);
+  gst_interpolation_control_source_set (csource1, 3 * GST_SECOND, &vol);
+
+  g_object_unref (csource1);
+
+//   g_value_set_double (&vol, 220.0);
+//   gst_interpolation_control_source_set (csource2, 0 * GST_SECOND, &vol);
+//   g_value_set_double (&vol, 3520.0);
+//   gst_interpolation_control_source_set (csource2, 3 * GST_SECOND, &vol);
+//   g_value_set_double (&vol, 440.0);
+//   gst_interpolation_control_source_set (csource2, 6 * GST_SECOND, &vol);
+// 
+//   g_object_unref (csource2);
+
+  clock_id =
+      gst_clock_new_single_shot_id (clock,
+      gst_clock_get_time (clock) + (6 * GST_SECOND));
+
+  // run for 7 seconds 
+  if (gst_element_set_state (bin, GST_STATE_PLAYING)) {
+    if ((wait_ret = gst_clock_id_wait (clock_id, NULL)) != GST_CLOCK_OK) {
+      GST_WARNING ("clock_id_wait returned: %d", wait_ret);
+    }
+    gst_element_set_state (bin, GST_STATE_NULL);
+  }
+  
+  // cleanup 
+  g_object_unref (G_OBJECT (ctrl));
+  gst_object_unref (G_OBJECT (clock));
+  gst_object_unref (G_OBJECT (bin));
+  res = 0;
+Error:
+  return (res);
+*/
+/*
+    //quick gnonlin playback test
+    gst_init (NULL, NULL);
+    loop = g_main_loop_new (NULL, FALSE);
+    
+    
+    GstElement *composition = gst_element_factory_make("gnlcomposition", NULL);
+//    GstElement *silentGnlSource = gst_element_factory_make("gnlsource", NULL);
+//    GstElement *silenceAudioSource = gst_element_factory_make("audiotestsrc", NULL);
+    
+    GstElement *volumeFadeBin = gst_element_factory_make("bin", "Volume_fades_bin");
+    GstElement *volumeFadeElement = gst_element_factory_make("volume", "Volume_Fade_Element");
+    GstElement *volumeFadeStartConvert = gst_element_factory_make("audioconvert", "Start_fadebin_converter");
+    GstElement *volumeFadeEndConvert = gst_element_factory_make("audioconvert", "End_fadebin_converter");
+    GstElement *volumeFadeOperation = gst_element_factory_make("gnloperation", "gnloperation");
+    GstController *volumeFadeController = gst_controller_new(G_OBJECT(volumeFadeElement), "volume");
+    
+    gst_bin_add(GST_BIN(volumeFadeBin), volumeFadeElement);
+    gst_bin_add(GST_BIN(volumeFadeBin), volumeFadeStartConvert);
+    gst_bin_add(GST_BIN(volumeFadeBin), volumeFadeEndConvert);
+    GstPad *volumeFadeBinSink = gst_ghost_pad_new("sink", gst_element_get_pad(volumeFadeStartConvert, "sink"));
+    gst_element_add_pad(volumeFadeBin, volumeFadeBinSink);
+    GstPad *volumeFadeBinSrc = gst_ghost_pad_new("src", gst_element_get_pad(volumeFadeEndConvert, "src"));
+    gst_element_add_pad(volumeFadeBin, volumeFadeBinSrc);
+    
+//    g_object_set(G_OBJECT(silenceAudioSource), "wave", 4, NULL); //4 is silence
+        
+//    g_object_set(G_OBJECT(silentGnlSource), "priority", (2 ^ 32 - 1), NULL);
+//    g_object_set(G_OBJECT(silentGnlSource), "start", 0, NULL);
+//    g_object_set(G_OBJECT(silentGnlSource), "duration", 1000 * GST_SECOND, NULL);
+//    g_object_set(G_OBJECT(silentGnlSource), "media-start", 0, NULL);
+//    g_object_set(G_OBJECT(silentGnlSource), "media-duration", 1000 * GST_SECOND, NULL);
+    
+    g_object_set(G_OBJECT(volumeFadeOperation), "start", long(0) * GST_SECOND, NULL);
+    g_object_set(G_OBJECT(volumeFadeOperation), "duration", long(20) * GST_SECOND, NULL);
+    g_object_set(G_OBJECT(volumeFadeOperation), "priority", 1, NULL);
+    
+    gst_controller_set_interpolation_mode(volumeFadeController, "volume", GST_INTERPOLATE_LINEAR);
+    
+    gst_bin_add(GST_BIN(volumeFadeOperation), volumeFadeBin);
+//    gst_bin_add(GST_BIN(silentGnlSource), silenceAudioSource);
+//    gst_bin_add(GST_BIN(composition), silentGnlSource);
+    gst_bin_add(GST_BIN(composition), volumeFadeOperation);//this is where we hook up to the rest of the pipeline
+    
+    gst_element_link(volumeFadeStartConvert, volumeFadeElement);
+    gst_element_link(volumeFadeElement, volumeFadeEndConvert);
+    
+    
+    g_main_loop_run (loop);
+
+    return 0;
+*/
 
     //quick smil playback test
     gst_init (NULL, NULL);
@@ -270,12 +414,11 @@ main(   int     argc,
     pContext->setParentData((gpointer)pContext);
 //    pContext->setAudioDevice("default");
 //    pContext->openSource("/usr/share/sounds/kubuntu-login.ogg");
-    pContext->openSource("file:///home/nebojsa/src/campcaster/src/modules/playlistExecutor/var/animatedSmil.smil");
-//    pContext->openSource("file:///usr/share/sounds/kubuntu-login.ogg");
+    pContext->openSource("file:///usr/share/sounds/kubuntu-login.ogg");
 
 //    pContext->openSource("http://www.sicksiteradio.com/contents/radio_shows/sicksiteradio57.mp3");
 
-//    pContext->openSource("/home/nebojsa/testFiles/3n.mp3");
+//    pContext->openSource("file:///home/nebojsa/testFiles/3n.mp3");
 //    pContextNext=new GstreamerPlayContext("file:///home/nebojsa/testFiles/1.ogg");
 //    cnt++;
     pContext->playContext();

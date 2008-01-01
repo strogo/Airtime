@@ -129,10 +129,6 @@ class GstreamerPlayer : virtual public Configurable,
         std::string             m_preloadUrl;
 
 public:
-        /**
-         *  Flag that indicates that the pipeline has reached End-Of-Stream.  
-         */
-        gboolean                m_eos;
 
         /**
          *  Contains runtime error messages from GStreamer.

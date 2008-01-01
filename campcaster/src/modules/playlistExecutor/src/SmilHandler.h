@@ -73,11 +73,16 @@
  */
 class AnimationDescription {
 public:
+    double m_from;
+    double m_to;
+    guint64 m_begin;
+    guint64 m_end;
+    
     AnimationDescription():
         m_from(0.0),
         m_to(0.0),
-        m_begin(0.0),
-        m_end(0.0)
+        m_begin(0),
+        m_end(0)
     {
 //        std::cout << "AnimationDescription created!" << std::endl;
     }
@@ -85,10 +90,6 @@ public:
     {
 //        std::cout << "AnimationDescription destroyed!" << std::endl;
     }
-    double m_from;
-    double m_to;
-    double m_begin;
-    double m_end;
 };
 
 /**
@@ -96,6 +97,12 @@ public:
  */
 class AudioDescription {
 public:
+    gchar *m_src;
+    gint64 m_begin;
+    gint64 m_clipBegin;
+    gint64 m_clipEnd;
+    std::vector<AnimationDescription*> m_animations;
+    
     AudioDescription():
         m_src(NULL),
         m_begin(0),
@@ -119,12 +126,6 @@ public:
             ++it;
         }
     }
-
-    gchar *m_src;
-    gint64 m_begin;
-    gint64 m_clipBegin;
-    gint64 m_clipEnd;
-    std::vector<AnimationDescription*> m_animations;
 };
 
 
@@ -351,8 +352,8 @@ private:
         xmlAttribute      * attr;
         double              from  = 0.0;
         double              to    = 0.0;
-        double              begin = 0.0;
-        double              end   = 0.0;
+        guint64              begin = 0;
+        guint64              end   = 0;
     
         /* handle the attributes */
         for (attr = ((xmlElement*)animate)->attributes; attr; attr = (xmlAttribute*) attr->next) {
@@ -408,15 +409,15 @@ private:
                 if ((node = attr->children) && node->type == XML_TEXT_NODE) {
                     gint64  i;
                     gchar* cstr  = (gchar*) node->content;
-                    i     = su_smil_clock_value_to_nanosec(cstr) + offset;
-                    begin = ((double) i) / NSEC_PER_SEC_FLOAT;
+                    begin     = su_smil_clock_value_to_nanosec(cstr);// + offset;
+//                    begin = ((double) i) / NSEC_PER_SEC_FLOAT;
                 }
             } else if (!strcmp((const char*)attr->name, "end")) {
                 if ((node = attr->children) && node->type == XML_TEXT_NODE) {
                     gint64  i;
                     gchar* cstr = (gchar*) node->content;
-                    i   = su_smil_clock_value_to_nanosec(cstr) + offset;
-                    end = ((double) i) / NSEC_PER_SEC_FLOAT;
+                    end   = su_smil_clock_value_to_nanosec(cstr);// + offset;
+//                    end = ((double) i) / NSEC_PER_SEC_FLOAT;
                 }
             } else {
                 GST_WARNING("unsupported SMIL audio element attribute: %s",
@@ -499,7 +500,7 @@ private:
     *  @param value the SMIL clock value in string form
     *  @return the clock value in nanoseconds
     */
-    gint64
+    guint64
     su_smil_clock_value_to_nanosec(const gchar    * value)
     {
         int     hours;

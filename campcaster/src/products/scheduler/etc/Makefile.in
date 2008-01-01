@@ -120,6 +120,8 @@ LIBODBCXX_LIBS=@LIBODBCXX_LIBS@
 GSTREAMER_CFLAGS=@GSTREAMER_CFLAGS@
 GSTREAMER_LIBS=@GSTREAMER_LIBS@
 
+GSTCONTROLLER_CFLAGS=@GSTCONTROLLER_CFLAGS@
+GSTCONTROLLER_LIBS=@GSTCONTROLLER_LIBS@
 
 CURL_CFLAGS=@CURL_CFLAGS@
 CURL_LIBS=@CURL_LIBS@
@@ -197,6 +199,7 @@ CXXFLAGS = @CXXFLAGS@ @DEFS@ @COVERAGE_CXXFLAGS@ -pthread \
                              ${LIBXMLPP_CFLAGS} \
 							 ${LIBODBCXX_CFLAGS} \
 							 ${GSTREAMER_CFLAGS} \
+							 ${GSTCONTROLLER_CFLAGS} \
                              ${TAGLIB_CFLAGS} \
                              ${LIBTAR_CFLAGS} \
                              -I${USR_INCLUDE_DIR} \
@@ -212,6 +215,7 @@ LDFLAGS  = @LDFLAGS@ -pthread \
                      ${LIBXMLPP_LIBS} \
 					 ${LIBODBCXX_LIBS} \
 					 ${GSTREAMER_LIBS} \
+					 ${GSTCONTROLLER_LIBS} \
                      ${CURL_LIBS} \
                      ${ICU_LIBS} \
                      ${TAGLIB_LIBS} \

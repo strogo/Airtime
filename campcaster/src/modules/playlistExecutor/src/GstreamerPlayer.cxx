@@ -78,7 +78,6 @@ static gboolean my_bus_callback (GstBus *bus, GstMessage *message, gpointer data
                 break;
             }
             player->close();
-            player->m_eos = true;
             // Important: We *must* use an idle function call here, so that the signal handler returns
             // before fireOnStopEvent() is executed.
             g_idle_add(GstreamerPlayer::fireOnStopEvent, data);
@@ -150,9 +149,6 @@ GstreamerPlayer :: initialize(void)                 throw (std::exception)
 
     m_playContext->setParentData(this);
 
-
-    m_eos = false;
-    
     // set up other variables
     m_initialized = true;
 }
@@ -278,9 +274,7 @@ GstreamerPlayer :: open(const std::string   fileUri)
         m_open=m_playContext->openSource(fileUri.c_str());
     }
 
-    if(m_open){
-        m_eos = false;
-    }else{
+    if(!m_open){
       m_errorMessage.reset(new const Glib::ustring("GstreamerPlayer :: open failed! Please consult console output for details."));
       m_errorWasRaised = true;
       fireOnStopEvent(this);
@@ -292,6 +286,7 @@ GstreamerPlayer :: playNextSmil(void)                                    throw (
 {
     DEBUG_BLOCK
 
+    m_playContext->closeContext();
     if(m_smilHandler == NULL){
         debug() << "GstreamerPlayer :: playNextSmil failed! m_smilHandler == NULL " << endl;
         return false;
@@ -302,7 +297,9 @@ GstreamerPlayer :: playNextSmil(void)                                    throw (
         m_smilHandler = NULL;
         return false;
     }
-    m_playContext->openSource(audioDescription);
+    if(!m_playContext->openSource(audioDescription)){
+        return false;
+    }
     m_playContext->playContext();
 }
 
@@ -400,13 +397,7 @@ GstreamerPlayer :: pause(void)                      throw (std::logic_error)
 bool
 GstreamerPlayer :: isPlaying(void)                  throw ()
 {
-    if (m_eos) {
-        m_eos = false;
-        m_playContext->stopContext();
-        return false;
-    }
-    bool b = m_playContext->isPlaying();
-    return b;
+    return m_playContext->isPlaying();
 }
 
 

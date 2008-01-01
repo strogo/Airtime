@@ -85,6 +85,9 @@ ICU_LIBS=@ICU_LIBS@
 GSTREAMER_CFLAGS=@GSTREAMER_CFLAGS@
 GSTREAMER_LIBS=@GSTREAMER_LIBS@
 
+GSTCONTROLLER_CFLAGS=@GSTCONTROLLER_CFLAGS@
+GSTCONTROLLER_LIBS=@GSTCONTROLLER_LIBS@
+
 TAGLIB_CFLAGS=@TAGLIB_CFLAGS@
 TAGLIB_LIBS=@TAGLIB_LIBS@
 
@@ -111,6 +114,7 @@ CXXFLAGS = @CXXFLAGS@ @DEFS@ @COVERAGE_CXXFLAGS@ -pthread \
                              ${BOOST_CFLAGS} \
                              ${LIBXMLPP_CFLAGS} \
                              ${GSTREAMER_CFLAGS} \
+                             ${GSTCONTROLLER_CFLAGS} \
                              -I${USR_INCLUDE_DIR} \
                              -I${CORE_INCLUDE_DIR} \
                              -I${INCLUDE_DIR} -I${TMP_DIR}
@@ -119,6 +123,7 @@ LDFLAGS  = @LDFLAGS@ -pthread \
                      ${LIBXMLPP_LIBS} \
                      ${ICU_LIBS} \
                      ${GSTREAMER_LIBS} \
+                     ${GSTCONTROLLER_LIBS} \
                      ${TAGLIB_LIBS} \
                      -L${USR_LIB_DIR} \
                      -L${CORE_LIB_DIR} \
