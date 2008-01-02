@@ -274,9 +274,13 @@ private:
             return false;
         }
         g_object_set(G_OBJECT(sink), "device", m_audioDevice.c_str(), NULL);
+        
+        m_volume = gst_element_factory_make("volume", NULL);
+        g_object_set(G_OBJECT(m_volume), "volume", 1.0, NULL);
 
-        gst_bin_add_many (GST_BIN (m_sink), conv, sink, NULL);
-        gst_element_link (conv, sink);
+        gst_bin_add_many (GST_BIN (m_sink), conv, m_volume, sink, NULL);
+        gst_element_link (conv, m_volume);
+        gst_element_link (m_volume, sink);
         gst_element_add_pad (m_sink, gst_ghost_pad_new ("sink", audiopad));
         gst_object_unref (audiopad);
         return true;
@@ -293,18 +297,14 @@ private:
         if(m_pipeline==NULL){
             return false;
         }
-        
-        m_volume = gst_element_factory_make("volume", NULL);
-        g_object_set(G_OBJECT(m_volume), "volume", 0.5, NULL);
 
         GstBus *bus = gst_pipeline_get_bus (GST_PIPELINE (m_pipeline));
         gst_bus_add_watch (bus, my_bus_callback, m_data);
         gst_object_unref (bus);
         
         //link up all elements in the pipeline
-        gst_bin_add_many (GST_BIN (m_pipeline), m_source, m_decoder, m_volume, NULL);
+        gst_bin_add_many (GST_BIN (m_pipeline), m_source, m_decoder, NULL);
         gst_element_link (m_source, m_decoder);
-        gst_element_link (m_decoder, m_volume);
         gst_bin_add (GST_BIN (m_pipeline), m_sink);
         //lastly prepare animations if desired
         prepareAnimations();
@@ -334,19 +334,29 @@ private:
             m_ics = gst_interpolation_control_source_new ();
             gst_controller_set_control_source (m_ctrl, "volume", GST_CONTROL_SOURCE (m_ics));
             // Set interpolation mode
-            gst_interpolation_control_source_set_interpolation_mode (m_ics, GST_INTERPOLATE_CUBIC);//GST_INTERPOLATE_LINEAR);
+            gst_interpolation_control_source_set_interpolation_mode (m_ics, GST_INTERPOLATE_LINEAR);//GST_INTERPOLATE_CUBIC);
             // set control values, first fade in
             g_value_init (&vol, G_TYPE_DOUBLE);
-            g_value_set_double (&vol, 0.0);
+            g_value_set_double (&vol, m_audioDescription->m_animations[0]->m_from);
             gst_interpolation_control_source_set (m_ics, m_audioDescription->m_animations[0]->m_begin, &vol);
-            g_value_set_double (&vol, 1.0);
+            g_value_set_double (&vol, m_audioDescription->m_animations[0]->m_to);
             gst_interpolation_control_source_set (m_ics, m_audioDescription->m_animations[0]->m_end, &vol);
+            g_print("prepareAnimations: animation set begin=%d, end=%d, from=%f, to=%f\n", 
+                m_audioDescription->m_animations[0]->m_begin,
+                m_audioDescription->m_animations[0]->m_end,
+                m_audioDescription->m_animations[0]->m_from,
+                m_audioDescription->m_animations[0]->m_to);
             if(m_audioDescription->m_animations.size() > 1){
                 //set fade out, between fadein and fadeout we have a hold period
-                g_value_set_double (&vol, 1.0);
-                gst_interpolation_control_source_set (m_ics, m_audioDescription->m_animations[0]->m_begin, &vol);
-                g_value_set_double (&vol, 0.0);
-                gst_interpolation_control_source_set (m_ics, m_audioDescription->m_animations[0]->m_end, &vol);
+                g_value_set_double (&vol, m_audioDescription->m_animations[1]->m_from);
+                gst_interpolation_control_source_set (m_ics, m_audioDescription->m_animations[1]->m_begin, &vol);
+                g_value_set_double (&vol, m_audioDescription->m_animations[1]->m_to);
+                gst_interpolation_control_source_set (m_ics, m_audioDescription->m_animations[1]->m_end, &vol);
+                g_print("prepareAnimations: animation set begin=%d, end=%d, from=%f, to=%f\n", 
+                    m_audioDescription->m_animations[1]->m_begin,
+                    m_audioDescription->m_animations[1]->m_end,
+                    m_audioDescription->m_animations[1]->m_from,
+                    m_audioDescription->m_animations[1]->m_to);
             }
         }
         return true;
