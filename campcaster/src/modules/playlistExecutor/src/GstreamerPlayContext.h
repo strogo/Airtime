@@ -325,7 +325,7 @@ private:
     *  Prepare animations bin.
     *----------------------------------------------------------------------------*/
     bool prepareAnimations(){
-        if(m_audioDescription->m_animations.size() > 0){
+        if(m_audioDescription && m_audioDescription->m_animations.size() > 0){
             if (!(m_ctrl = gst_controller_new (G_OBJECT (m_volume), "volume", NULL))) {
                 std::cout << "prepareAnimations: element not controllable!" << std::endl;
                 return false;
