@@ -427,6 +427,7 @@ GstreamerPlayer :: close(void)                       throw (std::logic_error)
 {
     DEBUG_BLOCK
 
+    m_playContext->stopContext();
     m_playContext->closeContext();
 
     m_open            = false;

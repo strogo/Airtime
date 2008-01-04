@@ -97,12 +97,25 @@ public:
         m_data = NULL;
         m_audioDescription = NULL;
         m_audioDevice = "default";
+        std::cout << "1 m_sink == NULL" << std::endl;
     }
 
     ~GstreamerPlayContext(){
     }
 
     void closeContext(){
+        stopContext();
+        if(m_pipeline != NULL){
+            gst_element_set_state (m_pipeline, GST_STATE_NULL);
+            gst_bin_remove (GST_BIN (m_pipeline), m_sink);
+            std::cout << "2 m_sink == NULL" << std::endl;
+            m_sink=NULL;
+            gst_object_unref(GST_OBJECT(m_pipeline));
+            m_source = NULL;
+            m_decoder = NULL;
+            m_volume = NULL;
+            m_pipeline = NULL;
+        }
         if(m_ics != NULL){
             gst_object_unref(GST_OBJECT(m_ics));
             m_ics = NULL;
@@ -111,17 +124,8 @@ public:
             gst_object_unref(GST_OBJECT(m_ctrl));
             m_ctrl = NULL;
         }
-        if(m_pipeline != NULL){
-            gst_element_set_state (m_pipeline, GST_STATE_NULL);
-            gst_bin_remove (GST_BIN (m_pipeline), m_sink);
-            m_sink=NULL;
-            gst_object_unref(GST_OBJECT(m_pipeline));
-            m_source = NULL;
-            m_decoder = NULL;
-            m_volume = NULL;
-            m_pipeline = NULL;
-        }
         if(m_sink != NULL){
+            std::cout << "3 m_sink == NULL" << std::endl;
             gst_object_unref(GST_OBJECT(m_sink));
             m_sink=NULL;
         }
@@ -134,6 +138,7 @@ public:
 
     void playContext(){
         gst_element_set_state (m_pipeline, GST_STATE_PLAYING);
+        g_object_set(G_OBJECT(m_volume), "volume", 1.0, NULL);
     }
 
     void pauseContext(){
@@ -141,6 +146,7 @@ public:
     }
 
     void stopContext(){
+        g_object_set(G_OBJECT(m_volume), "volume", 0.0, NULL);
         gst_element_set_state (m_pipeline, GST_STATE_READY);
     }
 
@@ -168,9 +174,8 @@ public:
             return false;
         }
 
-        if(m_sink == NULL){
-            prepareAudioDevice();
-        }
+        prepareAudioDevice();
+        
         if(m_sink==NULL){
             std::cerr << "openSource: Failed to create sink!" << std::endl;
             gst_object_unref (m_source);
@@ -180,6 +185,7 @@ public:
         if(!prepareDecodebin()){
             std::cerr << "openSource: Failed to create decodebin!" << std::endl;
             if(m_sink){
+                std::cout << "4 m_sink == NULL" << std::endl;
                 gst_object_unref (m_sink);
                 m_sink = NULL;
             }
@@ -190,6 +196,7 @@ public:
         if(!preparePipeline()){
             std::cerr << "openSource: Failed to create pipeline!" << std::endl;
             if(m_sink){
+        std::cout << "5 m_sink == NULL" << std::endl;
                 gst_object_unref (m_sink);
                 m_sink = NULL;
             }
@@ -254,6 +261,7 @@ private:
     *----------------------------------------------------------------------------*/
     bool prepareAudioDevice() throw() {
         if(m_sink != NULL){
+        std::cout << "6 m_sink == NULL" << std::endl;
             gst_object_unref(GST_OBJECT(m_sink));
             m_sink=NULL;
         }
@@ -263,6 +271,7 @@ private:
         const bool oss = m_audioDevice.find("/dev") == 0;
 
         m_sink = gst_bin_new ("audiobin");
+        std::cout << "m_sink CREATED!" << std::endl;
         if(m_sink == NULL){
             return false;
         }
@@ -276,7 +285,7 @@ private:
         g_object_set(G_OBJECT(sink), "device", m_audioDevice.c_str(), NULL);
         
         m_volume = gst_element_factory_make("volume", NULL);
-        g_object_set(G_OBJECT(m_volume), "volume", 1.0, NULL);
+        g_object_set(G_OBJECT(m_volume), "volume", 0.0, NULL);
 
         gst_bin_add_many (GST_BIN (m_sink), conv, m_volume, sink, NULL);
         gst_element_link (conv, m_volume);
