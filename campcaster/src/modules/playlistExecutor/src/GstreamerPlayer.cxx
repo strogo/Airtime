@@ -322,12 +322,18 @@ Ptr<time_duration>::Ref
 GstreamerPlayer :: getPlaylength(void)              throw (std::logic_error)
 {
     DEBUG_BLOCK
-
-    Ptr<time_duration>::Ref   length;
-    gint64                    ns = m_playContext->getPlayLength();
-
+        std::cout << "GstreamerPlayer :: getPlaylength!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << std::endl;
     if (!isOpen()) {
         throw std::logic_error("player not open");
+    }
+    
+    Ptr<time_duration>::Ref   length;
+    
+    gint64 ns;
+    if(m_smilHandler!=NULL){
+        ns = m_smilHandler->getPlayLength();
+    }else{
+        ns = m_playContext->getPlayLength();
     }
 
     length.reset(new time_duration(microsec(ns / 1000LL)));

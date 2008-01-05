@@ -243,6 +243,12 @@ emptysmilrecovery:
 
         return audioDescription;
     }
+    
+    gint64 getPlayLength() throw() {
+        gint64 ns = 0LL;
+        //TODO: calculate proper playlist length
+        return ns;
+    }
 
 private:
 
