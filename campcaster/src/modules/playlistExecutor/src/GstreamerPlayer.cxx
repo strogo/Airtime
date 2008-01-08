@@ -73,7 +73,6 @@ static gboolean my_bus_callback (GstBus *bus, GstMessage *message, gpointer data
 
     switch (GST_MESSAGE_TYPE (message)) {
         case GST_MESSAGE_EOS:
-            std::cout << "my_bus_callback: GST_MESSAGE_EOS received!" << std::endl;
             if(player->playNextSmil()){
                 break;
             }
@@ -83,7 +82,6 @@ static gboolean my_bus_callback (GstBus *bus, GstMessage *message, gpointer data
             g_idle_add(GstreamerPlayer::fireOnStopEvent, data);
             break;
         case GST_MESSAGE_ERROR:
-            std::cout << "my_bus_callback: GST_MESSAGE_ERROR received!" << std::endl;
             // We make sure that we don't send multiple error messages in a row to the GUI
             if (!player->m_errorWasRaised) {
                 GError *gerror;
@@ -257,6 +255,8 @@ GstreamerPlayer :: open(const std::string   fileUri)
     if (isOpen()) {
         close();
     }
+    
+    m_smilOffset = 0L;
 
     debug() << "Opening URL: " << fileUri << endl;
     debug() << "Timestamp: " << *TimeConversion::now() << endl;
@@ -285,7 +285,7 @@ bool
 GstreamerPlayer :: playNextSmil(void)                                    throw ()
 {
     DEBUG_BLOCK
-
+    m_currentPlayLength = m_playContext->getPosition();//this gets the length of the stream that just completed
     m_playContext->closeContext();
     if(m_smilHandler == NULL){
         debug() << "GstreamerPlayer :: playNextSmil failed! m_smilHandler == NULL " << endl;
@@ -300,6 +300,7 @@ GstreamerPlayer :: playNextSmil(void)                                    throw (
     if(!m_playContext->openSource(audioDescription)){
         return false;
     }
+    m_smilOffset += m_currentPlayLength;
     m_playContext->playContext();
 }
 
@@ -322,20 +323,15 @@ Ptr<time_duration>::Ref
 GstreamerPlayer :: getPlaylength(void)              throw (std::logic_error)
 {
     DEBUG_BLOCK
-        std::cout << "GstreamerPlayer :: getPlaylength!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << std::endl;
+    
     if (!isOpen()) {
         throw std::logic_error("player not open");
     }
     
     Ptr<time_duration>::Ref   length;
     
-    gint64 ns;
-    if(m_smilHandler!=NULL){
-        ns = m_smilHandler->getPlayLength();
-    }else{
-        ns = m_playContext->getPlayLength();
-    }
-
+    gint64 ns = m_playContext->getPlayLength();
+ 
     length.reset(new time_duration(microsec(ns / 1000LL)));
 
     debug() << length << endl;
@@ -357,7 +353,7 @@ GstreamerPlayer :: getPosition(void)                throw (std::logic_error)
 
     gint64                    ns = m_playContext->getPosition();
 
-    length.reset(new time_duration(microseconds(ns / 1000LL)));
+    length.reset(new time_duration(microseconds((m_smilOffset + ns) / 1000LL)));
 
     return length;
 }

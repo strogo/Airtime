@@ -127,6 +127,9 @@ class GstreamerPlayer : virtual public Configurable,
          *  The URL of the preloaded file. Empty if nothing is preloaded.
          */
         std::string             m_preloadUrl;
+        
+        gint64                  m_smilOffset;
+        gint64                  m_currentPlayLength;
 
 public:
 
@@ -172,6 +175,8 @@ public:
             m_open        = false;
             m_initialized = false;
             m_smilHandler = NULL;
+            m_smilOffset  = 0L;
+            m_currentPlayLength = 0L;
         }
 
         /**
