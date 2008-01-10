@@ -118,13 +118,10 @@ public:
     
     void release()
     {
-        std::vector<AnimationDescription*>::iterator    it  = m_animations.begin();
-        std::vector<AnimationDescription*>::iterator    end = m_animations.end();
-        while (it != end) {
-            delete (*it);
-            m_animations.erase(it);
-            ++it;
+        for(int i = m_animations.size(); i > 0; i--){
+            delete m_animations[i-1];
         }
+        m_animations.clear();
     }
 };
 
@@ -336,7 +333,9 @@ private:
             if (node->type == XML_ELEMENT_NODE) {
                 if (!strcmp((const char*)node->name, "animate")) {
                     AnimationDescription *anim = getNextAnimate(audioDescription->m_begin, node);
-                    audioDescription->m_animations.push_back(anim);
+                    if(anim != NULL){
+                        audioDescription->m_animations.push_back(anim);
+                    }
                 } else {
                     GST_WARNING("unsupported SMIL element %s found inside a audio", node->name);
                 }

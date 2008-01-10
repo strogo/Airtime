@@ -104,6 +104,14 @@ public:
 
     void closeContext(){
         stopContext();
+        if(m_ctrl != NULL){
+            gst_object_unref(GST_OBJECT(m_ctrl));
+            m_ctrl = NULL;
+        }
+        if(m_ics != NULL){
+            gst_object_unref(GST_OBJECT(m_ics));
+            m_ics = NULL;
+        }
         if(m_pipeline != NULL){
             gst_element_set_state (m_pipeline, GST_STATE_NULL);
             gst_bin_remove (GST_BIN (m_pipeline), m_sink);
@@ -113,14 +121,6 @@ public:
             m_decoder = NULL;
             m_volume = NULL;
             m_pipeline = NULL;
-        }
-        if(m_ics != NULL){
-            gst_object_unref(GST_OBJECT(m_ics));
-            m_ics = NULL;
-        }
-        if(m_ctrl != NULL){
-            gst_object_unref(GST_OBJECT(m_ctrl));
-            m_ctrl = NULL;
         }
         if(m_sink != NULL){
             gst_object_unref(GST_OBJECT(m_sink));
@@ -340,26 +340,30 @@ private:
             gst_interpolation_control_source_set_interpolation_mode (m_ics, GST_INTERPOLATE_LINEAR);//GST_INTERPOLATE_CUBIC);
             // set control values, first fade in
             g_value_init (&vol, G_TYPE_DOUBLE);
-            g_value_set_double (&vol, m_audioDescription->m_animations[0]->m_from);
-            gst_interpolation_control_source_set (m_ics, m_audioDescription->m_animations[0]->m_begin, &vol);
-            g_value_set_double (&vol, m_audioDescription->m_animations[0]->m_to);
-            gst_interpolation_control_source_set (m_ics, m_audioDescription->m_animations[0]->m_end, &vol);
-            g_print("prepareAnimations: animation set begin=%d, end=%d, from=%f, to=%f\n", 
-                m_audioDescription->m_animations[0]->m_begin,
-                m_audioDescription->m_animations[0]->m_end,
-                m_audioDescription->m_animations[0]->m_from,
-                m_audioDescription->m_animations[0]->m_to);
-            if(m_audioDescription->m_animations.size() > 1){
-                //set fade out, between fadein and fadeout we have a hold period
-                g_value_set_double (&vol, m_audioDescription->m_animations[1]->m_from);
-                gst_interpolation_control_source_set (m_ics, m_audioDescription->m_animations[1]->m_begin, &vol);
-                g_value_set_double (&vol, m_audioDescription->m_animations[1]->m_to);
-                gst_interpolation_control_source_set (m_ics, m_audioDescription->m_animations[1]->m_end, &vol);
+            if(m_audioDescription->m_animations[0] != NULL){
+                g_value_set_double (&vol, m_audioDescription->m_animations[0]->m_from);
+                gst_interpolation_control_source_set (m_ics, m_audioDescription->m_animations[0]->m_begin, &vol);
+                g_value_set_double (&vol, m_audioDescription->m_animations[0]->m_to);
+                gst_interpolation_control_source_set (m_ics, m_audioDescription->m_animations[0]->m_end, &vol);
                 g_print("prepareAnimations: animation set begin=%d, end=%d, from=%f, to=%f\n", 
-                    m_audioDescription->m_animations[1]->m_begin,
-                    m_audioDescription->m_animations[1]->m_end,
-                    m_audioDescription->m_animations[1]->m_from,
-                    m_audioDescription->m_animations[1]->m_to);
+                    m_audioDescription->m_animations[0]->m_begin,
+                    m_audioDescription->m_animations[0]->m_end,
+                    m_audioDescription->m_animations[0]->m_from,
+                    m_audioDescription->m_animations[0]->m_to);
+            }
+            if(m_audioDescription->m_animations.size() > 1){
+                if(m_audioDescription->m_animations[1] != NULL){
+                    //set fade out, between fadein and fadeout we have a hold period
+                    g_value_set_double (&vol, m_audioDescription->m_animations[1]->m_from);
+                    gst_interpolation_control_source_set (m_ics, m_audioDescription->m_animations[1]->m_begin, &vol);
+                    g_value_set_double (&vol, m_audioDescription->m_animations[1]->m_to);
+                    gst_interpolation_control_source_set (m_ics, m_audioDescription->m_animations[1]->m_end, &vol);
+                    g_print("prepareAnimations: animation set begin=%d, end=%d, from=%f, to=%f\n", 
+                        m_audioDescription->m_animations[1]->m_begin,
+                        m_audioDescription->m_animations[1]->m_end,
+                        m_audioDescription->m_animations[1]->m_from,
+                        m_audioDescription->m_animations[1]->m_to);
+                }
             }
         }
         return true;

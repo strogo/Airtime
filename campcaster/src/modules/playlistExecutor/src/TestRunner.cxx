@@ -392,7 +392,7 @@ Error:
 
     return 0;
 */
-/*
+
     //quick smil playback test
     gst_init (NULL, NULL);
     loop = g_main_loop_new (NULL, FALSE);
@@ -410,8 +410,8 @@ Error:
     g_main_loop_run (loop);
 
     return 0;
-*/
 
+/*
     //quick test for play context
   gst_init (NULL, NULL);
   loop = g_main_loop_new (NULL, FALSE);
@@ -440,7 +440,7 @@ Error:
     }
 
   return 0;    // initialize the gst parameters
-
+*/
 /*
     gst_init(&argc, &argv);
 
