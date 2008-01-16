@@ -139,6 +139,7 @@ public:
     }
 
     void pauseContext(){
+        g_object_set(G_OBJECT(m_volume), "volume", 0.0, NULL);
         gst_element_set_state (m_pipeline, GST_STATE_PAUSED);
     }
 
