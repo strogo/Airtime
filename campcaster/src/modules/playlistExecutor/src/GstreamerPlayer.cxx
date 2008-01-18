@@ -431,6 +431,10 @@ GstreamerPlayer :: close(void)                       throw (std::logic_error)
 
     m_playContext->stopContext();
     m_playContext->closeContext();
+    if(m_smilHandler != NULL){
+        delete m_smilHandler;
+        m_smilHandler = NULL;
+    }
 
     m_open            = false;
 }
