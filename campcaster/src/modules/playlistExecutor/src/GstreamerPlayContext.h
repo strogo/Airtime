@@ -144,8 +144,8 @@ public:
     }
 
     void stopContext(){
-        g_object_set(G_OBJECT(m_volume), "volume", 0.0, NULL);
-        gst_element_set_state (m_pipeline, GST_STATE_READY);
+        if(GST_IS_ELEMENT(m_volume)) g_object_set(G_OBJECT(m_volume), "volume", 0.0, NULL);
+        if(GST_IS_ELEMENT(m_volume)) gst_element_set_state (m_pipeline, GST_STATE_READY);
     }
 
     void setParentData(gpointer data){
@@ -183,7 +183,6 @@ public:
         if(!prepareDecodebin()){
             std::cerr << "openSource: Failed to create decodebin!" << std::endl;
             if(m_sink){
-                std::cout << "4 m_sink == NULL" << std::endl;
                 gst_object_unref (m_sink);
                 m_sink = NULL;
             }

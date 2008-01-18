@@ -288,7 +288,6 @@ GstreamerPlayer :: playNextSmil(void)                                    throw (
     m_currentPlayLength = m_playContext->getPosition();//this gets the length of the stream that just completed
     m_playContext->closeContext();
     if(m_smilHandler == NULL){
-        debug() << "GstreamerPlayer :: playNextSmil failed! m_smilHandler == NULL " << endl;
         return false;
     }
     AudioDescription *audioDescription = m_smilHandler->getNext();
