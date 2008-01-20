@@ -105,11 +105,11 @@ public:
     void closeContext(){
         stopContext();
         if(m_ctrl != NULL){
-            gst_object_unref(GST_OBJECT(m_ctrl));
+            g_object_unref(G_OBJECT(m_ctrl));
             m_ctrl = NULL;
         }
         if(m_ics != NULL){
-            gst_object_unref(GST_OBJECT(m_ics));
+            g_object_unref(G_OBJECT(m_ics));
             m_ics = NULL;
         }
         if(m_pipeline != NULL){
@@ -329,7 +329,8 @@ private:
     *----------------------------------------------------------------------------*/
     bool prepareAnimations(){
         if(m_audioDescription && m_audioDescription->m_animations.size() > 0){
-            if (!(m_ctrl = gst_controller_new (G_OBJECT (m_volume), "volume", NULL))) {
+            m_ctrl = gst_controller_new (G_OBJECT (m_volume), "volume", NULL);
+            if (m_ctrl == NULL) {
                 std::cout << "prepareAnimations: element not controllable!" << std::endl;
                 return false;
             }
