@@ -119,7 +119,16 @@ diff -Naur libodbc++-0.2.3/include/odbc++/threads.h libodbc++-0.2.3-no-namespace
 diff -Naur libodbc++-0.2.3/include/odbc++/types.h libodbc++-0.2.3-no-namespace-closing-colon/include/odbc++/types.h
 --- libodbc++-0.2.3/include/odbc++/types.h	2003-06-17 12:08:02.000000000 +0200
 +++ libodbc++-0.2.3-no-namespace-closing-colon/include/odbc++/types.h	2005-01-18 14:48:22.560035112 +0100
-@@ -791,7 +791,7 @@
+@@ -23,7 +23,7 @@
+ #define __ODBCXX_TYPES_H
+ 
+ #include <odbc++/setup.h>
+-
++#include <string.h>
+ #include <exception>
+ 
+ #if !defined(ODBCXX_QT)
+@@ -802,7 +802,7 @@
      }
    };
  
