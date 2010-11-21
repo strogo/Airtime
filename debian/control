@@ -1,7 +1,7 @@
 Source: campcaster
 Section: sound
 Priority: extra
-Maintainer: Alessio Treglia <quadrispro@ubuntu.com>
+Maintainer: Alessio Treglia <alessio@debian.org>
 XSBC-Original-Maintainer: Robin Gareus <robin@gareus.org>
 Build-Depends: debhelper (>= 7.0.50~),
                autotools-dev,
@@ -45,9 +45,8 @@ Build-Depends: debhelper (>= 7.0.50~),
                php-pear,
                php-db,
                libserial-dev (>= 0.5.2)
-Standards-Version: 3.8.4
-Homepage: http://campware.org/en/camp/campcaster_news/
-
+Standards-Version: 3.9.1
+Homepage: http://www.sourcefabric.org/en/home/radio/3/Campcaster.htm?tpl=18
 
 Package: campcaster-libs
 Architecture: any
