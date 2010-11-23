@@ -1,3 +1,9 @@
+campcaster (1.4.1-2) 64studio; urgency=low
+
+  * Removed LD_LIBRARY_PATHS from makefiles
+
+ -- Daniel James <daniel@64studio.com>  Tue, 23 Nov 2010 14:28:40 +0000
+
 campcaster (1.4.1-1) 64studio; urgency=low
 
   * Update my email address.
