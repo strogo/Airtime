@@ -1,3 +1,9 @@
+campcaster (1.4.1-3) 64studio; urgency=low
+
+  * Revert to default database password to preserve compatibility
+
+ -- Daniel James <daniel@64studio.com>  Wed, 24 Nov 2010 11:52:21 +0000
+
 campcaster (1.4.1-2) 64studio; urgency=low
 
   * Removed LD_LIBRARY_PATHS from makefiles
